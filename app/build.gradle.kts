@@ -11,8 +11,8 @@ android {
         applicationId = "com.valoon4.wormblade"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.1.1-debug"
+        versionCode = 3
+        versionName = "0.2.0-debug"
     }
 
     buildTypes {

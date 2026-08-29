@@ -1,29 +1,18 @@
 # Wormblade
 
-Working-title Android prototype for the portrait swarm-action game.
+Portrait swarm-action Android prototype.
 
-## Prototype 0.1
+## 0.2.0-debug
 
-Level 1-1 is implemented as a playable vertical arcade stage:
-
-- drag the blue chibi player horizontally;
-- automatic blue projectile fire;
-- two orbiting blades deal close-range damage;
-- segmented golden worm enemies arrive in three waves;
-- individual worm segments have HP and show damage numbers;
-- coin, gem and heal drops can be collected;
-- gems grant XP / level-ups;
-- HP, hearts, wave progress, coin counter and skill slots mirror the approved mockup;
-- pause, game-over/restart and level-clear states are functional.
-
-The graphics are rendered procedurally with Android Canvas so the first build has no external art dependency.
+- 10 selectable overworld levels from the start.
+- Persistent clear markers and banked coins.
+- Every living worm segment shows its remaining HP directly on the bubble.
+- Marked treasure segments drop chests.
+- Chests pause combat and offer 3 random upgrades; choose exactly one.
+- Real upgrade stats include multishot, projectile damage, fire rate, piercing, crit, extra blades, blade damage/reach, armor, max HP, magnet range, frost slow, overdrive and treasure sense.
+- Level 5 and 10 feature larger Royal Worm boss chains with crowns and extra treasure.
+- Free drag movement in the lower battlefield, auto-fire, orbit blades, coins, gems, heals, XP, wave healing, pause/retry/map flow.
+- Procedural Canvas visuals; no external art dependency.
 
 Package: `com.valoon4.wormblade`
-Version: `0.1.1-debug`
-
-## 0.1.1 startup hotfix
-
-- guards zero-sized first frames before creating gradients;
-- uses conservative immersive flags for wider Android/vendor compatibility;
-- catches renderer exceptions and shows a diagnostic screen instead of terminating the process;
-- hotfix source is persisted on `main` and is the current debug-build target.
+Version: `0.2.0-debug` (`versionCode 3`)
