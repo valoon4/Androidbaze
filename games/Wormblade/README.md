@@ -19,4 +19,10 @@ Level 1-1 is implemented as a playable vertical arcade stage:
 The graphics are rendered procedurally with Android Canvas so the first build has no external art dependency.
 
 Package: `com.valoon4.wormblade`
-Version: `0.1.0-debug`
+Version: `0.1.1-debug`
+
+## 0.1.1 startup hotfix
+
+- guards zero-sized first frames before creating gradients;
+- uses conservative immersive flags for wider Android/vendor compatibility;
+- catches renderer exceptions and shows a diagnostic screen instead of terminating the process.

@@ -32,24 +32,18 @@ class MainActivity : Activity() {
         if (hasFocus) hideSystemUi()
     }
 
+    @Suppress("DEPRECATION")
     private fun hideSystemUi() {
-        if (Build.VERSION.SDK_INT >= 30) {
-            window.insetsController?.let {
-                it.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        } else {
-            @Suppress("DEPRECATION")
-            run {
-                window.decorView.systemUiVisibility =
-                    View.SYSTEM_UI_FLAG_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            }
-        }
+        // Keep startup compatible across old vendor Android builds as well as new ones.
+        // The legacy flags are harmless on modern Android and avoid loading newer
+        // WindowInsets controller APIs during Activity startup.
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
 }
 
@@ -121,6 +115,7 @@ private class WormbladeGameView(context: android.content.Context) : View(context
     private var playerY = 0f
     private var invulnUntil = 0f
     private var dragging = false
+    private var fatalMessage: String? = null
 
     init {
         isFocusable = true
@@ -183,18 +178,56 @@ private class WormbladeGameView(context: android.content.Context) : View(context
 
     override fun onDraw(canvas: android.graphics.Canvas) {
         super.onDraw(canvas)
-        val now = System.nanoTime()
-        if (lastFrameNs == 0L) lastFrameNs = now
-        val dt = min(0.034f, (now - lastFrameNs) / 1_000_000_000f)
-        lastFrameNs = now
-        if (!paused && !gameOver && !victory) updateGame(dt)
-        drawBackground(canvas)
-        drawWorld(canvas)
-        drawHud(canvas)
-        if (paused) drawOverlay(canvas, "PAUSED", "Tap pause to continue")
-        if (gameOver) drawOverlay(canvas, "GAME OVER", "Tap to restart")
-        if (victory) drawOverlay(canvas, "LEVEL CLEAR!", "Tap to play again")
-        postInvalidateOnAnimation()
+
+        // Some Android/vendor combinations can deliver an initial draw while the
+        // surface is still effectively 0x0. Gradients require distinct endpoints,
+        // so never enter the game renderer until we have a real surface size.
+        if (width <= 1 || height <= 1) {
+            canvas.drawColor(Color.rgb(32, 39, 48))
+            postInvalidateOnAnimation()
+            return
+        }
+
+        val previousFailure = fatalMessage
+        if (previousFailure != null) {
+            drawEmergencyScreen(canvas, previousFailure)
+            return
+        }
+
+        try {
+            val now = System.nanoTime()
+            if (lastFrameNs == 0L) lastFrameNs = now
+            val dt = min(0.034f, (now - lastFrameNs) / 1_000_000_000f)
+            lastFrameNs = now
+            if (!paused && !gameOver && !victory) updateGame(dt)
+            drawBackground(canvas)
+            drawWorld(canvas)
+            drawHud(canvas)
+            if (paused) drawOverlay(canvas, "PAUSED", "Tap pause to continue")
+            if (gameOver) drawOverlay(canvas, "GAME OVER", "Tap to restart")
+            if (victory) drawOverlay(canvas, "LEVEL CLEAR!", "Tap to play again")
+            postInvalidateOnAnimation()
+        } catch (t: Throwable) {
+            fatalMessage = "${t.javaClass.simpleName}: ${t.message ?: "unknown renderer error"}"
+            drawEmergencyScreen(canvas, fatalMessage!!)
+        }
+    }
+
+    private fun drawEmergencyScreen(canvas: android.graphics.Canvas, message: String) {
+        canvas.drawColor(Color.rgb(31, 39, 49))
+        textPaint.style = Paint.Style.FILL
+        textPaint.typeface = Typeface.DEFAULT_BOLD
+        textPaint.textAlign = Paint.Align.CENTER
+        textPaint.color = Color.WHITE
+        textPaint.textSize = max(28f, width * 0.055f)
+        canvas.drawText("WORMBLADE", width * 0.5f, height * 0.40f, textPaint)
+        textPaint.color = Color.rgb(255, 116, 116)
+        textPaint.textSize = max(18f, width * 0.032f)
+        canvas.drawText("Renderer abgefangen", width * 0.5f, height * 0.47f, textPaint)
+        textPaint.color = Color.rgb(220, 230, 235)
+        textPaint.textSize = max(14f, width * 0.024f)
+        val safe = message.take(80)
+        canvas.drawText(safe, width * 0.5f, height * 0.53f, textPaint)
     }
 
     private fun updateGame(dt: Float) {
