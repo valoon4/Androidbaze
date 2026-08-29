@@ -25,4 +25,5 @@ Version: `0.1.1-debug`
 
 - guards zero-sized first frames before creating gradients;
 - uses conservative immersive flags for wider Android/vendor compatibility;
-- catches renderer exceptions and shows a diagnostic screen instead of terminating the process.
+- catches renderer exceptions and shows a diagnostic screen instead of terminating the process;
+- hotfix source is persisted on `main` and is the current debug-build target.
