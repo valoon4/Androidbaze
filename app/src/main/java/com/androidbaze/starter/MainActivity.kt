@@ -1,20 +1,20 @@
 package com.androidbaze.starter
 
 import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
-import android.widget.TextView
+import android.view.View
 
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(TextView(this).apply {
-            text = "Androidbaze ready ✓"
-            textSize = 24f
-            gravity = Gravity.CENTER
-            setTextColor(Color.WHITE)
-            setBackgroundColor(Color.rgb(24, 28, 36))
-        })
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        )
+        setContentView(PikminLikeGameView(this))
     }
 }
