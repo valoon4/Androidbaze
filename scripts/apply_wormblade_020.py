@@ -16,6 +16,21 @@ for rel, payload in payloads.items():
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(gzip.decompress(base64.b64decode(payload.read_text().strip())))
 
+# Kotlin Int has no .indices; the generated 0.2 payload had one typo in the treasure loop.
+for rel in [
+    "app/src/main/java/com/valoon4/wormblade/WormbladeGameView.kt",
+    "games/Wormblade/src/WormbladeGameView.kt",
+]:
+    target = ROOT / rel
+    source = target.read_text()
+    bad = "for (i in plan.segments.indices) {"
+    good = "for (i in 0 until plan.segments) {"
+    if bad in source:
+        source = source.replace(bad, good)
+    if good not in source:
+        raise SystemExit(f"Could not apply treasure-loop compile fix to {rel}")
+    target.write_text(source)
+
 build = ROOT / "app/build.gradle.kts"
 text = build.read_text().replace("versionCode = 2", "versionCode = 3").replace('versionName = "0.1.1-debug"', 'versionName = "0.2.0-debug"')
 if "versionCode = 3" not in text or 'versionName = "0.2.0-debug"' not in text:
