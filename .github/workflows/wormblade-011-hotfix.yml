@@ -1,0 +1,86 @@
+name: Wormblade 0.1.1 Hotfix
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'scripts/patch_wormblade_011.py'
+      - '.github/workflows/wormblade-011-hotfix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply 0.1.1 startup hotfix
+        run: python3 scripts/patch_wormblade_011.py
+
+      - name: Persist hotfix source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle.kts app/src/main/java/com/valoon4/wormblade/MainActivity.kt games/Wormblade/src/MainActivity.kt games/Wormblade/README.md
+          git commit -m "Fix Wormblade startup crash in 0.1.1 [skip ci]"
+          git push
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Build 0.1.1 debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon clean assembleDebug
+
+      - name: Basic APK verification
+        run: |
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          test -f "$APK"
+          $ANDROID_HOME/build-tools/35.0.0/aapt dump badging "$APK" | tee /tmp/badging.txt
+          grep -q "package: name='com.valoon4.wormblade' versionCode='2' versionName='0.1.1-debug'" /tmp/badging.txt
+
+      - name: Smoke-test launch in Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            adb install -r app/build/outputs/apk/debug/app-debug.apk
+            adb shell am force-stop com.valoon4.wormblade
+            adb shell am start -W -n com.valoon4.wormblade/.MainActivity
+            sleep 6
+            PID="$(adb shell pidof com.valoon4.wormblade | tr -d '\r')"
+            echo "Wormblade PID after launch: $PID"
+            test -n "$PID"
+            adb exec-out screencap -p > /tmp/wormblade-smoke.png
+
+      - name: Prepare artifact
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk dist/Wormblade-0.1.1-debug.apk
+          sha256sum dist/Wormblade-0.1.1-debug.apk > dist/Wormblade-0.1.1-debug.apk.sha256
+          cp /tmp/wormblade-smoke.png dist/wormblade-smoke.png
+          cp /tmp/badging.txt dist/apk-badging.txt
+
+      - name: Upload 0.1.1 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Wormblade-0.1.1-debug
+          path: dist/
+          if-no-files-found: error
