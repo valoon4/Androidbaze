@@ -1,1 +1,1 @@
-Wormblade 0.2.0 build trigger.
+Wormblade 0.2.0 build trigger #2 after treasure-loop compile fix.
