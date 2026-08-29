@@ -61,6 +61,12 @@ games/<GameName>/
 
 - `games/Pikminlike/` – squad-based creature-command prototype.
 - `games/ShinobiCat/` – Shinobi Cat MVP 0.14.1 prerelease Android/WebView action-adventure handoff.
+- `games/EugiDoors/` – multi-door prototype collection.
+- `games/Wormblade/` – portrait auto-fire / orbit-blade swarm action prototype based on the Level 1 mockup.
+
+## Current root build target
+
+The root Android app currently builds **Wormblade 0.1.0-debug** (`com.valoon4.wormblade`).
 
 ## Purpose
 
