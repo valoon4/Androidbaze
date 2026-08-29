@@ -517,7 +517,7 @@ class WormbladeGameView(context: Context) : View(context) {
             (plan.hp * segmentBoost).toInt()
         }
         val treasure = BooleanArray(plan.segments)
-        for (i in plan.segments.indices) {
+        for (i in 0 until plan.segments) {
             if (i > 0 && (i + plan.seed) % config.chestEvery == 0) treasure[i] = true
             if (stack("lucky") > 0 && i > 0 && rng.nextFloat() < stack("lucky") * 0.035f) treasure[i] = true
         }
