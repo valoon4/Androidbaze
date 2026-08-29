@@ -3,14 +3,27 @@ name: Build Debug APK
 on:
   push:
     branches: [ "main" ]
-  pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Apply Wormblade 0.2.0 source pass
+        run: python3 scripts/apply_wormblade_020.py
+      - name: Persist Wormblade 0.2.0 source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle.kts app/src/main/java/com/valoon4/wormblade games/Wormblade README.md
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist Wormblade 0.2.0 gameplay expansion [skip ci]"
+            git push origin HEAD:main
+          fi
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -19,13 +32,30 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install Android SDK
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
-      - name: Build debug APK
+      - name: Build Wormblade 0.2.0 debug APK
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon assembleDebug
-      - name: Upload APK
+          ./gradlew --no-daemon clean assembleDebug --stacktrace
+      - name: Verify APK metadata and signature
+        run: |
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          test -s "$APK"
+          aapt dump badging "$APK" | tee apk-badging.txt
+          grep -q "package: name='com.valoon4.wormblade' versionCode='3' versionName='0.2.0-debug'" apk-badging.txt
+          apksigner verify --verbose --print-certs "$APK" | tee apksigner-report.txt
+          sha256sum "$APK" | tee Wormblade-0.2.0-debug.apk.sha256
+      - name: Prepare artifact
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk Wormblade-0.2.0-debug.apk
+          printf '%s\n' 'Wormblade 0.2.0-debug' '10-level overworld + treasure upgrade system' 'Package: com.valoon4.wormblade' > build-info.txt
+      - name: Upload Wormblade APK
         uses: actions/upload-artifact@v4
         with:
-          name: androidbaze-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: Wormblade-0.2.0-debug
+          path: |
+            Wormblade-0.2.0-debug.apk
+            Wormblade-0.2.0-debug.apk.sha256
+            apk-badging.txt
+            apksigner-report.txt
+            build-info.txt
           if-no-files-found: error
