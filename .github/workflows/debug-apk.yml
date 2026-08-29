@@ -39,10 +39,12 @@ jobs:
       - name: Verify APK metadata and signature
         run: |
           APK=app/build/outputs/apk/debug/app-debug.apk
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          APKSIGNER="$ANDROID_HOME/build-tools/35.0.0/apksigner"
           test -s "$APK"
-          aapt dump badging "$APK" | tee apk-badging.txt
+          "$AAPT" dump badging "$APK" | tee apk-badging.txt
           grep -q "package: name='com.valoon4.wormblade' versionCode='3' versionName='0.2.0-debug'" apk-badging.txt
-          apksigner verify --verbose --print-certs "$APK" | tee apksigner-report.txt
+          "$APKSIGNER" verify --verbose --print-certs "$APK" | tee apksigner-report.txt
           sha256sum "$APK" | tee Wormblade-0.2.0-debug.apk.sha256
       - name: Prepare artifact
         run: |
