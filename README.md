@@ -59,7 +59,8 @@ games/<GameName>/
 
 ## Current games
 
-- `games/Pikminlike/` – first squad-based creature-command prototype.
+- `games/Pikminlike/` – squad-based creature-command prototype.
+- `games/ShinobiCat/` – Shinobi Cat MVP 0.14.1 prerelease Android/WebView action-adventure handoff.
 
 ## Purpose
 
