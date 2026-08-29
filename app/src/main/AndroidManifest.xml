@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="true"
-        android:label="Androidbaze"
+        android:label="Pikminlike v001"
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidbaze">
         <activity
