@@ -1,14 +1,14 @@
 package com.eugi.apeeconomics
 
 import android.app.Activity
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Base64
 import android.view.Gravity
+import android.view.View
 import android.widget.*
 import kotlin.math.max
 import kotlin.random.Random
@@ -17,7 +17,6 @@ class MainActivity : Activity() {
     private var round=1; private var bananas=100; private var influence=0; private var popularity=50
     private var violence=0; private var votes=0; private var shares=0; private var rivals=7; private var gameOver=false
     private lateinit var topStats:LinearLayout; private lateinit var eventBox:LinearLayout; private lateinit var cards:LinearLayout; private lateinit var footer:TextView
-    private lateinit var atlas:Bitmap
 
     data class Effect(val bananas:Int=0,val influence:Int=0,val popularity:Int=0,val violence:Int=0,val votes:Int=0,val shares:Int=0,val rivals:Int=0)
     data class Choice(val art:String,val title:String,val detail:String,val effect:Effect)
@@ -25,28 +24,52 @@ class MainActivity : Activity() {
 
     private val events=listOf(
         Event("Bananenbank bietet Kredit","Ein Banker-Affe wedelt mit einem verdächtigen Vertrag.",listOf(
-            Choice("banker","Kredit nehmen","🍌 +90   ❤️ -5",Effect(bananas=90,popularity=-5)),Choice("politician","Bank ablehnen","❤️ +6",Effect(popularity=6)),Choice("soldier","Bank kontrollieren","🍌 -40   📣 +14",Effect(bananas=-40,influence=14)))),
+            Choice("banker","Kredit nehmen","🍌 +90   ❤️ -5",Effect(bananas=90,popularity=-5)),
+            Choice("politician","Bank ablehnen","❤️ +6",Effect(popularity=6)),
+            Choice("soldier","Bank kontrollieren","🍌 -40   📣 +14",Effect(bananas=-40,influence=14)))),
         Event("Bananenernte fällt aus","Die Plantagen sind leer. Wer bezahlt die Krise?",listOf(
-            Choice("worker","Vorräte verteilen","🍌 -35   ❤️ +10",Effect(bananas=-35,popularity=10)),Choice("banker","Preise erhöhen","🍌 +25   ❤️ -12",Effect(bananas=25,popularity=-12)),Choice("propaganda","Andere beschuldigen","📣 +6   👊 +6",Effect(influence=6,violence=6,popularity=-4)))),
+            Choice("worker","Vorräte verteilen","🍌 -35   ❤️ +10",Effect(bananas=-35,popularity=10)),
+            Choice("banker","Preise erhöhen","🍌 +25   ❤️ -12",Effect(bananas=25,popularity=-12)),
+            Choice("propaganda","Andere beschuldigen","📣 +6   👊 +6",Effect(influence=6,violence=6,popularity=-4)))),
         Event("Bananenaktien explodieren","Der Bananenfonds geht komplett zum Mond!",listOf(
-            Choice("trader","Gewinne mitnehmen","🍌 +200 / Aktie",Effect()),Choice("banker","Mehr kaufen","🍌 -80   📈 +2",Effect(bananas=-80,shares=2)),Choice("propaganda","Kleinanleger hypen","📣 +10   ❤️ -8",Effect(influence=10,popularity=-8)))),
+            Choice("trader","Gewinne mitnehmen","🍌 +200 / Aktie",Effect()),
+            Choice("banker","Mehr kaufen","🍌 -80   📈 +2",Effect(bananas=-80,shares=2)),
+            Choice("propaganda","Kleinanleger hypen","📣 +10   ❤️ -8",Effect(influence=10,popularity=-8)))),
         Event("Wahlkampf!","Die Republik will wissen, wer der Boss-Affe wird.",listOf(
-            Choice("politician","Ehrliche Rede","❤️ +12   🗳️ +8",Effect(popularity=12,votes=8)),Choice("propaganda","Plakate überall","🍌 -25   🗳️ +12",Effect(bananas=-25,votes=12)),Choice("banker","Stimmen kaufen","🍌 -60   🗳️ +18",Effect(bananas=-60,votes=18,popularity=-5)))),
+            Choice("politician","Ehrliche Rede","❤️ +12   🗳️ +8",Effect(popularity=12,votes=8)),
+            Choice("propaganda","Plakate überall","🍌 -25   🗳️ +12",Effect(bananas=-25,votes=12)),
+            Choice("banker","Stimmen kaufen","🍌 -60   🗳️ +18",Effect(bananas=-60,votes=18,popularity=-5)))),
         Event("Rivale wird mächtig","Ein anderer Affe sammelt gefährlich viele Anhänger.",listOf(
-            Choice("politician","Debatte fordern","📣 +8   ❤️ +4",Effect(influence=8,popularity=4)),Choice("banker","Bestechen","🍌 -75   🐒 -1",Effect(bananas=-75,rivals=-1)),Choice("soldier","Verschwinden lassen","👊 +18   🐒 -1",Effect(violence=18,rivals=-1,popularity=-12))))
+            Choice("politician","Debatte fordern","📣 +8   ❤️ +4",Effect(influence=8,popularity=4)),
+            Choice("banker","Bestechen","🍌 -75   🐒 -1",Effect(bananas=-75,rivals=-1)),
+            Choice("soldier","Verschwinden lassen","👊 +18   🐒 -1",Effect(violence=18,rivals=-1,popularity=-12)))),
+        Event("Arbeitsaffen streiken","Die Arbeiter wollen ihren Anteil vom Bananenkuchen.",listOf(
+            Choice("worker","Löhne erhöhen","🍌 -30   ❤️ +14",Effect(bananas=-30,popularity=14)),
+            Choice("rival","Ignorieren","🍌 +10   ❤️ -10",Effect(bananas=10,popularity=-10)),
+            Choice("soldier","Streik brechen","👊 +12   🍌 +15",Effect(violence=12,bananas=15,popularity=-15))))
     )
 
-    override fun onCreate(b:Bundle?){super.onCreate(b);atlas=decode();buildUi();renderRound()}
+    override fun onCreate(b:Bundle?){super.onCreate(b);buildUi();renderRound()}
     private fun dp(v:Int)=(v*resources.displayMetrics.density).toInt()
     private fun panel(color:Int,r:Int=18)=GradientDrawable().apply{setColor(color);cornerRadius=dp(r).toFloat();setStroke(dp(2),Color.argb(100,42,28,14))}
     private fun text(s:String,size:Float,bold:Boolean=false)=TextView(this).apply{text=s;textSize=size;setTextColor(Color.rgb(49,38,27));if(bold)setTypeface(typeface,Typeface.BOLD)}
-    private fun decode():Bitmap{val bytes=Base64.decode(ATLAS,Base64.DEFAULT);return requireNotNull(BitmapFactory.decodeByteArray(bytes,0,bytes.size))}
-    private fun crop(x:Int,y:Int,w:Int,h:Int)=Bitmap.createBitmap(atlas,x,y,w,h)
-    private fun art(name:String):Bitmap{val idx=when(name){"banker"->0;"worker"->1;"trader"->2;"politician"->3;"soldier"->4;"propaganda"->5;"rival"->6;else->1};return crop(idx*96,96,96,96)}
+
+    private inner class ApeView(private val role:String):View(this){
+        private val p=Paint(Paint.ANTI_ALIAS_FLAG)
+        override fun onDraw(c:Canvas){super.onDraw(c);val w=width.toFloat();val h=height.toFloat();val cx=w/2f;val cy=h/2f
+            p.color=when(role){"banker"->Color.rgb(47,76,120);"worker"->Color.rgb(226,177,48);"trader"->Color.rgb(71,126,105);"politician"->Color.rgb(144,54,54);"soldier"->Color.rgb(78,101,55);"propaganda"->Color.rgb(135,78,151);"rival"->Color.rgb(116,70,37);else->Color.rgb(90,70,50)};c.drawCircle(cx,cy,w.coerceAtMost(h)*.47f,p)
+            p.color=Color.rgb(94,58,35);c.drawCircle(cx,cy,w.coerceAtMost(h)*.34f,p)
+            p.color=Color.rgb(205,151,92);c.drawOval(cx-w*.24f,cy-h*.05f,cx+w*.24f,cy+h*.27f,p)
+            p.color=Color.WHITE;c.drawCircle(cx-w*.12f,cy-h*.08f,w*.055f,p);c.drawCircle(cx+w*.12f,cy-h*.08f,w*.055f,p)
+            p.color=Color.BLACK;c.drawCircle(cx-w*.12f,cy-h*.08f,w*.025f,p);c.drawCircle(cx+w*.12f,cy-h*.08f,w*.025f,p)
+            p.strokeWidth=dp(2).toFloat();p.style=Paint.Style.STROKE;c.drawArc(cx-w*.11f,cy+h*.08f,cx+w*.11f,cy+h*.21f,10f,160f,false,p);p.style=Paint.Style.FILL
+            p.color=Color.WHITE;p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.DEFAULT_BOLD;p.textSize=w*.16f;c.drawText(when(role){"banker"->"$";"worker"->"W";"trader"->"↗";"politician"->"★";"soldier"->"!";"propaganda"->"📣";"rival"->"♛";else->"A"},cx,cy-h*.30f,p)
+        }
+    }
 
     private fun buildUi(){
         val root=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;setPadding(dp(10),dp(8),dp(10),dp(16));setBackgroundColor(Color.rgb(190,225,151))}
-        root.addView(ImageView(this).apply{setImageBitmap(crop(0,0,192,96));scaleType=ImageView.ScaleType.CENTER_INSIDE},LinearLayout.LayoutParams(-1,dp(105)))
+        root.addView(text("🐵 APE ECONOMICS 🍌",27f,true).apply{gravity=Gravity.CENTER;setTextColor(Color.WHITE);background=panel(Color.rgb(126,82,42));setPadding(8,12,8,12)},LinearLayout.LayoutParams(-1,dp(82)))
         topStats=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;setPadding(dp(4),0,dp(4),dp(7))};root.addView(topStats)
         eventBox=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER;setPadding(dp(14),dp(12),dp(14),dp(12));background=panel(Color.rgb(255,235,171))};root.addView(eventBox,LinearLayout.LayoutParams(-1,-2).apply{setMargins(0,3,0,10)})
         cards=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL;gravity=Gravity.CENTER};root.addView(cards)
@@ -54,34 +77,22 @@ class MainActivity : Activity() {
         setContentView(ScrollView(this).apply{isFillViewport=true;addView(root)})
     }
 
-    private fun renderRound(){if(gameOver)return;topStats.removeAllViews()
-        val row1=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL}
+    private fun renderRound(){if(gameOver)return;topStats.removeAllViews();val row1=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL}
         row1.addView(stat("🍌 $bananas","+30/R"),LinearLayout.LayoutParams(0,dp(63),1f).apply{setMargins(2,2,4,2)})
-        row1.addView(stat("📈 $shares","FONDS"),LinearLayout.LayoutParams(0,dp(63),1f).apply{setMargins(4,2,2,2)})
-        topStats.addView(row1)
+        row1.addView(stat("📈 $shares","FONDS"),LinearLayout.LayoutParams(0,dp(63),1f).apply{setMargins(4,2,2,2)});topStats.addView(row1)
         topStats.addView(text("Runde $round/35     3/10 Affen     Rivalen $rivals",15f,true).apply{gravity=Gravity.CENTER;setPadding(4,7,4,7)})
-        topStats.addView(text("📣 $influence     ❤️ $popularity     🗳️ $votes     👊 $violence",16f,true).apply{gravity=Gravity.CENTER;background=panel(Color.rgb(157,191,143));setPadding(4,8,4,8)})
-        showEvent(events.random())
-    }
+        topStats.addView(text("📣 $influence     ❤️ $popularity     🗳️ $votes     👊 $violence",16f,true).apply{gravity=Gravity.CENTER;background=panel(Color.rgb(157,191,143));setPadding(4,8,4,8)});showEvent(events.random())}
     private fun stat(main:String,sub:String)=TextView(this).apply{text="$main\n$sub";textSize=17f;gravity=Gravity.CENTER;setTextColor(Color.WHITE);setTypeface(typeface,Typeface.BOLD);background=panel(Color.rgb(39,70,76))}
 
-    private fun showEvent(e:Event){eventBox.removeAllViews();cards.removeAllViews()
-        val eventRow=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL;gravity=Gravity.CENTER_VERTICAL}
-        eventRow.addView(ImageView(this).apply{setImageBitmap(art(e.choices[0].art));scaleType=ImageView.ScaleType.CENTER_CROP;background=panel(Color.rgb(86,55,32),12)},LinearLayout.LayoutParams(dp(78),dp(78)).apply{setMargins(0,0,10,0)})
+    private fun showEvent(e:Event){eventBox.removeAllViews();cards.removeAllViews();val eventRow=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL;gravity=Gravity.CENTER_VERTICAL}
+        eventRow.addView(ApeView(e.choices[0].art),LinearLayout.LayoutParams(dp(78),dp(78)).apply{setMargins(0,0,10,0)})
         eventRow.addView(LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;addView(text(e.title,21f,true));addView(text(e.text,14f).apply{setPadding(0,4,0,0)})},LinearLayout.LayoutParams(0,-2,1f));eventBox.addView(eventRow)
-        val colors=listOf(Color.rgb(185,226,145),Color.rgb(159,205,234),Color.rgb(235,156,138))
-        e.choices.forEachIndexed{i,c->val card=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER;setPadding(dp(5),dp(6),dp(5),dp(7));background=panel(colors[i],14)}
-            card.addView(ImageView(this).apply{setImageBitmap(art(c.art));scaleType=ImageView.ScaleType.CENTER_CROP},LinearLayout.LayoutParams(-1,dp(92)))
-            card.addView(text(c.title,13f,true).apply{gravity=Gravity.CENTER;minLines=2;setPadding(0,5,0,2)})
-            card.addView(text(c.detail,12f,true).apply{gravity=Gravity.CENTER;setPadding(0,2,0,5)})
-            card.addView(Button(this).apply{text="WÄHLEN";textSize=11f;isAllCaps=false;setTypeface(typeface,Typeface.BOLD);setOnClickListener{applyChoice(c);nextRound()}},LinearLayout.LayoutParams(-1,dp(43)))
-            cards.addView(card,LinearLayout.LayoutParams(0,dp(240),1f).apply{setMargins(dp(3),0,dp(3),0)})}
-    }
+        val colors=listOf(Color.rgb(185,226,145),Color.rgb(159,205,234),Color.rgb(235,156,138));e.choices.forEachIndexed{i,c->val card=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER;setPadding(dp(5),dp(6),dp(5),dp(7));background=panel(colors[i],14)}
+            card.addView(ApeView(c.art),LinearLayout.LayoutParams(-1,dp(92)));card.addView(text(c.title,13f,true).apply{gravity=Gravity.CENTER;minLines=2;setPadding(0,5,0,2)});card.addView(text(c.detail,12f,true).apply{gravity=Gravity.CENTER;setPadding(0,2,0,5)});card.addView(Button(this).apply{text="WÄHLEN";textSize=11f;isAllCaps=false;setTypeface(typeface,Typeface.BOLD);setOnClickListener{applyChoice(c);nextRound()}},LinearLayout.LayoutParams(-1,dp(43)));cards.addView(card,LinearLayout.LayoutParams(0,dp(240),1f).apply{setMargins(dp(3),0,dp(3),0)})}}
 
     private fun applyChoice(c:Choice){var b=c.effect.bananas;if(c.title=="Gewinne mitnehmen"){b=shares*200;shares=0};bananas+=b;influence+=c.effect.influence;popularity+=c.effect.popularity;violence+=c.effect.violence;votes+=c.effect.votes;shares+=c.effect.shares;rivals+=c.effect.rivals;footer.text="🐒 Gewählt: ${c.title}";clamp()}
     private fun nextRound(){bananas+=30;if(shares>0)bananas+=shares*Random.nextInt(-15,26);round++;clamp();if(!checkEnd())renderRound()}
     private fun clamp(){bananas=max(0,bananas);popularity=popularity.coerceIn(0,100);influence=influence.coerceIn(0,100);violence=violence.coerceIn(0,100);votes=votes.coerceIn(0,100);shares=max(0,shares);rivals=rivals.coerceIn(0,7)}
-    private fun checkEnd():Boolean{val msg=when{rivals<=0&&violence>=50->"👊 GEWALTSIEG!";votes>=60&&popularity>=55->"🗳️ DEMOKRATIESIEG!";influence>=70&&bananas>=350->"💰 KORRUPTIONSSIEG!";popularity<=0->"💀 VERLOREN";round>35->"⏰ VERLOREN";else->null};if(msg==null)return false;gameOver=true;eventBox.removeAllViews();cards.removeAllViews();eventBox.addView(text(msg,25f,true).apply{gravity=Gravity.CENTER});eventBox.addView(Button(this).apply{text="🔁 NOCHMAL";setOnClickListener{reset()}});return true}
-    private fun reset(){round=1;bananas=100;influence=0;popularity=50;violence=0;votes=0;shares=0;rivals=7;gameOver=false;renderRound()}
-
-    companion object{private const val ATLAS="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"}}
+    private fun checkEnd():Boolean{val msg=when{rivals<=0&&violence>=50->"👊 GEWALTSIEG!\nDer Dschungel gehört dir.";votes>=60&&popularity>=55->"🗳️ DEMOKRATIESIEG!\nDie Affen wählen dich.";influence>=70&&bananas>=350->"💰 KORRUPTIONSSIEG!\nAlles hat seinen Bananenpreis.";popularity<=0->"💀 VERLOREN\nDer Dschungel jagt dich davon.";round>35->"⏰ VERLOREN\nEin anderer Affe übernimmt.";else->null};if(msg==null)return false;gameOver=true;eventBox.removeAllViews();cards.removeAllViews();eventBox.addView(text(msg,25f,true).apply{gravity=Gravity.CENTER});eventBox.addView(Button(this).apply{text="🔁 NOCHMAL";setOnClickListener{reset()}});return true}
+    private fun reset(){round=1;bananas=100;influence=0;popularity=50;violence=0;votes=0;shares=0;rivals=7;gameOver=false;footer.text="🐒 Manchmal ist das kleinste Übel der größte Gewinn.";renderRound()}
+}
