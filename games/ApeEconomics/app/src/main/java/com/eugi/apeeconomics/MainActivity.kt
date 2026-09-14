@@ -1,14 +1,11 @@
 package com.eugi.apeeconomics
 
 import android.app.Activity
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
-import android.view.View
 import android.widget.*
 import kotlin.math.max
 import kotlin.random.Random
@@ -53,23 +50,23 @@ class MainActivity : Activity() {
     private fun dp(v:Int)=(v*resources.displayMetrics.density).toInt()
     private fun panel(color:Int,r:Int=18)=GradientDrawable().apply{setColor(color);cornerRadius=dp(r).toFloat();setStroke(dp(2),Color.argb(100,42,28,14))}
     private fun text(s:String,size:Float,bold:Boolean=false)=TextView(this).apply{text=s;textSize=size;setTextColor(Color.rgb(49,38,27));if(bold)setTypeface(typeface,Typeface.BOLD)}
-
-    private inner class ApeView(private val role:String):View(this){
-        private val p=Paint(Paint.ANTI_ALIAS_FLAG)
-        override fun onDraw(c:Canvas){super.onDraw(c);val w=width.toFloat();val h=height.toFloat();val cx=w/2f;val cy=h/2f
-            p.color=when(role){"banker"->Color.rgb(47,76,120);"worker"->Color.rgb(226,177,48);"trader"->Color.rgb(71,126,105);"politician"->Color.rgb(144,54,54);"soldier"->Color.rgb(78,101,55);"propaganda"->Color.rgb(135,78,151);"rival"->Color.rgb(116,70,37);else->Color.rgb(90,70,50)};c.drawCircle(cx,cy,w.coerceAtMost(h)*.47f,p)
-            p.color=Color.rgb(94,58,35);c.drawCircle(cx,cy,w.coerceAtMost(h)*.34f,p)
-            p.color=Color.rgb(205,151,92);c.drawOval(cx-w*.24f,cy-h*.05f,cx+w*.24f,cy+h*.27f,p)
-            p.color=Color.WHITE;c.drawCircle(cx-w*.12f,cy-h*.08f,w*.055f,p);c.drawCircle(cx+w*.12f,cy-h*.08f,w*.055f,p)
-            p.color=Color.BLACK;c.drawCircle(cx-w*.12f,cy-h*.08f,w*.025f,p);c.drawCircle(cx+w*.12f,cy-h*.08f,w*.025f,p)
-            p.strokeWidth=dp(2).toFloat();p.style=Paint.Style.STROKE;c.drawArc(cx-w*.11f,cy+h*.08f,cx+w*.11f,cy+h*.21f,10f,160f,false,p);p.style=Paint.Style.FILL
-            p.color=Color.WHITE;p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.DEFAULT_BOLD;p.textSize=w*.16f;c.drawText(when(role){"banker"->"$";"worker"->"W";"trader"->"↗";"politician"->"★";"soldier"->"!";"propaganda"->"📣";"rival"->"♛";else->"A"},cx,cy-h*.30f,p)
-        }
+    private fun artRes(name:String)=when(name){
+        "banker"->R.drawable.ape_banker
+        "worker"->R.drawable.ape_worker
+        "trader"->R.drawable.ape_trader
+        "politician"->R.drawable.ape_politician
+        "soldier"->R.drawable.ape_soldier
+        "propaganda"->R.drawable.ape_propaganda
+        "rival"->R.drawable.ape_rival
+        else->R.drawable.ape_worker
+    }
+    private fun apeImage(name:String)=ImageView(this).apply{
+        setImageResource(artRes(name)); scaleType=ImageView.ScaleType.CENTER_INSIDE; adjustViewBounds=true
     }
 
     private fun buildUi(){
         val root=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;setPadding(dp(10),dp(8),dp(10),dp(16));setBackgroundColor(Color.rgb(190,225,151))}
-        root.addView(text("🐵 APE ECONOMICS 🍌",27f,true).apply{gravity=Gravity.CENTER;setTextColor(Color.WHITE);background=panel(Color.rgb(126,82,42));setPadding(8,12,8,12)},LinearLayout.LayoutParams(-1,dp(82)))
+        root.addView(ImageView(this).apply{setImageResource(R.drawable.ape_logo);scaleType=ImageView.ScaleType.CENTER_INSIDE;adjustViewBounds=true},LinearLayout.LayoutParams(-1,dp(118)))
         topStats=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;setPadding(dp(4),0,dp(4),dp(7))};root.addView(topStats)
         eventBox=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER;setPadding(dp(14),dp(12),dp(14),dp(12));background=panel(Color.rgb(255,235,171))};root.addView(eventBox,LinearLayout.LayoutParams(-1,-2).apply{setMargins(0,3,0,10)})
         cards=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL;gravity=Gravity.CENTER};root.addView(cards)
@@ -85,10 +82,10 @@ class MainActivity : Activity() {
     private fun stat(main:String,sub:String)=TextView(this).apply{text="$main\n$sub";textSize=17f;gravity=Gravity.CENTER;setTextColor(Color.WHITE);setTypeface(typeface,Typeface.BOLD);background=panel(Color.rgb(39,70,76))}
 
     private fun showEvent(e:Event){eventBox.removeAllViews();cards.removeAllViews();val eventRow=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL;gravity=Gravity.CENTER_VERTICAL}
-        eventRow.addView(ApeView(e.choices[0].art),LinearLayout.LayoutParams(dp(78),dp(78)).apply{setMargins(0,0,10,0)})
+        eventRow.addView(apeImage(e.choices[0].art),LinearLayout.LayoutParams(dp(90),dp(90)).apply{setMargins(0,0,10,0)})
         eventRow.addView(LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;addView(text(e.title,21f,true));addView(text(e.text,14f).apply{setPadding(0,4,0,0)})},LinearLayout.LayoutParams(0,-2,1f));eventBox.addView(eventRow)
         val colors=listOf(Color.rgb(185,226,145),Color.rgb(159,205,234),Color.rgb(235,156,138));e.choices.forEachIndexed{i,c->val card=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER;setPadding(dp(5),dp(6),dp(5),dp(7));background=panel(colors[i],14)}
-            card.addView(ApeView(c.art),LinearLayout.LayoutParams(-1,dp(92)));card.addView(text(c.title,13f,true).apply{gravity=Gravity.CENTER;minLines=2;setPadding(0,5,0,2)});card.addView(text(c.detail,12f,true).apply{gravity=Gravity.CENTER;setPadding(0,2,0,5)});card.addView(Button(this).apply{text="WÄHLEN";textSize=11f;isAllCaps=false;setTypeface(typeface,Typeface.BOLD);setOnClickListener{applyChoice(c);nextRound()}},LinearLayout.LayoutParams(-1,dp(43)));cards.addView(card,LinearLayout.LayoutParams(0,dp(240),1f).apply{setMargins(dp(3),0,dp(3),0)})}}
+            card.addView(apeImage(c.art),LinearLayout.LayoutParams(-1,dp(108)));card.addView(text(c.title,13f,true).apply{gravity=Gravity.CENTER;minLines=2;setPadding(0,5,0,2)});card.addView(text(c.detail,12f,true).apply{gravity=Gravity.CENTER;setPadding(0,2,0,5)});card.addView(Button(this).apply{text="WÄHLEN";textSize=11f;isAllCaps=false;setTypeface(typeface,Typeface.BOLD);setOnClickListener{applyChoice(c);nextRound()}},LinearLayout.LayoutParams(-1,dp(43)));cards.addView(card,LinearLayout.LayoutParams(0,dp(255),1f).apply{setMargins(dp(3),0,dp(3),0)})}}
 
     private fun applyChoice(c:Choice){var b=c.effect.bananas;if(c.title=="Gewinne mitnehmen"){b=shares*200;shares=0};bananas+=b;influence+=c.effect.influence;popularity+=c.effect.popularity;violence+=c.effect.violence;votes+=c.effect.votes;shares+=c.effect.shares;rivals+=c.effect.rivals;footer.text="🐒 Gewählt: ${c.title}";clamp()}
     private fun nextRound(){bananas+=30;if(shares>0)bananas+=shares*Random.nextInt(-15,26);round++;clamp();if(!checkEnd())renderRound()}
