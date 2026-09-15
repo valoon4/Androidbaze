@@ -29,7 +29,7 @@ jobs:
       - name: Install Android 16 SDK
         run: |
           yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
       - name: Install Gradle 8.11.1
         run: |
           curl -fsSL https://services.gradle.org/distributions/gradle-8.11.1-bin.zip -o /tmp/gradle.zip
@@ -38,10 +38,43 @@ jobs:
           echo /opt/gradle/gradle-8.11.1/bin >> "$GITHUB_PATH"
       - name: Build Ape Economics debug APK
         run: gradle clean assembleDebug --no-daemon --stacktrace
+      - name: Boot deterministic visual-test emulator
+        run: |
+          echo no | avdmanager create avd -n ape_visual -k "system-images;android-35;google_apis;x86_64" --force
+          nohup emulator -avd ape_visual -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot -wipe-data >/tmp/emulator.log 2>&1 &
+          adb wait-for-device
+          timeout 180 sh -c 'until [ "$(adb shell getprop sys.boot_completed | tr -d "\r")" = "1" ]; do sleep 2; done'
+          adb shell settings put system accelerometer_rotation 0
+          adb shell wm size 1080x1920
+          adb shell wm density 420
+      - name: Capture visual smoke-test screenshot
+        run: |
+          adb install -r app/build/outputs/apk/debug/app-debug.apk
+          adb shell am force-stop com.eugi.apeeconomics
+          adb shell monkey -p com.eugi.apeeconomics 1 >/dev/null
+          sleep 3
+          adb exec-out screencap -p > visual-current.png
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('visual-current.png')
+          if not p.exists() or p.stat().st_size < 10000:
+              raise SystemExit('Visual gate failed: screenshot missing/empty')
+          data=p.read_bytes()
+          if not data.startswith(b'\x89PNG'):
+              raise SystemExit('Visual gate failed: screenshot is not PNG')
+          print('Visual smoke-test captured:', p.stat().st_size, 'bytes')
+          PY
+      - name: Upload visual-test screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApeEconomics-v0.10-visual-screenshot
+          path: games/ApeEconomics/visual-current.png
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload Ape Economics APK
         uses: actions/upload-artifact@v4
         with:
-          name: ApeEconomics-v0.6-village-debug
+          name: ApeEconomics-v0.10-visual-gated-debug
           path: games/ApeEconomics/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
