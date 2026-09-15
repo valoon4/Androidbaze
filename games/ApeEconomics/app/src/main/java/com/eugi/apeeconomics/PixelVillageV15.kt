@@ -26,6 +26,18 @@ class PixelVillageV15(context: Context) : FrameLayout(context) {
     private val base = PixelVillageV13(context)
     private val overlay = OverlayView(context)
 
+    private data class ApeState(
+        var x: Float,
+        var y: Float,
+        val homeX: Float,
+        val homeY: Float,
+        val jobX: Float,
+        val jobY: Float,
+        val sprite: Bitmap,
+        var phase: Int = 0,
+        var since: Long = 0L
+    )
+
     init {
         addView(base, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         addView(overlay, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -56,24 +68,12 @@ class PixelVillageV15(context: Context) : FrameLayout(context) {
         private val banker: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ape_banker)
         private val trader: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ape_trader)
 
-        private data class Ape(
-            var x: Float,
-            var y: Float,
-            val homeX: Float,
-            val homeY: Float,
-            val jobX: Float,
-            val jobY: Float,
-            val sprite: Bitmap,
-            var phase: Int = 0,
-            var since: Long = 0L
-        )
-
         // All resting points are on actual ground/path, never inside the river.
         private val apes = mutableListOf(
-            Ape(.195f, .333f, .195f, .333f, .195f, .292f, worker),
-            Ape(.500f, .336f, .500f, .336f, .500f, .294f, politician),
-            Ape(.805f, .334f, .805f, .334f, .812f, .296f, banker),
-            Ape(.610f, .695f, .610f, .695f, .805f, .742f, trader)
+            ApeState(.195f, .333f, .195f, .333f, .195f, .292f, worker),
+            ApeState(.500f, .336f, .500f, .336f, .500f, .294f, politician),
+            ApeState(.805f, .334f, .805f, .334f, .812f, .296f, banker),
+            ApeState(.610f, .695f, .610f, .695f, .805f, .742f, trader)
         )
 
         private var localDay = 1
