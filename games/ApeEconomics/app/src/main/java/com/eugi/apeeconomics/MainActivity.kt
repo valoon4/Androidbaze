@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.View
 
 class MainActivity : Activity() {
-    private lateinit var gameView: PixelVillageV12
+    private lateinit var gameView: PixelVillageV13
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideSystemUi()
-        gameView = PixelVillageV12(this)
+        gameView = PixelVillageV13(this)
         setContentView(gameView)
     }
 
