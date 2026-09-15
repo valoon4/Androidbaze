@@ -14,6 +14,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: games/ApeEconomics
@@ -26,55 +27,58 @@ jobs:
       - uses: android-actions/setup-android@v3
         with:
           packages: platform-tools
-      - name: Install Android 16 SDK
+      - name: Install Android SDK
         run: |
           yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0" "emulator" "system-images;android-35;google_apis;x86_64"
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0" "emulator" "system-images;android-35;default;x86_64"
       - name: Install Gradle 8.11.1
         run: |
           curl -fsSL https://services.gradle.org/distributions/gradle-8.11.1-bin.zip -o /tmp/gradle.zip
           sudo mkdir -p /opt/gradle
           sudo unzip -q /tmp/gradle.zip -d /opt/gradle
           echo /opt/gradle/gradle-8.11.1/bin >> "$GITHUB_PATH"
-      - name: Build Ape Economics debug APK
-        run: gradle clean assembleDebug --no-daemon --stacktrace
-      - name: Boot deterministic visual-test emulator
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon --stacktrace
+      - name: Boot visual emulator
+        timeout-minutes: 4
         run: |
-          echo no | avdmanager create avd -n ape_visual -k "system-images;android-35;google_apis;x86_64" --force
-          nohup emulator -avd ape_visual -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot -wipe-data >/tmp/emulator.log 2>&1 &
-          adb wait-for-device
-          timeout 180 sh -c 'until [ "$(adb shell getprop sys.boot_completed | tr -d "\r")" = "1" ]; do sleep 2; done'
+          echo no | avdmanager create avd -n ape_visual -k "system-images;android-35;default;x86_64" --device "pixel_2" --force
+          nohup emulator -avd ape_visual -no-window -no-audio -no-boot-anim -no-snapshot -no-metrics -gpu swiftshader_indirect -accel off -memory 1536 >/tmp/emulator.log 2>&1 &
+          timeout 45 adb wait-for-device || { cat /tmp/emulator.log; exit 1; }
+          for i in $(seq 1 60); do
+            if [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; then break; fi
+            sleep 2
+          done
+          if [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]; then
+            echo "Emulator failed to boot"; cat /tmp/emulator.log; exit 1
+          fi
+          adb shell input keyevent 82 || true
           adb shell settings put system accelerometer_rotation 0
           adb shell wm size 1080x1920
           adb shell wm density 420
-      - name: Capture visual smoke-test screenshot
+      - name: Capture runtime screenshot
         run: |
           adb install -r app/build/outputs/apk/debug/app-debug.apk
           adb shell am force-stop com.eugi.apeeconomics
           adb shell monkey -p com.eugi.apeeconomics 1 >/dev/null
-          sleep 3
+          sleep 2
           adb exec-out screencap -p > visual-current.png
           python3 - <<'PY'
           from pathlib import Path
           p=Path('visual-current.png')
-          if not p.exists() or p.stat().st_size < 10000:
-              raise SystemExit('Visual gate failed: screenshot missing/empty')
-          data=p.read_bytes()
-          if not data.startswith(b'\x89PNG'):
-              raise SystemExit('Visual gate failed: screenshot is not PNG')
-          print('Visual smoke-test captured:', p.stat().st_size, 'bytes')
+          if p.stat().st_size < 10000 or not p.read_bytes().startswith(b'\x89PNG'):
+              raise SystemExit('Visual screenshot invalid')
+          print('Screenshot OK:', p.stat().st_size, 'bytes')
           PY
-      - name: Upload visual-test screenshot
+      - name: Upload visual screenshot
         uses: actions/upload-artifact@v4
         with:
-          name: ApeEconomics-v0.10-visual-screenshot
+          name: ApeEconomics-v0.11-visual-screenshot
           path: games/ApeEconomics/visual-current.png
-          if-no-files-found: error
           retention-days: 30
-      - name: Upload Ape Economics APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ApeEconomics-v0.10-visual-gated-debug
+          name: ApeEconomics-v0.11-visual-debug
           path: games/ApeEconomics/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
           retention-days: 30
