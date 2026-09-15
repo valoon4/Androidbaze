@@ -4,11 +4,11 @@ import android.app.Activity
 import android.os.Bundle
 
 class MainActivity : Activity() {
-    private lateinit var gameView: VillageGameView
+    private lateinit var gameView: LiveVillageGameView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gameView = VillageGameView(this)
+        gameView = LiveVillageGameView(this)
         setContentView(gameView)
     }
 
