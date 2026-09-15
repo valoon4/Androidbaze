@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import kotlin.math.max
 
-class PixelVillageV09(context: Context): View(context) {
+open class PixelVillageV09(context: Context): View(context) {
     data class Ape(var x:Float,var y:Float,val hx:Float,val hy:Float,val jx:Float,val jy:Float,val shirt:Int,var phase:Int=0,var since:Long=0)
     private val p=Paint().apply{isAntiAlias=false}
     private val t=Paint().apply{isAntiAlias=false;typeface=Typeface.create(Typeface.MONOSPACE,Typeface.BOLD);textAlign=Paint.Align.CENTER}
@@ -17,18 +17,12 @@ class PixelVillageV09(context: Context): View(context) {
     override fun onDraw(c:Canvas){val n=System.currentTimeMillis();update(n);drawWorld(c,n);postInvalidateOnAnimation()}
     private fun update(n:Long){if(!event&&n-start>30000){day++;start=n;if(day%3==0)event=true};if(event)return;apes.forEach{a->val dur=when(a.phase){0->1000L;1->1800L;2->2400L;else->1800L};if(n-a.since>dur){a.phase=(a.phase+1)%4;a.since=n;if(a.phase==3)bananas+=if(a.shirt==Color.rgb(45,101,165))10 else 4};val f=((n-a.since).toFloat()/dur).coerceIn(0f,1f);when(a.phase){1->{a.x=a.hx+(a.jx-a.hx)*f;a.y=a.hy+(a.jy-a.hy)*f};2->{a.x=a.jx;a.y=a.jy};3->{a.x=a.jx+(a.hx-a.jx)*f;a.y=a.jy+(a.hy-a.jy)*f};else->{a.x=a.hx;a.y=a.hy}}}}
     private fun drawWorld(c:Canvas,n:Long){val w=width.toFloat();val h=height.toFloat();val top=h*.13f;val bot=h*.89f;p.color=Color.rgb(96,178,70);c.drawRect(0f,top,w,bot,p)
-        // dense foliage borders
         for(i in 0..12){tree(c,w*(i/12f),top+h*.025f,w*.052f);tree(c,w*(i/12f),bot-h*.02f,w*.052f)}
-        // paths
         p.color=Color.rgb(229,199,126);c.drawRect(w*.46f,top,w*.54f,bot,p);c.drawRect(w*.06f,h*.43f,w*.94f,h*.49f,p);c.drawRect(w*.10f,h*.69f,w*.91f,h*.75f,p)
-        // plantation + details
         fence(c,w*.04f,h*.21f,w*.32f,h*.405f);for(r in 0..2)for(k in 0..2)plant(c,w*(.075f+k*.075f),h*(.27f+r*.043f),w*.025f)
         house(c,w*.09f,h*.205f,w*.30f,h*.35f,"PLANTAGE",Color.rgb(191,128,48));house(c,w*.37f,h*.19f,w*.63f,h*.365f,"PARLAMENT",Color.rgb(166,170,164));house(c,w*.70f,h*.215f,w*.93f,h*.375f,"BANK",Color.rgb(176,111,49))
-        // river + bridge
         p.color=Color.rgb(41,117,67);c.drawRect(0f,h*.505f,w,h*.515f,p);p.color=Color.rgb(30,126,201);c.drawRect(0f,h*.515f,w,h*.59f,p);p.color=Color.rgb(51,171,222);c.drawRect(0f,h*.528f,w,h*.577f,p);p.color=Color.rgb(189,239,241);val off=((n/180)%4)*w*.01f;for(i in 0..8)c.drawRect(i*w*.13f-off,h*.55f,i*w*.13f+w*.055f,h*.554f,p);bridge(c,w*.455f,h*.505f,w*.545f,h*.60f)
-        // lower district
         tree(c,w*.13f,h*.64f,w*.07f);tree(c,w*.25f,h*.64f,w*.07f);bush(c,w*.61f,h*.68f,w*.035f);sign(c,w*.40f,h*.68f);house(c,w*.70f,h*.625f,w*.93f,h*.80f,"MARKT",Color.rgb(185,80,48));fence(c,0f,h*.79f,w*.31f,h*.81f)
-        // flowers and texture
         for(i in 0..34){val x=((i*67)%94+3)/100f*w;val y=(.15f+((i*43)%69)/100f)*h;flower(c,x,y,w*.008f,i%3)}
         apes.sortedBy{it.y}.forEachIndexed{i,a->ape(c,w*a.x,h*a.y,w*.037f,a.shirt,n,i,a.phase==2)}
         hud(c,w,h,n);buttons(c,w,h);if(event)drawEvent(c,w,h)
