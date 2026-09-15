@@ -11,8 +11,8 @@ android {
         applicationId = "com.eugi.apeeconomics"
         minSdk = 24
         targetSdk = 36
-        versionCode = 14
-        versionName = "0.14-debug"
+        versionCode = 15
+        versionName = "0.15-debug"
     }
 
     buildTypes {
