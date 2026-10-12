@@ -16,10 +16,14 @@ import android.view.Window;
 import android.graphics.Color;
 import android.content.SharedPreferences;
 import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
     private static final int CSV_REQUEST = 1024;
+    private static final int CSV_IMPORT_REQUEST = 1025;
     private WebView webView;
     private String pendingCsv = null;
 
@@ -61,6 +65,15 @@ public class MainActivity extends Activity {
                 preferences.edit().putString("state", data).commit();
             }
         }
+        @JavascriptInterface public void importCsv() {
+            runOnUiThread(() -> {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, CSV_IMPORT_REQUEST);
+            });
+        }
         @JavascriptInterface public void exportCsv(String csv) {
             runOnUiThread(() -> {
                 pendingCsv = csv;
@@ -80,6 +93,22 @@ public class MainActivity extends Activity {
                 if (stream != null) stream.write(pendingCsv.getBytes(StandardCharsets.UTF_8));
             } catch (Exception e) {
                 android.widget.Toast.makeText(this, "CSV konnte nicht gespeichert werden", android.widget.Toast.LENGTH_LONG).show();
+            }
+        }
+        if (requestCode == CSV_IMPORT_REQUEST && resultCode == RESULT_OK && data != null) {
+            try (InputStream input = getContentResolver().openInputStream(data.getData())) {
+                if (input == null) throw new Exception("Datei nicht lesbar");
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                byte[] chunk = new byte[8192];
+                int count;
+                while ((count = input.read(chunk)) != -1) {
+                    if (buffer.size() + count > 6000000) throw new Exception("CSV zu groß (maximal 6 MB)");
+                    buffer.write(chunk, 0, count);
+                }
+                String csv = buffer.toString("UTF-8");
+                webView.evaluateJavascript("window.importLegacyCsv(" + JSONObject.quote(csv) + ")", null);
+            } catch (Exception e) {
+                android.widget.Toast.makeText(this, "CSV-Import fehlgeschlagen: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
             }
         }
         pendingCsv = null;

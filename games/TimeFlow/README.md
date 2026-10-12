@@ -11,8 +11,9 @@ Paket-ID: `com.valoon4.timeflow`. Der bestehende Root-Build für Wormblade wird 
 - Datum und Uhrzeit sekundengenau, Arbeits-/Pausenzeit im Format HH:MM:SS, Kurzformat 1:30 und verständliche Eingabefehler.
 - Statistiken berücksichtigen auch Sessions über Mitternacht (für nachbearbeitete aggregierte Sessions werden Zeiten proportional auf die betroffenen Kalendertage verteilt).
 - Automatisierte JavaScript- und Zeitlogik-Tests.
+- CSV-Import für alte v1.0-Exporte: stellt Projekte, Aufgaben, Sessions und Arbeitszeiten wieder her. Nicht im alten CSV enthaltene Projekt-Metadaten können nicht wiederhergestellt werden.
 
-**Update-Hinweis:** Die mit dem temporären GitHub-Actions-Debugschlüssel signierte v1.0-APK kann nicht garantiert durch eine spätere Debug-APK überschrieben werden. Ohne gleichen Signierschlüssel verweigert Android ein Update. Uninstall löscht unter Umständen gespeicherte Daten. Vor einer eventuellen Deinstallation CSV exportieren und Daten sichern. Für wirklich nahtlose Updates ist zukünftig ein dauerhaft geschützter Signing Key erforderlich.
+**Update-Hinweis:** Die mit dem temporären GitHub-Actions-Debugschlüssel signierte v1.0-APK kann nicht garantiert durch eine spätere Debug-APK überschrieben werden. Ohne gleichen Signierschlüssel verweigert Android ein Update. Deinstallation löscht lokale Daten. **Sicherer Wechsel:** In v1.0 zuerst sämtliche laufenden Sessions beenden, unter Einstellungen die CSV exportieren und diese Datei sicher speichern; erst danach v1.0 deinstallieren, v1.1 installieren und unter Einstellungen → „CSV-Backup importieren“ den Export einlesen. Die CSV enthält nur Sessions und Projekt-/Aufgabennamen, keine vollständigen Projektbeschreibungen, Farben oder Status. Für wirklich nahtlose Updates ist zukünftig ein dauerhaft geschützter Signing Key erforderlich.
 
 ## Funktionen
 

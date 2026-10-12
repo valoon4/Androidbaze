@@ -160,7 +160,7 @@ function analytics(){
  return '<div class="details"><p class="muted">Verstehe, wofür du deine Arbeitszeit verwendest.</p><button class="btn primary" onclick="exportCsv()">↓ CSV exportieren</button></div><div class="filter-group" style="margin:18px 0"><div class="field" style="margin:0"><label>Von</label><input type="date" id="filterFrom" value="'+from+'" onchange="setFilter()"></div><div class="field" style="margin:0"><label>Bis</label><input type="date" id="filterTo" value="'+to+'" onchange="setFilter()"></div></div><div class="grid kpi-grid">'+stat('Zeitraum',fmt(totalDateRange(from,to)),'Arbeitszeit nach Kalendertag')+stat('Sessions',state.sessions.filter(function(s){return sessionOverlapsRange(s,from,to);}).length,'Im ausgewählten Zeitraum')+stat('Projekte',totals.filter(function(v){return v.ms>0;}).length,'Mit erfasster Zeit')+'</div>'+section('Projektverteilung')+(total?'<div class="card"><div class="pie-line">'+totals.filter(function(x){return x.ms>0;}).map(function(x){return '<span style="width:'+(x.ms/total*100)+'%;background:'+x.p.color+'"></span>';}).join('')+'</div>'+totals.filter(function(x){return x.ms>0;}).map(function(x){return '<div class="list-row"><i class="dot" style="--dot:'+x.p.color+'"></i><div class="row-main row-title">'+esc(x.p.name)+'</div><div class="time">'+fmt(x.ms)+'</div><span class="tag">'+Math.round(x.ms/total*100)+'%</span></div>';}).join('')+'</div>':empty('▥','Noch keine Auswertung','Im gewählten Zeitraum wurden keine Sessions erfasst.',''))+section('Letzte sieben Tage')+'<div class="card">'+weekBars(0)+'</div>';
 }
 function settingsView(){
- return '<div class="card"><h2>Darstellung</h2><p class="muted">Wechsle zwischen hellem und dunklem Design.</p><button class="btn" onclick="toggleTheme()">'+(state.theme==='dark'?'☀ Hellen Modus aktivieren':'☾ Dunklen Modus aktivieren')+'</button></div><div class="card" style="margin-top:16px"><h2>Deine Daten</h2><p class="muted">TimeFlow funktioniert vollständig offline. Deine Projekte, Aufgaben und Sessions werden lokal auf deinem Gerät gespeichert.</p><div class="actions"><button class="btn primary" onclick="exportCsv()">↓ Sessions als CSV exportieren</button></div><p class="tiny muted">Tipp: Exportiere deine Daten regelmäßig. Beim Löschen der App-Daten gehen die lokalen Einträge verloren.</p></div><p class="muted tiny" style="margin-top:25px">TimeFlow v1.1-debug · Androidbaze · © 2026</p>';
+ return '<div class="card"><h2>Darstellung</h2><p class="muted">Wechsle zwischen hellem und dunklem Design.</p><button class="btn" onclick="toggleTheme()">'+(state.theme==='dark'?'☀ Hellen Modus aktivieren':'☾ Dunklen Modus aktivieren')+'</button></div><div class="card" style="margin-top:16px"><h2>Deine Daten</h2><p class="muted">TimeFlow funktioniert vollständig offline. Deine Projekte, Aufgaben und Sessions werden lokal auf deinem Gerät gespeichert.</p><div class="actions"><button class="btn primary" onclick="exportCsv()">↓ Sessions als CSV exportieren</button><button class="btn" onclick="requestLegacyImport()">↑ CSV-Backup importieren</button></div><p class="tiny muted">Tipp: Exportiere deine Daten regelmäßig. Beim Löschen der App-Daten gehen die lokalen Einträge verloren.</p></div><p class="muted tiny" style="margin-top:25px">TimeFlow v1.1-debug · Androidbaze · © 2026</p>';
 }
 function closeModal(){sessionDraft=null;originalSessionValues=null;document.getElementById('overlay').classList.add('hidden');document.getElementById('overlay').innerHTML='';}
 function showDialog(title,fields,footer){
@@ -361,6 +361,35 @@ window.modalTask=modalTask;window.saveTask=saveTask;window.removeTask=removeTask
 window.setColor=setColor;window.modalSession=modalSession;window.saveSession=saveSession;window.removeSession=removeSession;
 window.startTimer=startTimer;window.togglePause=togglePause;window.stopTimer=stopTimer;
 window.closeModal=closeModal;window.exportCsv=exportCsv;
+window.requestLegacyImport=function(){
+ if(window.TimeFlowNative)TimeFlowNative.importCsv();
+ else{
+   var pick=document.createElement('input');
+   pick.type='file';pick.accept='.csv,text/csv';
+   pick.onchange=function(){var file=pick.files&&pick.files[0];if(file)file.text().then(window.importLegacyCsv);};
+   pick.click();
+ }
+};
+window.importLegacyCsv=function(csv){
+ var parsed;
+ try{parsed=TimeFlowImport.parse(csv);}
+ catch(e){toast(e.message);return;}
+ if(!parsed.records.length){toast('Keine abgeschlossenen Sessions in der Datei gefunden.');return;}
+ if(!confirm(parsed.records.length+' Sessions aus der CSV importieren? Vorhandene Daten werden ergänzt.'))return;
+ var createdProjects=0,createdTasks=0,added=0,duplicates=0;
+ parsed.records.forEach(function(rec){
+   var p=state.projects.find(function(x){return x.name===rec.project;});
+   if(!p){p={id:uid(),name:rec.project,description:'Aus TimeFlow-CSV importiert',status:'Aktiv',color:palette[state.projects.length%palette.length],createdAt:Date.now()};state.projects.push(p);createdProjects++;}
+   var t=state.tasks.find(function(x){return x.projectId===p.id&&x.name===rec.task;});
+   if(!t){t={id:uid(),projectId:p.id,name:rec.task,description:'Aus TimeFlow-CSV importiert',status:'Offen',budgetHours:0};state.tasks.push(t);createdTasks++;}
+   var exists=state.sessions.some(function(s){return s.taskId===t.id&&s.start===rec.start&&s.end===rec.end&&duration(s,Date.now())===rec.workMs&&(s.note||'')===rec.note;});
+   if(exists){duplicates++;return;}
+   state.sessions.push({id:uid(),taskId:t.id,note:rec.note,start:rec.start,end:rec.end,workMs:rec.workMs,pauseMs:rec.pauseMs,status:'done',segments:[]});
+   added++;
+ });
+ persist();render();
+ toast(added+' Sessions importiert'+(duplicates?', '+duplicates+' Duplikate übersprungen':'')+(parsed.skipped?', '+parsed.skipped+' Zeilen übersprungen':''));
+};
 window.appBack=function(){
  if(!document.getElementById('overlay').classList.contains('hidden')){closeModal();return true;}
  if(page==='task'){window.openProject(currentProject);return true;}
