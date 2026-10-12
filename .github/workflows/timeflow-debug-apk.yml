@@ -25,7 +25,10 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Verify web app JavaScript
-        run: node --check app/src/main/assets/app.js
+        run: |
+          node --check app/src/main/assets/app.js
+          node --check app/src/main/assets/session-math.js
+          node --test tests/session-math.test.js
       - name: Install Android SDK 35
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk
@@ -39,17 +42,24 @@ jobs:
           curl -fsSL https://services.gradle.org/distributions/gradle-8.9-bin.zip -o /tmp/gradle89.zip
           unzip -q /tmp/gradle89.zip -d /tmp
           echo /tmp/gradle-8.9/bin >> "$GITHUB_PATH"
+      - name: Prepare official TimeFlow logo
+        run: |
+          mkdir -p app/src/main/res/drawable-nodpi app/src/main/res/mipmap-nodpi
+          cat assets/icon.part* | base64 -d > app/src/main/assets/logo.webp
+          cp app/src/main/assets/logo.webp app/src/main/res/drawable-nodpi/timeflow_logo.webp
+          cp app/src/main/assets/logo.webp app/src/main/res/mipmap-nodpi/ic_launcher.webp
+          file app/src/main/assets/logo.webp
       - name: Build Debug APK
         run: gradle assembleDebug --no-daemon --stacktrace
       - name: Verify and rename APK
         run: |
           test -s app/build/outputs/apk/debug/app-debug.apk
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify app/build/outputs/apk/debug/app-debug.apk
-          cp app/build/outputs/apk/debug/app-debug.apk TimeFlow-debug.apk
+          cp app/build/outputs/apk/debug/app-debug.apk TimeFlow-v1.1-debug.apk
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: TimeFlow-debug-apk
-          path: games/TimeFlow/TimeFlow-debug.apk
+          name: TimeFlow-v1.1-debug-apk
+          path: games/TimeFlow/TimeFlow-v1.1-debug.apk
           if-no-files-found: error
           retention-days: 30

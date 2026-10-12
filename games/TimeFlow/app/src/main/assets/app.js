@@ -4,6 +4,7 @@ var defaultState = {projects:[],tasks:[],sessions:[],theme:'dark'};
 var state = defaultState;
 var page = 'dashboard', currentProject = null, currentTask = null, searchText = '';
 var weekOffset = 0;
+var sessionDraft = null, originalSessionValues = null;
 var palette = ['#827bff','#32c5a4','#f4a960','#e77dbb','#57b6ea','#dc7d69','#b3a1f1'];
 var statusProject = ['Aktiv','Pausiert','Abgeschlossen','Archiviert'];
 var statusTask = ['Offen','In Bearbeitung','Erledigt'];
@@ -34,37 +35,32 @@ function short(ms){var m=Math.floor(Math.max(0,ms||0)/60000);return m>=60? Math.
 function date(ts){return new Date(ts).toLocaleDateString('de-DE');}
 function dateTime(ts){return new Date(ts).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
 function localDate(ts){var d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function inputDateTime(ts){var d=new Date(ts);return localDate(ts)+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function inputDateTime(ts){var d=new Date(ts);return localDate(ts)+'T'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');}
 function millis(v){return new Date(v).getTime();}
 function pg(id){return state.projects.find(function(p){return p.id===id;});}
 function task(id){return state.tasks.find(function(t){return t.id===id;});}
 function sessionsFor(id){return state.sessions.filter(function(s){return s.taskId===id;});}
 function active(){return state.sessions.find(function(s){return s.status==='running'||s.status==='paused';});}
-function duration(s,now){
- if(typeof s.workMs==='number')return Math.max(0,s.workMs);
- return (s.segments||[]).reduce(function(total,part){return total+Math.max(0,(part.end||now||Date.now())-part.start);},0);
-}
+function duration(s,now){return TimeFlowMath.workMs(s,now);}
 function taskMs(id){var now=Date.now();return sessionsFor(id).reduce(function(sum,s){return sum+duration(s,now);},0);}
 function projectMs(id){return state.tasks.filter(function(t){return t.projectId===id;}).reduce(function(sum,t){return sum+taskMs(t.id);},0);}
 function nTasks(id){return state.tasks.filter(function(t){return t.projectId===id;});}
 function startOfWeek(ts){var d=new Date(ts||Date.now());d.setHours(0,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return d.getTime();}
 function dayMs(){
  var totals={};
- function add(key,ms){totals[key]=(totals[key]||0)+ms;}
- var now=Date.now();
  state.sessions.forEach(function(s){
-   if(typeof s.workMs==='number') { add(localDate(s.start),s.workMs); return; }
-   (s.segments||[]).forEach(function(part){
-     var a=part.start,b=part.end||now;
-     while(a<b){
-       var midnight=new Date(a);midnight.setHours(24,0,0,0);
-       var end=Math.min(b,midnight.getTime());
-       if(end<=a)break;
-       add(localDate(a),end-a);a=end;
-     }
-   });
+   var byDay=TimeFlowMath.dayBreakdown(s,Date.now());
+   Object.keys(byDay).forEach(function(k){totals[k]=(totals[k]||0)+byDay[k];});
  });
  return totals;
+}
+function sessionRangeMs(s,from,to){
+ var breakdown=TimeFlowMath.dayBreakdown(s,Date.now()),total=0;
+ Object.keys(breakdown).forEach(function(key){if(key>=from&&key<=to)total+=breakdown[key];});
+ return total;
+}
+function sessionOverlapsRange(s,from,to){
+ return localDate(s.start)<=to&&localDate(s.end||Date.now())>=from;
 }
 function totalDateRange(from,to) {
  var daily=dayMs(),sum=0;
@@ -91,7 +87,7 @@ function render(){
  var titles={dashboard:'Dein Überblick',projects:'Projekte',project:pg(currentProject)?pg(currentProject).name:'Projekt',task:task(currentTask)?task(currentTask).name:'Aufgabe',timer:'Zeiterfassung',analytics:'Auswertungen',settings:'Einstellungen'};
  var subtitles={dashboard:'DASHBOARD',projects:'WORKSPACE',project:'PROJEKT',task:'AUFGABE',timer:'TIMER',analytics:'INSIGHTS',settings:'PRÄFERENZEN'};
  var top='<header class="topbar"><div><div class="eyebrow">'+esc(subtitles[page])+'</div><h1>'+esc(titles[page])+'</h1></div><div class="top-actions"><input class="search" id="q" placeholder="Suchen …" aria-label="Suche" value="'+esc(searchText)+'" oninput="doSearch(this.value)"><button class="btn icon" onclick="toggleTheme()" title="Design ändern">'+(state.theme==='dark'?'☀':'☾')+'</button><button class="btn primary" onclick="modalProject()">+ Projekt</button></div></header>';
- var side='<aside class="sidebar"><div class="brand"><span class="logo">↗</span>TimeFlow</div><nav class="nav">'+nav()+'</nav><div class="side-meta">Deine Projekte</div><div class="side-projects">'+state.projects.filter(function(p){return p.status!=='Archiviert';}).slice(0,12).map(function(p){return '<button class="side-project" onclick="openProject(\''+p.id+'\')"><i class="dot" style="--dot:'+p.color+'"></i>'+esc(p.name)+'</button>';}).join('')+'</div><div class="side-bottom">● Offline & sicher auf deinem Gerät<br>TimeFlow 1.0</div></aside>';
+ var side='<aside class="sidebar"><div class="brand"><img class="logo" src="logo.webp" alt=""/>TimeFlow</div><nav class="nav">'+nav()+'</nav><div class="side-meta">Deine Projekte</div><div class="side-projects">'+state.projects.filter(function(p){return p.status!=='Archiviert';}).slice(0,12).map(function(p){return '<button class="side-project" onclick="openProject(\''+p.id+'\')"><i class="dot" style="--dot:'+p.color+'"></i>'+esc(p.name)+'</button>';}).join('')+'</div><div class="side-bottom">● Offline & sicher auf deinem Gerät<br>TimeFlow 1.1</div></aside>';
  document.getElementById('app').innerHTML='<div class="shell">'+side+'<main class="main">'+top+body+'</main><nav class="mobile-nav">'+mobileNav()+'</nav>'+timerBar()+'</div>';
 }
 function section(label,action){return '<div class="section-head"><h2>'+label+'</h2>'+(action||'')+'</div>';}
@@ -159,14 +155,14 @@ function analytics(){
  var start=new Date(now);start.setDate(start.getDate()-29);
  var from=document.getElementById('filterFrom')?.value||window.analyticsFrom||localDate(start);
  var to=document.getElementById('filterTo')?.value||window.analyticsTo||localDate(now);
- var totals=state.projects.map(function(p){var count=state.tasks.filter(function(t){return t.projectId===p.id;}).reduce(function(sum,t){return sum+sessionsFor(t.id).filter(function(s){return localDate(s.start)>=from&&localDate(s.start)<=to;}).reduce(function(a,s){return a+duration(s,now);},0);},0);return {p:p,ms:count};}).sort(function(a,b){return b.ms-a.ms;});
+ var totals=state.projects.map(function(p){var count=state.tasks.filter(function(t){return t.projectId===p.id;}).reduce(function(sum,t){return sum+sessionsFor(t.id).reduce(function(a,s){return a+sessionRangeMs(s,from,to);},0);},0);return {p:p,ms:count};}).sort(function(a,b){return b.ms-a.ms;});
  var total=totals.reduce(function(s,a){return s+a.ms;},0);
- return '<div class="details"><p class="muted">Verstehe, wofür du deine Arbeitszeit verwendest.</p><button class="btn primary" onclick="exportCsv()">↓ CSV exportieren</button></div><div class="filter-group" style="margin:18px 0"><div class="field" style="margin:0"><label>Von</label><input type="date" id="filterFrom" value="'+from+'" onchange="setFilter()"></div><div class="field" style="margin:0"><label>Bis</label><input type="date" id="filterTo" value="'+to+'" onchange="setFilter()"></div></div><div class="grid kpi-grid">'+stat('Zeitraum',fmt(totalDateRange(from,to)),'Arbeitszeit nach Kalendertag')+stat('Sessions',state.sessions.filter(function(s){return localDate(s.start)>=from&&localDate(s.start)<=to;}).length,'Im ausgewählten Zeitraum')+stat('Projekte',totals.filter(function(v){return v.ms>0;}).length,'Mit erfasster Zeit')+'</div>'+section('Projektverteilung')+(total?'<div class="card"><div class="pie-line">'+totals.filter(function(x){return x.ms>0;}).map(function(x){return '<span style="width:'+(x.ms/total*100)+'%;background:'+x.p.color+'"></span>';}).join('')+'</div>'+totals.filter(function(x){return x.ms>0;}).map(function(x){return '<div class="list-row"><i class="dot" style="--dot:'+x.p.color+'"></i><div class="row-main row-title">'+esc(x.p.name)+'</div><div class="time">'+fmt(x.ms)+'</div><span class="tag">'+Math.round(x.ms/total*100)+'%</span></div>';}).join('')+'</div>':empty('▥','Noch keine Auswertung','Im gewählten Zeitraum wurden keine Sessions erfasst.',''))+section('Letzte sieben Tage')+'<div class="card">'+weekBars(0)+'</div>';
+ return '<div class="details"><p class="muted">Verstehe, wofür du deine Arbeitszeit verwendest.</p><button class="btn primary" onclick="exportCsv()">↓ CSV exportieren</button></div><div class="filter-group" style="margin:18px 0"><div class="field" style="margin:0"><label>Von</label><input type="date" id="filterFrom" value="'+from+'" onchange="setFilter()"></div><div class="field" style="margin:0"><label>Bis</label><input type="date" id="filterTo" value="'+to+'" onchange="setFilter()"></div></div><div class="grid kpi-grid">'+stat('Zeitraum',fmt(totalDateRange(from,to)),'Arbeitszeit nach Kalendertag')+stat('Sessions',state.sessions.filter(function(s){return sessionOverlapsRange(s,from,to);}).length,'Im ausgewählten Zeitraum')+stat('Projekte',totals.filter(function(v){return v.ms>0;}).length,'Mit erfasster Zeit')+'</div>'+section('Projektverteilung')+(total?'<div class="card"><div class="pie-line">'+totals.filter(function(x){return x.ms>0;}).map(function(x){return '<span style="width:'+(x.ms/total*100)+'%;background:'+x.p.color+'"></span>';}).join('')+'</div>'+totals.filter(function(x){return x.ms>0;}).map(function(x){return '<div class="list-row"><i class="dot" style="--dot:'+x.p.color+'"></i><div class="row-main row-title">'+esc(x.p.name)+'</div><div class="time">'+fmt(x.ms)+'</div><span class="tag">'+Math.round(x.ms/total*100)+'%</span></div>';}).join('')+'</div>':empty('▥','Noch keine Auswertung','Im gewählten Zeitraum wurden keine Sessions erfasst.',''))+section('Letzte sieben Tage')+'<div class="card">'+weekBars(0)+'</div>';
 }
 function settingsView(){
- return '<div class="card"><h2>Darstellung</h2><p class="muted">Wechsle zwischen hellem und dunklem Design.</p><button class="btn" onclick="toggleTheme()">'+(state.theme==='dark'?'☀ Hellen Modus aktivieren':'☾ Dunklen Modus aktivieren')+'</button></div><div class="card" style="margin-top:16px"><h2>Deine Daten</h2><p class="muted">TimeFlow funktioniert vollständig offline. Deine Projekte, Aufgaben und Sessions werden lokal auf deinem Gerät gespeichert.</p><div class="actions"><button class="btn primary" onclick="exportCsv()">↓ Sessions als CSV exportieren</button></div><p class="tiny muted">Tipp: Exportiere deine Daten regelmäßig. Beim Löschen der App-Daten gehen die lokalen Einträge verloren.</p></div><p class="muted tiny" style="margin-top:25px">TimeFlow v1.0-debug · Androidbaze · © 2026</p>';
+ return '<div class="card"><h2>Darstellung</h2><p class="muted">Wechsle zwischen hellem und dunklem Design.</p><button class="btn" onclick="toggleTheme()">'+(state.theme==='dark'?'☀ Hellen Modus aktivieren':'☾ Dunklen Modus aktivieren')+'</button></div><div class="card" style="margin-top:16px"><h2>Deine Daten</h2><p class="muted">TimeFlow funktioniert vollständig offline. Deine Projekte, Aufgaben und Sessions werden lokal auf deinem Gerät gespeichert.</p><div class="actions"><button class="btn primary" onclick="exportCsv()">↓ Sessions als CSV exportieren</button></div><p class="tiny muted">Tipp: Exportiere deine Daten regelmäßig. Beim Löschen der App-Daten gehen die lokalen Einträge verloren.</p></div><p class="muted tiny" style="margin-top:25px">TimeFlow v1.1-debug · Androidbaze · © 2026</p>';
 }
-function closeModal(){document.getElementById('overlay').classList.add('hidden');document.getElementById('overlay').innerHTML='';}
+function closeModal(){sessionDraft=null;originalSessionValues=null;document.getElementById('overlay').classList.add('hidden');document.getElementById('overlay').innerHTML='';}
 function showDialog(title,fields,footer){
  document.getElementById('overlay').innerHTML='<div class="dialog" role="dialog" aria-modal="true"><div class="dialog-head"><h2>'+title+'</h2><button class="btn small" onclick="closeModal()">✕</button></div>'+fields+'<div class="dialog-footer"><button class="btn" onclick="closeModal()">Abbrechen</button>'+footer+'</div></div>';
  document.getElementById('overlay').classList.remove('hidden');
@@ -226,23 +222,102 @@ function stopTimer(){
  if(s.status==='running'){var last=s.segments[s.segments.length-1];if(last&&!last.end)last.end=now;}
  s.status='done';s.end=now;persist();render();toast('Session gespeichert');
 }
+// The draft is changed ONLY when a user's input is committed. Dependent inputs
+// are updated programmatically without invoking their own change handlers.
+function sessionValue(field){
+ var raw=val('s-'+field);
+ if(field==='start'||field==='end'){
+   if(!raw)return null;
+   var time=new Date(raw).getTime();
+   return Number.isFinite(time)?time:null;
+ }
+ return TimeFlowMath.parseDuration(raw);
+}
+function sessionFieldError(which,message){
+ var error=document.getElementById('error-'+which);
+ if(error){error.textContent=message||'';error.style.display=message?'block':'none';}
+ var input=document.getElementById('s-'+which);
+ if(input)input.setAttribute('aria-invalid',message?'true':'false');
+}
+function updateEditorDisplay(changed){
+ if(!sessionDraft)return;
+ var ids={start:'start',end:'end',pauseMs:'pause',workMs:'work'};
+ Object.keys(ids).forEach(function(key){
+   if(key===changed)return;
+   var el=document.getElementById('s-'+ids[key]);if(!el)return;
+   el.value=key==='start'||key==='end'?inputDateTime(sessionDraft[key]):TimeFlowMath.formatDuration(sessionDraft[key]);
+ });
+ var hint=document.getElementById('session-total');
+ if(hint)hint.textContent='Gesamtzeit '+TimeFlowMath.formatDuration(sessionDraft.end-sessionDraft.start)+' · Pause '+TimeFlowMath.formatDuration(sessionDraft.pauseMs)+' · Arbeit '+TimeFlowMath.formatDuration(sessionDraft.workMs);
+}
+function onSessionEdit(changed){
+ if(!sessionDraft)return false;
+ var field=changed==='pause'?'pauseMs':changed==='work'?'workMs':changed;
+ var value=sessionValue(changed);
+ if(value===null){
+   sessionFieldError(changed,changed==='pause'||changed==='work'?'Bitte gib eine gültige Dauer ein (z. B. 01:30:00).':'Bitte gib ein gültiges Datum und eine Uhrzeit ein.');
+   return false;
+ }
+ var res=TimeFlowMath.update(sessionDraft,field,value);
+ if(res.error){sessionFieldError(changed,res.error);return false;}
+ sessionDraft=res.value;
+ ['start','end','pause','work'].forEach(function(id){sessionFieldError(id,'');});
+ updateEditorDisplay(field);
+ return true;
+}
 function modalSession(id){
  var s=id?state.sessions.find(function(x){return x.id===id;}):null;
  if(s&&s.status!=='done')return toast('Aktive Session zuerst stoppen');
  var taskId=s?s.taskId:currentTask;
- if(!taskId) {toast('Öffne zuerst eine Aufgabe');return;}
- var start=s?s.start:Date.now()-3600000,end=s?(s.end||Date.now()):Date.now();
- var durationMin=s?Math.round(duration(s,Date.now())/60000*100)/100:60;
- showDialog(s?'Session bearbeiten':'Session nachtragen',field('Notiz / Sessionname','s-note',s?.note||'')+'<div class="form-row">'+field('Startdatum und -zeit','s-start',inputDateTime(start),'datetime-local')+field('Enddatum und -zeit','s-end',inputDateTime(end),'datetime-local')+'</div>'+field('Tatsächlich gearbeitet (Minuten, ohne Pausen)','s-work',durationMin,'number')+'<p class="muted tiny">Die Arbeitsdauer kannst du unabhängig von Start und Ende korrigieren. Pausenzeiten sind nicht enthalten.</p>','<button class="btn primary" onclick="saveSession(\''+(id||'')+'\',\''+taskId+'\')">Speichern</button>');
+ if(!taskId){toast('Öffne zuerst eine Aufgabe');return;}
+ sessionDraft=TimeFlowMath.initial(s);
+ originalSessionValues=s?Object.assign({},sessionDraft):null;
+ function dateInput(label,id,ts){
+   return '<div class="field"><label for="s-'+id+'">'+label+'</label><input id="s-'+id+'" type="datetime-local" step="1" value="'+inputDateTime(ts)+'" onchange="onSessionEdit(\''+id+'\')"><div class="field-error" id="error-'+id+'" aria-live="polite"></div></div>';
+ }
+ function timeInput(label,id,ms,desc){
+   return '<div class="field"><label for="s-'+id+'">'+label+'</label><input type="text" inputmode="numeric" autocomplete="off" spellcheck="false" id="s-'+id+'" value="'+TimeFlowMath.formatDuration(ms)+'" onchange="onSessionEdit(\''+id+'\')"><div class="field-error" id="error-'+id+'" aria-live="polite"></div><div class="tiny muted">'+desc+'</div></div>';
+ }
+ var form='<div class="time-group"><div class="editor-heading">◷ Zeitspanne</div><div class="form-row">'+dateInput('Beginn','start',sessionDraft.start)+dateInput('Ende','end',sessionDraft.end)+'</div></div>'+
+   '<div class="time-group"><div class="editor-heading">◉ Zeitaufteilung</div><div class="form-row">'+timeInput('Pause','pause',sessionDraft.pauseMs,'Stunden : Minuten : Sekunden')+
+   timeInput('Tatsächlich gearbeitet','work',sessionDraft.workMs,'Ändern verschiebt die Endzeit')+'</div><div id="session-total" class="time-summary"></div></div>'+
+   field('Session-Name / Notiz','s-note',s?.note||'')+
+   '<p class="muted tiny">Ändere nur den gewünschten Wert. Die anderen Zeiten passen sich automatisch an. Beispielsweise bedeutet 1:30 eine Stunde und 30 Minuten.</p>';
+ showDialog(s?'Session bearbeiten':'Session nachtragen',form,
+   '<button class="btn primary" onclick="saveSession(\''+(id||'')+'\',\''+taskId+'\')">Änderungen speichern</button>');
+ updateEditorDisplay('');
 }
 function saveSession(id,taskId){
- var start=millis(val('s-start')),end=millis(val('s-end')),minutes=parseFloat(val('s-work'));
- if(!isFinite(start)||!isFinite(end)||end<=start)return toast('Ungültiger Zeitraum');
- if(!isFinite(minutes)||minutes<0||minutes>(end-start)/60000+0.01)return toast('Arbeitsdauer muss zum Zeitraum passen');
+ if(!sessionDraft)return;
+ // Native date/time pickers commit on change; this also catches a still-focused
+ // field on the final tap, without resetting it while the user is typing.
+ for(var key of ['start','end','pause','work']){
+   var mapped=key==='pause'?'pauseMs':key==='work'?'workMs':key;
+   var v=sessionValue(key);
+   if(v===null){sessionFieldError(key,'Bitte gib einen gültigen Wert ein.');return;}
+   if((mapped==='start'||mapped==='end')?inputDateTime(sessionDraft[mapped])!==val('s-'+key):v!==sessionDraft[mapped]){
+     if(!onSessionEdit(key))return;
+   }
+ }
+ var draft=sessionDraft;
+ var res=TimeFlowMath.update(draft,'end',draft.end);
+ if(res.error){sessionFieldError('end',res.error);return;}
  var s=id?state.sessions.find(function(x){return x.id===id;}):null;
- if(s){s.start=start;s.end=end;s.note=val('s-note');s.workMs=Math.round(minutes*60000);s.segments=[{start:start,end:end}];}
- else state.sessions.push({id:uid(),taskId:taskId,start:start,end:end,note:val('s-note'),status:'done',segments:[{start:start,end:end}],workMs:Math.round(minutes*60000)});
- persist();closeModal();render();toast('Session gespeichert');
+ if(id&&!s)return toast('Session wurde nicht gefunden.');
+ var changed=!originalSessionValues||['start','end','pauseMs','workMs'].some(function(k){return originalSessionValues[k]!==draft[k];});
+ if(s){
+   s.note=val('s-note');
+   if(changed){
+     s.start=draft.start;s.end=draft.end;s.workMs=draft.workMs;s.pauseMs=draft.pauseMs;
+     // The original intervals cease to describe the edited values.
+     // Explicit aggregates become the single source of truth.
+     s.segments=[];
+   }
+ }else{
+   state.sessions.push({id:uid(),taskId:taskId,start:draft.start,end:draft.end,
+     note:val('s-note'),status:'done',segments:[],workMs:draft.workMs,pauseMs:draft.pauseMs});
+ }
+ persist();sessionDraft=null;originalSessionValues=null;closeModal();render();toast('Session gespeichert');
 }
 function removeSession(id){
  var s=state.sessions.find(function(x){return x.id===id;});
@@ -265,10 +340,10 @@ function removeProject(id){
  currentProject=null;currentTask=null;page='projects';persist();render();toast('Projekt gelöscht');
 }
 function exportCsv(){
- var rows=[['Projekt','Aufgabe','Session-Notiz','Start','Ende','Arbeitszeit (Sek.)','Arbeitszeit (HH:MM:SS)','Status']];
+ var rows=[['Projekt','Aufgabe','Session-Notiz','Start','Ende','Arbeitszeit (Sek.)','Arbeitszeit (HH:MM:SS)','Pause (HH:MM:SS)','Status']];
  state.sessions.slice().sort(function(a,b){return a.start-b.start;}).forEach(function(s){
   var t=task(s.taskId),p=t?pg(t.projectId):null;
-  rows.push([p?.name||'',t?.name||'',s.note||'',dateTime(s.start),s.end?dateTime(s.end):'',Math.floor(duration(s,Date.now())/1000),fmt(duration(s,Date.now())),s.status==='done'?'Abgeschlossen':s.status==='running'?'Läuft':'Pausiert']);
+  rows.push([p?.name||'',t?.name||'',s.note||'',dateTime(s.start),s.end?dateTime(s.end):'',Math.floor(duration(s,Date.now())/1000),fmt(duration(s,Date.now())),fmt(TimeFlowMath.pauseMs(s,Date.now())),s.status==='done'?'Abgeschlossen':s.status==='running'?'Läuft':'Pausiert']);
  });
  var csv='\ufeff'+rows.map(function(row){return row.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(';');}).join('\r\n');
  if(window.TimeFlowNative){TimeFlowNative.exportCsv(csv);toast('Speicherort für CSV auswählen');}
@@ -281,6 +356,7 @@ window.doSearch=function(v){searchText=v;var inp=document.getElementById('q');va
 window.toggleTheme=function(){state.theme=state.theme==='dark'?'light':'dark';persist();render();};
 window.setFilter=function(){window.analyticsFrom=val('filterFrom');window.analyticsTo=val('filterTo');render();};
 window.modalProject=modalProject;window.saveProject=saveProject;window.removeProject=removeProject;
+window.onSessionEdit=onSessionEdit;
 window.modalTask=modalTask;window.saveTask=saveTask;window.removeTask=removeTask;
 window.setColor=setColor;window.modalSession=modalSession;window.saveSession=saveSession;window.removeSession=removeSession;
 window.startTimer=startTimer;window.togglePause=togglePause;window.stopTimer=stopTimer;
