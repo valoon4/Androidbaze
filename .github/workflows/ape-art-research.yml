@@ -1,4 +1,4 @@
-name: Ape Art Pack Research
+name: Research CC0 Zelda-Like Pixel Art
 
 on:
   push:
@@ -11,22 +11,51 @@ permissions:
   contents: read
 
 jobs:
-  survey:
+  inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Get CC0 RPG town spritesheet for visual evaluation
+      - name: Download ArMM1998 CC0 top-down tiles
         run: |
-          curl -L --fail --retry 3 "https://lpc.opengameart.org/sites/default/files/town_rpg_pack.zip" -o /tmp/town.zip
-          mkdir -p /tmp/ape-town
-          unzip -oq /tmp/town.zip -d /tmp/ape-town
-          echo "ASSETS:"
-          find /tmp/ape-town -type f -printf '%P\n' | head -70
-          mkdir -p art-survey
-          find /tmp/ape-town -type f \( -iname '*.png' -o -iname '*.jpg' \) -print0 | while IFS= read -r -d '' f; do cp "$f" "art-survey/$(basename "$f")"; done
-          test -n "$(ls -A art-survey)"
+          curl -fL --retry 3 "https://opengameart.org/sites/default/files/gfx_3.zip" -o /tmp/zelda-gfx.zip
+          mkdir -p /tmp/ape-zelda
+          unzip -oq /tmp/zelda-gfx.zip -d /tmp/ape-zelda
+          find /tmp/ape-zelda -type f -printf '%P : %s bytes\n' | head -80
+          mkdir -p art-research
+          python3 -m pip install --user Pillow
+          python3 - <<'PY'
+          import os, glob, shutil
+          from PIL import Image,ImageDraw
+          paths=[]
+          for path in glob.glob('/tmp/ape-zelda/**/*',recursive=True):
+              if path.lower().endswith('.png'):
+                  try:
+                      im=Image.open(path)
+                      if im.width>8 and im.height>8:
+                          paths.append((path,im))
+                  except:pass
+          print('PNG count:',len(paths))
+          cards=[]
+          for path,im in paths:
+              print(os.path.relpath(path,'/tmp/ape-zelda'),im.size)
+              im=im.convert('RGBA')
+              if im.width<120 or im.height<120:
+                  im=im.resize((im.width*2,im.height*2),Image.Resampling.NEAREST)
+              size=(min(400,im.width),min(400,im.height))
+              im.thumbnail(size,Image.Resampling.NEAREST)
+              cards.append((path,im))
+          if not cards:raise SystemExit('no source art')
+          height=((len(cards)+2)//3)*440
+          sheet=Image.new('RGB',(1260,max(440,height)),'#202c2e')
+          d=ImageDraw.Draw(sheet)
+          for i,(path,im) in enumerate(cards):
+              x=(i%3)*420;y=(i//3)*440
+              d.text((x+10,y+8),os.path.relpath(path,'/tmp/ape-zelda')[:48],fill='#f4e5bc')
+              sheet.paste(im,(x+8,y+27),im if im.mode=='RGBA' else None)
+          sheet.save('art-research/zelda-cc0-contact-sheet.png')
+          PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Ape-CC0-Town-Art-Research
-          path: art-survey/
-          retention-days: 2
+          name: Zelda-CC0-art-sheets
+          path: art-research/
+          retention-days: 7
