@@ -36,6 +36,7 @@ public class ApeVillageV2 extends View {
     private final Bitmap frame=Bitmap.createBitmap(W,H,Bitmap.Config.ARGB_8888);
     private Bitmap terrain;
     private Bitmap[] apeSprites;
+    private Bitmap villageLogo;
     private final Rect source = new Rect();
     private final RectF destination = new RectF();
     private final ArrayList<Speck> flecks=new ArrayList<>();
@@ -101,6 +102,7 @@ public class ApeVillageV2 extends View {
         int worldId=getResources().getIdentifier("ape_v23_world","drawable",getContext().getPackageName());
         if(worldId!=0) terrain=BitmapFactory.decodeResource(getResources(),worldId);
         if(terrain==null)createWorld();
+        villageLogo=BitmapFactory.decodeResource(getResources(),R.drawable.ape_logo);
         apeSprites=new Bitmap[]{
           BitmapFactory.decodeResource(getResources(),R.drawable.ape_worker),
           BitmapFactory.decodeResource(getResources(),R.drawable.ape_politician),
@@ -388,35 +390,25 @@ public class ApeVillageV2 extends View {
         rect(c,x-1,y+2,5,2,0xfff5d06a);
         pixel(c,x-4,y-6,INK);
     }
+    /** Real alpha-transparent character art from the original game, not block people. */
     private void drawMonkey(Canvas c,float x,float y,int shade,boolean hero,int direction,float t){
+        Bitmap img=apeSprites[hero?0:(direction%apeSprites.length)];
+        if(img==null)return;
         c.save();c.translate(Math.round(x),Math.round(y));
-        float step=((int)(t*8)%2==0)?0:1;
-        // Shadow / legs / tail / visible ears.
-        rect(c,-8,8,17,4,0x66503932);
-        rect(c,-6,4,4,7,0xff604637);rect(c,3,4,4,7,0xff604637);
-        rect(c,-8+step,4,3,5,shade);rect(c,5-step,4,3,5,shade);
-        rect(c,7,-2,4,3,shade);pixel(c,11,-3,shade);
-        rect(c,-8,-7,17,14,INK);
-        rect(c,-6,-6,13,12,shade);
-        rect(c,-9,-11,4,6,shade);rect(c,6,-11,4,6,shade);
-        rect(c,-7,-12,15,11,INK);rect(c,-5,-11,11,10,shade);
-        rect(c,-5,-5,11,7,0xffe3ba8b);
+        float bob=1.4f*(float)Math.sin(t*7f);
+        rect(c,-13,8,26,5,0x66513732);
+        // Feet under the character portrait give the sprite actual walking movement.
+        rect(c,-12,1+bob,10,12,hero?0xff476c6a:0xff665047);
+        rect(c,2,-bob,10,12,hero?0xff476c6a:0xff665047);
+        rect(c,-12,10+bob,10,4,0xff403338);
+        rect(c,2,10-bob,10,4,0xff403338);
+        if(hero&&faceX<-.35f){c.scale(-1,1);}
+        p.setFilterBitmap(false);
+        color(Color.WHITE);
+        c.drawBitmap(img,null,new RectF(-21,-42+bob,21,7+bob),p);
         if(hero){
-            rect(c,-8,-15,17,5,0xff4d937b);
-            rect(c,-7,-18,15,5,0xff5cba8d);
-            rect(c,4,-18,4,3,CREAM);
-            rect(c,-7,2,15,4,0xff417e7a);
-        }else if(direction==2){
-            rect(c,-5,-13,11,5,0xff735849);
-        }
-        if(direction!=2){
-            pixel(c,-3,-7,INK);pixel(c,4,-7,INK);
-            pixel(c,-2,-8,CREAM);pixel(c,5,-8,CREAM);
-            rect(c,-1,-3,3,1,INK);
-        }
-        if(!hero){
-            rect(c,-7,-2,4,5,0xffbf996d);
-            rect(c,5,-2,3,5,0xffbf996d);
+            rect(c,-12,-3+bob,24,4,0xff51866f);
+            rect(c,-4,-3+bob,8,3,0xffdbb45f);
         }
         c.restore();
     }
@@ -597,57 +589,76 @@ public class ApeVillageV2 extends View {
         txt(c,arrow,bx,by+4,13,INK);
     }
 
+    private void woodenCard(Canvas c,float x,float y,float w,float h,int shade){
+        rect(c,x+2,y+2,w,h,0xff312e37);
+        rect(c,x,y,w,h,0xff604537);
+        rect(c,x+2,y+2,w-4,h-4,0xfff0deb1);
+        rect(c,x+4,y+4,w-8,2,0xfffff0cb);
+        rect(c,x+4,y+h-7,w-8,2,0xffbba77a);
+        for(int i=0;i<4;i++){
+            int xx=(int)(x+(i%2==0?3:w-5));
+            int yy=(int)(y+(i<2?3:h-5));
+            rect(c,xx,yy,2,2,shade);
+        }
+    }
     private void topHud(Canvas c){
-        rect(c,0,0,W,WORLD_TOP,INK);
-        rect(c,0,0,W,5,0xff8ccf9e);
-        txt(c,"APE ECONOMICS",90,19,13,CREAM);
-        rect(c,179,8,55,18,0xff84634c);rect(c,181,10,51,14,GOLD);
-        txt(c,"HUB",206,20,9,INK);
-        rect(c,7,27,69,19,0xff4b6d57);
-        rect(c,84,27,68,19,0xff64564e);
-        rect(c,160,27,73,19,0xff4b6b77);
-        drawBanana(c,17,38);
-        label(c,""+bananas,30,40,10,CREAM,Paint.Align.LEFT);
-        txt(c,"$ "+coins,118,40,10,CREAM);
-        txt(c,"INF "+influence,197,40,9,CREAM);
-        rect(c,5,50,230,30,0xfff1e3bb);
-        rect(c,8,53,224,24,0xff4e6e5d);
-        String head=quest<6?("QUEST "+Math.min(quest+1,6)+"/6: "+goals[quest]):"FREE PLAY  /  GROW YOUR VILLAGE";
-        txt(c,head,120,64,quest<6?7f:8f,CREAM);
-        txt(c,quest<6?hints[quest]:"TRADE  •  HARVEST  •  BANK  •  DONATE",120,74,7f,GOLD);
+        rect(c,0,0,W,WORLD_TOP,0xff48372d);
+        rect(c,0,0,W,3,0xff7ea856);
+        rect(c,0,WORLD_TOP-4,W,4,0xff302f35);
+        if(villageLogo!=null){
+            color(Color.WHITE);
+            p.setFilterBitmap(false);
+            c.drawBitmap(villageLogo,null,new RectF(1,5,69,52),p);
+        }
+        woodenCard(c,72,7,55,47,0xffad946a);
+        woodenCard(c,130,7,52,47,0xffad946a);
+        woodenCard(c,185,7,52,47,0xffad946a);
+        drawBanana(c,84,25);
+        txt(c,""+bananas,108,28,13,INK);
+        txt(c,"BANANAS",100,43,6f,0xff765b46);
+        txt(c,"$ "+coins,156,28,13,INK);
+        txt(c,"COINS",156,43,6f,0xff765b46);
+        txt(c,"DAY "+day,211,25,9.5f,INK);
+        txt(c,"INF "+influence,211,38,8f,0xff765b46);
+        rect(c,199,49,26,10,0xff526e50);
+        txt(c,"HUB",212,56.5f,6.7f,CREAM);
+        // Recessed parchment quest ribbon over the top of the environment.
+        rect(c,5,WORLD_TOP+5,230,25,0x99504033);
+        rect(c,6,WORLD_TOP+5,228,21,0xfff4e4bc);
+        rect(c,8,WORLD_TOP+7,224,17,0xff725340);
+        String head=quest<6?("QUEST "+Math.min(quest+1,6)+"/6  •  "+goals[quest]):"FREE PLAY: BUILD YOUR INFLUENCE";
+        txt(c,head,120,WORLD_TOP+17,7f,CREAM);
+        txt(c,quest<6?hints[quest]:"TRADE  •  HARVEST  •  SAVE",120,WORLD_TOP+24,5.4f,GOLD);
     }
     private void drawJoystick(Canvas c){
-        rect(c,0,WORLD_BOTTOM,W,H-WORLD_BOTTOM,INK);
-        rect(c,0,WORLD_BOTTOM,W,3,0xff9e7f61);
-        txt(c,"MOVE",46,365,8,CREAM);
-        txt(c,"INTERACT",197,365,8,CREAM);
-        // Arrow cluster deliberately broad enough for small touch screens.
-        rect(c,10,379,74,43,0xff343c42);
-        rect(c,13,382,68,37,0xff637c73);
-        txt(c,"<",26,406,18,CREAM);
-        txt(c,">",69,406,18,CREAM);
-        txt(c,"^",48,394,13,CREAM);
-        txt(c,"v",48,416,13,CREAM);
-        rect(c,160,376,72,46,INK);
-        rect(c,163,379,66,40,0xffe8bc57);
-        rect(c,167,382,58,4,CREAM);
-        txt(c,"ACT",196,407,17,INK);
+        rect(c,0,WORLD_BOTTOM,W,H-WORLD_BOTTOM,0xff46352c);
+        rect(c,0,WORLD_BOTTOM,W,4,0xff926c42);
+        txt(c,"MOVE",44,387,7,CREAM);
+        txt(c,"INTERACT",197,387,7,CREAM);
+        rect(c,6,390,75,35,0xff2e3236);
+        rect(c,9,391,69,31,0xff577c65);
+        rect(c,11,393,65,2,0xff8db381);
+        txt(c,"<",25,411,17,CREAM);
+        txt(c,"^",46,402,13,CREAM);
+        txt(c,">",68,411,17,CREAM);
+        txt(c,"v",46,420,13,CREAM);
+        rect(c,170,390,63,35,0xff383138);
+        rect(c,173,392,57,29,GOLD);
+        rect(c,176,395,51,2,0xffffefbb);
+        txt(c,"ACT",202,412,14,INK);
         Location l=closest();
-        if(l!=null){
-            txt(c,l.type==0?"HARVEST":l.type==1?"SELL":l.type==2?"DONATE":"DEPOSIT",
-                    196,417,7,INK);
-        }
-        txt(c,"DAY "+day+"  ·  PRICE "+price+" COINS/BANANA",120,431,6.5f,CREAM);
+        if(l!=null)txt(c,l.type==0?"HARVEST":l.type==1?"SELL":l.type==2?"DONATE":"DEPOSIT",201,420,6,INK);
+        txt(c,"BANANA PRICE: $"+price+"   •   APES: 6",120,430,6f,CREAM);
     }
     private void alerts(Canvas c){
         if(toastAge>0){
-            rect(c,6,318,228,23,INK);
-            rect(c,8,320,224,19,CREAM);
-            txt(c,toast,120,333,8f,INK);
+            rect(c,8,342,224,25,INK);
+            rect(c,10,344,220,21,CREAM);
+            txt(c,toast,120,358,7.5f,INK);
         }else if(eventAge>0){
-            rect(c,9,318,222,22,INK);
-            rect(c,11,320,218,18,GOLD);
-            txt(c,event,120,332,8,INK);
+            rect(c,9,342,222,23,INK);
+            rect(c,11,344,218,19,GOLD);
+            txt(c,event,120,357,7.5f,INK);
         }
     }
     private void hub(Canvas c){
@@ -791,10 +802,10 @@ public class ApeVillageV2 extends View {
                 return true;
             }
             if(y<30 && x>175){screen=HUB;resetTouch();return true;}
-            if(y>=360 && x<107){
+            if(y>=389 && x<107){
                 joystickTouch=true;moveTouch=false;joystick(x,y);return true;
             }
-            if(y>=362 && x>155){action();return true;}
+            if(y>=389 && x>155){action();return true;}
             if(y>=WORLD_TOP && y<WORLD_BOTTOM){
                 touchStartX=x;touchStartY=y;
                 targetX=clamp(x/ZOOM+camX,17,MAP-17);
