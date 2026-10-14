@@ -56,6 +56,11 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
+          name: Zelda-CC0-atlas-source
+          path: /tmp/ape-zelda/gfx/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
           name: Zelda-CC0-art-sheets
           path: art-research/
           retention-days: 7
