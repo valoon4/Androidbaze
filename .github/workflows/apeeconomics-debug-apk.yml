@@ -46,6 +46,13 @@ jobs:
           python3 -m pip install --user Pillow
           APE_ART_OUTPUT=app/src/main/res/drawable-nodpi/ape_v23_world.png python3 scripts/generate_art.py
           test -s app/src/main/res/drawable-nodpi/ape_v23_world.png
+      - name: Upload PNG art for visual quality review
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApeEconomics-v23-world-art-preview
+          path: games/ApeEconomics/app/src/main/res/drawable-nodpi/ape_v23_world.png
+          if-no-files-found: error
+          retention-days: 30
       - name: Build Ape Economics 2.0 APK
         run: gradle clean assembleDebug --no-daemon --stacktrace
       - name: Upload downloadable APK
