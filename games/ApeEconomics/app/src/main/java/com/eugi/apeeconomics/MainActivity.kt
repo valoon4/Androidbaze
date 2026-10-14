@@ -5,13 +5,18 @@ import android.os.Bundle
 import android.view.View
 
 class MainActivity : Activity() {
-    private lateinit var gameView: PixelVillageV15
+    private lateinit var gameView: ApeVillageV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideSystemUi()
-        gameView = PixelVillageV15(this)
+        gameView = ApeVillageV2(this)
         setContentView(gameView)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::gameView.isInitialized) gameView.pauseGame()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -20,7 +25,10 @@ class MainActivity : Activity() {
     }
 
     private fun hideSystemUi() {
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
     }
 
     @Deprecated("Deprecated in Java")
