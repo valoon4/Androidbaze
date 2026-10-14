@@ -47,9 +47,9 @@ jobs:
           curl -fL --retry 3 "https://opengameart.org/sites/default/files/gfx_3.zip" -o /tmp/ape-overworld.zip
           mkdir -p /tmp/ape-atlas
           unzip -oq /tmp/ape-overworld.zip -d /tmp/ape-atlas
-          python3 scripts/generate_art_cc0.py \\
-            --source /tmp/ape-atlas/gfx/Overworld.png \\
-            --objects /tmp/ape-atlas/gfx/objects.png \\
+          python3 scripts/generate_art_cc0.py \
+            --source /tmp/ape-atlas/gfx/Overworld.png \
+            --objects /tmp/ape-atlas/gfx/objects.png \
             --output app/src/main/res/drawable-nodpi/ape_v23_world.png
           test -s app/src/main/res/drawable-nodpi/ape_v23_world.png
       - name: Upload PNG art for visual quality review
