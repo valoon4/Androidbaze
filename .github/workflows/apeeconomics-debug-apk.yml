@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -68,13 +68,4 @@ jobs:
           path: games/ApeEconomics/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
-      - name: Publish direct APK
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          apk="app/build/outputs/apk/debug/app-debug.apk"
-          if ! gh release view apeeconomics-v2-level0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release create apeeconomics-v2-level0 --repo "$GITHUB_REPOSITORY" \
-              --title "Ape Economics 2.0 — Level 0" --notes "Playable pixel-art level hub and tutorial. Work-in-progress." --prerelease
-          fi
-          gh release upload apeeconomics-v2-level0 "$apk#ApeEconomics-v2-debug.apk" --repo "$GITHUB_REPOSITORY" --clobber
+      # Deliberately no public release: visual reference acceptance is still pending.
