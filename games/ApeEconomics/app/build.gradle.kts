@@ -10,8 +10,8 @@ android {
         applicationId = "com.eugi.apeeconomics"
         minSdk = 24
         targetSdk = 35
-        versionCode = 20
-        versionName = "2.0-level0"
+        versionCode = 24
+        versionName = "2.4-artwork-preview"
     }
     buildTypes {
         getByName("release") { isMinifyEnabled = false }
