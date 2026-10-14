@@ -45,21 +45,25 @@ def sign(title,x,y,w=100):
     # Nearest neighbor 12px type to fit just above the game sprite size.
     word=word.resize((min(w-10,word.width),15),Image.Resampling.NEAREST)
     scene.alpha_composite(word,(int(x-word.width/2),int(y+2)))
-# Proper authored overworld tiles; no giant blank RGB rectangles.
-greens=[(0,144,16,160),(16,144,32,160),(32,144,48,160),
-        (0,160,16,176),(16,160,32,176),(32,160,48,176),
-        (0,176,16,192),(16,176,32,192)]
+# Lush grass is a consistent green underlay. Avoid autotile fragments:
+# the loose Overworld atlas grass group contains shoreline/water variants.
+grass=["#70aa54","#77af59","#7ab35c","#72a951","#7cb55d","#74ab54","#80b660"]
 for ty in range(0,H,16):
     for tx in range(0,W,16):
-        area=greens[r.randrange(len(greens))]
-        crop_blit(atlas,area,tx,ty)
-# The color grading is a little warmer than the base pack and has a subtle
-# checker-dither seen on GBA maps, not a screen-filling green fill.
-for k in range(2200):
-    x=r.randrange(12,W-13)
-    y=r.randrange(12,H-13)
-    s=r.choice([1,1,2,3])
-    box(x,y,s,r.choice([1,2]),r.choice(["#519f5b","#b3cb76","#80b864","#629c4c"]))
+        box(tx,ty,16,16,r.choice(grass))
+        for k in range(6):
+            sx=tx+r.randrange(16);sy=ty+r.randrange(16)
+            box(sx,sy,r.choice([1,2,2,3]),r.choice([1,2]),
+                r.choice(["#5c9b53","#a6c978","#65a95c","#85ba68","#93c16b"]))
+        if r.random()<.35:
+            sx=tx+r.randrange(5,13);sy=ty+r.randrange(4,12)
+            box(sx,sy,1,4,"#53934a")
+            box(sx-2,sy+1,2,2,"#65a458")
+            box(sx+2,sy+2,2,2,"#b2cb79")
+for k in range(1250):
+    x=r.randrange(12,W-13);y=r.randrange(12,H-13)
+    box(x,y,r.choice([1,1,2]),r.choice([1,2]),
+        r.choice(["#51964e","#c1d78a","#8ec371","#7bb362"]))
 # Roads with chipped border + individual soil fragments. Bend vertical road.
 def road_vertical(x0,y0,y1,width):
     for y in range(y0,y1,3):
@@ -114,11 +118,24 @@ for x in (315,378):
         box(x+1,y,5,8,"#ae8256")
 # Grass-line margins, flowers, mushrooms and richly shaded trees.
 def large_tree(x,y,size=65):
-    crop_blit(atlas,(74,252,115,331),x-size//2,y-size//2,size,int(size*1.22))
+    # A layered GBA canopy from ArMM1998's transparent foliage sprites.
+    # Pixel-ground shadow stays separate from the source's vivid canopy.
+    from PIL import ImageDraw
+    shadow=Image.new("RGBA",(int(size*1.1),int(size*.34)),(0,0,0,0))
+    sd=ImageDraw.Draw(shadow)
+    sd.ellipse((2,2,shadow.width-3,shadow.height-3),fill=(33,56,49,105))
+    scene.alpha_composite(shadow,(int(x-size*.56),int(y+size*.24)))
+    trunkw=max(6,int(size*.12))
+    box(x-trunkw/2,y+size*.16,trunkw,size*.34,"#624a3b")
+    box(x-trunkw/2+2,y+size*.2,2,size*.20,"#ab7d53")
+    # The source canopy has both multicolor rim shading and leaf dithering.
+    crop_blit(objs,(128,191,162,222),x-size//2,y-int(size*.55),size,int(size*.8))
+    crop_blit(objs,(197,191,226,222),x-int(size*.15),y-int(size*.60),
+              int(size*.6),int(size*.65))
 def shrub(x,y,size=25):
-    crop_blit(atlas,(0,209,32,245),x-size//2,y-size//2,size,int(size*1.1))
+    crop_blit(objs,(97,191,127,223),x-size//2,y-size//2,size,int(size*.98))
 def flowers(x,y):
-    crop_blit(atlas,(0,559,32,576),x-13,y-8,29,17)
+    crop_blit(objs,(55,0,75,20),x-7,y-7,16,16)
     box(x+r.randrange(-5,5),y+4,2,2,"#f6eab4")
 for x,y,s in [(32,70,64),(85,84,67),(165,65,70),(260,44,57),
               (440,54,64),(579,67,68),(666,84,70),(681,197,65),
@@ -169,7 +186,7 @@ for xx,yy in [(166,256),(351,234),(516,256),(515,569)]:
     box(xx-11,yy,22,5,"#b99a6e")
     box(xx-6,yy+2,12,2,"#e6c490")
 # Detail props: fountain, sacks, pots, market fruits and patterned banners.
-for x,y in [(262,281),(414,288),(410,530),(580,535)]:
+for x,y in [(279,302),(400,305)]:
     crop_blit(atlas,(350,145,408,198),x-21,y-20,36,36)
 for x,y in [(269,243),(435,248),(281,484),(419,585)]:
     crop_blit(atlas,(510,78,544,114),x,y,27,30)
