@@ -157,14 +157,15 @@ for x,y in [(235,185),(251,311),(425,300),(449,322),(414,492),
             (584,321),(281,487),(582,613),(418,628)]:
     shrub(x,y,r.randint(25,42))
 # Ferns, asymmetric grass tufts, colorful wildflowers.
-for k in range(100):
+for k in range(320):
     x=r.randrange(24,674);y=r.randrange(33,678)
     if 336<y<454:continue
+    if abs(y-278)<19 or abs(y-543)<16 or abs(x-350)<17:continue
     if 98<x<232 and 105<y<264:continue
     if 261<x<441 and 56<y<237:continue
     if 434<x<591 and 96<y<264:continue
     if 424<x<592 and 429<y<581:continue
-    if k%4==0:flowers(x,y)
+    if k%3==0:flowers(x,y)
     else:
         box(x,y,2,6,"#4b8b53")
         box(x-3,y+1,2,3,"#d7d98e")
@@ -259,6 +260,8 @@ for px,py in [(105,318),(221,308),(419,310),(280,556),(568,571),(620,511)]:
         box(px+dx+2,py+dy+1,2,2,"#e6b661")
 # Final coherent GBA palette: slightly warmer contrast with true source textures.
 result=scene.convert("RGB")
+result=ImageEnhance.Color(result).enhance(1.13)
+result=ImageEnhance.Contrast(result).enhance(1.07)
 out=args.output
 os.makedirs(os.path.dirname(out),exist_ok=True)
 result.save(out,optimize=True)
