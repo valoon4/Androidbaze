@@ -212,7 +212,7 @@ box(292,149,120,4,"#9693a0")
 for xx in range(304,413,17):
     box(xx,153,13,2,"#d9d4cb")
 box(350,60,4,34,"#55505c")
-poly([(354,64),(378,70),(354,79)],"#c75d49")
+d.polygon([(354,64),(378,70),(354,79)],fill="#c75d49")
 box(356,67,10,2,"#f4be73")
 box(302,153,102,3,"#564e51")
 # Hanging civic flags, brass detailing and an open entrance.
