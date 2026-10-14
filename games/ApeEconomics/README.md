@@ -38,3 +38,11 @@ This is an **early vertical slice** with code-drawn pixel art rather than a hand
 - Basic building solids, river collision and off-screen objective compass.
 - The graphical quality target remains the reference showing detailed 16-bit styled trees, buildings, rich shading and personality. **This pass does not meet the target yet and should not be called final.**
 - The CI artifact `ApeEconomics-v23-world-art-preview` is included for visual QA before announcing a new APK.
+
+## v2.4 graphics rework (visual review required)
+
+The Android build now creates its village from original **sprite-sheet artwork**, not solid rectangle sketches. The reproducible composer `scripts/generate_art_cc0.py` imports the CC0 Zelda-like tileset by [ArMM1998](https://opengameart.org/content/zelda-like-tilesets-and-sprites) (the original archive is fetched in CI). Four buildings have unique source architecture; the parliament has a stepped civic roof, the market a warm striped canopy, and original Ape Economics monkey artwork/logo are retained. Terrain now has authored paths, layered river banks, a real bridge, dense shaded foliage, fenced banana crops, market props, lamps and wildflowers.
+
+**Licensing:** ArMM1998's tileset is CC0. This use is attributed voluntarily; artwork from other third parties was evaluated but not bundled. The in-repo legacy visual artwork remains ours.
+
+**Known limits:** this still needs a device playtest and additional illustration to fully match the richer user reference. Continue working on Level 0 presentation first; do not describe this pass as finished just because CI produces an APK. The build uploads a separate `ApeEconomics-v23-world-art-preview` so the visual can be checked before release.
