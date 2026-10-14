@@ -567,11 +567,40 @@ public class ApeVillageV2 extends View {
         boolean drawn=false;
         for(Monkey m:list){
             if(!drawn && playerY<m.y){drawPlayer(c);drawn=true;}
-            drawMonkey(c,m.x,m.y,m.color,false,1,animationTime+m.job*.25f);
+            drawMonkey(c,m.x,m.y,m.color,false,m.job%4,animationTime+m.job*.25f);
+            // Economically active residents advertise their work in actual sprites.
+            if(m.job<4) drawThought(c,m);
         }
         if(!drawn)drawPlayer(c);
         for(Speck s:flecks)rect(c,s.x,s.y,2,2,s.color);
         c.restore();
+    }
+    private void drawThought(Canvas c,Monkey monkey){
+        float x=monkey.x+26f, y=monkey.y-45f+
+            (float)Math.sin(animationTime*2.4f+monkey.job)*2f;
+        rect(c,x-9,y-12,28,24,0x66503230);
+        rect(c,x-12,y-15,28,24,0xff38323a);
+        rect(c,x-10,y-13,24,20,0xfff9e8c6);
+        rect(c,x-4,y+7,5,5,0xfff9e8c6);
+        rect(c,x-4,y+12,3,2,0xff38323a);
+        switch(monkey.job){
+            case 0: drawBanana(c,x+2,y-3);break;
+            case 1:
+                rect(c,x-2,y-10,11,15,0xffece2c2);
+                rect(c,x-2,y-10,11,15,0xff536d84);
+                rect(c,x,y-8,8,11,0xfff9e9c6);
+                rect(c,x+2,y-5,5,2,0xff6b6867);
+                rect(c,x+2,y-1,5,1,0xff6b6867);
+                break;
+            case 2:
+                rect(c,x-3,y-10,13,13,0xffe1bc5c);
+                txt(c,"$",x+3,y,13,0xff5d4637);
+                break;
+            default:
+                rect(c,x-4,y-9,15,11,0xff9a6346);
+                rect(c,x-2,y-7,11,7,0xffddb878);
+                txt(c,"$",x+3,y-1,7,0xff59463b);
+        }
     }
     private void drawPlayer(Canvas c){
         int facing=faceY<-.4?2:faceX<-.4?1:faceX>.4?3:0;
