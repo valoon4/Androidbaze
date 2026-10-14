@@ -128,10 +128,19 @@ def large_tree(x,y,size=65):
     trunkw=max(6,int(size*.12))
     box(x-trunkw/2,y+size*.16,trunkw,size*.34,"#624a3b")
     box(x-trunkw/2+2,y+size*.2,2,size*.20,"#ab7d53")
-    # The source canopy has both multicolor rim shading and leaf dithering.
-    crop_blit(objs,(128,191,162,222),x-size//2,y-int(size*.55),size,int(size*.8))
-    crop_blit(objs,(197,191,226,222),x-int(size*.15),y-int(size*.60),
-              int(size*.6),int(size*.65))
+    # Teal highlights are recolored to lively emerald; retain dark pixel shading.
+    def canopy(src,dst,wh):
+        im=objs.crop(src).resize(wh,Image.Resampling.NEAREST)
+        pix=im.load()
+        for yy in range(im.height):
+            for xx in range(im.width):
+                rr,gg,bb,aa=pix[xx,yy]
+                if aa>0 and gg>75 and bb>rr*1.08 and gg>rr*1.17:
+                    pix[xx,yy]=(rr,int(min(255,gg*1.03)),int(bb*.62),aa)
+        scene.alpha_composite(im,(int(dst[0]),int(dst[1])))
+    canopy((128,191,162,222),(x-size//2,y-int(size*.55)),(size,int(size*.8)))
+    canopy((197,191,226,222),(x-int(size*.15),y-int(size*.60)),
+           (int(size*.6),int(size*.65)))
 def shrub(x,y,size=25):
     crop_blit(objs,(97,191,127,223),x-size//2,y-size//2,size,int(size*.98))
 def flowers(x,y):
@@ -176,10 +185,38 @@ for y in range(185,335,16):
 crop_blit(atlas,(96,0,179,81),96,122,138,137)
 sign("PLANTAGE",166,185,96)
 crop_blit(atlas,(410,353,473,454),284,96,135,143)
-sign("PARLAMENT",352,165,117)
+# A proper stepped copper roof turns the gate sprite into a real civic building.
+crop_blit(atlas,(380,192,507,272),287,78,130,77)
+box(302,153,102,3,"#564e51")
+# Hanging civic flags, brass detailing and an open entrance.
+for flagx in (297,395):
+    box(flagx,176,3,32,"#c5a97c")
+    box(flagx-2,179,14,27,"#33597d")
+    box(flagx,181,10,3,"#7c9cc1")
+    box(flagx+5,188,2,12,"#e6ce7f")
+    box(flagx+2,194,9,2,"#e6ce7f")
+sign("PARLAMENT",352,154,117)
 crop_blit(atlas,(180,0,263,82),447,118,138,139)
-sign("BANK",516,181,82)
-crop_blit(atlas,(289,359,380,450),437,434,156,137)
+# Gold-trimmed finance-house facade (a civic building, not just a brown barn).
+box(450,222,134,4,"#79583f")
+for bx in (461,573):
+    box(bx,178,6,61,"#5b4941")
+    box(bx+1,179,4,57,"#c49a65")
+    box(bx+1,182,3,49,"#edbf82")
+box(474,189,18,18,"#463c3a")
+box(476,191,14,14,"#e4bf68")
+box(544,189,18,18,"#463c3a")
+box(546,191,14,14,"#e4bf68")
+sign("BANK",516,171,82)
+# Replace the blue-white merchant canopy with a warmer red-white awning.
+stall=atlas.crop((289,359,380,450)).resize((156,137),Image.Resampling.NEAREST)
+pixels=stall.load()
+for yy in range(stall.height):
+    for xx in range(stall.width):
+        rr,gg,bb,aa=pixels[xx,yy]
+        if aa>30 and bb>125 and bb>rr*1.25 and bb>gg*.91:
+            pixels[xx,yy]=(198,88,72,aa)
+scene.alpha_composite(stall,(437,434))
 sign("MARKT",515,489,90)
 # Building doors and usable walk-in approach zones (aligned to engine).
 for xx,yy in [(166,256),(351,234),(516,256),(515,569)]:
@@ -203,6 +240,23 @@ for k in range(24):
     if 309<x<399:continue
     box(x,y,2,8,"#4b7957")
     box(x-2,y+2,4,4,"#9bc36f")
+# Extra banana-world storytelling: sweet fruit, shade plants, lanterns and
+# tiny mottled leaf clusters make each clearing feel individually authored.
+for px,py in [(115,276),(198,274),(262,299),(434,305),(438,539),(593,545)]:
+    box(px,py-13,2,16,"#5c734a")
+    box(px-3,py-12,9,6,"#417c50")
+    box(px-4,py-7,4,5,"#e6c957")
+    box(px,py-5,4,5,"#f9d970")
+    box(px+3,py-9,3,6,"#d0ab42")
+for xx,yy in [(243,284),(423,286),(297,338),(398,344),(266,543),(425,546)]:
+    box(xx,yy-15,4,24,"#695344")
+    box(xx-5,yy-23,15,13,"#433c3e")
+    box(xx-3,yy-21,11,9,"#e2b65d")
+    box(xx-1,yy-19,5,5,"#ffdf93")
+for px,py in [(105,318),(221,308),(419,310),(280,556),(568,571),(620,511)]:
+    for dx,dy in [(0,0),(7,3),(13,-2),(19,2)]:
+        box(px+dx,py+dy,5,5,"#eae8d0")
+        box(px+dx+2,py+dy+1,2,2,"#e6b661")
 # Final coherent GBA palette: slightly warmer contrast with true source textures.
 result=scene.convert("RGB")
 out=args.output
