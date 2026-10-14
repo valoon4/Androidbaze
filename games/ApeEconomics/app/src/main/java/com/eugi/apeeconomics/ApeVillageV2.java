@@ -561,6 +561,20 @@ public class ApeVillageV2 extends View {
             txt(c,"ACT",playerX,yy-4,8,INK);
         }
     }
+    /** Makes distant objectives findable without giving the player a GPS menu. */
+    private void questPointer(Canvas c){
+        if(quest>=6)return;
+        Location goal=buildings[(quest<=1)?0:(quest<=3)?1:2];
+        float sx=goal.x-camX;
+        float sy=goal.y-camY+WORLD_TOP;
+        if(sx>=14&&sx<=W-14&&sy>=WORLD_TOP+18&&sy<=WORLD_BOTTOM-18)return;
+        float bx=clamp(sx,14,W-14),by=clamp(sy,WORLD_TOP+18,WORLD_BOTTOM-18);
+        rect(c,bx-11,by-9,22,18,INK);
+        rect(c,bx-9,by-7,18,14,GOLD);
+        String arrow=Math.abs(sx-bx)>Math.abs(sy-by)?(sx<0?"<":">"):(sy<WORLD_TOP?"^":"v");
+        txt(c,arrow,bx,by+4,13,INK);
+    }
+
     private void topHud(Canvas c){
         rect(c,0,0,W,WORLD_TOP,INK);
         rect(c,0,0,W,5,0xff8ccf9e);
@@ -713,7 +727,7 @@ public class ApeVillageV2 extends View {
     private void render(Canvas c){
         if(screen==HUB)hub(c);
         else{
-            world(c);topHud(c);drawJoystick(c);alerts(c);
+            world(c);questPointer(c);topHud(c);drawJoystick(c);alerts(c);
             if(screen==CLEAR)completion(c);
         }
     }
