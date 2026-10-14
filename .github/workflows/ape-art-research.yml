@@ -1,0 +1,32 @@
+name: Ape Art Pack Research
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - ".github/workflows/ape-art-research.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  survey:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get CC0 RPG town spritesheet for visual evaluation
+        run: |
+          curl -L --fail --retry 3 "https://lpc.opengameart.org/sites/default/files/town_rpg_pack.zip" -o /tmp/town.zip
+          mkdir -p /tmp/ape-town
+          unzip -oq /tmp/town.zip -d /tmp/ape-town
+          echo "ASSETS:"
+          find /tmp/ape-town -type f -printf '%P\n' | head -70
+          mkdir -p art-survey
+          find /tmp/ape-town -type f \( -iname '*.png' -o -iname '*.jpg' \) -print0 | while IFS= read -r -d '' f; do cp "$f" "art-survey/$(basename "$f")"; done
+          test -n "$(ls -A art-survey)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ape-CC0-Town-Art-Research
+          path: art-survey/
+          retention-days: 2
