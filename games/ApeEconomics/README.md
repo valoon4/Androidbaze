@@ -29,3 +29,12 @@ Worlds will be built **sequentially**, each introducing a focused mechanic after
 ## Limitations
 
 This is an **early vertical slice** with code-drawn pixel art rather than a handcrafted commercial sprite atlas. The economy currently involves 4 locations, small transactions and ambient NPC motion. It is not yet the full autonomous-affensociety simulation. Device play-testing and visual iteration remain necessary.
+
+## v2.3 art pass (work in progress; **not visually approved**)
+
+- New reproducible `scripts/generate_art.py` builds a **real PNG world asset** (704x704), replacing the live Canvas rectangle map. In Android Studio, run `APE_ART_OUTPUT=app/src/main/res/drawable-nodpi/ape_v23_world.png python3 scripts/generate_art.py` after installing Pillow. CI generates it automatically.
+- Original transparent ape artwork and the illustrated logo are now used in the scene and compact heads-up display.
+- Smaller top bar, more room for the camera, 0.57x map zoom and interactions mapped to the revised art.
+- Basic building solids, river collision and off-screen objective compass.
+- The graphical quality target remains the reference showing detailed 16-bit styled trees, buildings, rich shading and personality. **This pass does not meet the target yet and should not be called final.**
+- The CI artifact `ApeEconomics-v23-world-art-preview` is included for visual QA before announcing a new APK.
