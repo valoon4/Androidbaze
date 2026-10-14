@@ -155,7 +155,7 @@ public class ApeVillageV2 extends View {
 
     private void startLevel(){
         screen=PLAY;
-        quest=cleared?6:0;
+        quest=0;
         bananas=4;coins=0;influence=0;bankBalance=0;price=2;
         playerX=350;playerY=302;faceX=0;faceY=1;camX=0;camY=0;
         day=1;dayStarted=SystemClock.uptimeMillis();incomeLast=dayStarted;
@@ -491,10 +491,19 @@ public class ApeVillageV2 extends View {
         }
         float dx=walkX,dy=walkY;
         if(moveTouch){
-            float tx=targetX-playerX,ty=targetY-playerY;
+            float goX=targetX,goY=targetY;
+            // Auto-route via the real bridge instead of walking into the river.
+            boolean crossing=(playerY<350&&targetY>433)||(playerY>433&&targetY<350);
+            if(crossing){
+                if(Math.abs(playerX-350f)>17f){goX=350f;goY=playerY;}
+                else {goX=350f;goY=targetY>433?447f:339f;}
+            }
+            float tx=goX-playerX,ty=goY-playerY;
             float dist=(float)Math.sqrt(tx*tx+ty*ty);
-            if(dist<4){moveTouch=false;dx=dy=0;}
-            else {dx=tx/dist;dy=ty/dist;}
+            if(dist<4){
+                if(!crossing){moveTouch=false;dx=dy=0;}
+                else {dx=0;dy=targetY>433?1:-1;}
+            }else{dx=tx/dist;dy=ty/dist;}
         }
         float mag=(float)Math.sqrt(dx*dx+dy*dy);
         if(mag>.1f){
