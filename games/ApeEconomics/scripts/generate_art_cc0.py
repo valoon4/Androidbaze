@@ -185,9 +185,35 @@ for y in range(185,335,16):
 # Houses from atlas have shadows, roof geometry and windows in the art.
 crop_blit(atlas,(96,0,179,81),96,122,138,137)
 sign("PLANTAGE",166,185,96)
+# Golden banana crest mounted on the roof and small wooden shutters.
+for xx,yy in [(171,139),(165,142),(161,147),(160,153),(165,160),(171,164),(178,161)]:
+    box(xx,yy,8,5,"#d19c3e")
+    box(xx+1,yy,5,3,"#f4d166")
+box(175,161,5,3,"#fff1ad")
+for xx in (107,215):
+    box(xx,210,8,32,"#875738")
+    box(xx+2,211,4,26,"#e5ae71")
+    box(xx,211,8,4,"#614937")
 crop_blit(atlas,(410,353,473,454),284,96,135,143)
-# A proper stepped copper roof turns the gate sprite into a real civic building.
-crop_blit(atlas,(380,192,507,272),287,78,130,77)
+# A distinctive domed civic roof like our original game direction:
+# arched blue-grey shingle bands with gold highlights, not another plain barn.
+for yy in range(75,154,3):
+    f=(yy-75)/78.
+    half=int(15+53*(min(1.,f*1.5)**.67))
+    x0=352-half
+    base="#444756" if yy%12 in (0,1,2) else "#5d6072"
+    box(x0,yy,2*half,3,base)
+    if yy%9<4:
+        box(x0+2,yy,2*half-4,1,"#858695")
+    for sh in range(5,2*half-7,14):
+        box(x0+sh+(yy%5),yy+1,8,1,"#9e9dab" if (sh//14+yy//3)%3==0 else "#4b4f61")
+box(287,148,130,8,"#41434e")
+box(292,149,120,4,"#9693a0")
+for xx in range(304,413,17):
+    box(xx,153,13,2,"#d9d4cb")
+box(350,60,4,34,"#55505c")
+poly([(354,64),(378,70),(354,79)],"#c75d49")
+box(356,67,10,2,"#f4be73")
 box(302,153,102,3,"#564e51")
 # Hanging civic flags, brass detailing and an open entrance.
 for flagx in (297,395):
@@ -209,6 +235,15 @@ box(476,191,14,14,"#e4bf68")
 box(544,189,18,18,"#463c3a")
 box(546,191,14,14,"#e4bf68")
 sign("BANK",516,171,82)
+# Bank's identifying coin pediment and little treasury seals.
+box(493,135,48,27,"#564239")
+box(496,138,42,22,"#d5ab69")
+box(498,140,38,18,"#f3d88c")
+s=label("$",0,0,2)
+scene.alpha_composite(s,(517-s.width//2,143))
+for xx in (451,568):
+    box(xx,249,15,7,"#4a413c")
+    box(xx+2,250,11,4,"#cfa36f")
 # Replace the blue-white merchant canopy with a warmer red-white awning.
 stall=atlas.crop((289,359,380,450)).resize((156,137),Image.Resampling.NEAREST)
 pixels=stall.load()
@@ -258,6 +293,26 @@ for px,py in [(105,318),(221,308),(419,310),(280,556),(568,571),(620,511)]:
     for dx,dy in [(0,0),(7,3),(13,-2),(19,2)]:
         box(px+dx,py+dy,5,5,"#eae8d0")
         box(px+dx+2,py+dy+1,2,2,"#e6b661")
+# Natural southern escarpment and the raised exit steps: the village now
+# has a readable boundary instead of ending abruptly in empty flat grass.
+for xx in range(0,704,16):
+    yy=664+int(math.sin(xx/27)*3)
+    box(xx,yy,16,9,"#467446")
+    box(xx,yy+8,16,33,"#414b58")
+    box(xx+1,yy+10,14,7,"#5b6571")
+    box(xx+2,yy+18,13,6,"#6f727b")
+    box(xx+7,yy+24,9,8,"#3b464f")
+    box(xx+3,yy+11,6,2,"#a2a3a4")
+    box(xx+1,yy+32,14,2,"#242e3d")
+# The stair opening remains clearly navigable in the game.
+box(317,659,73,44,"#424a52")
+for sy in range(662,703,8):
+    box(324,sy,59,6,"#a5a5a5")
+    box(324,sy,59,2,"#d9d2b9")
+    box(324,sy+6,59,2,"#616b70")
+for xx in (314,385):
+    box(xx,655,7,49,"#49474a")
+    box(xx+1,657,4,44,"#8e8f86")
 # Final coherent GBA palette: slightly warmer contrast with true source textures.
 result=scene.convert("RGB")
 result=ImageEnhance.Color(result).enhance(1.13)
