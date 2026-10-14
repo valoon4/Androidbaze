@@ -493,7 +493,7 @@ public class ApeVillageV2 extends View {
         if(moveTouch){
             float goX=targetX,goY=targetY;
             // Auto-route via the real bridge instead of walking into the river.
-            boolean crossing=(playerY<350&&targetY>433)||(playerY>433&&targetY<350);
+            boolean crossing=(targetY>433&&playerY<434)||(targetY<350&&playerY>349);
             if(crossing){
                 if(Math.abs(playerX-350f)>17f){goX=350f;goY=playerY;}
                 else {goX=350f;goY=targetY>433?447f:339f;}
