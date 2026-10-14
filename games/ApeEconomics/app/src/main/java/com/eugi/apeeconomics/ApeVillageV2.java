@@ -589,16 +589,25 @@ public class ApeVillageV2 extends View {
         txt(c,arrow,bx,by+4,13,INK);
     }
 
+    /** Pixel-carved mahogany-and-parchment inventory card with enamel corner studs. */
     private void woodenCard(Canvas c,float x,float y,float w,float h,int shade){
-        rect(c,x+2,y+2,w,h,0xff312e37);
-        rect(c,x,y,w,h,0xff604537);
-        rect(c,x+2,y+2,w-4,h-4,0xfff0deb1);
-        rect(c,x+4,y+4,w-8,2,0xfffff0cb);
-        rect(c,x+4,y+h-7,w-8,2,0xffbba77a);
+        rect(c,x+2,y+3,w,h,0xff292c31);
+        rect(c,x,y,w,h,0xff49352f);
+        rect(c,x+1,y+1,w-2,h-2,0xff8c6244);
+        rect(c,x+3,y+3,w-6,h-6,0xffd6b985);
+        rect(c,x+5,y+5,w-10,h-10,0xfff2e2bd);
+        rect(c,x+5,y+5,w-10,2,0xfffff1ca);
+        rect(c,x+5,y+h-8,w-10,2,0xffb79a70);
+        for(int k=0;k<10;k++){
+            float xx=x+7+((k*17+3)%(int)Math.max(1,w-15));
+            float yy=y+8+((k*13+1)%(int)Math.max(1,h-17));
+            rect(c,xx,yy,(k%3==0?2:1),1,0xffdcc99f);
+        }
         for(int i=0;i<4;i++){
-            int xx=(int)(x+(i%2==0?3:w-5));
-            int yy=(int)(y+(i<2?3:h-5));
-            rect(c,xx,yy,2,2,shade);
+            float xx=x+(i%2==0?4:w-6);
+            float yy=y+(i<2?4:h-6);
+            rect(c,xx,yy,3,3,shade);
+            rect(c,xx+1,yy,1,1,0xffffdda0);
         }
     }
     private void topHud(Canvas c){
@@ -672,33 +681,18 @@ public class ApeVillageV2 extends View {
         txt(c,"THE ISLANDS OF AMBITION",120,45,8.5f,GOLD);
         txt(c,"WORLD SELECT",120,80,10,CREAM);
 
-        // A stylized island sea. The hub is genuinely interactive level selection.
-        rect(c,7,89,226,244,0xff2e768a);
-        for(int y=96;y<324;y+=14)for(int x=14;x<229;x+=18){
-            rect(c,x+(((int)(animationTime*3)+y)%9),y,7,1,0xff84c0bc);
+        // The hub uses a real authored map inset instead of abstract block art.
+        rect(c,7,89,226,244,0xff2c7384);
+        rect(c,11,93,218,235,0xff455e5d);
+        if(terrain!=null){
+            p.setFilterBitmap(false);
+            color(Color.WHITE);
+            c.drawBitmap(terrain,null,new RectF(13,95,227,325),p);
         }
-        // Layered island coastline, beaches, interior forests and mountains.
-        Path island=new Path();
-        island.moveTo(31,138);island.lineTo(53,118);island.lineTo(103,104);
-        island.lineTo(148,117);island.lineTo(191,109);island.lineTo(219,148);
-        island.lineTo(213,190);island.lineTo(223,232);island.lineTo(199,293);
-        island.lineTo(146,315);island.lineTo(92,301);island.lineTo(43,308);
-        island.lineTo(20,266);island.lineTo(28,218);island.lineTo(17,177);
-        island.close();
-        color(0xffd8c58a);c.drawPath(island,p);
-        c.save();c.clipPath(island);
-        rect(c,22,124,198,180,0xff79a96d);
-        for(int i=0;i<100;i++){
-            int xx=(i*67+7)%215,yy=122+(i*47)%184;
-            rect(c,xx,yy,4,4,(i%3==0)?0xff498a62:0xff8cbb72);
-        }
-        // River and zig-zag dusty roads.
-        rect(c,27,222,190,10,0xff55adc1);
-        path(c,53,154,174,190,6);path(c,174,190,78,251,6);
-        path(c,78,251,168,286,6);
-        rect(c,23,226,190,4,0xff4a96b0);
-        c.restore();
-
+        rect(c,11,93,218,4,0xffb7c582);
+        rect(c,11,322,218,5,0xff45413d);
+        rect(c,11,94,3,232,0xff45413d);
+        rect(c,226,94,3,232,0xff45413d);
         drawHubNode(c,55,159,0, true);
         drawHubNode(c,177,197,1, false);
         drawHubNode(c,76,266,2, false);
