@@ -1,4 +1,4 @@
-name: Build Ape Economics Debug APK
+name: Build Ape Economics 2.0 APK
 
 on:
   push:
@@ -9,12 +9,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: games/ApeEconomics
@@ -24,11 +24,14 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
-      - uses: android-actions/setup-android@v3
-        with:
-          packages: platform-tools
-      - name: Install Android SDK
+      - name: Locate Android SDK manager
+        run: |
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDK_TOOL="$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$SDK_TOOL"
+          echo "$(dirname "$SDK_TOOL")" >> "$GITHUB_PATH"
+      - name: Install Android SDK 36
         run: |
           yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
@@ -38,12 +41,22 @@ jobs:
           sudo mkdir -p /opt/gradle
           sudo unzip -q /tmp/gradle.zip -d /opt/gradle
           echo /opt/gradle/gradle-8.11.1/bin >> "$GITHUB_PATH"
-      - name: Build debug APK
-        run: gradle assembleDebug --no-daemon --stacktrace
-      - name: Upload v0.15 debug APK
+      - name: Build Ape Economics 2.0 APK
+        run: gradle clean assembleDebug --no-daemon --stacktrace
+      - name: Upload downloadable APK
         uses: actions/upload-artifact@v4
         with:
-          name: ApeEconomics-v0.15-debug
+          name: ApeEconomics-v2-Level0-debug
           path: games/ApeEconomics/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+      - name: Publish direct APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          apk="app/build/outputs/apk/debug/app-debug.apk"
+          if ! gh release view apeeconomics-v2-level0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create apeeconomics-v2-level0 --repo "$GITHUB_REPOSITORY" \
+              --title "Ape Economics 2.0 — Level 0" --notes "Playable pixel-art level hub and tutorial. Work-in-progress." --prerelease
+          fi
+          gh release upload apeeconomics-v2-level0 "$apk#ApeEconomics-v2-debug.apk" --repo "$GITHUB_REPOSITORY" --clobber
