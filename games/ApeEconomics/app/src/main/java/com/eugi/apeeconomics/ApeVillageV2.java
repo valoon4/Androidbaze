@@ -3,6 +3,7 @@ package com.eugi.apeeconomics;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,7 +24,8 @@ import java.util.Random;
  * The legacy v0.15 renderer is preserved in the repository but never instantiated.
  */
 public class ApeVillageV2 extends View {
-    private static final int W=240, H=432, MAP=704, WORLD_TOP=83, WORLD_BOTTOM=354;
+    private static final int W=240, H=432, MAP=704, WORLD_TOP=63, WORLD_BOTTOM=374;
+    private static final float ZOOM=.57f;
     private static final int CREAM=0xfff7eac6, INK=0xff392f38, GREEN=0xff4b8e52;
     private static final int DARKGREEN=0xff305a48, LIME=0xff91c85e, GOLD=0xffe8bc57;
     private static final int BROWN=0xff755344, PINK=0xffe58b88, BLUE=0xff69b7c3;
@@ -33,15 +35,16 @@ public class ApeVillageV2 extends View {
     private final SharedPreferences save;
     private final Bitmap frame=Bitmap.createBitmap(W,H,Bitmap.Config.ARGB_8888);
     private Bitmap terrain;
+    private Bitmap[] apeSprites;
     private final Rect source = new Rect();
     private final RectF destination = new RectF();
     private final ArrayList<Speck> flecks=new ArrayList<>();
     private final ArrayList<Monkey> monkeys=new ArrayList<>();
     private final Location[] buildings={
-            new Location("PLANTATION",161,249,0),
-            new Location("MARKET",501,261,1),
-            new Location("TOWN HALL",343,212,2),
-            new Location("BANK",496,483,3)
+            new Location("PLANTATION",162,266,0),
+            new Location("MARKET",513,568,1),
+            new Location("TOWN HALL",345,222,2),
+            new Location("BANK",514,273,3)
     };
     private final String[] worldNames={
             "THE FIRST BANANA", "MERCHANT ISLES", "CAPITAL OF APES",
@@ -95,7 +98,15 @@ public class ApeVillageV2 extends View {
         p.setFilterBitmap(false);
         p.setTypeface(font);
         setLayerType(View.LAYER_TYPE_SOFTWARE,null);
-        createWorld();
+        int worldId=getResources().getIdentifier("ape_v23_world","drawable",getContext().getPackageName());
+        if(worldId!=0) terrain=BitmapFactory.decodeResource(getResources(),worldId);
+        if(terrain==null)createWorld();
+        apeSprites=new Bitmap[]{
+          BitmapFactory.decodeResource(getResources(),R.drawable.ape_worker),
+          BitmapFactory.decodeResource(getResources(),R.drawable.ape_politician),
+          BitmapFactory.decodeResource(getResources(),R.drawable.ape_banker),
+          BitmapFactory.decodeResource(getResources(),R.drawable.ape_trader)
+        };
         resetMonkeys();
         setFocusable(true);
         setHapticFeedbackEnabled(true);
@@ -151,12 +162,12 @@ public class ApeVillageV2 extends View {
     }
     private void resetMonkeys(){
         monkeys.clear();
-        monkeys.add(new Monkey(183,285,0xffc87a59,0));
-        monkeys.add(new Monkey(325,253,0xffd7a66d,1));
-        monkeys.add(new Monkey(493,291,0xff8b6764,2));
-        monkeys.add(new Monkey(421,536,0xffcca37a,3));
-        monkeys.add(new Monkey(309,550,0xffbd9573,4));
-        monkeys.add(new Monkey(528,529,0xffb28b5f,5));
+        monkeys.add(new Monkey(191,293,0xffc87a59,0));
+        monkeys.add(new Monkey(331,277,0xffd7a66d,1));
+        monkeys.add(new Monkey(505,293,0xff8b6764,2));
+        monkeys.add(new Monkey(424,539,0xffcca37a,3));
+        monkeys.add(new Monkey(278,552,0xffbd9573,4));
+        monkeys.add(new Monkey(603,553,0xffb28b5f,5));
         for(Monkey m:monkeys){m.fromX=m.x;m.fromY=m.y;m.toX=m.x;m.toY=m.y;m.phase=(m.job*.15f);}
     }
 
@@ -460,6 +471,15 @@ public class ApeVillageV2 extends View {
         for(int i=0;i<16;i++)flecks.add(new Speck(x,y,(rng.nextFloat()-.5f)*100,
             (rng.nextFloat()-.55f)*100,color));
     }
+    private boolean solid(float x,float y){
+        if(y>355&&y<431&&(x<317||x>381))return true;
+        if(x>91&&x<232&&y>111&&y<259)return true;
+        if(x>268&&x<421&&y>66&&y<217)return true;
+        if(x>445&&x<583&&y>106&&y<267)return true;
+        if(x>437&&x<590&&y>424&&y<563)return true;
+        return false;
+    }
+
     private void animate(float dt){
         animationTime+=dt;
         if(screen!=PLAY)return;
@@ -490,15 +510,15 @@ public class ApeVillageV2 extends View {
             float speed=91f*dt;
             float nextX=clamp(playerX+dx*speed,17,MAP-17);
             float nextY=clamp(playerY+dy*speed,34,MAP-18);
-            // River acts as a genuine world obstacle, except at the bridge.
-            if(!(nextY>354 && nextY<414 && (nextX<321 || nextX>377))){
+            // River and solid building silhouettes are part of navigation.
+            if(!solid(nextX,nextY)){
                 playerX=nextX;playerY=nextY;
             }
             faceX=dx;faceY=dy;
         }
         resetObjectiveFromLocation();
-        camX=clamp(playerX-W/2f,0,MAP-W);
-        camY=clamp(playerY-(WORLD_BOTTOM-WORLD_TOP)*.55f,0,MAP-(WORLD_BOTTOM-WORLD_TOP));
+        camX=clamp(playerX-W/(ZOOM*2),0,MAP-W/ZOOM);
+        camY=clamp(playerY-(WORLD_BOTTOM-WORLD_TOP)*.57f/ZOOM,0,MAP-(WORLD_BOTTOM-WORLD_TOP)/ZOOM);
         for(Monkey m:monkeys){
             float speed=.16f+(m.job%3)*.018f;
             m.phase+=dt*speed;
@@ -517,7 +537,9 @@ public class ApeVillageV2 extends View {
     private void world(Canvas c){
         color(0xff537e65);c.drawRect(0,WORLD_TOP,W,WORLD_BOTTOM,p);
         c.save();c.clipRect(0,WORLD_TOP,W,WORLD_BOTTOM);
-        c.translate(-camX,WORLD_TOP-camY);
+        c.translate(0,WORLD_TOP);
+        c.scale(ZOOM,ZOOM);
+        c.translate(-camX,-camY);
         c.drawBitmap(terrain,0,0,p);
         // Flowing water gleams above the static tilemap.
         for(int i=0;i<34;i++){
@@ -565,8 +587,8 @@ public class ApeVillageV2 extends View {
     private void questPointer(Canvas c){
         if(quest>=6)return;
         Location goal=buildings[(quest<=1)?0:(quest<=3)?1:2];
-        float sx=goal.x-camX;
-        float sy=goal.y-camY+WORLD_TOP;
+        float sx=(goal.x-camX)*ZOOM;
+        float sy=(goal.y-camY)*ZOOM+WORLD_TOP;
         if(sx>=14&&sx<=W-14&&sy>=WORLD_TOP+18&&sy<=WORLD_BOTTOM-18)return;
         float bx=clamp(sx,14,W-14),by=clamp(sy,WORLD_TOP+18,WORLD_BOTTOM-18);
         rect(c,bx-11,by-9,22,18,INK);
@@ -775,8 +797,8 @@ public class ApeVillageV2 extends View {
             if(y>=362 && x>155){action();return true;}
             if(y>=WORLD_TOP && y<WORLD_BOTTOM){
                 touchStartX=x;touchStartY=y;
-                targetX=clamp(x+camX,17,MAP-17);
-                targetY=clamp(y-WORLD_TOP+camY,20,MAP-20);
+                targetX=clamp(x/ZOOM+camX,17,MAP-17);
+                targetY=clamp((y-WORLD_TOP)/ZOOM+camY,20,MAP-20);
                 moveTouch=true;joystickTouch=false;return true;
             }
             return true;
