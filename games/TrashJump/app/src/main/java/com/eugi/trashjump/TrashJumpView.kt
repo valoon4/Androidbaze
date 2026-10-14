@@ -623,8 +623,8 @@ class TrashJumpView(context: Context) : View(context) {
             text(c, banner, 240f, y + 25f, 15f, navy)
         }
         // Two touch zones are always subtly visible for first-time discoverability.
-        box(c, 12f, 749f, 102f, 35f, 13f, navy, inputDirection == -1 ? 210 : 115)
-        box(c, 366f, 749f, 102f, 35f, 13f, navy, inputDirection == 1 ? 210 : 115)
+        box(c, 12f, 749f, 102f, 35f, 13f, navy, if (inputDirection == -1) 210 else 115)
+        box(c, 366f, 749f, 102f, 35f, 13f, navy, if (inputDirection == 1) 210 else 115)
         text(c, "< LEFT", 63f, 774f, 17f, cyan)
         text(c, "RIGHT >", 416f, 774f, 17f, cyan)
     }
