@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#78d9db">
+  <title>Kleine Welle – Die Schleiminsel</title>
+  <style>
+    :root {
+      --ink: #203d58;
+      --cream: #fff9df;
+      --aqua: #39c7c7;
+      --teal: #0c8e9c;
+      --sun: #ffc667;
+      --pink: #fb829b;
+    }
+    * { box-sizing: border-box; }
+    html, body { height:100%; width:100%; margin:0; overflow:hidden; }
+    body { font-family: "Trebuchet MS", "Arial Rounded MT Bold", system-ui, sans-serif; background:#91e3eb; color:var(--ink); user-select:none; }
+    #stage { position:fixed; inset:0; z-index:0; }
+    #stage canvas { display:block; width:100%; height:100%; }
+    body::after {
+      content:""; pointer-events:none; position:fixed; inset:0; z-index:1;
+      background:linear-gradient(180deg,rgba(18,80,104,.07) 0%,transparent 35%,transparent 70%,rgba(8,76,95,.12) 100%);
+    }
+    .hud { position:fixed; top:24px; z-index:3; display:flex; align-items:center; gap:12px; }
+    .hud.left { left:26px; } .hud.right { right:26px; }
+    .glass {
+      background:rgba(255,250,225,.92); border:3px solid var(--ink);
+      box-shadow:0 6px 0 rgba(29,68,82,.18), 0 14px 30px rgba(12,86,108,.10);
+      border-radius:19px; padding:13px 18px;
+    }
+    .brand .tiny { color:#31858b; font-size:10px; letter-spacing:2.8px; font-weight:900; text-transform:uppercase; }
+    .brand .name { font-size:19px; letter-spacing:.8px; font-weight:1000; line-height:1.1; }
+    .stats { display:flex; gap:13px; align-items:center; }
+    .stat-title { color:#54818c; font-size:10px; letter-spacing:1.7px; font-weight:1000; }
+    .stat-value { display:flex; align-items:center; margin-top:3px; gap:4px; font-size:20px; font-weight:1000; }
+    .hearts { display:flex; align-items:center; gap:3px; font-size:23px; letter-spacing:0; }
+    .heart { color:#f56b7f; filter:drop-shadow(0 1px 0 #992c49); transition:transform .2s, opacity .2s; }
+    .heart.empty { color:#a4b0ae; filter:none; opacity:.62; }
+    .slime-dot { display:inline-block; width:18px; height:17px; border-radius:55% 55% 45% 45%; background:#fa7ca5; border:2px solid #a83f69; transform:rotate(-12deg); position:relative; margin-right:3px; }
+    .slime-dot::before, .slime-dot::after { content:""; position:absolute; width:3px; height:4px; background:#28354c; top:6px; border-radius:50%; }
+    .slime-dot::before { left:4px; } .slime-dot::after { right:3px; }
+    .controls {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      display:flex; gap:15px; flex-wrap:wrap; justify-content:center; z-index:3;
+      color:#234b60; font-size:12px; font-weight:900;
+      text-shadow:0 1px 0 rgba(255,255,255,.9);
+      white-space:nowrap; pointer-events:none;
+    }
+    .controls span { background:rgba(255,252,230,.88); border:2px solid rgba(37,79,90,.32); border-radius:100px; padding:7px 12px; box-shadow:0 3px 0 rgba(32,61,88,.10); }
+    kbd { font:inherit; color:#c25e69; }
+    .overlay {
+      position:fixed; z-index:10; inset:0; display:flex; justify-content:center; align-items:center;
+      background:rgba(31,78,101,.28); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px);
+      padding:24px;
+    }
+    .overlay.hidden, .hidden { display:none !important; }
+    .panel {
+      position:relative; text-align:center; width:min(510px, 100%); padding:42px 42px 35px;
+      background:var(--cream); border:5px solid var(--ink); border-radius:34px;
+      box-shadow:0 12px 0 #326174, 0 22px 0 rgba(26,83,104,.18), 0 27px 65px rgba(12,58,89,.25);
+      animation:pop .45s cubic-bezier(.18,1.55,.45,1);
+    }
+    @keyframes pop { from { transform:scale(.82) translateY(20px); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .mini-icon { display:inline-flex; justify-content:center; align-items:center; width:74px; height:74px; border:4px solid var(--ink); border-radius:25px; background:#b9f2db; font-size:39px; transform:rotate(-9deg); box-shadow:5px 6px 0 rgba(44,104,117,.2); }
+    .eyebrow { margin:18px 0 4px; color:#298f90; font-size:11px; letter-spacing:3px; font-weight:1000; }
+    h1 { margin:0; font-size:clamp(42px,7vw,62px); line-height:1; letter-spacing:-2px; font-weight:1000; }
+    h1 em { display:block; font-style:normal; color:#f27986; text-shadow:2px 3px 0 #ffdcb4; }
+    .panel p { font-size:15px; font-weight:800; line-height:1.65; max-width:380px; margin:20px auto 24px; color:#4b6f7b; }
+    .pill {
+      display:inline-flex; align-items:center; justify-content:center; gap:12px;
+      background:var(--sun); border:3px solid var(--ink); border-radius:100px;
+      color:var(--ink); padding:15px 29px; font:1000 17px "Trebuchet MS",system-ui,sans-serif;
+      cursor:pointer; box-shadow:0 6px 0 #bb854b; transition:transform .15s,box-shadow .15s;
+    }
+    .pill:hover { transform:translateY(-3px); box-shadow:0 9px 0 #bb854b; }
+    .pill:active { transform:translateY(4px); box-shadow:0 2px 0 #bb854b; }
+    .microcopy { margin-top:23px; font-size:11px; line-height:1.6; font-weight:900; letter-spacing:.4px; color:#6d98a0; }
+    #toast { position:fixed; top:125px; left:50%; transform:translate(-50%,-10px); z-index:7;
+      background:#fffad8; color:#1d5261; font-weight:1000; border:3px solid #1f4c60;
+      border-radius:30px; padding:11px 21px; box-shadow:0 5px 0 rgba(23,74,93,.18);
+      opacity:0; transition:opacity .22s,transform .22s; pointer-events:none; white-space:nowrap;
+    }
+    #toast.show { opacity:1; transform:translate(-50%,0); }
+    #error { position:fixed; z-index:20; inset:20px; display:grid; place-items:center; text-align:center;
+      background:#fff7e7; color:#284c59; border:4px solid #284c59; border-radius:20px; padding:25px; font-weight:900; }
+    #error.hidden { display:none; }
+    @media(max-width:650px) {
+      .hud { top:12px; } .hud.left { left:12px; } .hud.right { right:12px; }
+      .glass { border-width:2px; border-radius:15px; padding:9px 11px; }
+      .brand .name { font-size:14px; } .brand .tiny,.stat-title { font-size:9px; letter-spacing:1px; }
+      .stat-value { font-size:15px; }.hearts { font-size:17px; }
+      .stats { gap:8px; } .panel { padding:34px 22px 29px; }.controls { bottom:10px; gap:5px; font-size:10px; }
+      .controls span { padding:5px 7px; } #toast {top:99px;}
+    }
+  </style>
+</head>
+<body>
+  <div id="stage" aria-label="3D-Spielwelt mit kleiner Insel und drei Schleimen"></div>
+  <div class="hud left">
+    <div class="glass brand"><div class="tiny">☀ Ein Mini-Abenteuer</div><div class="name">🌊 KLEINE WELLE</div></div>
+  </div>
+  <div class="hud right">
+    <div class="glass stats">
+      <div><div class="stat-title">LEBEN</div><div class="hearts" id="hearts">♥ ♥ ♥</div></div>
+      <div style="width:2px;height:34px;background:#c9d8c5"></div>
+      <div><div class="stat-title">SCHLEIME</div><div class="stat-value"><i class="slime-dot"></i><span id="slimeCount">0 / 3</span></div></div>
+    </div>
+  </div>
+  <div id="toast" aria-live="polite">Los geht's!</div>
+  <div class="controls" aria-label="Steuerung">
+    <span><kbd>W A S D</kbd> / <kbd>↑ ← ↓ →</kbd> Bewegen</span>
+    <span><kbd>LEERTASTE</kbd> / <kbd>KLICK</kbd> Schwert</span>
+    <span><kbd>R</kbd> Neustart</span>
+  </div>
+  <div class="overlay" id="startPanel">
+    <div class="panel">
+      <div class="mini-icon">🏝️</div>
+      <div class="eyebrow">EIN KLEINES CEL-SHADING-ABENTEUER</div>
+      <h1>KLEINE <em>WELLE!</em></h1>
+      <p>Eine winzige Insel im endlosen türkisblauen Meer. Drei freche Schleime. Und du hast ein Schwert. Mehr braucht ein Abenteuer nicht! ✨</p>
+      <button id="playBtn" class="pill" type="button">⚔️ AB AUF DIE INSEL! <span>➜</span></button>
+      <div class="microcopy">3 SCHLEIME BESIEGEN · 3 HERZEN BESCHÜTZEN<br>100 % OFFLINE SPIELBAR</div>
+    </div>
+  </div>
+  <div class="overlay hidden" id="endPanel">
+    <div class="panel">
+      <div class="mini-icon" id="endIcon">🏆</div>
+      <div class="eyebrow" id="endEyebrow">GESCHAFFT!</div>
+      <h1 id="endTitle">INSEL <em>GERETTET!</em></h1>
+      <p id="endDescription">Alle drei Schleime sind besiegt. Das Meer glitzert vor Freude!</p>
+      <button class="pill" id="againBtn" type="button">↻ NOCHMAL SPIELEN</button>
+      <div class="microcopy">KLEINE WELLE · EIN MINI-PC-GAME</div>
+    </div>
+  </div>
+  <div id="error" class="hidden" role="alert"></div>
+  <script src="./vendor/three.min.js"></script>
+  <script src="./game.js"></script>
+</body>
+</html>
