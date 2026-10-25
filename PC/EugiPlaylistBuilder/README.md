@@ -11,24 +11,28 @@ Der automatische Windows-Workflow testet den Code, baut die portable EXE und akt
 ## Bedienung
 
 1. **Unsorted.m3u8** laden. Auch .m3u wird gelesen.
-2. **Research-Tabelle** aus ChatGPT / Markdown oder als 6-spaltigen TSV einfügen, dann **Tabelle zuordnen**.
+2. **Research-Tabelle** aus ChatGPT/Markdown oder als TSV einfügen. Standard sind **9 Spalten** (Anime | Jahr/Quartal | OP/ED | Nr | Song | Interpret | Best | Super | Ultra). Dann **Tabelle zuordnen** drücken. Alternativ funktionieren die bisherige kurze 5-/6-Spalten-Tabelle und eine 10. Spalte für Mega.
 3. Gewünschte Playlist **Rest / Best / Super / Ultra / Mega** und Zeitraum **Ganzes Jahr / Q1 / Q2 / Q3 / Q4** wählen.
 4. **M3U8 exportieren**: Es entsteht genau **eine** Datei.
 
-Beispiel einer kopierbaren Research-Tabelle:
+Beispiel: direkt die komplette Tabelle einfügen. Sie darf die Markdown-Trennzeile enthalten:
 
-    | Mojakou OP 2                      | 1996 3. | 1 | 1 | 1 | 1 |
-    | --------------------------------- | ------- | - | - | - | - |
-    | Shamanic Princess OP              | 1996 3. | 1 | 1 | 1 | 1 |
-    | Shin Seiki GPX Cyber Formula Saga | 1996 3. | 1 | 1 | 1 | 1 |
-    | Meitantei Conan OP 2              | 1996 4. | 1 | 1 | 1 | 1 |
+    | Samurai Flamenco OP 2      | 2014 1. | OP | 1 | Ai Ai Ai ni Utarete Bye Bye Bye | FLOW           | 1 | 1 | 1 |
+    | -------------------------- | ------- | -- | - | ------------------------------- | -------------- | - | - | - |
+    | Seitokai Yakuindomo 2      | 2014 1. | OP | 1 | Hanasaku Saikyou Legend Days    | Triple Booking | 1 | 1 | 0 |
+    | Space Dandy                | 2014 1. | OP | 1 | Viva Namida                     | Yasuyuki Okamura | 1 | 1 | 1 |
 
-Spalten: **Dateiname / Anime-Musikkennung | Jahr + Season | Best | Super | Ultra | Mega**. Die zweite Spalte akzeptiert z. B. "1996 3.", "2027 Q4" und "Winter 2026".
+Die **drei letzten Spalten sind Best, Super, Ultra**. Mega darf als zehnte Spalte ergänzt werden; ohne zehnte Spalte gilt Mega = 0. Die *Nr*-Spalte ist **kein** Best/Super/Ultra-Wert.
+
+- Der Dateiname in Unsorted ist der primäre Matchschlüssel. Ist "OP" oder "ED" separat angegeben, kann der Builder den Typ an den Anime-Namen anhängen: etwa "Space Dandy" + "OP" → "Space Dandy OP".
+- Ein bereits vorhandenes "OP 2" wird **nicht** durch die Zahl in der Nr-Spalte überschrieben: "Samurai Flamenco OP 2" bleibt "Samurai Flamenco OP 2".
+- Die zweite Spalte unterstützt "1996 3.", "2027 Q4" sowie "Winter 2026".
+- Nicht eindeutige Treffer werden in einem Prüfbericht aufgeführt, nie per Fuzzy-Matching blind gesetzt.
 
 ## Die wichtigste Logik: Best als Auffangnetz
 
 - Der komplette Unsorted-Pool liegt zunächst in **Best**. So wird niemals ein im Pool vorhandener Track durch eine unvollständige Research-Tabelle vergessen.
-- **Nur ein ausdrücklich zugeordnetes 0/0/0/0** bedeutet **Rest**.
+- **Nur ein ausdrücklich zugeordnetes 0/0/0** (bzw. 0/0/0/0 bei zusätzlicher Mega-Spalte) bedeutet **Rest**.
 - Wenn **Super, Ultra oder Mega** gesetzt ist, gehört der Song **immer auch zu Best**, selbst wenn die Best-Spalte in der Research-Liste 0 war. Die drei oberen Stufen sind unabhängig voneinander, nicht automatisch ineinander enthalten.
 - Nicht im Research erkannte Titel bleiben in **Best** und sind in der Tabelle mit **Best auto** gekennzeichnet. Nicht gefundene und mehrdeutige Research-Zeilen werden separat angezeigt.
 - Der Songabgleich verwendet den Musik-**Dateinamen** aus Unsorted, nicht den Interpretentitel aus EXTINF. Leerzeichen und Satzzeichen werden konservativ normalisiert, verschiedene Varianten (OP vs OPv2) bleiben unterscheidbar. Ähnliche Namen werden nur **vorgeschlagen**, nie blind übernommen.
