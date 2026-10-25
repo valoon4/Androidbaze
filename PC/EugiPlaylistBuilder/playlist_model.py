@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 from playlist_core import Track, name_key, parse_m3u, path_key, read_playlist, render_m3u
+from research_table import MatchReport, match_research, parse_research_table
 
 LEVELS = ('Best', 'Super', 'Ultra', 'Mega')
 
@@ -40,6 +41,8 @@ class PlaylistProject:
         self.source: list[Track] = []
         self.flags: list[list[int]] = []
         self.import_reports: dict[str, ImportReport] = {}
+        self.classified: set[int] = set()
+        self.last_table_report: MatchReport | None = None
 
     def load_unsorted(self, path: str | Path) -> None:
         tracks = parse_m3u(read_playlist(path))
@@ -49,6 +52,8 @@ class PlaylistProject:
         self.source = tracks
         self.flags = [[0, 0, 0, 0] for _ in tracks]
         self.import_reports = {}
+        self.classified = set()
+        self.last_table_report = None
 
     @staticmethod
     def level_index(level: str) -> int:
@@ -58,10 +63,57 @@ class PlaylistProject:
 
     def set_flag(self, index: int, level: str, state: bool) -> None:
         self.flags[index][self.level_index(level)] = int(bool(state))
+        self.classified.add(index)
 
     def toggle(self, index: int, level: str) -> None:
         j = self.level_index(level)
         self.flags[index][j] ^= 1
+        self.classified.add(index)
+
+    def apply_research_table(self, text: str) -> MatchReport:
+        """Replace all classifications from a pasted six-column research table."""
+        if not self.source:
+            raise ValueError("Bitte zuerst Unsorted.m3u8 laden.")
+        rows = parse_research_table(text)
+        report = match_research(self.source, rows)
+        if not report.assignments:
+            raise ValueError("Kein einziger Research-Eintrag passt eindeutig zur Unsorted. Bitte Jahr und Songnamen prüfen. Bisherige Zuordnungen bleiben erhalten.")
+        self.flags = [[0, 0, 0, 0] for _ in self.source]
+        self.classified = set(report.assignments)
+        for idx, flags in report.assignments.items():
+            self.flags[idx] = list(flags)
+        self.last_table_report = report
+        return report
+
+    def rows_for_export(self, level: str) -> list[Track]:
+        """Only explicitly classified rows; missing rows are NOT automatically Rest."""
+        if level not in ("Rest", *LEVELS):
+            raise ValueError(f"Unbekannte Playlist-Stufe: {level}")
+        if level == "Rest":
+            return [track for idx, track in enumerate(self.source)
+                    if idx in self.classified and not any(self.flags[idx])]
+        j = LEVELS.index(level)
+        return [track for idx, track in enumerate(self.source)
+                if idx in self.classified and self.flags[idx][j]]
+
+    def export_one(self, target: str | Path, level: str) -> Path:
+        if not self.source:
+            raise ValueError("Bitte zuerst Unsorted laden.")
+        if not self.classified:
+            raise ValueError("Erst Research-Tabelle zuordnen oder Songs markieren.")
+        target = Path(target)
+        if target.suffix.lower() != ".m3u8":
+            raise ValueError("Die Ausgabedatei muss auf .m3u8 enden.")
+        if self.source_path and target.resolve() == Path(self.source_path).resolve():
+            raise ValueError("Die Unsorted-Eingabedatei darf nicht überschrieben werden!")
+        selected = self.rows_for_export(level)
+        if not selected:
+            raise ValueError(f"Keine klassifizierten Songs für {level} gefunden.")
+        target.write_bytes(render_m3u(selected).encode("utf-8"))
+        return target
+
+    def classification_counts(self) -> list[int]:
+        return [len(self.rows_for_export(level)) for level in ("Rest", *LEVELS)]
 
     def import_tier(self, path: str | Path, level: str) -> ImportReport:
         """Clear JUST this level. Exact unique file-path matching; never fuzzy guesses."""
