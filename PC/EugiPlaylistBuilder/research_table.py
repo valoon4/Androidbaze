@@ -27,6 +27,7 @@ class ResearchRow:
 @dataclass
 class MatchReport:
     assignments: dict[int, tuple[int, int, int, int]]
+    quarters: dict[int, int | None]
     input_count: int
     missing: list[str] = field(default_factory=list)
     ambiguous: list[str] = field(default_factory=list)
@@ -40,6 +41,7 @@ class MatchReport:
         out = [
             f"Research-Zeilen: {self.input_count}",
             f"Eindeutig zugeordnet: {len(self.assignments)}",
+            f"Davon mit Quartal: {sum(q is not None for q in self.quarters.values())}",
             f"Noch nicht zugeordnete Unsorted-Songs: {source_count - len(self.assignments)}",
             f"Nicht gefunden / Jahr falsch: {len(self.missing)}",
             f"Mehrdeutig / Konflikt: {len(self.ambiguous)}",
@@ -105,6 +107,22 @@ def parse_research_table(text: str) -> list[ResearchRow]:
     return results
 
 
+def parse_quarter(period: str) -> int | None:
+    """Recognize YYYY 3., YYYY Q3, Q3 and season labels."""
+    match = re.search(r"(?<!\w)[Qq]\s*([1-4])(?!\d)", period)
+    if match:
+        return int(match.group(1))
+    match = re.search(r"(?<!\d)(?:19|20)\d{2}\s*[-./ ]\s*([1-4])(?:\.|\b)", period)
+    if match:
+        return int(match.group(1))
+    names = ("winter", "spring", "sommer", "summer", "fall", "autumn", "herbst", "frühling", "fruehling")
+    mapping = {"winter": 1, "spring": 2, "frühling": 2, "fruehling": 2, "summer": 3, "sommer": 3, "fall": 4, "autumn": 4, "herbst": 4}
+    for name in names:
+        if re.search(r"(?<!\w)" + re.escape(name) + r"(?!\w)", period, flags=re.I):
+            return mapping[name]
+    return None
+
+
 def match_research(source: list[Track], rows: list[ResearchRow]) -> MatchReport:
     """Match uniquely by the actual music filename, never by artist/title EXTINF."""
     index: dict[str, list[int]] = defaultdict(list)
@@ -114,6 +132,7 @@ def match_research(source: list[Track], rows: list[ResearchRow]) -> MatchReport:
             index[key].append(idx)
 
     chosen: dict[int, tuple[int, int, int, int]] = {}
+    quarters: dict[int, int | None] = {}
     blocked: set[int] = set()
     missing: list[str] = []
     ambiguous: list[str] = []
@@ -139,12 +158,14 @@ def match_research(source: list[Track], rows: list[ResearchRow]) -> MatchReport:
         if idx in blocked:
             continue
         if idx in chosen:
-            if chosen[idx] == row.flags:
+            if chosen[idx] == row.flags and quarters[idx] == parse_quarter(row.period):
                 warnings.append(f"Zeile {row.line}: {row.name} steht doppelt mit gleichen Flags in der Tabelle.")
             else:
                 ambiguous.append(f"Zeile {row.line}: {row.name}: widersprüchliche 0/1-Zuordnungen; Track bleibt unklassifiziert.")
                 chosen.pop(idx)
+                quarters.pop(idx, None)
                 blocked.add(idx)
             continue
         chosen[idx] = row.flags
-    return MatchReport(chosen, len(rows), missing, ambiguous, warnings)
+        quarters[idx] = parse_quarter(row.period)
+    return MatchReport(chosen, quarters, len(rows), missing, ambiguous, warnings)
