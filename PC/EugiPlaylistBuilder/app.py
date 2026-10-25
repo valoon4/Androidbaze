@@ -36,7 +36,7 @@ class App(tk.Tk):
         ttk.Button(actions, text='1  Unsorted laden', command=self.load_unsorted).pack(side='left', padx=(0, 8))
         ttk.Button(actions, text='Projekt öffnen', command=self.open_project).pack(side='left', padx=(0, 8))
         ttk.Button(actions, text='Projekt speichern', command=self.save_project).pack(side='left', padx=(0, 8))
-        ttk.Button(actions, text='3  Alle M3U exportieren', command=self.export_all).pack(side='right')
+        ttk.Button(actions, text='3  Alle M3U8 exportieren', command=self.export_all).pack(side='right')
         ttk.Label(top, textvariable=self.file_label, foreground='#666').pack(anchor='w', pady=(9, 0))
 
         importing = ttk.LabelFrame(self, text='2  Bestehende Playlists importieren (gleiche Dateipfade markieren)', padding=10)
@@ -87,7 +87,7 @@ class App(tk.Tk):
         ttk.Label(bottom, textvariable=self.status, foreground='#666', wraplength=1160).pack(anchor='w', pady=(5, 0))
 
     def load_unsorted(self):
-        file = filedialog.askopenfilename(title='Unsorted M3U auswählen', filetypes=[('M3U Playlists', '*.m3u *.m3u8'), ('Alle Dateien', '*.*')])
+        file = filedialog.askopenfilename(title='Unsorted M3U auswählen', filetypes=[('M3U8 / M3U Playlists', '*.m3u8 *.m3u'), ('Alle Dateien', '*.*')])
         if not file:
             return
         try:
@@ -104,7 +104,7 @@ class App(tk.Tk):
         if not self.project.source:
             messagebox.showwarning('Unsorted fehlt', 'Bitte zuerst Unsorted laden.')
             return
-        file = filedialog.askopenfilename(title=f'{level}-Playlist importieren', filetypes=[('M3U Playlists', '*.m3u *.m3u8'), ('Alle Dateien', '*.*')])
+        file = filedialog.askopenfilename(title=f'{level}-Playlist importieren', filetypes=[('M3U8 / M3U Playlists', '*.m3u8 *.m3u'), ('Alle Dateien', '*.*')])
         if not file:
             return
         if any(flags[LEVELS.index(level)] for flags in self.project.flags) and not messagebox.askyesno('Kategorie ersetzen?', f'Die bisherigen {level}-Häkchen werden durch diese Datei ersetzt. Fortfahren?'):
@@ -197,8 +197,8 @@ class App(tk.Tk):
         try:
             stem = Path(self.project.source_path).stem.replace('Unsorted', '').strip(' _-') or 'Playlist'
             files = self.project.export(directory, stem)
-            self.status.set(f'5 M3U-Playlists + Zuordnungs-CSV exportiert nach {directory}')
-            messagebox.showinfo('Export fertig!', f'5 Playlists gespeichert:\n\n' + '\n'.join(p.name for p in files) + '\n\nPlus Zuordnungs-CSV und ggf. Prüfbericht.')
+            self.status.set(f'5 M3U8-Playlists + Zuordnungs-CSV exportiert nach {directory}')
+            messagebox.showinfo('Export fertig!', f'5 M3U8-Playlists gespeichert:\n\n' + '\n'.join(p.name for p in files) + '\n\nPlus Zuordnungs-CSV und ggf. Prüfbericht.')
         except Exception as ex:
             messagebox.showerror('Exportfehler', str(ex))
 
@@ -222,7 +222,7 @@ class App(tk.Tk):
             try:
                 self.project.load_project(file)
             except FileNotFoundError:
-                alt = filedialog.askopenfilename(title='Unsorted-Datei erneut auswählen', filetypes=[('M3U Playlists', '*.m3u *.m3u8')])
+                alt = filedialog.askopenfilename(title='Unsorted-Datei erneut auswählen', filetypes=[('M3U8 / M3U Playlists', '*.m3u8 *.m3u')])
                 if not alt:
                     return
                 self.project.load_project(file, alt)
