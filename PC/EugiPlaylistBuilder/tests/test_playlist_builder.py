@@ -44,7 +44,7 @@ class TestPlaylistBuilder(unittest.TestCase):
             src = Path(tmp) / '日本語.m3u8'
             line = '#EXTINF:218,初音ミク - Über den Wolken'
             uri = 'file:///F:/Musik/2014/%E9%9F%B3%E6%A5%BD%20OP.flac'
-            src.write_text('#EXTM3U\\n' + line + '\\n' + uri + '\\n', encoding='utf-8')
+            src.write_text('#EXTM3U\n' + line + '\n' + uri + '\n', encoding='utf-8')
             p = PlaylistProject()
             p.load_unsorted(src)
             p.set_flag(0, 'Mega', True)
