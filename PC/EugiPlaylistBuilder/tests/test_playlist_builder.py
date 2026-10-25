@@ -33,9 +33,27 @@ class TestPlaylistBuilder(unittest.TestCase):
             self.assertEqual(p.counts(), [0, 1, 0, 2, 0])
             exports = p.export(Path(tmp) / 'out', '2014')
             self.assertEqual(len(exports), 5)
-            actual = exports[3].read_text('utf-8-sig')
+            self.assertTrue(all(output.suffix == '.m3u8' for output in exports))
+            self.assertFalse(exports[3].read_bytes().startswith(b'\xef\xbb\xbf'))
+            actual = exports[3].read_text('utf-8')
             self.assertEqual(actual, render_m3u([p.source[0], p.source[1]]))
             self.assertTrue((Path(tmp) / 'out' / '2014_Zuordnung.csv').exists())
+
+    def test_unicode_m3u8_roundtrip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / '日本語.m3u8'
+            line = '#EXTINF:218,初音ミク - Über den Wolken'
+            uri = 'file:///F:/Musik/2014/%E9%9F%B3%E6%A5%BD%20OP.flac'
+            src.write_text('#EXTM3U\\n' + line + '\\n' + uri + '\\n', encoding='utf-8')
+            p = PlaylistProject()
+            p.load_unsorted(src)
+            p.set_flag(0, 'Mega', True)
+            output = p.export(Path(tmp) / 'out', '日本語')[4]
+            self.assertEqual(output.suffix, '.m3u8')
+            self.assertEqual(output.read_bytes()[:7], b'#EXTM3U')
+            text = output.read_text(encoding='utf-8')
+            self.assertIn(line, text)
+            self.assertIn(uri, text)
 
     def test_unknown_reference_not_guessed(self):
         with tempfile.TemporaryDirectory() as tmp:
