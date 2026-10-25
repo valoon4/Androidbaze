@@ -8,6 +8,13 @@ on:
       - '.github/workflows/eugi-playlist-builder-exe.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
+concurrency:
+  group: eugi-playlist-builder-release
+  cancel-in-progress: false
+
 jobs:
   portable-windows:
     runs-on: windows-latest
@@ -30,3 +37,23 @@ jobs:
           name: EugiPlaylistBuilder-Windows-portable
           path: PC/EugiPlaylistBuilder/dist/EugiPlaylistBuilder.exe
           if-no-files-found: error
+
+      - name: EXE als GitHub Release bereitstellen
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="eugi-playlist-builder-latest"
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "Eugi Playlist Builder - Portable Windows EXE" \
+              --notes "Fertige portable EugiPlaylistBuilder.exe; kein Installer erforderlich. Jede neue erfolgreiche Version ersetzt automatisch die EXE in diesem Release." \
+              --prerelease
+          fi
+          gh release upload "$TAG" "dist/EugiPlaylistBuilder.exe" \
+            --repo "$GITHUB_REPOSITORY" --clobber
+          echo "Direktdownload: https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/EugiPlaylistBuilder.exe"
