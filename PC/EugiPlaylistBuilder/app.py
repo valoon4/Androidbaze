@@ -31,19 +31,19 @@ class App(tk.Tk):
         top.pack(fill="x")
         ttk.Label(top, text="Eugi Playlist Builder", font=("Segoe UI", 19, "bold")).pack(anchor="w")
         ttk.Label(
-            top, text="Einmal Unsorted laden, Research-Tabelle reinkopieren, eine Playlist als UTF-8 M3U8 exportieren."
+            top, text="Unsorted laden, Research-Tabelle einfügen, Playlist auswählen, als M3U8 exportieren."
         ).pack(anchor="w", pady=(2, 9))
         ttk.Button(top, text="1  Unsorted laden", command=self.load_source).pack(anchor="w")
         ttk.Label(top, textvariable=self.file_info, foreground="#666").pack(anchor="w", pady=(5, 0))
 
         research = ttk.LabelFrame(
-            self, text="2  Research-Tabelle einfügen  |  Titel | Jahr/Quartal | Best | Super | Ultra | Mega |",
+            self, text="2  Research einfügen: Anime | Jahr/Q | OP/ED | Nr | Song | Interpret | Best | Super | Ultra",
             padding=8
         )
         research.pack(fill="x", padx=12, pady=(0, 6))
         textbox = ttk.Frame(research)
         textbox.pack(fill="x")
-        self.paste = tk.Text(textbox, height=6, wrap="none", font=("Consolas", 10), undo=True)
+        self.paste = tk.Text(textbox, height=9, wrap="none", font=("Consolas", 10), undo=True)
         self.paste.pack(side="left", fill="x", expand=True)
         scrollbar = ttk.Scrollbar(textbox, orient="vertical", command=self.paste.yview)
         scrollbar.pack(side="right", fill="y")
@@ -53,7 +53,7 @@ class App(tk.Tk):
         ttk.Button(apply_row, text="Tabelle zuordnen", command=self.apply_table).pack(side="left")
         ttk.Label(
             apply_row,
-            text="0/0/0/0 = Rest  ·  sonst Best  ·  Super/Ultra/Mega sind Verfeinerungen",
+            text="Letzte 3 Spalten: Best / Super / Ultra · Mega optional · 0/0/0 = Rest",
             foreground="#555"
         ).pack(side="left", padx=12)
 
@@ -139,7 +139,7 @@ class App(tk.Tk):
         self.file_info.set(f"Unsorted: {filename}")
         q = source_quarter_from_filename(filename)
         self.period.set(f"Q{q}" if q else "Ganzes Jahr")
-        self.status.set(f"{len(self.builder.source)} Songs geladen. Alle vorerst Best; nur explizite 0/0/0/0 werden Rest.")
+        self.status.set(f"{len(self.builder.source)} Songs geladen. Alle vorerst Best; nur explizite 0/0/0 werden Rest.")
         self.refresh()
 
     def apply_table(self):
