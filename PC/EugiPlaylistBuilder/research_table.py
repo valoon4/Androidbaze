@@ -1,6 +1,6 @@
 """Parse pasted Markdown/TSV research tables and match against Unsorted by filename.
 
-Research columns: Theme | Year+quarter | Best | Super | Ultra | Mega.
+Research columns: Title | Year/quarter | [OP/ED | Nr | Song | Artist] | Best | Super | Ultra | [Mega].
 No approximate/artist-title matches are applied automatically.
 """
 from __future__ import annotations
@@ -22,6 +22,10 @@ class ResearchRow:
     period: str
     flags: tuple[int, int, int, int]
     line: int
+    kind: str = ''
+    number: str = ''
+    song: str = ''
+    artist: str = ''
 
 
 @dataclass
@@ -77,34 +81,85 @@ def path_year(track: Track) -> str | None:
 
 
 def parse_research_table(text: str) -> list[ResearchRow]:
-    """Accept Markdown with six cells or tab-separated research rows."""
+    """Paste Markdown or TSV, accepting short and extended tables.
+
+    Short:   Title | Year/quarter | Best | Super | Ultra [| Mega]
+    Extended: Title | Year/quarter | OP/ED | Nr | Song | Artist |
+              Best | Super | Ultra [| Mega]
+    Mega defaults to 0 when omitted. Column Nr is not a playlist flag.
+    """
     results: list[ResearchRow] = []
     for number, raw in enumerate(text.splitlines(), 1):
         stripped = raw.strip()
         if not stripped or stripped.startswith(chr(96) * 3):
             continue
         if stripped.startswith("|"):
-            cells = [x.strip() for x in stripped.strip("|").split("|")]
+            cells = [cell.strip() for cell in stripped.strip("|").split("|")]
         elif "\t" in stripped:
-            cells = [x.strip() for x in stripped.split("\t")]
+            cells = [cell.strip() for cell in stripped.split("\t")]
         else:
-            # Allow surrounding explanatory text or markdown headings.
             continue
-        if not cells or all(re.fullmatch(r":?-+:?", x.replace(" ", "")) for x in cells):
+        if not cells:
+            continue
+        # Markdown separator line, including single '-' cells.
+        if all(re.fullmatch(r":?-+:?", cell.replace(" ", "")) for cell in cells):
             continue
         if cells[0].casefold() in ("name", "titel", "title", "anime", "song", "lied", "track"):
-            if not all(v in ("0", "1") for v in cells[-4:]):
+            if cells[-3:] and not all(v in ("0", "1") for v in cells[-3:]):
                 continue
-        if len(cells) != 6:
-            raise ValueError(f"Zeile {number}: Erwartet 6 Spalten (Titel | Jahr/Quartal | Best | Super | Ultra | Mega); gefunden: {len(cells)}.")
+
+        length = len(cells)
+        if length in (5, 9):
+            count = 3
+        elif length in (6, 10):
+            count = 4
+        elif 7 <= length <= 8:
+            count = 3
+        else:
+            raise ValueError(
+                f"Zeile {number}: {length} Spalten erkannt. "
+                "Unterstützt werden 5/6 (kurz) oder 9/10 (Anime, Jahr, OP/ED, Nr, Song, Interpret, Flags)."
+            )
+
+        values = cells[-count:]
+        if any(value not in ("0", "1") for value in values):
+            raise ValueError(
+                f"Zeile {number} ({cells[0]}): Die letzten {count} Playlist-Spalten "
+                "müssen 0 oder 1 enthalten."
+            )
         if not cells[0]:
-            raise ValueError(f"Zeile {number}: Songtitel/Anime-Bezeichnung fehlt.")
-        if any(flag not in ("0", "1") for flag in cells[2:]):
-            raise ValueError(f"Zeile {number} ({cells[0]}): Best/Super/Ultra/Mega müssen jeweils 0 oder 1 sein.")
-        results.append(ResearchRow(cells[0], cells[1], tuple(int(x) for x in cells[2:]), number))
+            raise ValueError(f"Zeile {number}: Anime/Titel fehlt.")
+        flags = tuple(int(v) for v in values) + (0,) * (4 - count)
+        metadata = cells[2:-count]
+        kind = metadata[0] if metadata else ""
+        sequence = metadata[1] if len(metadata) >= 2 else ""
+        song = metadata[2] if len(metadata) >= 3 else ""
+        artist = metadata[3] if len(metadata) >= 4 else ""
+        results.append(ResearchRow(
+            name=cells[0], period=cells[1], flags=flags, line=number,
+            kind=kind, number=sequence, song=song, artist=artist
+        ))
     if not results:
-        raise ValueError("Keine Research-Zeilen gefunden. Bitte die Markdown-Tabelle mit sechs Spalten einfügen.")
+        raise ValueError("Keine Research-Zeilen gefunden. Bitte die Markdown- oder TSV-Tabelle einfügen.")
     return results
+
+
+def lookup_keys(row: ResearchRow) -> list[str]:
+    """Exact stem first; support rows where OP/ED is a separate column.
+
+    Extra variants are only considered if the stated filename itself has no
+    uniquely matching entry; no fuzzy suggestions are selected automatically.
+    """
+    names = [row.name]
+    kind = row.kind.upper().strip()
+    if kind in ("OP", "ED", "OST", "IN", "INSERT"):
+        # An explicit 'OP 2' in the anime column always has priority.
+        if not re.search(r"(?<!\w)" + re.escape(kind) + r"\s*\d*\s*$", row.name, re.I):
+            names.append(f"{row.name} {kind}")
+            # 'Nr' can be a theme number; never let it displace the plain OP/ED.
+            if row.number.isdecimal() and int(row.number) > 1:
+                names.append(f"{row.name} {kind} {row.number}")
+    return list(dict.fromkeys(filename_key(value) for value in names if filename_key(value)))
 
 
 def parse_quarter(period: str) -> int | None:
@@ -138,12 +193,23 @@ def match_research(source: list[Track], rows: list[ResearchRow]) -> MatchReport:
     ambiguous: list[str] = []
     warnings: list[str] = []
     for row in rows:
-        key = filename_key(row.name)
-        candidates = index.get(key, [])
+        variants = lookup_keys(row)
+        candidates: list[int] = []
+        key = variants[0] if variants else ""
+        for potential in variants:
+            possible = index.get(potential, [])
+            if len(possible) == 1:
+                candidates = possible
+                key = potential
+                break
+            if len(possible) > 1:
+                candidates = possible
+                key = potential
+                break
         if len(candidates) != 1:
             detail = f"Zeile {row.line}: {row.name} ({row.period})"
             if len(candidates) > 1:
-                ambiguous.append(f"{detail}: {len(candidates)} Unsorted-Einträge mit gleichem Namen; keine automatische Entscheidung.")
+                ambiguous.append(f"{detail}: {len(candidates)} Einträge mit gleichem Dateinamen; keine automatische Entscheidung.")
             else:
                 suggestions = get_close_matches(key, index.keys(), n=2, cutoff=0.76)
                 extras = [stem_from_track(source[index[k][0]]) for k in suggestions if len(index[k]) == 1]
