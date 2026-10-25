@@ -184,7 +184,8 @@ class App(tk.Tk):
         for row in selected:
             self.project.set_flag(int(row), self.level_select.get(), value)
         self.populate()
-        self.status.set(f'{len(selected)} Song(s): {self.level_select.get()} auf {'ausgewählt' if value else 'abgewählt'}.')
+        state = 'ausgewählt' if value else 'abgewählt'
+        self.status.set(f'{len(selected)} Song(s): {self.level_select.get()} {state}.')
 
     def export_all(self):
         if not self.project.source:
