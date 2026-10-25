@@ -35,7 +35,7 @@ class TestNineColumnResearch(unittest.TestCase):
         self.assertEqual(report.ambiguous, [])
         self.assertEqual(b.counts(), [0, 517, 13, 3, 0])  # OPv2 ... OPv7 inherit Super
         self.assertEqual(len(b.rows("Ultra", 1)), 3)
-        self.assertEqual(b.unassigned_quarter_count(), 504)
+        self.assertEqual(b.unassigned_quarter_count(), 498)  # six OP variants inherit known quarters
 
     def test_missing_sleepy_means_unset(self):
         rows = parse_research_table(PASTE)
