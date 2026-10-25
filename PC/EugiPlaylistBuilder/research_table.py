@@ -1,6 +1,6 @@
 """Parse pasted Markdown/TSV research tables and match against Unsorted by filename.
 
-Research columns: Title | Year/quarter | [OP/ED | Nr | Song | Artist] | Best | Super | Ultra | [Mega].
+Research columns: Anime | Season | OP/ED | Load | Song | Artist | Best | Super | Ultra | [Sleepy].
 No approximate/artist-title matches are applied automatically.
 """
 from __future__ import annotations
@@ -23,7 +23,7 @@ class ResearchRow:
     flags: tuple[int, int, int, int]
     line: int
     kind: str = ''
-    number: str = ''
+    load: str = ''
     song: str = ''
     artist: str = ''
 
@@ -83,10 +83,11 @@ def path_year(track: Track) -> str | None:
 def parse_research_table(text: str) -> list[ResearchRow]:
     """Paste Markdown or TSV, accepting short and extended tables.
 
-    Short:   Title | Year/quarter | Best | Super | Ultra [| Mega]
-    Extended: Title | Year/quarter | OP/ED | Nr | Song | Artist |
-              Best | Super | Ultra [| Mega]
-    Mega defaults to 0 when omitted. Column Nr is not a playlist flag.
+    Short:   Anime | Year/quarter | Best | Super | Ultra [| Sleepy]
+    Extended: Anime | Year/quarter | OP/ED | Load | Song | Artist |
+              Best | Super | Ultra [| Sleepy]
+    Sleepy defaults to 0 when omitted (no explicit Sleepy research).
+    Load = availability state (0/1), NEVER an OP/ED number.
     """
     results: list[ResearchRow] = []
     for number, raw in enumerate(text.splitlines(), 1):
@@ -118,7 +119,7 @@ def parse_research_table(text: str) -> list[ResearchRow]:
         else:
             raise ValueError(
                 f"Zeile {number}: {length} Spalten erkannt. "
-                "Unterstützt werden 5/6 (kurz) oder 9/10 (Anime, Jahr, OP/ED, Nr, Song, Interpret, Flags)."
+                "Unterstützt werden 5/6 (kurz) oder 9/10 (Anime, Jahr, OP/ED, Load, Song, Interpret, Flags)."
             )
 
         values = cells[-count:]
@@ -132,12 +133,12 @@ def parse_research_table(text: str) -> list[ResearchRow]:
         flags = tuple(int(v) for v in values) + (0,) * (4 - count)
         metadata = cells[2:-count]
         kind = metadata[0] if metadata else ""
-        sequence = metadata[1] if len(metadata) >= 2 else ""
+        load = metadata[1] if len(metadata) >= 2 else ""
         song = metadata[2] if len(metadata) >= 3 else ""
         artist = metadata[3] if len(metadata) >= 4 else ""
         results.append(ResearchRow(
             name=cells[0], period=cells[1], flags=flags, line=number,
-            kind=kind, number=sequence, song=song, artist=artist
+            kind=kind, load=load, song=song, artist=artist
         ))
     if not results:
         raise ValueError("Keine Research-Zeilen gefunden. Bitte die Markdown- oder TSV-Tabelle einfügen.")
@@ -156,9 +157,7 @@ def lookup_keys(row: ResearchRow) -> list[str]:
         # An explicit 'OP 2' in the anime column always has priority.
         if not re.search(r"(?<!\w)" + re.escape(kind) + r"\s*\d*\s*$", row.name, re.I):
             names.append(f"{row.name} {kind}")
-            # 'Nr' can be a theme number; never let it displace the plain OP/ED.
-            if row.number.isdecimal() and int(row.number) > 1:
-                names.append(f"{row.name} {kind} {row.number}")
+            # 'Load' is an availability flag, never an OP/ED number.
     return list(dict.fromkeys(filename_key(value) for value in names if filename_key(value)))
 
 
