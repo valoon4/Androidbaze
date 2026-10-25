@@ -90,7 +90,7 @@ def parse_research_table(text: str) -> list[ResearchRow]:
         else:
             # Allow surrounding explanatory text or markdown headings.
             continue
-        if not cells or all(re.fullmatch(r":?-{2,}:?", x.replace(" ", "")) for x in cells):
+        if not cells or all(re.fullmatch(r":?-+:?", x.replace(" ", "")) for x in cells):
             continue
         if cells[0].casefold() in ("name", "titel", "title", "anime", "song", "lied", "track"):
             if not all(v in ("0", "1") for v in cells[-4:]):
