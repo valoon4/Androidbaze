@@ -58,7 +58,7 @@ class TestSingleExport(unittest.TestCase):
             self.assertEqual(b.flags[0], [1, 0, 1, 0])
             b.set_flag(0, "Best", False)
             self.assertEqual(b.flags[0], [0, 0, 0, 0])
-            b.set_flag(0, "Mega", True)
+            b.set_flag(0, "Sleepy", True)
             self.assertEqual(b.flags[0], [1, 0, 0, 1])
 
     def test_one_utf8_m3u8_no_extra_files_or_changed_paths(self):
