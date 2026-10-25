@@ -37,7 +37,7 @@ class App(tk.Tk):
         ttk.Label(top, textvariable=self.file_info, foreground="#666").pack(anchor="w", pady=(5, 0))
 
         research = ttk.LabelFrame(
-            self, text="2  Research einfügen: Anime | Jahr/Q | OP/ED | Nr | Song | Interpret | Best | Super | Ultra",
+            self, text="2  Research einfügen: Anime | Jahr/Q | OP/ED | Load | Song | Interpret | Best | Super | Ultra | Sleepy",
             padding=8
         )
         research.pack(fill="x", padx=12, pady=(0, 6))
@@ -53,7 +53,7 @@ class App(tk.Tk):
         ttk.Button(apply_row, text="Tabelle zuordnen", command=self.apply_table).pack(side="left")
         ttk.Label(
             apply_row,
-            text="Letzte 3 Spalten: Best / Super / Ultra · Mega optional · 0/0/0 = Rest",
+            text="Best / Super / Ultra / Sleepy (Sleepy optional) · v2/v3/... erben die Auswahl",
             foreground="#555"
         ).pack(side="left", padx=12)
 
@@ -91,16 +91,16 @@ class App(tk.Tk):
 
         table_frame = ttk.Frame(self, padding=(12, 2, 12, 2))
         table_frame.pack(fill="both", expand=True)
-        columns = ("nr", "file", "title", "quarter", "Rest", "Best", "Super", "Ultra", "Mega", "match")
+        columns = ("nr", "file", "title", "quarter", "Rest", "Best", "Super", "Ultra", "Sleepy", "match")
         self.table = ttk.Treeview(table_frame, columns=columns, show="headings", selectmode="extended")
         headings = {
             "nr": "#", "file": "Musik-Dateiname", "title": "Interpret – Song",
             "quarter": "Q", "Rest": "Rest", "Best": "Best",
-            "Super": "Super", "Ultra": "Ultra", "Mega": "Mega", "match": "Research"
+            "Super": "Super", "Ultra": "Ultra", "Sleepy": "Sleepy", "match": "Research"
         }
         widths = {
             "nr": 42, "file": 275, "title": 315, "quarter": 45,
-            "Rest": 50, "Best": 50, "Super": 55, "Ultra": 50, "Mega": 50, "match": 89
+            "Rest": 50, "Best": 50, "Super": 55, "Ultra": 50, "Sleepy": 55, "match": 89
         }
         for column in columns:
             self.table.heading(column, text=headings[column])
@@ -184,7 +184,7 @@ class App(tk.Tk):
         c = self.builder.counts()
         self.stats.set(
             f"Gesamt: {len(self.builder.source)}  |  Rest: {c[0]}  ·  Best: {c[1]}  ·  "
-            f"Super: {c[2]}  ·  Ultra: {c[3]}  ·  Mega: {c[4]}  |  "
+            f"Super: {c[2]}  ·  Ultra: {c[3]}  ·  Sleepy: {c[4]}  |  "
             f"Quartal unbekannt: {self.builder.unassigned_quarter_count()}"
         )
 
