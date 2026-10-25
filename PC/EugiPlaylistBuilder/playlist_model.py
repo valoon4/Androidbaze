@@ -123,8 +123,9 @@ class PlaylistProject:
         directory.mkdir(parents=True, exist_ok=True)
         saved = []
         for number, name in enumerate(('Rest', *LEVELS)):
-            output = directory / f'{stem}_{number}_{name}.m3u'
-            output.write_bytes(render_m3u(self.rows_for_level(number)).encode('utf-8-sig'))
+            output = directory / f'{stem}_{number}_{name}.m3u8'
+            # M3U8 ist UTF-8 ohne BOM; Audio-Datei-URIs und Metadaten bleiben unverändert.
+            output.write_bytes(render_m3u(self.rows_for_level(number)).encode('utf-8'))
             saved.append(output)
         with (directory / f'{stem}_Zuordnung.csv').open('w', encoding='utf-8-sig', newline='') as file:
             writer = csv.writer(file, delimiter=';')
