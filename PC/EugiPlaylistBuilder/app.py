@@ -13,7 +13,7 @@ from playlist_model import LEVELS, PlaylistProject
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title('Eugi Playlist Builder · 0 Rest → 4 Mega')
+        self.title('Eugi Playlist Builder · Rest / Best / Super / Ultra / Mega')
         self.geometry('1220x790')
         self.minsize(960, 600)
         self.project = PlaylistProject()
@@ -29,7 +29,7 @@ class App(tk.Tk):
         top = ttk.Frame(self, padding=14)
         top.pack(fill='x')
         ttk.Label(top, text='Eugi Playlist Builder', font=('Segoe UI', 19, 'bold')).pack(anchor='w')
-        ttk.Label(top, text='Jeder Song: Best / Super / Ultra / Mega = 0 oder 1. Rest wird automatisch berechnet.').pack(anchor='w', pady=(2, 10))
+        ttk.Label(top, text='Häkchen = Song gehört zur Playlist. Ein Song darf in mehreren Kategorien sein.').pack(anchor='w', pady=(2, 10))
 
         actions = ttk.Frame(top)
         actions.pack(fill='x')
@@ -39,11 +39,11 @@ class App(tk.Tk):
         ttk.Button(actions, text='3  Alle M3U exportieren', command=self.export_all).pack(side='right')
         ttk.Label(top, textvariable=self.file_label, foreground='#666').pack(anchor='w', pady=(9, 0))
 
-        importing = ttk.LabelFrame(self, text='2  Bestehende Stufen importieren (gleiche Dateipfade → 1)', padding=10)
+        importing = ttk.LabelFrame(self, text='2  Bestehende Playlists importieren (gleiche Dateipfade markieren)', padding=10)
         importing.pack(fill='x', padx=14, pady=(0, 8))
         for level in LEVELS:
             ttk.Button(importing, text=f'{level} laden', command=lambda lev=level: self.import_level(lev)).pack(side='left', padx=(0, 8))
-        ttk.Label(importing, text='Die vier Kategorien sind unabhängig; ein Song darf mehrere 1er haben.').pack(side='left', padx=8)
+        ttk.Label(importing, text='Best, Super, Ultra und Mega sind unabhängig voneinander.').pack(side='left', padx=8)
 
         edit = ttk.Frame(self, padding=(14, 3))
         edit.pack(fill='x')
@@ -53,17 +53,17 @@ class App(tk.Tk):
         self.filter_text.trace_add('write', lambda *_: self.populate())
         ttk.Label(edit, text='Markierte Songs →').pack(side='left', padx=(12, 6))
         ttk.Combobox(edit, textvariable=self.level_select, values=LEVELS, width=8, state='readonly').pack(side='left')
-        ttk.Button(edit, text='Auf 1 setzen', command=lambda: self.set_selected(True)).pack(side='left', padx=(8, 3))
-        ttk.Button(edit, text='Auf 0 setzen', command=lambda: self.set_selected(False)).pack(side='left', padx=3)
-        ttk.Label(edit, text='Tipp: 0/1-Zelle anklicken!', foreground='#666').pack(side='right')
+        ttk.Button(edit, text='Häkchen setzen', command=lambda: self.set_selected(True)).pack(side='left', padx=(8, 3))
+        ttk.Button(edit, text='Häkchen entfernen', command=lambda: self.set_selected(False)).pack(side='left', padx=3)
+        ttk.Label(edit, text='Tipp: Checkbox anklicken!', foreground='#666').pack(side='right')
 
         table_frame = ttk.Frame(self, padding=(14, 8))
         table_frame.pack(fill='both', expand=True)
         cols = ('number', 'song', 'filepath', 'Rest', *LEVELS)
         self.table = ttk.Treeview(table_frame, columns=cols, show='headings', selectmode='extended')
         labels = {'number': '#', 'song': 'Interpret – Song', 'filepath': 'M3U-Dateipfad',
-                  'Rest': '0 · Rest', 'Best': '1 · Best', 'Super': '2 · Super',
-                  'Ultra': '3 · Ultra', 'Mega': '4 · Mega'}
+                  'Rest': 'Rest (auto)', 'Best': 'Best', 'Super': 'Super',
+                  'Ultra': 'Ultra', 'Mega': 'Mega'}
         widths = {'number': 50, 'song': 280, 'filepath': 420, 'Rest': 75,
                   'Best': 75, 'Super': 80, 'Ultra': 75, 'Mega': 75}
         for col in cols:
@@ -91,12 +91,12 @@ class App(tk.Tk):
         if not file:
             return
         try:
-            if self.project.source and not messagebox.askyesno('Neues Projekt?', 'Das lädt eine neue Unsorted und löscht die bisherigen 0/1-Zuordnungen. Fortfahren?'):
+            if self.project.source and not messagebox.askyesno('Neues Projekt?', 'Das lädt eine neue Unsorted und löscht die bisherigen Playlist-Zuordnungen. Fortfahren?'):
                 return
             self.project.load_unsorted(file)
             self.file_label.set(f'Unsorted: {file}')
             self.populate()
-            self.status.set(f'{len(self.project.source)} Songs geladen. Jetzt Kategorien importieren oder manuell 0/1 anklicken.')
+            self.status.set(f'{len(self.project.source)} Songs geladen. Jetzt Playlists importieren oder Checkboxen anklicken.')
         except Exception as ex:
             messagebox.showerror('Importfehler', str(ex))
 
@@ -107,7 +107,7 @@ class App(tk.Tk):
         file = filedialog.askopenfilename(title=f'{level}-Playlist importieren', filetypes=[('M3U Playlists', '*.m3u *.m3u8'), ('Alle Dateien', '*.*')])
         if not file:
             return
-        if any(flags[LEVELS.index(level)] for flags in self.project.flags) and not messagebox.askyesno('Kategorie ersetzen?', f'Die bisherigen {level}=1-Markierungen werden durch diese Datei ersetzt. Fortfahren?'):
+        if any(flags[LEVELS.index(level)] for flags in self.project.flags) and not messagebox.askyesno('Kategorie ersetzen?', f'Die bisherigen {level}-Häkchen werden durch diese Datei ersetzt. Fortfahren?'):
             return
         try:
             report = self.project.import_tier(file, level)
@@ -130,6 +130,11 @@ class App(tk.Tk):
         body.pack(fill='both', expand=True, padx=10, pady=10)
         ttk.Button(dialog, text='Schließen', command=dialog.destroy).pack(pady=(0, 10))
 
+    @staticmethod
+    def mark(checked):
+        """Checkbox-like marker; click on cell to toggle."""
+        return '☑' if checked else '☐'
+
     def populate(self):
         query = self.filter_text.get().casefold().strip()
         selected = set(self.table.selection())
@@ -140,7 +145,7 @@ class App(tk.Tk):
                 continue
             self.current_indices.append(i)
             self.table.insert('', 'end', iid=str(i), values=(i + 1, track.title, track.uri,
-                                   int(not any(flags)), *flags))
+                                   self.mark(not any(flags)), *(self.mark(flag) for flag in flags)))
         self.table.selection_set([idx for idx in selected if self.table.exists(idx)])
         c = self.project.counts()
         self.stats_label.set(f'Gesamt: {len(self.project.source)}  |  Rest: {c[0]}  ·  Best: {c[1]}  ·  Super: {c[2]}  ·  Ultra: {c[3]}  ·  Mega: {c[4]}')
@@ -166,7 +171,8 @@ class App(tk.Tk):
 
     def _refresh_row(self, idx):
         track, flags = self.project.source[idx], self.project.flags[idx]
-        self.table.item(str(idx), values=(idx + 1, track.title, track.uri, int(not any(flags)), *flags))
+        self.table.item(str(idx), values=(idx + 1, track.title, track.uri,
+                                              self.mark(not any(flags)), *(self.mark(flag) for flag in flags)))
         c = self.project.counts()
         self.stats_label.set(f'Gesamt: {len(self.project.source)}  |  Rest: {c[0]}  ·  Best: {c[1]}  ·  Super: {c[2]}  ·  Ultra: {c[3]}  ·  Mega: {c[4]}')
 
@@ -178,7 +184,7 @@ class App(tk.Tk):
         for row in selected:
             self.project.set_flag(int(row), self.level_select.get(), value)
         self.populate()
-        self.status.set(f'{len(selected)} Song(s): {self.level_select.get()} auf {int(value)} gesetzt.')
+        self.status.set(f'{len(selected)} Song(s): {self.level_select.get()} auf {'ausgewählt' if value else 'abgewählt'}.')
 
     def export_all(self):
         if not self.project.source:
@@ -190,7 +196,7 @@ class App(tk.Tk):
         try:
             stem = Path(self.project.source_path).stem.replace('Unsorted', '').strip(' _-') or 'Playlist'
             files = self.project.export(directory, stem)
-            self.status.set(f'5 M3U-Playlists + 0/1-CSV exportiert nach {directory}')
+            self.status.set(f'5 M3U-Playlists + Zuordnungs-CSV exportiert nach {directory}')
             messagebox.showinfo('Export fertig!', f'5 Playlists gespeichert:\n\n' + '\n'.join(p.name for p in files) + '\n\nPlus Zuordnungs-CSV und ggf. Prüfbericht.')
         except Exception as ex:
             messagebox.showerror('Exportfehler', str(ex))
@@ -199,7 +205,7 @@ class App(tk.Tk):
         if not self.project.source:
             messagebox.showwarning('Keine Daten', 'Bitte zuerst Unsorted laden.')
             return
-        file = filedialog.asksaveasfilename(title='0/1-Projekt speichern', defaultextension='.json', filetypes=[('Eugi Projekt', '*.json')])
+        file = filedialog.asksaveasfilename(title='Playlist-Projekt speichern', defaultextension='.json', filetypes=[('Eugi Projekt', '*.json')])
         if file:
             try:
                 self.project.save(file)
@@ -208,7 +214,7 @@ class App(tk.Tk):
                 messagebox.showerror('Speicherfehler', str(ex))
 
     def open_project(self):
-        file = filedialog.askopenfilename(title='0/1-Projekt öffnen', filetypes=[('Eugi Projekt', '*.json')])
+        file = filedialog.askopenfilename(title='Playlist-Projekt öffnen', filetypes=[('Eugi Projekt', '*.json')])
         if not file:
             return
         try:
