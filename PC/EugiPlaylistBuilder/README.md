@@ -1,37 +1,54 @@
-# Eugi Playlist Builder (PC, portable)
+# Eugi Playlist Builder (Windows, portable)
 
-Offline-Windows-App, um aus einer **Unsorted.m3u8 (oder .m3u)** die fünf Playlist-Stufen zu erstellen:
+Kleiner **Offline-M3U8-Builder** für Musik-Research. Kein Projekt speichern, keine Datenbank und keine fünf Dateien auf einmal. Die komplette **Unsorted** ist immer der vollständige Musik-Pool.
 
-| Stufe | Name | Logik |
-|---:|---|---|
-| 0 | Rest | automatisch, wenn Best/Super/Ultra/Mega überall 0 |
-| 1 | Best | binär 0/1 |
-| 2 | Super | binär 0/1 |
-| 3 | Ultra | binär 0/1 |
-| 4 | Mega | binär 0/1 |
+## Download
 
-Die vier Kategorie-Flags sind **unabhängig** (ein Track kann in mehreren Levels stehen). Es gibt keine implizite Hoch-/Herabstufung. Beim Import einer Referenz-M3U wird **nur deren Kategorie** neu befüllt.
+**[EugiPlaylistBuilder.exe – direkt von GitHub Releases](https://github.com/valoon4/Androidbaze/releases/download/eugi-playlist-builder-latest/EugiPlaylistBuilder.exe)**
+
+Der automatische Windows-Workflow testet den Code, baut die portable EXE und aktualisiert den Release-Download. Keine Installation nötig.
 
 ## Bedienung
 
-1. **Unsorted laden** (M3U/M3U8 mit `#EXTINF` und Datei-URIs).
-2. Optional bestehende **Best/Super/Ultra/Mega**-M3Us importieren. Der Pfad ist der eindeutige Schlüssel – nicht der Songtitel. Für unklare Matches erscheint ein Prüfbericht. Keine fuzzy Matches, kein stiller Verlust.
-3. In der Tabelle pro Song direkt die **Checkbox (☑/☐)** anklicken oder Zeilen markieren und Häkchen setzen/entfernen. Intern bleiben die 0/1-Flags erhalten. Suche filtert nur die Anzeige.
-4. **Alle M3U8 exportieren** → `Jahr_0_Rest.m3u8` bis `Jahr_4_Mega.m3u8`, plus `Jahr_Zuordnung.csv` mit den binären Werten und bei Bedarf `Jahr_Pruefbericht.txt`.
-5. **Projekt speichern** (.json) und später fortsetzen. Bei geänderter Unsorted wird das Projekt absichtlich nicht blind übertragen.
+1. **Unsorted.m3u8** laden. Auch .m3u wird gelesen.
+2. **Research-Tabelle** aus ChatGPT / Markdown oder als 6-spaltigen TSV einfügen, dann **Tabelle zuordnen**.
+3. Gewünschte Playlist **Rest / Best / Super / Ultra / Mega** und Zeitraum **Ganzes Jahr / Q1 / Q2 / Q3 / Q4** wählen.
+4. **M3U8 exportieren**: Es entsteht genau **eine** Datei.
 
-**Sicherheit:** Keine Audiodateien werden geöffnet, verändert, verschoben oder gelöscht. Alle `#EXTINF`-Zeilen und `file:///F:/...`-Pfade aus **Unsorted** bleiben erhalten; nur die Track-Auswahl wird verändert. M3U8-Export ist **UTF-8 ohne BOM**; die UTF-8-BOM ist für .m3u8 nicht nötig und kann Player stören. Der CSV-Export bleibt UTF-8 mit BOM für Excel. Reihenfolge wie Unsorted.
+Beispiel einer kopierbaren Research-Tabelle:
 
-## Portable EXE herunterladen
+    | Mojakou OP 2                      | 1996 3. | 1 | 1 | 1 | 1 |
+    | --------------------------------- | ------- | - | - | - | - |
+    | Shamanic Princess OP              | 1996 3. | 1 | 1 | 1 | 1 |
+    | Shin Seiki GPX Cyber Formula Saga | 1996 3. | 1 | 1 | 1 | 1 |
+    | Meitantei Conan OP 2              | 1996 4. | 1 | 1 | 1 | 1 |
 
-- **Direktdownload:** [EugiPlaylistBuilder.exe](https://github.com/valoon4/Androidbaze/releases/download/eugi-playlist-builder-latest/EugiPlaylistBuilder.exe) (sobald der automatische Windows-Build die erste Release-Datei veröffentlicht hat).
-- **Release-Seite:** [Eugi Playlist Builder](https://github.com/valoon4/Androidbaze/releases/tag/eugi-playlist-builder-latest).
-- GitHub Actions: Der Workflow `Eugi Playlist Builder Windows EXE` testet und erstellt die **einzelne portable EXE** automatisch bei Änderungen und veröffentlicht sie direkt als **GitHub Release Asset**. Das bisherige Actions-Artifact bleibt als Backup verfügbar. Keine Installation nötig.
-- Lokal unter Windows mit Python 3.12+: `python -m pip install pyinstaller` und anschließend `python -m PyInstaller --noconfirm --clean --onefile --windowed --name EugiPlaylistBuilder app.py`. Ergebnis: `dist/EugiPlaylistBuilder.exe`.
-- Direkt per Python starten: `python app.py` (benötigt nur Standardbibliothek/Tkinter).
+Spalten: **Dateiname / Anime-Musikkennung | Jahr + Season | Best | Super | Ultra | Mega**. Die zweite Spalte akzeptiert z. B. "1996 3.", "2027 Q4" und "Winter 2026".
 
-Tests: `python -m unittest discover -s tests -v`.
+## Die wichtigste Logik: Best als Auffangnetz
 
-## Beispiel 2014
+- Der komplette Unsorted-Pool liegt zunächst in **Best**. So wird niemals ein im Pool vorhandener Track durch eine unvollständige Research-Tabelle vergessen.
+- **Nur ein ausdrücklich zugeordnetes 0/0/0/0** bedeutet **Rest**.
+- Wenn **Super, Ultra oder Mega** gesetzt ist, gehört der Song **immer auch zu Best**, selbst wenn die Best-Spalte in der Research-Liste 0 war. Die drei oberen Stufen sind unabhängig voneinander, nicht automatisch ineinander enthalten.
+- Nicht im Research erkannte Titel bleiben in **Best** und sind in der Tabelle mit **Best auto** gekennzeichnet. Nicht gefundene und mehrdeutige Research-Zeilen werden separat angezeigt.
+- Der Songabgleich verwendet den Musik-**Dateinamen** aus Unsorted, nicht den Interpretentitel aus EXTINF. Leerzeichen und Satzzeichen werden konservativ normalisiert, verschiedene Varianten (OP vs OPv2) bleiben unterscheidbar. Ähnliche Namen werden nur **vorgeschlagen**, nie blind übernommen.
+- Die Checkboxen in der UI erlauben manuelle Nachbearbeitung, inklusive explizitem Rest.
 
-Die Unsorted 2014 aus dem Gespräch enthält 517 Tracks. In einer Ultra-Referenzliste kann der Builder Varianten wie `Kaitou Joker OP` und `Kaitou Joker OPv2` anhand des Originalpfads unterscheiden. Die Schaltflächen importieren jeden Level unabhängig. Angehängte Super-/Best-Dateien können später genauso geladen werden.
+## Einzelne Seasons (Q1–Q4) – auch für 2026 und 2027
+
+- Bei saisonalen Unsorted-Dateien wie "2026 Q3 Unsorted.m3u8" ist die **gesamte Datei automatisch Q3**. Fehlendes Q4 wird nicht erfunden.
+- Bei einer **Jahres-Unsorted** wird das Quartal aus der zweiten Research-Spalte pro Song übernommen; unbekannte Quartale stehen als "?" in der Tabelle.
+- Songs ohne sichere Quartalszuordnung werden **nicht still einer Season zugeordnet**. Vor einem Q1–Q4-Export gibt es eine Warnung über die noch nicht zugeordneten Songs. Man kann ein Quartal für markierte Songs manuell festlegen.
+- Der Jahres-Export behält immer die volle Auswahl des Unsorted-Pools. "Ganzes Jahr" bedeutet alle aktuell vorhandenen Songs in der Unsorted, **nicht** dass die Saison vollständig recherchiert ist.
+
+## Technische Garantien
+
+- Ausgabe ist genau eine **.m3u8**, UTF-8 ohne BOM.
+- Original-EXTINF-Zeilen und Datei-URIs (z. B. file:///F:/Musik/...) bleiben unverändert und in Originalreihenfolge.
+- Keine FLAC- oder MP3-Datei wird geöffnet, bewegt, überschrieben oder gelöscht.
+- Die Eingabe-Unsorted kann **nicht** als Ausgabe überschrieben werden.
+- Das Fenster benötigt nur die Python-Standardbibliothek (Tkinter). Der portable Windows-Build erfolgt mit PyInstaller.
+
+Entwicklungs-Tests: python -m unittest discover -s tests -v
+
+**Hinweis zu Sonderfällen:** Der aktuelle konservative Matcher lässt nicht exakt passende Dateinamen lieber zur manuellen Kontrolle offen, statt Songs falsch zuzuordnen. Besonders alte Schreibweisen, abweichende Transliterationen und identische Stems mit verschiedenen Endungen sind zu prüfen.
