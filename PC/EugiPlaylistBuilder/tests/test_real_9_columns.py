@@ -37,7 +37,7 @@ class TestNineColumnResearch(unittest.TestCase):
         self.assertEqual(len(b.rows("Ultra", 1)), 3)
         self.assertEqual(b.unassigned_quarter_count(), 504)
 
-    def test_missing_mega_means_unset(self):
+    def test_missing_sleepy_means_unset(self):
         rows = parse_research_table(PASTE)
         self.assertEqual(rows[0].flags, (1, 1, 1, 0))
         self.assertEqual(rows[1].flags, (1, 1, 0, 0))
@@ -49,7 +49,7 @@ class TestNineColumnResearch(unittest.TestCase):
         row = "| Example | 2027 Q1 | OP | 1 | Song | Artist | 0 | 0 | 0 |"
         self.assertEqual(parse_research_table(row)[0].flags, (0, 0, 0, 0))
 
-    def test_10_column_explicit_mega(self):
+    def test_10_column_explicit_sleepy(self):
         row = "| Example | 2027 Q1 | OP | 1 | Song | Artist | 1 | 0 | 0 | 1 |"
         self.assertEqual(parse_research_table(row)[0].flags, (1, 0, 0, 1))
 
