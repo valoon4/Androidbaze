@@ -7,8 +7,9 @@ from typing import Iterable
 
 from playlist_core import Track, parse_m3u, read_playlist, render_m3u
 from research_table import MatchReport, match_research, parse_quarter, parse_research_table, path_year
+from variant_groups import family_members, inherit_positive_flags
 
-LEVELS = ("Rest", "Best", "Super", "Ultra", "Mega")
+LEVELS = ("Rest", "Best", "Super", "Ultra", "Sleepy")
 
 
 def source_quarter_from_filename(path: str | Path) -> int | None:
@@ -49,16 +50,16 @@ class Builder:
         flags = [[1, 0, 0, 0] for _ in self.source]
         quarterly_file = source_quarter_from_filename(self.path)
         quarters: list[int | None] = [quarterly_file] * len(self.source)
-        for idx, (best, super_, ultra, mega) in report.assignments.items():
-            if not any((best, super_, ultra, mega)):
+        for idx, (best, super_, ultra, sleepy) in report.assignments.items():
+            if not any((best, super_, ultra, sleepy)):
                 flags[idx] = [0, 0, 0, 0]  # Explicit Rest
             else:
-                if not best and any((super_, ultra, mega)):
+                if not best and any((super_, ultra, sleepy)):
                     report.warnings.append(
                         f"{rows[0].name if len(rows) == 1 else self.source[idx].uri}: "
                         "höhere Stufe aktiv, daher Best automatisch mitgesetzt."
                     )
-                flags[idx] = [1, super_, ultra, mega]
+                flags[idx] = [1, super_, ultra, sleepy]
             row_q = report.quarters.get(idx)
             if quarterly_file is not None:
                 if row_q is not None and row_q != quarterly_file:
@@ -68,6 +69,12 @@ class Builder:
                     )
             else:
                 quarters[idx] = row_q
+        propagated = inherit_positive_flags(self.source, flags, quarters)
+        if propagated:
+            report.warnings.append(
+                f"{len(propagated)} Varianten haben Super/Ultra/Sleepy von anderen "
+                "Versionen desselben OP/ED geerbt (z. B. OPv2, OPv57)."
+            )
         self.flags = flags
         self.quarters = quarters
         self.matched = set(report.assignments)
@@ -78,20 +85,24 @@ class Builder:
     def set_flag(self, idx: int, level: str, enabled: bool) -> None:
         if level not in LEVELS:
             raise ValueError(f"Unbekannte Stufe: {level}")
+        group = family_members(self.source, idx)
         if level == "Rest":
-            self.flags[idx] = [0, 0, 0, 0] if enabled else [1, 0, 0, 0]
+            for member in group:
+                self.flags[member] = [0, 0, 0, 0] if enabled else [1, 0, 0, 0]
         elif level == "Best":
-            if enabled:
-                self.flags[idx][0] = 1
-            else:
-                # Best must remain a superset of Super, Ultra and Mega.
-                self.flags[idx] = [0, 0, 0, 0]
+            for member in group:
+                if enabled:
+                    self.flags[member][0] = 1
+                else:
+                    # Explicitly moving a song family to Rest clears upper flags.
+                    self.flags[member] = [0, 0, 0, 0]
         else:
             pos = LEVELS.index(level) - 1
-            self.flags[idx][pos] = int(enabled)
-            if enabled:
-                self.flags[idx][0] = 1
-        self.matched.add(idx)
+            for member in group:
+                self.flags[member][pos] = int(enabled)
+                if enabled:
+                    self.flags[member][0] = 1
+        self.matched.update(group)
 
     def set_quarter(self, idx: int, quarter: int) -> None:
         if quarter not in (1, 2, 3, 4):
