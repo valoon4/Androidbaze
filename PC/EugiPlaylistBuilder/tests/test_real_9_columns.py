@@ -33,7 +33,7 @@ class TestNineColumnResearch(unittest.TestCase):
         self.assertEqual(len(report.assignments), 13, report.text(len(b.source)))
         self.assertEqual(report.missing, [])
         self.assertEqual(report.ambiguous, [])
-        self.assertEqual(b.counts(), [0, 517, 7, 3, 0])
+        self.assertEqual(b.counts(), [0, 517, 13, 3, 0])  # OPv2 ... OPv7 inherit Super
         self.assertEqual(len(b.rows("Ultra", 1)), 3)
         self.assertEqual(b.unassigned_quarter_count(), 504)
 
