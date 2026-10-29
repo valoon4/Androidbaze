@@ -191,7 +191,7 @@ private fun EmotionskompassApp(
                     }
                 },
                 actions = {
-                    if (state.destination != Destination.SETTINGS) {
+                    if (state.destination != Destination.SETTINGS && state.destination != Destination.CHECKIN) {
                         IconButton(onClick = vm::openSettings) {
                             Icon(Icons.Outlined.Settings, contentDescription = "Einstellungen")
                         }
