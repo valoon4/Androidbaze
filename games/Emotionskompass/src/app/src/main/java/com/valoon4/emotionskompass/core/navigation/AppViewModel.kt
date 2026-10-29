@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 enum class MainSection { START, ENTDECKEN, TAGEBUCH, RUECKBLICK }
-enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, CHECKIN, SETTINGS }
+enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, CHECKIN, SETTINGS }
 
 data class AtlasFilters(
     val query: String = "",
@@ -58,6 +58,14 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
         val first = _state.value.emotionId ?: return
         if (catalog.find(id) == null || first == id) return
         push(_state.value.copy(destination = Destination.VERGLEICH, comparisonId = id))
+    }
+
+    fun openLearningCards() = push(_state.value.copy(destination = Destination.LEARN_CARDS))
+    fun openComparisons() = push(_state.value.copy(destination = Destination.COMPARISONS))
+
+    fun openComparison(first: String, second: String) {
+        if (catalog.compare(first, second) == null) return
+        push(_state.value.copy(destination = Destination.VERGLEICH, emotionId = first, comparisonId = second))
     }
 
     fun openCheckin() = push(_state.value.copy(destination = Destination.CHECKIN))

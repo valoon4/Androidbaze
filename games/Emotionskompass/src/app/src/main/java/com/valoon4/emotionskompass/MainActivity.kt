@@ -134,7 +134,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
                 Spacer(Modifier.height(15.dp))
                 FeatureLine(Icons.Outlined.MenuBook, "Emotionen kennenlernen", "Begriffe, Unterschiede und Beispiele entdecken.")
                 FeatureLine(Icons.Outlined.FavoriteBorder, "Dich selbst verstehen", "Gefühle und Erlebnisse achtsam reflektieren.")
-                FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Der aktuelle M1-Prototyp speichert noch keine Tagebucheinträge.")
+                FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Keine Tagebucheinträge. Nur die Einführung wird gespeichert.")
             }
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Keine Diagnosen, keine Bewertungen. Du entscheidest, welche Worte zu dir passen.",
@@ -220,6 +220,7 @@ private fun EmotionskompassApp(
             when (state.destination) {
                 Destination.MAIN -> when (state.section) {
                     MainSection.START -> HomeScreen(
+                        termsCount = catalog.emotions.size,
                         onExplore = { vm.selectSection(MainSection.ENTDECKEN) },
                         onCheckin = vm::openCheckin,
                         onWord = { vm.openEmotion("wehmut") }
@@ -229,6 +230,8 @@ private fun EmotionskompassApp(
                         filters = filters,
                         onEmotion = vm::openEmotion,
                         onPath = vm::openPath,
+                        onCards = vm::openLearningCards,
+                        onComparisons = vm::openComparisons,
                         onSearch = vm::setSearch,
                         onFamily = vm::setFamily,
                         onKind = vm::setKind,
@@ -261,6 +264,8 @@ private fun EmotionskompassApp(
                     }
                 }
                 Destination.VERGLEICH -> ComparisonScreen(state, catalog)
+                Destination.LEARN_CARDS -> LearningCardsScreen(catalog, vm::openEmotion)
+                Destination.COMPARISONS -> ComparisonDirectoryScreen(catalog, vm::openComparison)
                 Destination.PATH -> {
                     val path = state.pathId?.let(catalog::findPath)
                     if (path != null) LearningPathScreen(path, catalog, vm::openEmotion)
@@ -272,7 +277,7 @@ private fun EmotionskompassApp(
                     milestone = "Vorschau · noch keine Dateneingabe",
                     onExplore = { vm.selectSection(MainSection.ENTDECKEN) }
                 )
-                Destination.SETTINGS -> SettingsScreen()
+                Destination.SETTINGS -> SettingsScreen(catalog)
             }
         }
     }
@@ -293,7 +298,7 @@ private fun Mark(small: Boolean = false) {
 }
 
 @Composable
-private fun HomeScreen(onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit) {
+private fun HomeScreen(termsCount: Int, onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp)
@@ -319,7 +324,7 @@ private fun HomeScreen(onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () 
             icon = Icons.Outlined.Explore,
             title = "Emotionen entdecken",
             description = "Begriffe und feine Unterschiede kennenlernen.",
-            footnote = "144 Begriffe · Lernpfade",
+            footnote = "$termsCount Begriffe · Lernpfade",
             onClick = onExplore
         )
         Spacer(Modifier.height(10.dp))
@@ -344,7 +349,7 @@ private fun HomeScreen(onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () 
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M2.1 · 144 Wörter entdecken. Redaktionelle Arbeitsfassung, noch kein Tagebuch.",
+        Text("M2.2 · $termsCount Wörter entdecken. Redaktionelle Arbeitsfassung, noch kein Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -385,6 +390,8 @@ private fun AtlasScreen(
     filters: AtlasFilters,
     onEmotion: (String) -> Unit,
     onPath: (String) -> Unit,
+    onCards: () -> Unit,
+    onComparisons: () -> Unit,
     onSearch: (String) -> Unit,
     onFamily: (String) -> Unit,
     onKind: (EmotionKind?) -> Unit,
@@ -404,7 +411,7 @@ private fun AtlasScreen(
                 Spacer(Modifier.height(4.dp))
                 Text("Emotionen entdecken", style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold)
-                Text("144 Begriffe, viele Nuancen. Du musst noch nicht wissen, wonach du suchst.",
+                Text("${catalog.emotions.size} Begriffe, viele Nuancen. Du musst noch nicht wissen, wonach du suchst.",
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 OutlinedTextField(
                     value = filters.query, onValueChange = onSearch,
@@ -421,6 +428,25 @@ private fun AtlasScreen(
                     Icon(Icons.Outlined.AutoAwesome, contentDescription = null)
                     Spacer(Modifier.size(8.dp))
                     Text("Überrasch mich mit einem Begriff")
+                }
+            }
+        }
+        item {
+            Text("Neugierig lernen", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text("Erst beschreiben, dann benennen – ohne Noten und ohne gespeicherten Lernstand.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                OutlinedButton(onClick = onCards, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Outlined.MenuBook, contentDescription = null)
+                    Spacer(Modifier.size(6.dp))
+                    Text("Wortkarten")
+                }
+                OutlinedButton(onClick = onComparisons, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Outlined.CompareArrows, contentDescription = null)
+                    Spacer(Modifier.size(6.dp))
+                    Text("Vergleiche")
                 }
             }
         }
@@ -560,6 +586,162 @@ private fun emotionKindLabel(kind: EmotionKind): String = when (kind) {
     EmotionKind.EMOTION -> "Gefühl"
     EmotionKind.MOOD -> "Stimmung"
     EmotionKind.STATE -> "Zustand"
+}
+
+@Composable
+private fun LearningCardsScreen(
+    catalog: EmotionCatalog,
+    onEmotion: (String) -> Unit
+) {
+    var family by rememberSaveable { mutableStateOf("Alle") }
+    var index by rememberSaveable { mutableStateOf(0) }
+    var revealed by rememberSaveable { mutableStateOf(false) }
+    val cards = remember(catalog, family) {
+        catalog.search("", family)
+    }
+    val current = cards.getOrNull(index.coerceIn(0, (cards.size - 1).coerceAtLeast(0)))
+
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        Text("Wortkarten entdecken", style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold)
+        Text("Lies zuerst die Beschreibung. Welches Wort könnte passen? Du musst nichts richtig beantworten.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            items(catalog.families) { option ->
+                FilterChip(
+                    selected = option == family,
+                    onClick = {
+                        family = option
+                        index = 0
+                        revealed = false
+                    },
+                    label = { Text(option) }
+                )
+            }
+        }
+        if (current != null) {
+            Tag("KARTE ${index + 1} VON ${cards.size}")
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
+                shape = RoundedCornerShape(22.dp)
+            ) {
+                Column(Modifier.fillMaxWidth().padding(22.dp),
+                    verticalArrangement = Arrangement.spacedBy(15.dp)) {
+                    Text("Welcher Begriff könnte zu dieser Beschreibung passen?",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary)
+                    Text(current.explanation,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold)
+                    Text("Alltagssituation: ${current.examples.first()}",
+                        style = MaterialTheme.typography.bodyMedium)
+                    if (revealed) {
+                        HorizontalDivider()
+                        Text(current.name, style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary)
+                        Text(emotionKindLabel(current.kind),
+                            style = MaterialTheme.typography.labelSmall)
+                        Text(current.reflectionQuestion,
+                            style = MaterialTheme.typography.bodyMedium)
+                        OutlinedButton(onClick = { onEmotion(current.id) }) {
+                            Text("Ganzen Begriff ansehen")
+                            Spacer(Modifier.size(6.dp))
+                            Icon(Icons.Outlined.ChevronRight, contentDescription = null)
+                        }
+                    } else {
+                        Button(onClick = { revealed = true }, modifier = Modifier.fillMaxWidth()) {
+                            Text("Begriff aufdecken")
+                        }
+                    }
+                }
+            }
+            Row(Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        index = (index - 1).coerceAtLeast(0)
+                        revealed = false
+                    },
+                    enabled = index > 0,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Zurück")
+                }
+                Button(
+                    onClick = {
+                        index = (index + 1) % cards.size
+                        revealed = false
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(if (index == cards.lastIndex) "Von vorne" else "Nächste Karte")
+                }
+            }
+        }
+        Text("Hier wird kein Lernfortschritt gespeichert. Die Karten sind eine freiwillige Einladung zum Entdecken.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun ComparisonDirectoryScreen(
+    catalog: EmotionCatalog,
+    onCompare: (String, String) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        item {
+            Text("Unterschiede verstehen",
+                style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text("${catalog.comparisons.size} redaktionelle Begriffsvergleiche. Lerne, was zwei Erfahrungen verbindet und unterscheidet.",
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.height(9.dp))
+        }
+        items(catalog.comparisons, key = { "${it.first}-${it.second}" }) { comparison ->
+            val first = catalog.find(comparison.first)
+            val second = catalog.find(comparison.second)
+            if (first != null && second != null) {
+                Card(
+                    onClick = { onCompare(comparison.first, comparison.second) },
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                ) {
+                    Row(Modifier.fillMaxWidth().padding(17.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                            Text("${first.name} und ${second.name}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold)
+                            Text(comparison.overlap,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Icon(Icons.Outlined.ChevronRight,
+                            contentDescription = "Vergleich ansehen")
+                    }
+                }
+            }
+        }
+        item {
+            Text("Diese Vergleiche sind Orientierungshilfen und keine eindeutigen psychologischen Kategorien.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
 }
 
 @Composable
@@ -808,21 +990,21 @@ private fun ComingSoonScreen(icon: ImageVector, title: String, subtitle: String,
 }
 
 @Composable
-private fun SettingsScreen() {
+private fun SettingsScreen(catalog: EmotionCatalog) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)) {
         Text("Einstellungen & Informationen", style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M2.1 · Umfangreicher Emotionsatlas", style = MaterialTheme.typography.titleMedium,
+        Text("M2.2 · Umfangreicher Emotionsatlas", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Text("Der offline verfügbare Emotionsatlas enthält 144 Begriffe und sechs Lernpfade in einer redaktionellen Arbeitsfassung. Die App speichert nur, dass die Einführung abgeschlossen wurde. Tagebucheinträge und ihre geschützte Datenspeicherung folgen erst in weiteren Etappen.",
+        Text("Der offline verfügbare Emotionsatlas enthält ${catalog.emotions.size} Begriffe, ${catalog.comparisons.size} Vergleiche und ${catalog.learningPaths.size} Lernpfade in einer redaktionellen Arbeitsfassung. Die App speichert nur, dass die Einführung abgeschlossen wurde. Tagebucheinträge und ihre geschützte Datenspeicherung folgen erst in weiteren Etappen.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.2.1-m2.1", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.2.2-m2.2", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
