@@ -11,9 +11,9 @@ class EmotionCatalogTest {
     }
     private val catalog: EmotionCatalog by lazy { EmotionCatalog.fromJson(source) }
 
-    @Test fun lexiconContainsFortyEightDistinctEntriesInEightFamilies() {
+    @Test fun lexiconContainsOneHundredFortyFourDistinctEntriesInEightFamilies() {
         assertEquals(2, catalog.schemaVersion)
-        assertEquals(48, catalog.emotions.size)
+        assertEquals(144, catalog.emotions.size)
         assertEquals(8, catalog.familyNames.size)
         assertEquals(catalog.emotions.size, catalog.emotions.map { it.id }.toSet().size)
     }
@@ -28,7 +28,7 @@ class EmotionCatalogTest {
     @Test fun referencesAndComparisonsResolveToRealTerms() {
         val ids = catalog.emotions.map { it.id }.toSet()
         assertTrue(catalog.emotions.flatMap { it.related }.all { it in ids })
-        assertEquals(9, catalog.comparisons.size)
+        assertEquals(21, catalog.comparisons.size)
         assertTrue(catalog.comparisons.all { it.first in ids && it.second in ids })
     }
 
@@ -80,7 +80,56 @@ class EmotionCatalogTest {
 
     @Test fun catalogIsOfflineAndHasNoNetworkDependency() {
         assertNotNull(catalog.find("wehmut"))
-        assertEquals(48, catalog.search("").size)
+        assertEquals(144, catalog.search("").size)
         assertEquals("frustration", catalog.search("  FRUST  ").first().id)
     }
+    @Test fun learningPathsContainValidAndOrderedTerms() {
+        assertEquals(6, catalog.learningPaths.size)
+        assertTrue(catalog.learningPaths.all { catalog.emotionsInPath(it).size == it.emotionIds.size })
+        val example = catalog.findPath("neid_eifersucht")!!
+        assertEquals("neid", catalog.emotionsInPath(example).first().id)
+        assertNull(catalog.findPath("unknown"))
+    }
+
+    @Test fun letterFilterHandlesUmlautsAndFilterCombinations() {
+        assertTrue(catalog.browse("", letter = "A").any { it.id == "aerger" })
+        assertTrue(catalog.browse("", letter = "E").any { it.id == "eifersucht" })
+        assertTrue(catalog.browse("", family = "Ärger", letter = "E").any { it.id == "eifersucht" })
+        assertTrue(catalog.browse("", family = "Ruhe", letter = "E").all { "Ruhe" in it.families })
+    }
+
+    @Test fun emotionTypesCanBeBrowsedWithoutExcludingFamilyMembership() {
+        val moods = catalog.browse("", kind = com.valoon4.emotionskompass.core.model.EmotionKind.MOOD)
+        val emotions = catalog.browse("", kind = com.valoon4.emotionskompass.core.model.EmotionKind.EMOTION)
+        val states = catalog.browse("", kind = com.valoon4.emotionskompass.core.model.EmotionKind.STATE)
+        assertEquals(144, moods.size + emotions.size + states.size)
+        assertTrue(moods.any { it.id == "euphorie" })
+        assertTrue(states.any { it.id == "akzeptanz" })
+    }
+
+    @Test fun similarTermsHaveDistinctDefinitionsAndExamples() {
+        val envy = catalog.find("neid")!!
+        val jealousy = catalog.find("eifersucht")!!
+        assertNotEquals(envy.explanation, jealousy.explanation)
+        assertNotEquals(envy.examples.first(), jealousy.examples.first())
+        assertNotNull(catalog.compare(envy.id, jealousy.id))
+        assertNotNull(catalog.compare("resignation", "akzeptanz"))
+    }
+
+    @Test fun rejectsLearningPathWithUnknownTerm() {
+        val bad = source.replace(
+            "\"emotionIds\": [",
+            "\"emotionIds\": [\"missing_word\","
+        )
+        assertNotEquals(source, bad)
+        assertThrows(IllegalArgumentException::class.java) { EmotionCatalog.fromJson(bad) }
+    }
+
+    @Test fun everyFamilyHasBroadVocabulary() {
+        assertTrue(catalog.familyNames.all { family ->
+            catalog.search("", family).size >= 15
+        })
+        assertTrue(catalog.emotions.count { it.families.size > 1 } >= 20)
+    }
+
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentRevision": "2026-10-m2",
+  "contentRevision": "2026-10-m2.1",
   "locale": "de",
   "editorialStatus": "working-draft-not-clinically-validated",
   "families": [
@@ -1138,6 +1138,2240 @@
         "erleichterung"
       ],
       "reflectionQuestion": "Was hat mir geholfen, lockerer zu werden?"
+    },
+    {
+      "id": "heiterkeit",
+      "name": "Heiterkeit",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "MOOD",
+      "definition": "Leichte freundliche Grundstimmung, in der Kleinigkeiten Freude machen.",
+      "examples": [
+        "Ein Scherz bringt dich zum Lächeln.",
+        "Ein gewöhnlicher Morgen fühlt sich freundlich an."
+      ],
+      "synonyms": [
+        "heiter",
+        "beschwingt"
+      ],
+      "related": [
+        "freude",
+        "gelassenheit"
+      ],
+      "reflectionQuestion": "Ist meine Freude eher still oder voller Energie?"
+    },
+    {
+      "id": "ausgelassenheit",
+      "name": "Ausgelassenheit",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Lebhafte unbeschwerte Freude, die sich spontan ausdrücken will.",
+      "examples": [
+        "Beim Tanzen vergisst du die Zeit.",
+        "Du lachst mit Freunden von Herzen."
+      ],
+      "synonyms": [
+        "ausgelassen",
+        "unbeschwert"
+      ],
+      "related": [
+        "freude",
+        "lebensfreude"
+      ],
+      "reflectionQuestion": "Wann kann ich mich frei freuen?"
+    },
+    {
+      "id": "euphorie",
+      "name": "Euphorie",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "MOOD",
+      "definition": "Besonders intensive positive Hochstimmung.",
+      "examples": [
+        "Nach einer guten Nachricht könntest du die Welt umarmen.",
+        "Ein großer Erfolg fühlt sich überwältigend gut an."
+      ],
+      "synonyms": [
+        "euphorisch",
+        "hochgefühl"
+      ],
+      "related": [
+        "begeisterung",
+        "triumph"
+      ],
+      "reflectionQuestion": "Wie stark ist dieses Hochgefühl?"
+    },
+    {
+      "id": "entzuecken",
+      "name": "Entzücken",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Lebhafte Freude an etwas besonders Liebenswertem.",
+      "examples": [
+        "Ein Kind winkt dir begeistert zu.",
+        "Eine kleine Geste lässt dich strahlen."
+      ],
+      "synonyms": [
+        "entzückt",
+        "hingerissen"
+      ],
+      "related": [
+        "freude",
+        "verzauberung"
+      ],
+      "reflectionQuestion": "Was erscheint mir gerade so liebenswert?"
+    },
+    {
+      "id": "amuesement",
+      "name": "Amüsement",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Vergnügtes Erleben von etwas Komischem.",
+      "examples": [
+        "Ein Wortspiel erwischt dich im richtigen Moment.",
+        "Du lachst über einen charmanten Versprecher."
+      ],
+      "synonyms": [
+        "amüsiert",
+        "erheitert"
+      ],
+      "related": [
+        "heiterkeit",
+        "vergnuegen"
+      ],
+      "reflectionQuestion": "Was finde ich daran lustig?"
+    },
+    {
+      "id": "vergnuegen",
+      "name": "Vergnügen",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Angenehmer Genuss einer Tätigkeit oder eines Moments.",
+      "examples": [
+        "Du hast Spaß an einem Spiel.",
+        "Ein gutes Essen wird zum kleinen Fest."
+      ],
+      "synonyms": [
+        "vergnügt",
+        "genussfreude"
+      ],
+      "related": [
+        "freude",
+        "amuesement"
+      ],
+      "reflectionQuestion": "Was macht mir hier besonders Spaß?"
+    },
+    {
+      "id": "triumph",
+      "name": "Triumph",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Intensive Freude über einen Erfolg oder überwundenes Hindernis.",
+      "examples": [
+        "Eine schwierige Aufgabe gelingt endlich.",
+        "Du bestehst eine gefürchtete Prüfung."
+      ],
+      "synonyms": [
+        "sieggefühl",
+        "erfolgsfreude"
+      ],
+      "related": [
+        "stolz",
+        "erleichterung"
+      ],
+      "reflectionQuestion": "Was bedeutet dieser Erfolg für mich?"
+    },
+    {
+      "id": "selbstwirksamkeit",
+      "name": "Selbstwirksamkeit",
+      "family": "Freude",
+      "families": [
+        "Freude",
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Das Erleben, mit dem eigenen Handeln etwas bewirken zu können.",
+      "examples": [
+        "Du löst selbst ein Problem.",
+        "Du bemerkst deinen Fortschritt durch Übung."
+      ],
+      "synonyms": [
+        "wirksamkeit",
+        "handlungsfähigkeit"
+      ],
+      "related": [
+        "stolz",
+        "zuversicht"
+      ],
+      "reflectionQuestion": "Was konnte ich selbst verändern?"
+    },
+    {
+      "id": "inspiration",
+      "name": "Inspiration",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Belebendes Empfinden neuer Möglichkeiten und Ideen.",
+      "examples": [
+        "Ein Gespräch bringt dich auf eine Idee.",
+        "Ein Bild macht dir Lust auf ein eigenes Projekt."
+      ],
+      "synonyms": [
+        "inspiriert",
+        "ideenfunke"
+      ],
+      "related": [
+        "begeisterung",
+        "neugier"
+      ],
+      "reflectionQuestion": "Welche Idee möchte ich verfolgen?"
+    },
+    {
+      "id": "tatendrang",
+      "name": "Tatendrang",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Energievoller Impuls, etwas anzupacken.",
+      "examples": [
+        "Du möchtest nach einer guten Idee sofort starten.",
+        "Du hast Lust auf einen aktiven Tag."
+      ],
+      "synonyms": [
+        "unternehmungslust",
+        "elan"
+      ],
+      "related": [
+        "inspiration",
+        "vorfreude"
+      ],
+      "reflectionQuestion": "Wofür will ich meine Energie nutzen?"
+    },
+    {
+      "id": "sorglosigkeit",
+      "name": "Sorglosigkeit",
+      "family": "Freude",
+      "families": [
+        "Freude",
+        "Ruhe"
+      ],
+      "kind": "MOOD",
+      "definition": "Vorübergehendes Empfinden, sich wenig Sorgen machen zu müssen.",
+      "examples": [
+        "Im Urlaub vergisst du die To-do-Liste.",
+        "Beim Spielen bist du ganz im Augenblick."
+      ],
+      "synonyms": [
+        "sorglos",
+        "unbeschwertheit"
+      ],
+      "related": [
+        "gelassenheit",
+        "ausgelassenheit"
+      ],
+      "reflectionQuestion": "Was ermöglicht diese Leichtigkeit?"
+    },
+    {
+      "id": "lebensfreude",
+      "name": "Lebensfreude",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "MOOD",
+      "definition": "Lebendige Freude am eigenen Dasein.",
+      "examples": [
+        "Ein Spaziergang macht dich hellwach und froh.",
+        "Ein gemeinsamer Abend erinnert dich an das Schöne im Leben."
+      ],
+      "synonyms": [
+        "lebenslust",
+        "lebendig fühlen"
+      ],
+      "related": [
+        "freude",
+        "ausgelassenheit"
+      ],
+      "reflectionQuestion": "Wann fühle ich mich lebendig?"
+    },
+    {
+      "id": "liebe",
+      "name": "Liebe",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit",
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Tiefe Zuwendung und Verbundenheit in unterschiedlichen Formen.",
+      "examples": [
+        "Du möchtest für einen Menschen da sein.",
+        "Du freust dich über das Glück einer nahestehenden Person."
+      ],
+      "synonyms": [
+        "liebhaben",
+        "liebevoll"
+      ],
+      "related": [
+        "zuneigung",
+        "vertrauen"
+      ],
+      "reflectionQuestion": "Wie zeigt sich meine Zuwendung?"
+    },
+    {
+      "id": "zaertlichkeit",
+      "name": "Zärtlichkeit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Sanfte behutsame Zuneigung.",
+      "examples": [
+        "Du streichelst einem Tier über den Kopf.",
+        "Du möchtest jemanden vorsichtig umarmen."
+      ],
+      "synonyms": [
+        "zärtlich",
+        "sanftheit"
+      ],
+      "related": [
+        "zuneigung",
+        "naehe"
+      ],
+      "reflectionQuestion": "Welche Nähe ist mir angenehm?"
+    },
+    {
+      "id": "vertrautheit",
+      "name": "Vertrautheit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Das Gefühl, sich bei etwas oder jemandem nicht erklären zu müssen.",
+      "examples": [
+        "Mit einer Freundin redest du ganz selbstverständlich.",
+        "Ein vertrauter Ort lässt dich entspannen."
+      ],
+      "synonyms": [
+        "vertraut",
+        "vertraulichkeit"
+      ],
+      "related": [
+        "geborgenheit",
+        "vertrauen"
+      ],
+      "reflectionQuestion": "Woran erkenne ich Vertrautheit?"
+    },
+    {
+      "id": "zugehoerigkeit",
+      "name": "Zugehörigkeit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Das Erleben, Teil einer Gemeinschaft zu sein.",
+      "examples": [
+        "Du wirst in einen Plan einbezogen.",
+        "Im Chor gehört deine Stimme dazu."
+      ],
+      "synonyms": [
+        "dazugehören",
+        "gemeinschaftsgefühl"
+      ],
+      "related": [
+        "geborgenheit",
+        "solidaritaet"
+      ],
+      "reflectionQuestion": "Wo fühle ich mich zugehörig?"
+    },
+    {
+      "id": "naehe",
+      "name": "Nähe",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Das Gefühl einer emotionalen Verbindung.",
+      "examples": [
+        "Jemand hört dir aufmerksam zu.",
+        "Ihr könnt schweigen, ohne dass es unangenehm wird."
+      ],
+      "synonyms": [
+        "nähegefühl",
+        "verbunden fühlen"
+      ],
+      "related": [
+        "innigkeit",
+        "vertrautheit"
+      ],
+      "reflectionQuestion": "Welche Nähe wünsche ich mir?"
+    },
+    {
+      "id": "solidaritaet",
+      "name": "Solidarität",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Verbundenheit durch gemeinsames Einstehen füreinander.",
+      "examples": [
+        "Kollegen unterstützen sich.",
+        "Menschen zeigen Betroffenen Rückhalt."
+      ],
+      "synonyms": [
+        "zusammenhalt",
+        "solidarisch"
+      ],
+      "related": [
+        "zugehoerigkeit",
+        "fuersorge"
+      ],
+      "reflectionQuestion": "Wofür stehe ich gemeinsam mit anderen ein?"
+    },
+    {
+      "id": "fuersorge",
+      "name": "Fürsorge",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Zugewandter Wunsch, das Wohlergehen zu unterstützen.",
+      "examples": [
+        "Du bringst einer Freundin Essen.",
+        "Du erlaubst dir eine nötige Pause."
+      ],
+      "synonyms": [
+        "fürsorglich",
+        "kümmern"
+      ],
+      "related": [
+        "mitgefuehl",
+        "liebe"
+      ],
+      "reflectionQuestion": "Welche Unterstützung ist hilfreich?"
+    },
+    {
+      "id": "ruehrung",
+      "name": "Rührung",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit",
+        "Staunen"
+      ],
+      "kind": "EMOTION",
+      "definition": "Warmes emotionales Berührtsein durch eine Geste.",
+      "examples": [
+        "Eine Dankesnachricht treibt dir Tränen in die Augen.",
+        "Ein Wiedersehen bewegt dich."
+      ],
+      "synonyms": [
+        "gerührt",
+        "berührtsein"
+      ],
+      "related": [
+        "dankbarkeit",
+        "ergriffenheit"
+      ],
+      "reflectionQuestion": "Was berührt mich daran?"
+    },
+    {
+      "id": "respekt",
+      "name": "Respekt",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Wertschätzung für Grenzen, Fähigkeiten und Würde.",
+      "examples": [
+        "Du achtest einen höflichen Widerspruch.",
+        "Der Mut einer Person beeindruckt dich."
+      ],
+      "synonyms": [
+        "achtung",
+        "wertschätzung"
+      ],
+      "related": [
+        "bewunderung",
+        "anerkanntsein"
+      ],
+      "reflectionQuestion": "Was achte ich an dieser Person?"
+    },
+    {
+      "id": "innigkeit",
+      "name": "Innigkeit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Besonders tiefe persönliche Nähe.",
+      "examples": [
+        "Ein Blick sagt zwischen euch viel.",
+        "Eine Umarmung gibt dir Halt."
+      ],
+      "synonyms": [
+        "innig",
+        "herzensnähe"
+      ],
+      "related": [
+        "naehe",
+        "geborgenheit"
+      ],
+      "reflectionQuestion": "Was macht unsere Nähe besonders?"
+    },
+    {
+      "id": "harmonie",
+      "name": "Harmonie",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl eines stimmigen Miteinanders.",
+      "examples": [
+        "Ein Gespräch verläuft auf Augenhöhe.",
+        "Eine Gruppe findet einen gemeinsamen Rhythmus."
+      ],
+      "synonyms": [
+        "eintracht",
+        "harmonisch"
+      ],
+      "related": [
+        "vertrautheit",
+        "innerer_frieden"
+      ],
+      "reflectionQuestion": "Kann ich Harmonie ohne Vermeidung erleben?"
+    },
+    {
+      "id": "versoehnung",
+      "name": "Versöhnung",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Erneutes Zugehen nach einem Konflikt.",
+      "examples": [
+        "Nach einem Streit könnt ihr wieder reden.",
+        "Eine Kränkung nimmt weniger Raum ein."
+      ],
+      "synonyms": [
+        "aussöhnung",
+        "versöhnt"
+      ],
+      "related": [
+        "erleichterung",
+        "naehe"
+      ],
+      "reflectionQuestion": "Was brauche ich für eine Annäherung?"
+    },
+    {
+      "id": "niedergeschlagenheit",
+      "name": "Niedergeschlagenheit",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "kind": "MOOD",
+      "definition": "Gedrückte Stimmung, in der vieles schwerer erscheint.",
+      "examples": [
+        "Nach einer Absage fühlst du dich matt.",
+        "Ein Gespräch nimmt dir den Schwung."
+      ],
+      "synonyms": [
+        "bedrücktheit",
+        "niedergeschlagen"
+      ],
+      "related": [
+        "traurigkeit",
+        "mutlosigkeit"
+      ],
+      "reflectionQuestion": "Was drückt mich nieder?"
+    },
+    {
+      "id": "mutlosigkeit",
+      "name": "Mutlosigkeit",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "kind": "STATE",
+      "definition": "Das Gefühl, wenig Mut für den nächsten Schritt zu haben.",
+      "examples": [
+        "Nach Rückschlägen zweifelst du am Weitermachen.",
+        "Du vermeidest einen schwierigen Anruf."
+      ],
+      "synonyms": [
+        "mutlos",
+        "kleinmut"
+      ],
+      "related": [
+        "entmutigung",
+        "hoffnungslosigkeit"
+      ],
+      "reflectionQuestion": "Welcher kleine Schritt wäre möglich?"
+    },
+    {
+      "id": "hoffnungslosigkeit",
+      "name": "Hoffnungslosigkeit",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "kind": "STATE",
+      "definition": "Belastendes Empfinden, keine Besserung mehr erwarten zu können.",
+      "examples": [
+        "Nach Fehlversuchen siehst du keinen Ausweg.",
+        "Eine schwere Phase lässt Möglichkeiten fern erscheinen."
+      ],
+      "synonyms": [
+        "hoffnungslos",
+        "aussichtslosigkeit"
+      ],
+      "related": [
+        "verzweiflung",
+        "resignation"
+      ],
+      "reflectionQuestion": "Mit wem kann ich dieses Gefühl teilen?"
+    },
+    {
+      "id": "resignation",
+      "name": "Resignation",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit",
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Aufgeben eigener Bemühungen, weil Veränderung aussichtslos scheint.",
+      "examples": [
+        "Nach vielen Absagen versuchst du es nicht mehr.",
+        "In einem Konflikt erwartest du keine Veränderung."
+      ],
+      "synonyms": [
+        "resigniert",
+        "aufgegeben"
+      ],
+      "related": [
+        "entmutigung",
+        "akzeptanz"
+      ],
+      "reflectionQuestion": "Bin ich frei entschieden oder fühle ich mich machtlos?"
+    },
+    {
+      "id": "entmutigung",
+      "name": "Entmutigung",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Nachlassender Mut nach Rückschlägen.",
+      "examples": [
+        "Kritik nimmt dir die Lust am Ausprobieren.",
+        "Ein Rückschlag macht einen Plan schwer."
+      ],
+      "synonyms": [
+        "entmutigt",
+        "demotiviert"
+      ],
+      "related": [
+        "mutlosigkeit",
+        "enttaeuschung"
+      ],
+      "reflectionQuestion": "Was hat meinen Mut geschwächt?"
+    },
+    {
+      "id": "innere_leere",
+      "name": "Innere Leere",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "kind": "STATE",
+      "definition": "Empfinden fehlender innerer Resonanz.",
+      "examples": [
+        "Nach anstrengenden Tagen erscheint dir alles flach.",
+        "Nach einer Veränderung fühlst du dich leer."
+      ],
+      "synonyms": [
+        "leere",
+        "gefühlsleere"
+      ],
+      "related": [
+        "entfremdung",
+        "niedergeschlagenheit"
+      ],
+      "reflectionQuestion": "Wonach sehne ich mich hier?"
+    },
+    {
+      "id": "verlassenheit",
+      "name": "Verlassenheit",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit",
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Schmerzliches Gefühl, ohne erhofften Rückhalt zu sein.",
+      "examples": [
+        "Niemand meldet sich in einer schwierigen Lage.",
+        "Nach einem Abschied fühlst du dich allein gelassen."
+      ],
+      "synonyms": [
+        "verlassen",
+        "alleingelassen"
+      ],
+      "related": [
+        "einsamkeit",
+        "verletztheit"
+      ],
+      "reflectionQuestion": "Welche Unterstützung hat gefehlt?"
+    },
+    {
+      "id": "heimweh",
+      "name": "Heimweh",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit",
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Sehnsucht nach einem vertrauten Ort oder Umfeld.",
+      "examples": [
+        "Auf einer Reise vermisst du dein Zuhause.",
+        "In einer neuen Stadt fehlen dir vertraute Geräusche."
+      ],
+      "synonyms": [
+        "heimatsehnsucht",
+        "heimweh haben"
+      ],
+      "related": [
+        "sehnsucht",
+        "wehmut"
+      ],
+      "reflectionQuestion": "Was bedeutet Zuhause für mich?"
+    },
+    {
+      "id": "liebeskummer",
+      "name": "Liebeskummer",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit",
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Schmerz und Sehnsucht bei unerfüllter oder verlorener Liebe.",
+      "examples": [
+        "Nach einer Trennung fehlt vertrauter Kontakt.",
+        "Deine Gefühle werden nicht erwidert."
+      ],
+      "synonyms": [
+        "herzschmerz",
+        "herzenskummer"
+      ],
+      "related": [
+        "sehnsucht",
+        "trauer"
+      ],
+      "reflectionQuestion": "Was fehlt mir an dieser Verbindung?"
+    },
+    {
+      "id": "bedauern",
+      "name": "Bedauern",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Traurigkeit, weil etwas anders kam als erhofft.",
+      "examples": [
+        "Du bedauerst eine verpasste Gelegenheit.",
+        "Ein Besuch hätte länger dauern dürfen."
+      ],
+      "synonyms": [
+        "bedauerlich",
+        "leidtun"
+      ],
+      "related": [
+        "enttaeuschung",
+        "reue"
+      ],
+      "reflectionQuestion": "Was hätte ich mir gewünscht?"
+    },
+    {
+      "id": "verzweiflung",
+      "name": "Verzweiflung",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit",
+        "Unsicherheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Intensives Gefühl, wenn Möglichkeiten und Halt zu entgleiten scheinen.",
+      "examples": [
+        "Eine Lage fühlt sich unlösbar an.",
+        "Nach Rückschlägen weißt du nicht weiter."
+      ],
+      "synonyms": [
+        "verzweifelt",
+        "ausweglos"
+      ],
+      "related": [
+        "hoffnungslosigkeit",
+        "hilflosigkeit"
+      ],
+      "reflectionQuestion": "Wen kann ich um Unterstützung bitten?"
+    },
+    {
+      "id": "weltschmerz",
+      "name": "Weltschmerz",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "kind": "MOOD",
+      "definition": "Traurigkeit über das Leid oder die Unvollkommenheit der Welt.",
+      "examples": [
+        "Bedrückende Nachrichten machen dich schwer.",
+        "Ungerechtigkeit lässt dich traurig werden."
+      ],
+      "synonyms": [
+        "weltmüdigkeit",
+        "weltschmerzlich"
+      ],
+      "related": [
+        "mitgefuehl",
+        "traurigkeit"
+      ],
+      "reflectionQuestion": "Was berührt mich daran?"
+    },
+    {
+      "id": "zweifel",
+      "name": "Zweifel",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Inneres Schwanken zwischen Deutungen oder Entscheidungen.",
+      "examples": [
+        "Du überlegst, ob du zusagen sollst.",
+        "Nach einem Gespräch bist du dir über seine Bedeutung unsicher."
+      ],
+      "synonyms": [
+        "zweifeln",
+        "unentschlossenheit"
+      ],
+      "related": [
+        "unsicherheit",
+        "selbstzweifel"
+      ],
+      "reflectionQuestion": "Welche Information fehlt?"
+    },
+    {
+      "id": "skepsis",
+      "name": "Skepsis",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Zurückhaltendes Infragestellen einer Behauptung.",
+      "examples": [
+        "Ein zu gutes Angebot macht dich vorsichtig.",
+        "Du möchtest etwas vor einer Zusage prüfen."
+      ],
+      "synonyms": [
+        "skeptisch",
+        "vorbehalt"
+      ],
+      "related": [
+        "misstrauen",
+        "zweifel"
+      ],
+      "reflectionQuestion": "Was müsste ich wissen?"
+    },
+    {
+      "id": "misstrauen",
+      "name": "Misstrauen",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Das Gefühl, sich nicht auf Absichten oder Zusagen verlassen zu können.",
+      "examples": [
+        "Ein gebrochenes Versprechen macht vorsichtig.",
+        "Du hast den Eindruck, etwas werde verschwiegen."
+      ],
+      "synonyms": [
+        "misstrauisch",
+        "argwohn"
+      ],
+      "related": [
+        "skepsis",
+        "vertrauen"
+      ],
+      "reflectionQuestion": "Worauf gründet sich das Misstrauen?"
+    },
+    {
+      "id": "befangenheit",
+      "name": "Befangenheit",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gehemmtheit, wenn du dich beobachtet fühlst.",
+      "examples": [
+        "In einer neuen Gruppe redest du wenig.",
+        "Nach einem Missverständnis bist du steif."
+      ],
+      "synonyms": [
+        "befangen",
+        "gehemmt"
+      ],
+      "related": [
+        "verlegenheit",
+        "scheu"
+      ],
+      "reflectionQuestion": "Was würde mir helfen?"
+    },
+    {
+      "id": "scheu",
+      "name": "Scheu",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Zurückhaltung gegenüber Neuem oder persönlicher Nähe.",
+      "examples": [
+        "Du brauchst Zeit, um jemanden anzusprechen.",
+        "Vor einem Auftritt weichst du zurück."
+      ],
+      "synonyms": [
+        "schüchternheit",
+        "scheuheit"
+      ],
+      "related": [
+        "befangenheit",
+        "unsicherheit"
+      ],
+      "reflectionQuestion": "Welche Annäherung wäre angenehm?"
+    },
+    {
+      "id": "beklemmung",
+      "name": "Beklemmung",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Unangenehmes Gefühl innerer Enge.",
+      "examples": [
+        "Ein Konfliktgespräch fühlt sich einengend an.",
+        "Vor einer Nachricht spürst du Druck."
+      ],
+      "synonyms": [
+        "beklommen",
+        "engegefühl"
+      ],
+      "related": [
+        "angst",
+        "anspannung"
+      ],
+      "reflectionQuestion": "Was engt mich gerade ein?"
+    },
+    {
+      "id": "anspannung",
+      "name": "Anspannung",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Innere oder körperliche Bereitschaft, die als Druck spürbar ist.",
+      "examples": [
+        "Vor einer Prüfung sind deine Schultern hart.",
+        "Du sitzt bei Ungewissheit auf Nadeln."
+      ],
+      "synonyms": [
+        "angespannt",
+        "nervöse spannung"
+      ],
+      "related": [
+        "nervositaet",
+        "unruhe"
+      ],
+      "reflectionQuestion": "Was hält mich in Bereitschaft?"
+    },
+    {
+      "id": "hilflosigkeit",
+      "name": "Hilflosigkeit",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, eine Situation nicht beeinflussen zu können.",
+      "examples": [
+        "Du möchtest helfen und weißt nicht wie.",
+        "Eine Änderung lässt dich handlungsunfähig fühlen."
+      ],
+      "synonyms": [
+        "hilflos",
+        "ohnmacht"
+      ],
+      "related": [
+        "verzweiflung",
+        "ueberforderung"
+      ],
+      "reflectionQuestion": "Worauf habe ich Einfluss?"
+    },
+    {
+      "id": "orientierungslosigkeit",
+      "name": "Orientierungslosigkeit",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Zustand ohne klaren inneren oder äußeren Weg.",
+      "examples": [
+        "Nach einer Veränderung weißt du nicht weiter.",
+        "Eine unübersichtliche Lage erschwert Entscheidungen."
+      ],
+      "synonyms": [
+        "orientierungslos",
+        "ratlosigkeit"
+      ],
+      "related": [
+        "unsicherheit",
+        "verwirrung"
+      ],
+      "reflectionQuestion": "Was wäre ein erster Anhaltspunkt?"
+    },
+    {
+      "id": "unruhe",
+      "name": "Unruhe",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Innere Bewegung, die Entspannen erschwert.",
+      "examples": [
+        "Du gehst nervös auf und ab.",
+        "Vor einer Entscheidung kannst du nicht stillsitzen."
+      ],
+      "synonyms": [
+        "rastlosigkeit",
+        "unruhig"
+      ],
+      "related": [
+        "anspannung",
+        "ungeduld"
+      ],
+      "reflectionQuestion": "Was lässt mich nicht zur Ruhe kommen?"
+    },
+    {
+      "id": "schreck",
+      "name": "Schreck",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Plötzliche kurze Reaktion auf etwas Unerwartetes.",
+      "examples": [
+        "Hinter dir schlägt eine Tür zu.",
+        "Ein Fahrrad fährt unerwartet dicht vorbei."
+      ],
+      "synonyms": [
+        "erschrocken",
+        "erschrecken"
+      ],
+      "related": [
+        "furcht",
+        "ueberraschung"
+      ],
+      "reflectionQuestion": "Was hat mich aufgeschreckt?"
+    },
+    {
+      "id": "befuerchtung",
+      "name": "Befürchtung",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Vorstellung eines möglichen unerwünschten Ereignisses.",
+      "examples": [
+        "Du fürchtest ein schwieriges Gespräch.",
+        "Du stellst dir vor einem Termin einen schlechten Ausgang vor."
+      ],
+      "synonyms": [
+        "befürchten",
+        "ungutes gefühl"
+      ],
+      "related": [
+        "besorgnis",
+        "angst"
+      ],
+      "reflectionQuestion": "Was befürchte ich konkret?"
+    },
+    {
+      "id": "groll",
+      "name": "Groll",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "MOOD",
+      "definition": "Länger anhaltender Ärger über etwas, das noch ungeklärt wirkt.",
+      "examples": [
+        "Du denkst oft an eine alte ungerechte Entscheidung.",
+        "Eine Entschuldigung fehlt dir."
+      ],
+      "synonyms": [
+        "nachtragen",
+        "groll hegen"
+      ],
+      "related": [
+        "verbitterung",
+        "wut"
+      ],
+      "reflectionQuestion": "Was ist für mich noch offen?"
+    },
+    {
+      "id": "verbitterung",
+      "name": "Verbitterung",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "MOOD",
+      "definition": "Ein lang anhaltendes Gefühl verletzter Erwartungen, das hart werden kann.",
+      "examples": [
+        "Zurückweisungen färben deinen Blick auf neue Chancen.",
+        "Eine alte Ungerechtigkeit belastet dich stark."
+      ],
+      "synonyms": [
+        "verbittert",
+        "bitterkeit"
+      ],
+      "related": [
+        "groll",
+        "resignation"
+      ],
+      "reflectionQuestion": "Welche Verletzung wirkt noch nach?"
+    },
+    {
+      "id": "unzufriedenheit",
+      "name": "Unzufriedenheit",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "STATE",
+      "definition": "Das Empfinden, dass etwas nicht zu deinen Bedürfnissen passt.",
+      "examples": [
+        "Dein Alltag fühlt sich unausgewogen an.",
+        "Ein Ergebnis entspricht nicht deinen Vorstellungen."
+      ],
+      "synonyms": [
+        "unzufrieden",
+        "missfallen"
+      ],
+      "related": [
+        "frustration",
+        "verdrossenheit"
+      ],
+      "reflectionQuestion": "Was fehlt mir für mehr Stimmigkeit?"
+    },
+    {
+      "id": "missmut",
+      "name": "Missmut",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "MOOD",
+      "definition": "Verhaltene eher gedrückte Form von Unmut.",
+      "examples": [
+        "Du antwortest kurz angebunden.",
+        "Ein lästiger Termin verdirbt dir die Stimmung."
+      ],
+      "synonyms": [
+        "missmutig",
+        "muffelig"
+      ],
+      "related": [
+        "gereiztheit",
+        "verdrossenheit"
+      ],
+      "reflectionQuestion": "Was trübt mich?"
+    },
+    {
+      "id": "verdrossenheit",
+      "name": "Verdrossenheit",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "MOOD",
+      "definition": "Müdigkeit und Unlust durch wiederholte lästige Erfahrungen.",
+      "examples": [
+        "Du hast genug von immer gleichen Diskussionen.",
+        "Eine Routine wirkt nur noch mühsam."
+      ],
+      "synonyms": [
+        "verdrossen",
+        "überdruss"
+      ],
+      "related": [
+        "missmut",
+        "resignation"
+      ],
+      "reflectionQuestion": "Wovon habe ich gerade genug?"
+    },
+    {
+      "id": "widerwillen",
+      "name": "Widerwillen",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "EMOTION",
+      "definition": "Innerer Widerstand gegen eine Handlung oder Situation.",
+      "examples": [
+        "Du sollst etwas tun, das deinen Werten widerspricht.",
+        "Eine Pflicht sträubt dich innerlich."
+      ],
+      "synonyms": [
+        "widerwillig",
+        "abgeneigt"
+      ],
+      "related": [
+        "abneigung",
+        "trotz"
+      ],
+      "reflectionQuestion": "Was in mir sagt Nein?"
+    },
+    {
+      "id": "trotz",
+      "name": "Trotz",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "EMOTION",
+      "definition": "Beharrlicher Impuls, sich gegen Druck zu behaupten.",
+      "examples": [
+        "Du bleibst bei deinem Nein trotz Drängen.",
+        "Eine Anweisung löst Widerstand aus."
+      ],
+      "synonyms": [
+        "trotzig",
+        "widerspenstigkeit"
+      ],
+      "related": [
+        "widerwillen",
+        "wut"
+      ],
+      "reflectionQuestion": "Welche Grenze möchte ich schützen?"
+    },
+    {
+      "id": "neid",
+      "name": "Neid",
+      "family": "Ärger",
+      "families": [
+        "Ärger",
+        "Selbstbewertung"
+      ],
+      "kind": "EMOTION",
+      "definition": "Schmerzhaftes Wünschen nach etwas, das ein anderer hat.",
+      "examples": [
+        "Ein Kollege erhält eine Chance, die du dir wünschst.",
+        "Der Erfolg einer Freundin löst einen Vergleich aus."
+      ],
+      "synonyms": [
+        "neidisch",
+        "haben wollen"
+      ],
+      "related": [
+        "eifersucht",
+        "missgunst"
+      ],
+      "reflectionQuestion": "Was wünsche ich mir selbst?"
+    },
+    {
+      "id": "eifersucht",
+      "name": "Eifersucht",
+      "family": "Ärger",
+      "families": [
+        "Ärger",
+        "Unsicherheit",
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Sorge, eine bedeutsame Beziehung oder besondere Nähe zu verlieren.",
+      "examples": [
+        "Dein Partner verbringt viel Zeit mit jemand anderem.",
+        "Du möchtest einem Freund wichtiger sein."
+      ],
+      "synonyms": [
+        "eifersüchtig",
+        "eifersuchtsgefühl"
+      ],
+      "related": [
+        "neid",
+        "angst"
+      ],
+      "reflectionQuestion": "Welche Verbindung fürchte ich zu verlieren?"
+    },
+    {
+      "id": "missgunst",
+      "name": "Missgunst",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "EMOTION",
+      "definition": "Das unangenehme Empfinden, jemandem einen Vorteil nicht gönnen zu können.",
+      "examples": [
+        "Ein fremder Erfolg stört dich.",
+        "Du hoffst insgeheim, dass ein Rivale nicht gewinnt."
+      ],
+      "synonyms": [
+        "missgünstig",
+        "nicht gönnen"
+      ],
+      "related": [
+        "neid",
+        "groll"
+      ],
+      "reflectionQuestion": "Was löst dieser Vergleich aus?"
+    },
+    {
+      "id": "verachtung",
+      "name": "Verachtung",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "EMOTION",
+      "definition": "Stark abwertendes Empfinden gegenüber Verhalten oder Personen.",
+      "examples": [
+        "Eine grausame Handlung löst tiefe Ablehnung aus.",
+        "Du bemerkst, wie du jemanden herabsetzt."
+      ],
+      "synonyms": [
+        "verächtlich",
+        "geringschätzung"
+      ],
+      "related": [
+        "abneigung",
+        "empoerung"
+      ],
+      "reflectionQuestion": "Kann ich zwischen Mensch und Handlung unterscheiden?"
+    },
+    {
+      "id": "abneigung",
+      "name": "Abneigung",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "kind": "EMOTION",
+      "definition": "Gefühl, etwas meiden zu wollen, weil es unangenehm erscheint.",
+      "examples": [
+        "Ein bestimmter Geruch stößt dich ab.",
+        "Du möchtest Abstand von einer Situation."
+      ],
+      "synonyms": [
+        "ablehnung",
+        "antipathie"
+      ],
+      "related": [
+        "widerwillen",
+        "verachtung"
+      ],
+      "reflectionQuestion": "Wovon möchte ich Abstand?"
+    },
+    {
+      "id": "selbstakzeptanz",
+      "name": "Selbstakzeptanz",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Das Erleben, dich auch mit Unvollkommenheiten annehmen zu können.",
+      "examples": [
+        "Du machst einen Fehler, ohne dich abzuwerten.",
+        "Du erkennst eine eigene Grenze an."
+      ],
+      "synonyms": [
+        "selbstannahme",
+        "mich annehmen"
+      ],
+      "related": [
+        "selbstachtung",
+        "gelassenheit"
+      ],
+      "reflectionQuestion": "Was darf an mir so sein?"
+    },
+    {
+      "id": "selbstachtung",
+      "name": "Selbstachtung",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, dass eigene Würde und Grenzen wichtig sind.",
+      "examples": [
+        "Du widersprichst einer unfairen Bemerkung.",
+        "Du sagst Nein, obwohl du gefallen möchtest."
+      ],
+      "synonyms": [
+        "selbstrespekt",
+        "achtung vor mir"
+      ],
+      "related": [
+        "selbstakzeptanz",
+        "selbstvertrauen"
+      ],
+      "reflectionQuestion": "Welche Grenze möchte ich achten?"
+    },
+    {
+      "id": "selbstvertrauen",
+      "name": "Selbstvertrauen",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Zutrauen in die eigenen Fähigkeiten.",
+      "examples": [
+        "Du probierst eine neue Aufgabe aus.",
+        "Du erinnerst dich an frühere Erfolge."
+      ],
+      "synonyms": [
+        "selbstsicherheit",
+        "vertrauen in mich"
+      ],
+      "related": [
+        "zuversicht",
+        "selbstwirksamkeit"
+      ],
+      "reflectionQuestion": "Worauf kann ich mich stützen?"
+    },
+    {
+      "id": "selbstkritik",
+      "name": "Selbstkritik",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Prüfende Bewertung des eigenen Handelns, hilfreich oder verletzend.",
+      "examples": [
+        "Du überlegst, was du besser machen könntest.",
+        "Du sprichst strenger mit dir als mit anderen."
+      ],
+      "synonyms": [
+        "selbstkritisch",
+        "innere kritik"
+      ],
+      "related": [
+        "reue",
+        "selbstzweifel"
+      ],
+      "reflectionQuestion": "Ist meine Kritik fair und konkret?"
+    },
+    {
+      "id": "unzulaenglichkeit",
+      "name": "Unzulänglichkeit",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Das Gefühl, Anforderungen nicht zu genügen.",
+      "examples": [
+        "Dein Beitrag scheint dir nicht gut genug.",
+        "Nach einer Absage zweifelst du an deinem Wert."
+      ],
+      "synonyms": [
+        "nicht gut genug",
+        "minderwertigkeitsgefühl"
+      ],
+      "related": [
+        "scham",
+        "selbstzweifel"
+      ],
+      "reflectionQuestion": "Wessen Maßstab benutze ich?"
+    },
+    {
+      "id": "ueberlegenheit",
+      "name": "Überlegenheit",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Das Erleben, anderen in etwas überlegen zu sein.",
+      "examples": [
+        "Du kannst eine Aufgabe leichter lösen.",
+        "Ein Erfolg lässt dich auf andere herabschauen."
+      ],
+      "synonyms": [
+        "überlegenheitsgefühl",
+        "überheblichkeit"
+      ],
+      "related": [
+        "stolz",
+        "verachtung"
+      ],
+      "reflectionQuestion": "Kann ich eine Stärke ohne Abwertung anerkennen?"
+    },
+    {
+      "id": "demut",
+      "name": "Demut",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung",
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Die Anerkennung eigener Grenzen und des Werts anderer.",
+      "examples": [
+        "Du lernst von einer unerwarteten Person.",
+        "Ein Erfolg erinnert dich an die Hilfe anderer."
+      ],
+      "synonyms": [
+        "demütig",
+        "bescheidenheit"
+      ],
+      "related": [
+        "dankbarkeit",
+        "respekt"
+      ],
+      "reflectionQuestion": "Wem möchte ich Anerkennung geben?"
+    },
+    {
+      "id": "schuldbewusstsein",
+      "name": "Schuldbewusstsein",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Bewusstsein, für eine konkrete Handlung verantwortlich zu sein.",
+      "examples": [
+        "Du erkennst dein Versäumnis.",
+        "Du bemerkst deinen Anteil an einem Missverständnis."
+      ],
+      "synonyms": [
+        "verantwortungsbewusstsein",
+        "fehlerbewusstsein"
+      ],
+      "related": [
+        "schuldgefuehl",
+        "reue"
+      ],
+      "reflectionQuestion": "Was kann ich wiedergutmachen?"
+    },
+    {
+      "id": "selbstmitleid",
+      "name": "Selbstmitleid",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung",
+        "Traurigkeit"
+      ],
+      "kind": "STATE",
+      "definition": "Auf das eigene Leid gerichtetes Bedauern.",
+      "examples": [
+        "Nach einem Rückschlag fühlst du dich besonders ungerecht behandelt.",
+        "Du kreist um die eigene Belastung."
+      ],
+      "synonyms": [
+        "selbstbedauern",
+        "sich bemitleiden"
+      ],
+      "related": [
+        "verletztheit",
+        "traurigkeit"
+      ],
+      "reflectionQuestion": "Welcher Trost hilft mir wirklich?"
+    },
+    {
+      "id": "entfremdung",
+      "name": "Entfremdung",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung",
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, von dir selbst oder dem Gewohnten entfernt zu sein.",
+      "examples": [
+        "Deine tägliche Rolle fühlt sich fremd an.",
+        "Ein vertrautes Umfeld erscheint ungewohnt."
+      ],
+      "synonyms": [
+        "entfremdet",
+        "innerer abstand"
+      ],
+      "related": [
+        "innere_leere",
+        "verlassenheit"
+      ],
+      "reflectionQuestion": "Was fühlt sich nicht mehr nach mir an?"
+    },
+    {
+      "id": "authentizitaet",
+      "name": "Authentizität",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Das Erleben, mit den eigenen Werten übereinzustimmen.",
+      "examples": [
+        "Du sprichst ehrlich über ein Bedürfnis.",
+        "Eine Entscheidung fühlt sich wirklich nach dir an."
+      ],
+      "synonyms": [
+        "echtsein",
+        "ich selbst sein"
+      ],
+      "related": [
+        "selbstakzeptanz",
+        "innerer_frieden"
+      ],
+      "reflectionQuestion": "Wo kann ich ich selbst sein?"
+    },
+    {
+      "id": "anerkanntsein",
+      "name": "Anerkanntsein",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "kind": "STATE",
+      "definition": "Angenehmes Gefühl, mit deinem Beitrag gesehen zu werden.",
+      "examples": [
+        "Jemand würdigt deine Mühe.",
+        "Deine Meinung wird ernst genommen."
+      ],
+      "synonyms": [
+        "gewürdigt werden",
+        "anerkennung"
+      ],
+      "related": [
+        "stolz",
+        "zugehoerigkeit"
+      ],
+      "reflectionQuestion": "Was an diesem Gesehenwerden tut gut?"
+    },
+    {
+      "id": "bewunderung",
+      "name": "Bewunderung",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Wertschätzendes Staunen über Fähigkeit oder Haltung.",
+      "examples": [
+        "Jemand spielt meisterhaft ein Instrument.",
+        "Der Mut eines Menschen beeindruckt dich."
+      ],
+      "synonyms": [
+        "bewundern",
+        "hochachtung"
+      ],
+      "related": [
+        "respekt",
+        "ehrfurcht"
+      ],
+      "reflectionQuestion": "Was beeindruckt mich daran?"
+    },
+    {
+      "id": "verblueffung",
+      "name": "Verblüffung",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "kind": "EMOTION",
+      "definition": "Kurzes starkes Staunen über etwas völlig Unerwartetes.",
+      "examples": [
+        "Ein Experiment gelingt unerwartet.",
+        "Eine Antwort macht dich sprachlos."
+      ],
+      "synonyms": [
+        "verblüfft",
+        "sprachlos staunen"
+      ],
+      "related": [
+        "ueberraschung",
+        "verwunderung"
+      ],
+      "reflectionQuestion": "Welche Erwartung änderte sich gerade?"
+    },
+    {
+      "id": "irritierung",
+      "name": "Irritierung",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "kind": "EMOTION",
+      "definition": "Verunsicherung, weil Eindrücke nicht zusammenpassen.",
+      "examples": [
+        "Eine widersprüchliche Aussage macht dich stutzig.",
+        "Das Verhalten eines Freundes passt nicht ins Bild."
+      ],
+      "synonyms": [
+        "irritiert",
+        "stutzig"
+      ],
+      "related": [
+        "verwunderung",
+        "befremden"
+      ],
+      "reflectionQuestion": "Was passt gerade nicht zusammen?"
+    },
+    {
+      "id": "verwirrung",
+      "name": "Verwirrung",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Zustand, in dem Gedanken schwer zu ordnen sind.",
+      "examples": [
+        "Unterschiedliche Erklärungen verwirren dich.",
+        "Ein Ablauf bringt deine Erwartungen durcheinander."
+      ],
+      "synonyms": [
+        "verwirrt",
+        "durcheinander"
+      ],
+      "related": [
+        "orientierungslosigkeit",
+        "irritierung"
+      ],
+      "reflectionQuestion": "Was müsste ich zuerst sortieren?"
+    },
+    {
+      "id": "ergriffenheit",
+      "name": "Ergriffenheit",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Verbundenheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Tiefes emotionales Bewegtsein durch etwas Bedeutsames.",
+      "examples": [
+        "Eine Rede berührt dich tief.",
+        "Ein gemeinsamer Moment treibt dir Tränen in die Augen."
+      ],
+      "synonyms": [
+        "ergriffen",
+        "tief bewegt"
+      ],
+      "related": [
+        "ruehrung",
+        "ehrfurcht"
+      ],
+      "reflectionQuestion": "Welche Bedeutung hat dieser Moment?"
+    },
+    {
+      "id": "verzauberung",
+      "name": "Verzauberung",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "kind": "EMOTION",
+      "definition": "Anhaltend positives Staunen über besondere Schönheit.",
+      "examples": [
+        "Ein Konzert lässt den Alltag verblassen.",
+        "Ein Wintermorgen erscheint fast unwirklich schön."
+      ],
+      "synonyms": [
+        "verzaubert",
+        "bezaubert"
+      ],
+      "related": [
+        "entzuecken",
+        "faszination"
+      ],
+      "reflectionQuestion": "Was macht diesen Moment besonders?"
+    },
+    {
+      "id": "befremden",
+      "name": "Befremden",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Unsicherheit"
+      ],
+      "kind": "EMOTION",
+      "definition": "Gefühl, etwas Fremdes schwer nachvollziehen zu können.",
+      "examples": [
+        "Eine ungewohnte Regel verwundert dich.",
+        "Eine Aussage liegt weit von deiner Sicht entfernt."
+      ],
+      "synonyms": [
+        "befremdet",
+        "merkwürdig finden"
+      ],
+      "related": [
+        "irritierung",
+        "misstrauen"
+      ],
+      "reflectionQuestion": "Was ist mir daran ungewohnt?"
+    },
+    {
+      "id": "entdeckungslust",
+      "name": "Entdeckungslust",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Lebendiger Wunsch, etwas Neues kennenzulernen.",
+      "examples": [
+        "Du gehst einen unbekannten Weg.",
+        "Eine neue Frage führt dich zum nächsten Thema."
+      ],
+      "synonyms": [
+        "erkundungslust",
+        "entdeckerfreude"
+      ],
+      "related": [
+        "neugier",
+        "inspiration"
+      ],
+      "reflectionQuestion": "Was möchte ich erkunden?"
+    },
+    {
+      "id": "offenheit",
+      "name": "Offenheit",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Bereitschaft, neue Perspektiven zuzulassen.",
+      "examples": [
+        "Du hörst einer ungewohnten Ansicht zu.",
+        "Du probierst etwas Fremdes aus."
+      ],
+      "synonyms": [
+        "aufgeschlossenheit",
+        "offen sein"
+      ],
+      "related": [
+        "neugier",
+        "gelassenheit"
+      ],
+      "reflectionQuestion": "Was sollte ich noch nicht ausschließen?"
+    },
+    {
+      "id": "ueberwaeltigung",
+      "name": "Überwältigung",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Unsicherheit"
+      ],
+      "kind": "STATE",
+      "definition": "Erleben, dass die Intensität von etwas schwer zu fassen ist.",
+      "examples": [
+        "Ein gewaltiger Ausblick macht dich still.",
+        "Viele gute Nachrichten fühlen sich fast zu viel an."
+      ],
+      "synonyms": [
+        "überwältigt",
+        "überwältigtsein"
+      ],
+      "related": [
+        "ehrfurcht",
+        "ueberforderung"
+      ],
+      "reflectionQuestion": "Ist diese Intensität angenehm oder belastend?"
+    },
+    {
+      "id": "interesse",
+      "name": "Interesse",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "kind": "STATE",
+      "definition": "Innere Hinwendung zu etwas, das Aufmerksamkeit weckt.",
+      "examples": [
+        "Eine Frage bringt dich zum Nachdenken.",
+        "Du möchtest ein Thema näher kennenlernen."
+      ],
+      "synonyms": [
+        "interessiert",
+        "aufmerksamkeit"
+      ],
+      "related": [
+        "neugier",
+        "faszination"
+      ],
+      "reflectionQuestion": "Was zieht meine Aufmerksamkeit an?"
+    },
+    {
+      "id": "erkenntnisfreude",
+      "name": "Erkenntnisfreude",
+      "family": "Staunen",
+      "families": [
+        "Staunen",
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Freude darüber, etwas plötzlich besser zu verstehen.",
+      "examples": [
+        "Eine Aufgabe ergibt endlich Sinn.",
+        "Eine Erklärung verbindet mehrere Ideen."
+      ],
+      "synonyms": [
+        "aha-freude",
+        "verstehensfreude"
+      ],
+      "related": [
+        "freude",
+        "neugier"
+      ],
+      "reflectionQuestion": "Was habe ich gerade verstanden?"
+    },
+    {
+      "id": "akzeptanz",
+      "name": "Akzeptanz",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe",
+        "Traurigkeit"
+      ],
+      "kind": "STATE",
+      "definition": "Inneres Anerkennen einer Realität, ohne sie mögen zu müssen.",
+      "examples": [
+        "Du erkennst an, dass etwas nicht rückgängig wird.",
+        "Du hörst auf, gegen das Wetter anzukämpfen."
+      ],
+      "synonyms": [
+        "annehmen",
+        "hinnahme"
+      ],
+      "related": [
+        "gelassenheit",
+        "resignation"
+      ],
+      "reflectionQuestion": "Akzeptiere ich frei oder habe ich aufgegeben?"
+    },
+    {
+      "id": "gleichmut",
+      "name": "Gleichmut",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Gleichbleibende innere Haltung bei wechselnden Umständen.",
+      "examples": [
+        "Ein Kommentar bringt dich nicht aus der Ruhe.",
+        "Ein Planwechsel bleibt für dich handhabbar."
+      ],
+      "synonyms": [
+        "gleichmütig",
+        "unerschütterlichkeit"
+      ],
+      "related": [
+        "gelassenheit",
+        "ausgeglichenheit"
+      ],
+      "reflectionQuestion": "Bin ich ruhig und zugleich beteiligt?"
+    },
+    {
+      "id": "innerer_frieden",
+      "name": "Innerer Frieden",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Empfinden, mit sich oder einer Lage vorläufig im Einklang zu sein.",
+      "examples": [
+        "Nach einem Gespräch bist du mit dir versöhnt.",
+        "Eine offene Frage darf heute offen bleiben."
+      ],
+      "synonyms": [
+        "frieden mit mir",
+        "versöhntsein"
+      ],
+      "related": [
+        "akzeptanz",
+        "gelassenheit"
+      ],
+      "reflectionQuestion": "Womit bin ich gerade im Reinen?"
+    },
+    {
+      "id": "ausgeglichenheit",
+      "name": "Ausgeglichenheit",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl innerer Balance ohne starke Ausschläge.",
+      "examples": [
+        "Nach einem stressigen Morgen sammelst du dich.",
+        "Du fühlst dich wach und zugleich ruhig."
+      ],
+      "synonyms": [
+        "balance",
+        "ausgeglichen"
+      ],
+      "related": [
+        "innere_ruhe",
+        "gleichmut"
+      ],
+      "reflectionQuestion": "Was hilft mir, die Mitte zu finden?"
+    },
+    {
+      "id": "klarheit",
+      "name": "Klarheit",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, Gedanken und Bedürfnisse unterscheiden zu können.",
+      "examples": [
+        "Nach einem Gespräch verstehst du deine Entscheidung.",
+        "Du erkennst dein eigentliches Bedürfnis."
+      ],
+      "synonyms": [
+        "klarer kopf",
+        "gedankenklarheit"
+      ],
+      "related": [
+        "innerer_frieden",
+        "orientierungslosigkeit"
+      ],
+      "reflectionQuestion": "Was ist mir jetzt klarer?"
+    },
+    {
+      "id": "erholung",
+      "name": "Erholung",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe",
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Empfinden zurückkehrender Kräfte nach Belastung.",
+      "examples": [
+        "Ein ruhiges Wochenende macht dich wacher.",
+        "Eine Pause lässt Müdigkeit nachlassen."
+      ],
+      "synonyms": [
+        "erholt",
+        "regeneration"
+      ],
+      "related": [
+        "entspannung",
+        "entlastung"
+      ],
+      "reflectionQuestion": "Was hilft meiner Erholung?"
+    },
+    {
+      "id": "entlastung",
+      "name": "Entlastung",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe",
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, dass Verantwortung oder Druck leichter wird.",
+      "examples": [
+        "Jemand übernimmt eine Aufgabe.",
+        "Nach dem Aussprechen einer Sorge fühlst du dich leichter."
+      ],
+      "synonyms": [
+        "entlastet",
+        "erleichterte last"
+      ],
+      "related": [
+        "erleichterung",
+        "erholung"
+      ],
+      "reflectionQuestion": "Welche Last wurde kleiner?"
+    },
+    {
+      "id": "besonnenheit",
+      "name": "Besonnenheit",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Überlegtes Reagieren auch bei starken Eindrücken.",
+      "examples": [
+        "Du hörst erst zu, bevor du antwortest.",
+        "Bei einem Problem sortierst du Möglichkeiten."
+      ],
+      "synonyms": [
+        "besonnen",
+        "umsicht"
+      ],
+      "related": [
+        "gelassenheit",
+        "klarheit"
+      ],
+      "reflectionQuestion": "Was hilft mir, einen Moment zu überlegen?"
+    },
+    {
+      "id": "stabilitaet",
+      "name": "Stabilität",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Erleben eines verlässlichen inneren oder äußeren Halts.",
+      "examples": [
+        "Du findest nach einer Veränderung in den Alltag zurück.",
+        "Eine Routine gibt dir Halt."
+      ],
+      "synonyms": [
+        "stabil",
+        "gefestigt"
+      ],
+      "related": [
+        "sicherheit",
+        "innerer_frieden"
+      ],
+      "reflectionQuestion": "Was ist in meinem Leben verlässlich?"
+    },
+    {
+      "id": "geduld",
+      "name": "Geduld",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Ruhiges Aushalten von Zeit und Entwicklung.",
+      "examples": [
+        "Du lässt jemandem Zeit für eine Antwort.",
+        "Lernen dauert länger und du bleibst dran."
+      ],
+      "synonyms": [
+        "geduldig",
+        "abwarten können"
+      ],
+      "related": [
+        "gelassenheit",
+        "ungeduld"
+      ],
+      "reflectionQuestion": "Was darf mehr Zeit brauchen?"
+    },
+    {
+      "id": "vertrauen_in_prozess",
+      "name": "Prozessvertrauen",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Zutrauen, dass Entwicklung ohne ständige Kontrolle möglich ist.",
+      "examples": [
+        "Du akzeptierst kleine Fortschritte.",
+        "Du arbeitest trotz offenem Ergebnis weiter."
+      ],
+      "synonyms": [
+        "prozessvertrauen",
+        "vertrauen in entwicklung"
+      ],
+      "related": [
+        "zuversicht",
+        "hoffnung"
+      ],
+      "reflectionQuestion": "Wo darf ich dem nächsten Schritt vertrauen?"
+    },
+    {
+      "id": "sanftmut",
+      "name": "Sanftmut",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "kind": "STATE",
+      "definition": "Ruhige zugewandte Haltung auch bei Widerständen.",
+      "examples": [
+        "Du antwortest freundlich trotz Enttäuschung.",
+        "Du begegnest einem Fehler mit Geduld."
+      ],
+      "synonyms": [
+        "sanftmütig",
+        "milde"
+      ],
+      "related": [
+        "mitgefuehl",
+        "besonnenheit"
+      ],
+      "reflectionQuestion": "Wo wäre eine sanfte Reaktion hilfreich?"
     }
   ],
   "comparisons": [
@@ -1212,6 +3446,180 @@
       "firstDistinction": "Staunen kann länger anhalten und neugieriges oder ehrfürchtiges Betrachten einschließen.",
       "secondDistinction": "Überraschung ist oft eine unmittelbare Reaktion, die sowohl angenehm als auch unangenehm sein kann.",
       "question": "Möchte ich das Ereignis weiter betrachten, oder war es vor allem unerwartet?"
+    },
+    {
+      "first": "neid",
+      "second": "eifersucht",
+      "overlap": "Beide können mit Vergleichen und bedeutsamen Beziehungen zusammenhängen.",
+      "firstDistinction": "Neid richtet sich vor allem auf etwas, das ein anderer hat und das du dir wünschst.",
+      "secondDistinction": "Eifersucht bezieht sich stärker auf eine bedroht erlebte Beziehung oder besondere Nähe.",
+      "question": "Wünsche ich mir etwas für mich oder fürchte ich eine Beziehung zu verlieren?"
+    },
+    {
+      "first": "resignation",
+      "second": "akzeptanz",
+      "overlap": "Beide können wie ein Nachlassen des Widerstands aussehen.",
+      "firstDistinction": "Resignation ist oft mit dem Gefühl verbunden, ohnehin nichts ändern zu können.",
+      "secondDistinction": "Akzeptanz erkennt die Lage an, ohne Handlungsmöglichkeiten grundsätzlich aufzugeben.",
+      "question": "Fühle ich mich frei oder machtlos?"
+    },
+    {
+      "first": "groll",
+      "second": "verbitterung",
+      "overlap": "Beide können auf länger zurückliegende Verletzungen folgen.",
+      "firstDistinction": "Groll richtet sich oft auf ein konkretes Ereignis oder Verhalten.",
+      "secondDistinction": "Verbitterung kann den Blick auf viele weitere Erfahrungen färben.",
+      "question": "Ist ein bestimmter Vorfall offen oder prägt das Gefühl meinen Alltag?"
+    },
+    {
+      "first": "mutlosigkeit",
+      "second": "entmutigung",
+      "overlap": "Beide gehen mit wenig Zuversicht einher.",
+      "firstDistinction": "Mutlosigkeit beschreibt den gegenwärtig fehlenden Mut.",
+      "secondDistinction": "Entmutigung betont einen Rückschlag, durch den der Mut nachließ.",
+      "question": "Fehlt mir Mut oder weiß ich, was ihn geschwächt hat?"
+    },
+    {
+      "first": "sehnsucht",
+      "second": "heimweh",
+      "overlap": "Beide enthalten starkes Vermissen.",
+      "firstDistinction": "Sehnsucht kann sich auf viele Menschen und Möglichkeiten richten.",
+      "secondDistinction": "Heimweh betrifft besonders ein vertrautes Zuhause oder Umfeld.",
+      "question": "Vermisse ich einen Ort oder eine andere Form von Nähe?"
+    },
+    {
+      "first": "stolz",
+      "second": "ueberlegenheit",
+      "overlap": "Beide betreffen das Erleben eigener Fähigkeiten.",
+      "firstDistinction": "Stolz kann eine Leistung ohne Vergleich würdigen.",
+      "secondDistinction": "Überlegenheit betont stärker den Vergleich mit anderen.",
+      "question": "Freue ich mich über eine Leistung oder darüber besser zu sein?"
+    },
+    {
+      "first": "angst",
+      "second": "befuerchtung",
+      "overlap": "Beide können zukünftige Gefahren betreffen.",
+      "firstDistinction": "Angst umfasst häufig ein breiteres Bedrohungserleben.",
+      "secondDistinction": "Befürchtung ist meist eine konkretere Vorstellung eines ungünstigen Ausgangs.",
+      "question": "Was genau befürchte ich?"
+    },
+    {
+      "first": "traurigkeit",
+      "second": "niedergeschlagenheit",
+      "overlap": "Beide können sich schwer anfühlen.",
+      "firstDistinction": "Traurigkeit kann auf ein bestimmtes schmerzliches Ereignis reagieren.",
+      "secondDistinction": "Niedergeschlagenheit beschreibt häufiger eine gedrückte Grundstimmung.",
+      "question": "Kann ich einen Anlass benennen oder zieht sich die Stimmung durch den Tag?"
+    },
+    {
+      "first": "scham",
+      "second": "unzulaenglichkeit",
+      "overlap": "Beide können eine negative Sicht auf das eigene Selbst begleiten.",
+      "firstDistinction": "Scham entsteht häufig in Bezug auf tatsächliche oder vorgestellte Bewertung durch andere.",
+      "secondDistinction": "Unzulänglichkeit meint allgemeiner, nicht gut genug zu sein.",
+      "question": "Welche konkrete Situation oder welcher Maßstab löst das Gefühl aus?"
+    },
+    {
+      "first": "bewunderung",
+      "second": "neid",
+      "overlap": "Beide können aus dem Blick auf Fähigkeiten oder Erfolge anderer entstehen.",
+      "firstDistinction": "Bewunderung würdigt, was du an einer Person besonders schätzt.",
+      "secondDistinction": "Neid enthält zusätzlich den schmerzhaften Wunsch, selbst etwas davon zu haben.",
+      "question": "Kann ich die Fähigkeit wertschätzen und meinen eigenen Wunsch erkennen?"
+    },
+    {
+      "first": "erleichterung",
+      "second": "entlastung",
+      "overlap": "Beide gehen mit weniger innerem Druck einher.",
+      "firstDistinction": "Erleichterung entsteht oft, wenn eine Ungewissheit oder Bedrohung nachlässt.",
+      "secondDistinction": "Entlastung betont eher, dass eine Aufgabe oder Verantwortung leichter geworden ist.",
+      "question": "Ist eine Sorge verschwunden oder wurde eine Last geteilt?"
+    },
+    {
+      "first": "zweifel",
+      "second": "selbstzweifel",
+      "overlap": "Beide enthalten Unsicherheit.",
+      "firstDistinction": "Zweifel können jede Entscheidung oder Behauptung betreffen.",
+      "secondDistinction": "Selbstzweifel richten sich speziell auf die eigene Person und Fähigkeit.",
+      "question": "Zweifle ich an einer Sache oder an mir als Person?"
+    }
+  ],
+  "learningPaths": [
+    {
+      "id": "feine_freude",
+      "title": "Die vielen Töne der Freude",
+      "description": "Von stiller Zufriedenheit bis zu lebhafter Begeisterung.",
+      "emotionIds": [
+        "zufriedenheit",
+        "heiterkeit",
+        "vergnuegen",
+        "lebensfreude",
+        "euphorie"
+      ]
+    },
+    {
+      "id": "neid_eifersucht",
+      "title": "Neid, Eifersucht & Vergleich",
+      "description": "Was wünsche ich mir – und was fürchte ich zu verlieren?",
+      "emotionIds": [
+        "neid",
+        "eifersucht",
+        "missgunst",
+        "bewunderung",
+        "selbstachtung"
+      ]
+    },
+    {
+      "id": "umgang_mit_rueckschlaegen",
+      "title": "Wenn etwas schwer wird",
+      "description": "Enttäuschung, Entmutigung und neue Handlungsmöglichkeiten.",
+      "emotionIds": [
+        "enttaeuschung",
+        "frustration",
+        "entmutigung",
+        "resignation",
+        "akzeptanz",
+        "zuversicht"
+      ]
+    },
+    {
+      "id": "naehe_und_abstand",
+      "title": "Nähe und Zugehörigkeit",
+      "description": "Verbindungen, Vermissen und das Bedürfnis nach Abstand.",
+      "emotionIds": [
+        "zugehoerigkeit",
+        "naehe",
+        "vertrautheit",
+        "sehnsucht",
+        "verlassenheit",
+        "abneigung"
+      ]
+    },
+    {
+      "id": "aerger_unterscheiden",
+      "title": "Ärger in vielen Facetten",
+      "description": "Von Gereiztheit über Wut bis zu anhaltendem Groll.",
+      "emotionIds": [
+        "gereiztheit",
+        "aerger",
+        "frustration",
+        "wut",
+        "groll",
+        "verbitterung"
+      ]
+    },
+    {
+      "id": "innere_unruhe",
+      "title": "Unruhe besser verstehen",
+      "description": "Ähnliche Körperzustände können unterschiedlich erlebt werden.",
+      "emotionIds": [
+        "anspannung",
+        "nervositaet",
+        "unruhe",
+        "angst",
+        "erleichterung",
+        "gelassenheit"
+      ]
     }
   ]
 }

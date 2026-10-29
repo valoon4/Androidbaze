@@ -38,18 +38,38 @@ data class EmotionComparison(
     val question: String
 )
 
+data class LearningPath(
+    val id: String,
+    val title: String,
+    val description: String,
+    val emotionIds: List<String>
+)
+
 class EmotionCatalog private constructor(
     val schemaVersion: Int,
     val contentRevision: String,
     val editorialStatus: String,
     val familyNames: List<String>,
     val emotions: List<Emotion>,
-    val comparisons: List<EmotionComparison>
+    val comparisons: List<EmotionComparison>,
+    val learningPaths: List<LearningPath>
 ) {
     val families: List<String> = listOf("Alle") + familyNames
     private val lookup = emotions.associateBy { it.id }
 
     fun find(id: String): Emotion? = lookup[id]
+
+    fun findPath(id: String): LearningPath? = learningPaths.firstOrNull { it.id == id }
+    fun emotionsInPath(path: LearningPath): List<Emotion> = path.emotionIds.mapNotNull(lookup::get)
+
+    fun startsWithLetter(emotion: Emotion, letter: String): Boolean {
+        if (letter == "Alle") return true
+        return normalize(emotion.name).startsWith(normalize(letter))
+    }
+
+    fun browse(query: String, family: String = "Alle",
+               kind: EmotionKind? = null, letter: String = "Alle"): List<Emotion> =
+        search(query, family).filter { (kind == null || it.kind == kind) && startsWithLetter(it, letter) }
 
     /** Compares regardless of selection order, preserving correct contrast labels. */
     fun compare(first: String, second: String): EmotionComparison? {
@@ -146,7 +166,7 @@ class EmotionCatalog private constructor(
                     reflectionQuestion = e.required("reflectionQuestion")
                 )
             }
-            require(emotions.size >= 24) { "M2 lexicon must have at least 24 entries" }
+            require(emotions.size >= 120) { "M2.1 lexicon must have at least 120 entries" }
             require(emotions.map { it.id }.toSet().size == emotions.size) { "Duplicate emotion IDs" }
             val idSet = emotions.map { it.id }.toSet()
             for (emotion in emotions) {
@@ -172,13 +192,30 @@ class EmotionCatalog private constructor(
             }
             require(comparisons.all { it.first in idSet && it.second in idSet && it.first != it.second })
             require(comparisons.map { setOf(it.first, it.second) }.distinct().size == comparisons.size)
+            val paths = json.getValue("learningPaths").jsonArray.map { element ->
+                val path = element.jsonObject
+                LearningPath(
+                    id = path.required("id"),
+                    title = path.required("title"),
+                    description = path.required("description"),
+                    emotionIds = path.strings("emotionIds")
+                )
+            }
+            require(paths.size >= 4) { "M2.1 needs thematic learning paths" }
+            require(paths.map { it.id }.distinct().size == paths.size)
+            require(paths.all {
+                it.emotionIds.size >= 3 &&
+                    it.emotionIds.distinct().size == it.emotionIds.size &&
+                    it.emotionIds.all(idSet::contains)
+            }) { "Learning path has invalid emotion IDs" }
             return EmotionCatalog(
                 schemaVersion = version,
                 contentRevision = json.required("contentRevision"),
                 editorialStatus = json.required("editorialStatus"),
                 familyNames = familyNames,
                 emotions = emotions,
-                comparisons = comparisons
+                comparisons = comparisons,
+                learningPaths = paths
             )
         }
     }
