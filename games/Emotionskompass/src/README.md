@@ -1,48 +1,55 @@
-# Emotionskompass – natives Android-Unterprojekt (M1)
+# Emotionskompass – native Android-App (M2)
 
-Status: **0.2.0-m2**, Design D. Native Kotlin-/Jetpack-Compose-App. **Keine vollständige Tagebuch-App.**
+**Version:** 0.2.0-m2 · **Status:** Offline-Emotionsatlas als Android-Testversion. Kein produktives Tagebuch, keine medizinische Anwendung.
 
-## Build
+## Inhalte dieser Etappe
 
-Ab Repository-Root:
+- Native Kotlin-/Jetpack-Compose-App mit Onboarding ohne Konto, Startseite und Design D in Hell/Dunkel.
+- Vier Navigationsbereiche: Start, Entdecken, Tagebuch (Platzhalter), Rückblick (Platzhalter).
+- **48 versionierte deutschsprachige Begriffe** in acht Emotionsfamilien, wobei ein Begriff zu mehreren Kategorien gehören darf.
+- 48 Definitionen, je zwei Beispiele, Synonyme, verwandte Einträge und offene Reflexionsfragen.
+- **Neun redaktionell formulierte Vergleiche**; bei anderen Paaren bewusst nur Gegenüberstellung ohne erfundene Abgrenzung.
+- Vollständig lokale Suche nach Namen, Alias und Beschreibung, tolerant für Umlaute und Groß-/Kleinschreibung, mit Relevanzsortierung.
+- Qualitätssicherung mit JVM-Unit-Tests zu Schema, Verweisen, Familien, Vergleichen und Suche.
+- Jede persönliche Journal-/Check-in-Funktion ist ausdrücklich noch nicht nutzbar. Es wird nur der Abschluss des Onboardings lokal als DataStore-Präferenz gespeichert.
 
-```bash
-cd games/Emotionskompass/src
-gradle testDebugUnitTest assembleDebug
+Der Atlas ist eine **redaktionelle Arbeitsfassung**, nicht durch eine externe psychologische Fachredaktion klinisch validiert. Die Breitenprüfung mit mindestens 80 kuratierten Begriffen ist für das M5-Release vorgesehen.
+
+## Projektstruktur
+
+```
+games/Emotionskompass/src/
+├── app/
+│   ├── build.gradle.kts
+│   └── src/
+│       ├── main/
+│       │   ├── assets/catalog/emotions.de.v2.json  # einziger fachlicher Datenstand
+│       │   └── java/com/valoon4/emotionskompass/
+│       │       ├── MainActivity.kt
+│       │       └── core/{model,navigation,designsystem,preferences}/
+│       └── test/java/com/valoon4/emotionskompass/EmotionCatalogTest.kt
+└── gradle/libs.versions.toml
 ```
 
-Voraussetzungen: JDK 17+, Gradle 8.13+, Android SDK Platform 36. Das Projekt wird unabhängig vom Androidbaze-Root gebaut. Build-Ausgabe: `app/build/outputs/apk/debug/app-debug.apk`.
+## Build und Test
 
-Alternativ: GitHub Actions [Emotionskompass M1 Debug APK](../../../.github/workflows/emotionskompass-debug-apk.yml) (PR, Push nach main mit passenden Pfaden oder manuell).
+Das Unterprojekt wird unabhängig vom Androidbaze-Root-Projekt gebaut. Unter `games/Emotionskompass/src`:
 
-## M2 enthält
+```sh
+gradle :app:testDebugUnitTest :app:assembleDebug
+```
 
-- First-run-Onboarding ohne Konto, einmalig über DataStore abgeschlossen (einzige persistente Einstellung).
-- Startseite mit zwei gleichwertigen Einstiegen und Design D.
-- Adaptive Bottom-Navigation mit Start / Entdecken / Tagebuch / Rückblick.
-- Offline-Demoatlas (19 Beispielbegriffe), Kategorien, Freitextsuche, Emotionsdetail und simple Vergleiche.
-- Klar gekennzeichnete Vorschau/Platzhalter für Check-in (M3), Tagebuch (M4) und Rückblick (M7).
-- System-Dark-Mode, eigenständiges App-Icon, klare Rücknavigation, keine Internetberechtigung.
-- Unit-Tests für Katalog und Suchverhalten.
+Voraussetzungen: Java 17, Android SDK 36, Gradle 8.13. Alternativ nutzt GitHub Actions den Pfadfilter-Workflow `.github/workflows/emotionskompass-debug-apk.yml` und publiziert einen signierten Debug-Build als herunterladbares Workflow-Artefakt. Die CI verifiziert Paketname und Signatur.
 
-## Sicherheitsgrenze und folgende Meilensteine
+**Paketkennung:** `com.valoon4.emotionskompass` · **minSdk 26** · **versionCode 2**, aktualisiert daher die M1-Installation mit derselben Paket-ID (Android-Debugsignatur muss übereinstimmen).
 
-**Noch keine Tagebucheinträge!** Die App speichert in M2 ausschließlich den Abschluss des Onboardings als kleine Einstellung, keine persönlichen Emotionseinträge. Keine Verschlüsselung notwendig für diese nicht-sensible Einstellung; echte Datenhaltung, Entwürfe, Verschlüsselung, Backup-/Löschtests und Exporte folgen erst in M3–M5. Die App ist ein Lern-/UI-Prototyp, kein therapeutisches Tool.
+## Datenschutz- und Funktionsgrenzen
 
-M2: 48 versionierte Atlas-Begriffe und neun redaktionelle Vergleichspaare, lokal im JSON-Asset. Dieser Katalog ist eine redaktionelle Arbeitsfassung, nicht klinisch validiert.
-M3: geführter Check-in mit mehreren Gefühlen, optionalen Angaben, Drafts.
-M4: sichere Reflexion-/Tagebucheinträge (lokales Modell + Transaktionen).
-M5: Release-Sicherheits-Gates, mindestens 80 geprüfte Begriffe.
+Keine Internetberechtigung, kein Server, keine personenbezogene Emotionshistorie und keine Analyse. Ein Atlas kann persönliche Reflexion **nicht diagnostizieren**. Die Formulierungen sind Vorschläge zur eigenen Einordnung.
 
-## Architektur
+Nächste Schritte:
+- **M3:** Gefühlsnavigator, optionale Wahrnehmung, 0–n gleichzeitig ausgewählte Emotionen, Intensitäten, unterbrechungsfeste Entwürfe.
+- **M4:** Reflexion und Tagebuch; echte Speicherung nur mit geeignetem Schutzkonzept.
+- **M5:** Sicherheits- und Accessibility-Release-Gates einschließlich verschlüsselter Persistenz und redaktioneller Fachprüfung.
 
-Ein Modul `:app` mit vorläufigen Bereichen `core/designsystem`, `core/navigation`, `core/model`, `core/preferences`; künftig `feature/*`, `data/*`, `domain/*`. `AppViewModel` enthält Navigations-StateFlow; `OnboardingPreferences` kapselt DataStore. Kein UI-Widget schreibt eine Tagebuchdatenbank. Dokumentation unter `games/Emotionskompass/notes` bleibt Referenz.
-
-## Abnahme M1
-
-- Installierbare signierte Debug-APK unter `com.valoon4.emotionskompass`.
-- Kein Eingriff in andere GitHub-Projekte oder Root-Build.
-- Ohne Netzverbindung startfähig und Atlas verwendbar.
-- Onboarding wird nach „Ohne Konto starten“ beim Neustart nicht wiederholt.
-- Wechsel zwischen Tabs, Lexikon -> Detail -> Vergleich -> Zurück ohne Crash.
-- Unit-Tests erfolgreich. Manueller Geräte-Test für TalkBack und großes Schriftbild weiterhin empfohlen.
+Weitere Details: `games/Emotionskompass/notes/M2_ATLAS.md` sowie die Produktspezifikation.
