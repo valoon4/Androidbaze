@@ -11,9 +11,9 @@ class EmotionCatalogTest {
     }
     private val catalog: EmotionCatalog by lazy { EmotionCatalog.fromJson(source) }
 
-    @Test fun lexiconContainsOneHundredFortyFourDistinctEntriesInEightFamilies() {
+    @Test fun lexiconContainsTwoHundredEightyNineUniqueEntriesInEightFamilies() {
         assertEquals(2, catalog.schemaVersion)
-        assertEquals(144, catalog.emotions.size)
+        assertEquals(289, catalog.emotions.size)
         assertEquals(8, catalog.familyNames.size)
         assertEquals(catalog.emotions.size, catalog.emotions.map { it.id }.toSet().size)
     }
@@ -28,7 +28,7 @@ class EmotionCatalogTest {
     @Test fun referencesAndComparisonsResolveToRealTerms() {
         val ids = catalog.emotions.map { it.id }.toSet()
         assertTrue(catalog.emotions.flatMap { it.related }.all { it in ids })
-        assertEquals(21, catalog.comparisons.size)
+        assertEquals(41, catalog.comparisons.size)
         assertTrue(catalog.comparisons.all { it.first in ids && it.second in ids })
     }
 
@@ -80,11 +80,11 @@ class EmotionCatalogTest {
 
     @Test fun catalogIsOfflineAndHasNoNetworkDependency() {
         assertNotNull(catalog.find("wehmut"))
-        assertEquals(144, catalog.search("").size)
+        assertEquals(289, catalog.search("").size)
         assertEquals("frustration", catalog.search("  FRUST  ").first().id)
     }
     @Test fun learningPathsContainValidAndOrderedTerms() {
-        assertEquals(6, catalog.learningPaths.size)
+        assertEquals(14, catalog.learningPaths.size)
         assertTrue(catalog.learningPaths.all { catalog.emotionsInPath(it).size == it.emotionIds.size })
         val example = catalog.findPath("neid_eifersucht")!!
         assertEquals("neid", catalog.emotionsInPath(example).first().id)
@@ -102,7 +102,7 @@ class EmotionCatalogTest {
         val moods = catalog.browse("", kind = com.valoon4.emotionskompass.core.model.EmotionKind.MOOD)
         val emotions = catalog.browse("", kind = com.valoon4.emotionskompass.core.model.EmotionKind.EMOTION)
         val states = catalog.browse("", kind = com.valoon4.emotionskompass.core.model.EmotionKind.STATE)
-        assertEquals(144, moods.size + emotions.size + states.size)
+        assertEquals(289, moods.size + emotions.size + states.size)
         assertTrue(moods.any { it.id == "euphorie" })
         assertTrue(states.any { it.id == "akzeptanz" })
     }
@@ -130,6 +130,46 @@ class EmotionCatalogTest {
             catalog.search("", family).size >= 15
         })
         assertTrue(catalog.emotions.count { it.families.size > 1 } >= 20)
+    }
+
+    @Test fun allEightFamiliesIncludeManyDistinctExamples() {
+        assertEquals(289, catalog.emotions.map { it.id }.distinct().size)
+        assertTrue(catalog.familyNames.all { catalog.search("", it).size >= 30 })
+        assertTrue(catalog.emotions.all { emotion ->
+            emotion.examples.size == 2 && emotion.examples.distinct().size == 2 &&
+                emotion.related.isNotEmpty() && emotion.reflectionQuestion.length >= 10
+        })
+    }
+
+    @Test fun newComparisonLibraryIsCompleteAndBidirectional() {
+        assertEquals(41, catalog.comparisons.size)
+        val comparedPairs = catalog.comparisons.map { setOf(it.first, it.second) }
+        assertEquals(41, comparedPairs.distinct().size)
+        assertNotNull(catalog.compare("ekel", "abscheu"))
+        assertNotNull(catalog.compare("abscheu", "ekel"))
+        assertEquals("ekel", catalog.compare("abscheu", "ekel")!!.second)
+        assertNotNull(catalog.compare("selbstmitgefuehl", "selbstmitleid"))
+    }
+
+    @Test fun thematicLearningRoutesPreserveSequence() {
+        assertEquals(14, catalog.learningPaths.size)
+        assertTrue(catalog.learningPaths.all { it.emotionIds.size >= 3 })
+        val path = catalog.findPath("zurueck_in_die_ruhe")!!
+        assertEquals("anspannung", catalog.emotionsInPath(path).first().id)
+        assertEquals("seelenruhe", catalog.emotionsInPath(path).last().id)
+    }
+
+    @Test fun GermanSearchIncludesNewDistinctTerms() {
+        assertEquals("gluecksgefuehl", catalog.search("Glücksgefühl").first().id)
+        assertEquals("ekel", catalog.search("Ekel").first().id)
+        assertEquals("wissensdurst", catalog.search("Wissensdurst").first().id)
+        assertEquals("herzlichkeit", catalog.search("HERZLICHKEIT").first().id)
+        assertTrue(catalog.browse("", letter = "Z").any { it.id == "zentriertheit" })
+    }
+
+    @Test fun noPersonalRecordsInEditorialCatalog() {
+        assertEquals("2026-10-m2.2", catalog.contentRevision)
+        assertTrue(catalog.editorialStatus.contains("not-clinically-validated"))
     }
 
 }
