@@ -46,7 +46,7 @@ class NeedCatalogTest {
         assertEquals("naehe", catalog.browse("Nähe").first().id)
         assertEquals("naehe", catalog.browse("Naehe").first().id)
         assertEquals("selbstbestimmung", catalog.browse("AUTONOMIE").first().id)
-        assertTrue(catalog.browse("", letter = "Ä").isEmpty())
+        assertTrue(catalog.browse("", letter = "Ä").any { it.id == "anerkennung" })
         assertTrue(catalog.browse("", letter = "G").any { it.id == "geborgenheit" })
     }
 
