@@ -67,7 +67,7 @@ class CheckInDraftTest {
         repeat(4) { draft = draft.next() }
         assertEquals(CheckInStep.AUSKLANG, draft.step)
         assertTrue(draft.emotions.isEmpty())
-        assertEquals(CheckInStep.NACHSPUEREN, draft.previous().step)
+        assertEquals(CheckInStep.VERSTEHEN, draft.previous().step)
     }
 
     @Test fun selectedBodyCuesCanBeRemovedWithoutChangingEmotions() {

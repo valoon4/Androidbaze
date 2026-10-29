@@ -47,6 +47,8 @@ import com.valoon4.emotionskompass.core.checkin.FeelingDiscovery
 import com.valoon4.emotionskompass.core.checkin.CheckInDraft
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.LifeArea
+import com.valoon4.emotionskompass.core.checkin.PersonalNeed
+import com.valoon4.emotionskompass.core.checkin.NextStepIdea
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import kotlin.math.roundToInt
 
@@ -64,6 +66,12 @@ fun CheckInScreen(
     onIntensity: (String, Int?) -> Unit,
     onArea: (LifeArea?) -> Unit,
     onNote: (String) -> Unit,
+    onSituation: (String) -> Unit,
+    onInterpretation: (String) -> Unit,
+    onNeed: (PersonalNeed) -> Unit,
+    onInsight: (String) -> Unit,
+    onNextStepIdea: (NextStepIdea?) -> Unit,
+    onNextStepNote: (String) -> Unit,
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onRestart: () -> Unit,
@@ -80,12 +88,16 @@ fun CheckInScreen(
         CheckInStep.ANKOMMEN -> "Im Moment ankommen"
         CheckInStep.BENENNEN -> "Gefühle benennen"
         CheckInStep.NACHSPUEREN -> "Ein wenig nachspüren"
+        CheckInStep.VERSTEHEN -> "Mich besser verstehen"
         CheckInStep.AUSKLANG -> "Dein Moment im Überblick"
     }
     val subtitle = when (stage) {
         CheckInStep.ANKOMMEN -> "Du kannst wahrnehmen, was gerade in dir geschieht – ohne etwas erklären zu müssen."
         CheckInStep.BENENNEN -> "Mehrere Gefühle dürfen gleichzeitig da sein. Du kannst auch keines auswählen."
-        CheckInStep.NACHSPUEREN -> "Intensitäten, Lebensbereich und Gedanken sind freiwillig."
+        CheckInStep.NACHSPUEREN -> if (draft.mode == CheckInMode.KURZ)
+            "Wenn du möchtest, schätze die Intensität deiner Gefühle ein. Du kannst auch direkt zum Abschluss gehen."
+        else "Du kannst Intensitäten und einen möglichen Lebensbereich freiwillig erkunden."
+        CheckInStep.VERSTEHEN -> "Welche Bedeutung hat dieser Moment für dich? Du bestimmst selbst, wie tief du gehen möchtest."
         CheckInStep.AUSKLANG -> "Das ist eine Momentaufnahme, keine Diagnose oder Bewertung."
     }
 
@@ -156,7 +168,7 @@ fun CheckInScreen(
                         Text("Vertieft")
                     }
                 }
-                Text("Kurz: Wörter und Intensitäten. Vertieft: zusätzlich Körperwahrnehmung und Kontext.",
+                Text("Kurz: drei Schritte. Vertieft: fünf Schritte mit Körperwahrnehmung, Kontext und persönlicher Erkenntnis.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.size(8.dp))
@@ -459,6 +471,20 @@ fun CheckInScreen(
                 } // Optional context is only shown in the deeper mode.
             }
 
+            CheckInStep.VERSTEHEN -> {
+                item {
+                    DeepReflectionStep(
+                        draft = draft,
+                        onSituation = onSituation,
+                        onInterpretation = onInterpretation,
+                        onNeed = onNeed,
+                        onInsight = onInsight,
+                        onNextStep = onNextStepIdea,
+                        onNextStepNote = onNextStepNote
+                    )
+                }
+            }
+
             CheckInStep.AUSKLANG -> {
                 item {
                     Text("Das hast du bemerkt",
@@ -509,10 +535,47 @@ fun CheckInScreen(
                         }
                     }
                 }
+                if (draft.situation.isNotBlank() ||
+                    draft.interpretation.isNotBlank() ||
+                    draft.needs.isNotEmpty() ||
+                    draft.insight.isNotBlank() ||
+                    draft.nextStepIdea != null ||
+                    draft.nextStepNote.isNotBlank()
+                ) {
+                    item {
+                        HorizontalDivider()
+                        Text("Deine persönliche Reflexion",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold)
+                        if (draft.situation.isNotBlank()) {
+                            SummaryLine("Was passiert ist", draft.situation)
+                        }
+                        if (draft.interpretation.isNotBlank()) {
+                            SummaryLine("Meine Sicht darauf", draft.interpretation)
+                        }
+                        if (draft.needs.isNotEmpty()) {
+                            SummaryLine("Was mir wichtig sein könnte",
+                                draft.needs.joinToString(" · ") { it.label })
+                        }
+                        if (draft.insight.isNotBlank()) {
+                            SummaryLine("Was mir klarer geworden ist", draft.insight)
+                        }
+                        if (draft.nextStepIdea != null || draft.nextStepNote.isNotBlank()) {
+                            SummaryLine("Was ich mir selbst vornehme",
+                                listOfNotNull(
+                                    draft.nextStepIdea?.label,
+                                    draft.nextStepNote.takeIf { it.isNotBlank() }
+                                ).joinToString(" · "))
+                        }
+                        Text("Nur deine eigenen Angaben – keine automatisch erzeugte Deutung.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
                 item {
                     Text("Mehrere Gefühle können zugleich wahr sein. Du musst daraus jetzt nichts ableiten oder verändern.",
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Diese Zusammenfassung wird nicht gespeichert oder automatisch ins Tagebuch übernommen.",
+                    Text("Deine selbst formulierten Erkenntnisse und Ideen werden nicht gespeichert oder automatisch ins Tagebuch übernommen.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -541,7 +604,10 @@ fun CheckInScreen(
                     val text = when (stage) {
                         CheckInStep.ANKOMMEN -> "Weiter: Gefühle benennen"
                         CheckInStep.BENENNEN -> "Weiter: Nachspüren"
-                        CheckInStep.NACHSPUEREN -> "Zusammenfassung ansehen"
+                        CheckInStep.NACHSPUEREN ->
+                            if (draft.mode == CheckInMode.KURZ) "Zusammenfassung ansehen"
+                            else "Weiter: Mich besser verstehen"
+                        CheckInStep.VERSTEHEN -> "Zusammenfassung ansehen"
                         CheckInStep.AUSKLANG -> ""
                     }
                     Text(text)
@@ -560,5 +626,15 @@ fun CheckInScreen(
             }
         }
     }
+    }
+}
+
+@Composable
+private fun SummaryLine(label: String, value: String) {
+    Column(Modifier.fillMaxWidth().padding(vertical = 5.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(label, style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary)
+        Text(value, style = MaterialTheme.typography.bodyMedium)
     }
 }
