@@ -149,7 +149,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
                 Spacer(Modifier.height(15.dp))
                 FeatureLine(Icons.Outlined.MenuBook, "Gefühle und Bedürfnisse kennenlernen", "Begriffe, Unterschiede und Beispiele entdecken.")
                 FeatureLine(Icons.Outlined.FavoriteBorder, "Dich selbst verstehen", "Gefühle und Erlebnisse achtsam reflektieren.")
-                FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Keine Tagebucheinträge. Nur die Einführung wird gespeichert.")
+                FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Check-ins werden nur nach ausdrücklicher Zustimmung verschlüsselt gespeichert.")
             }
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Keine Diagnosen, keine Bewertungen. Du entscheidest, welche Worte zu dir passen.",
@@ -451,7 +451,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M3.3 · $termsCount Gefühlswörter und $needsCount Bedürfnisbegriffe offline entdecken.",
+        Text("M4 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe und dein geschütztes Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
