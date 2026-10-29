@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M3.3
+# Emotionskompass – native Android-App M4
 
-**Version:** 0.3.3-m3.3 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.4.0-m4 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -37,7 +37,7 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M33-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M4-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
@@ -57,3 +57,8 @@ Der **Kurz-Check-in** bleibt bei drei Schritten. Der **vertiefte Check-in** enth
 ## M3.3 – Bedürfniskompass und Bedürfnisatlas
 
 Ein eigenständiger **Bedürfnisse-Reiter** enthält jetzt **82** redaktionell verfasste Bedürfnisbegriffe in acht Familien, **20** Begriffspaare und **acht** Lernpfade – alles offline. Zu jedem Bedürfnis gibt es Erfüllungs- und Nichterfüllungsbeispiele sowie eine mögliche Strategie, klar vom Bedürfnis unterschieden. Der interaktive **Bedürfniskompass** unterscheidet persönliche Wichtigkeit, mögliche Erfüllung, mögliche Nichterfüllung und Ungewissheit. Alle persönlichen Kompass-Angaben bleiben flüchtig. Der M3.2-Check-in nutzt nun dieselben stabilen Bedürfnis-IDs und zeigt passende Begriffserklärungen direkt bei der Auswahl; ohne automatische psychologische Zuordnungen oder dauerhafte Speicherung. Näheres: `games/Emotionskompass/notes/M33_BEDUERFNISATLAS.md`.
+
+
+## M4 – Geschütztes Tagebuch
+
+Ein neuer aktiver **Tagebuch-Reiter** erlaubt Check-ins nur nach ausdrücklicher Zustimmung zu speichern, wieder zu öffnen, vollständig zu bearbeiten und nach Bestätigung einzeln oder vollständig zu löschen. Die App speichert lokal ein **AES-GCM-verschlüsseltes, atomar geschriebenes JSON-Dokument**, mit nicht exportierbarem Android-Keystore-Schlüssel. Offline, ohne Cloud, Konto oder INTERNET-Berechtigung. Die persönlichen Inhalte einschließlich Zeitstempeln werden zusammen verschlüsselt. Bei Schlüssel-/Authentizitätsfehlern wird kein bestehender Bestand überschrieben. `FLAG_SECURE` schützt Tagebuch und Check-in vor normalen Screenshots. **Kein Export, keine Wiederherstellung und keine garantierte forensische Löschung**; Gerätewechsel und App-Datenverlust bedeuten Datenverlust. Vor produktiver Verwendung sind unabhängige Security-Tests und eine reale Geräteabnahme erforderlich. Details: `games/Emotionskompass/notes/M4_ENCRYPTED_JOURNAL.md`.
