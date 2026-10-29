@@ -1,64 +1,44 @@
-# Emotionskompass – native Android-App (M2)
+# Emotionskompass – native Android-App M3
 
-**Version:** 0.2.2-m2.2 · **Status:** Offline-Emotionsatlas als Android-Testversion. Kein produktives Tagebuch, keine medizinische Anwendung.
+**Version:** 0.3.0-m3 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
-## Inhalte dieser Etappe
+Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
-- Native Kotlin-/Jetpack-Compose-App mit Onboarding ohne Konto, Startseite und Design D in Hell/Dunkel.
-- Vier Navigationsbereiche: Start, Entdecken, Tagebuch (Platzhalter), Rückblick (Platzhalter).
-- **289 versionierte deutschsprachige Begriffe** in acht Emotionsfamilien, wobei ein Begriff zu mehreren Kategorien gehören darf.
-- 289 Definitionen, je zwei Beispiele, Synonyme, verwandte Einträge und offene Reflexionsfragen.
-- **41 redaktionell formulierte Vergleiche**; bei anderen Paaren bewusst nur Gegenüberstellung ohne erfundene Abgrenzung.
-- Vollständig lokale Suche nach Namen, Alias und Beschreibung, tolerant für Umlaute und Groß-/Kleinschreibung, mit Relevanzsortierung.
-- Qualitätssicherung mit JVM-Unit-Tests zu Schema, Verweisen, Familien, Vergleichen und Suche.
-- Jede persönliche Journal-/Check-in-Funktion ist ausdrücklich noch nicht nutzbar. Es wird nur der Abschluss des Onboardings lokal als DataStore-Präferenz gespeichert.
+## Funktionen
 
-Der Atlas ist eine **redaktionelle Arbeitsfassung**, nicht durch eine externe psychologische Fachredaktion klinisch validiert. Die Breitenprüfung mit mindestens 80 kuratierten Begriffen ist für das M5-Release vorgesehen.
+### Emotionsatlas M2.2 (weiterhin enthalten)
+- 289 offline verfügbare, deutschsprachige Einträge in acht Familien.
+- 41 redaktionell formulierte Begriffsvergleiche und 14 thematische Lernpfade.
+- Je Begriff Definition, zwei Beispiele, Synonyme, verwandte Begriffe und Reflexionsfrage.
+- A–Z-Filter, Suche, Kategorien, Gefühl/Stimmung/Zustand, Entdeckungs-Karten.
+- Atlasinhalte bleiben redaktionelle Arbeitsfassung; keine medizinischen Diagnosen und keine externe klinische Validierung.
 
-## Projektstruktur
+### M3 – persönlicher Gefühlsnavigator
+- Schritt 1: *Ankommen*, optionale körperliche Eindrücke benennen.
+- Schritt 2: *Gefühle benennen*, keine, eine oder beliebig viele Begriffe aus dem Offline-Atlas wählen; Suche und Familienfilter.
+- Schritt 3: *Nachspüren*, für jedes ausgewählte Gefühl optional Intensität 0 bis 10 einschätzen (0 ist nicht dasselbe wie keine Angabe); optionaler Lebensbereich und freier Text (max. 500 Zeichen).
+- Schritt 4: *Zusammenfassung*, ausgewählte Wörter, Intensitäten, Körperhinweise und Gedanken respektvoll anzeigen.
+- Aus jedem Schritt freiwillig aussteigen und Angaben **verwerfen**, mit Android-Zurück die Schritte rückwärts durchlaufen. Bei Wechsel des Tabs werden persönliche Angaben ebenfalls verworfen.
+- Begriffskarte aus dem Atlas kann den Navigator bereits mit diesem Begriff vorgewählt öffnen.
+- Kein Zwang zu Angaben, keine automatischen Interpretationen, Bewertungen, Diagnosen oder Streaks.
 
-```
-games/Emotionskompass/src/
-├── app/
-│   ├── build.gradle.kts
-│   └── src/
-│       ├── main/
-│       │   ├── assets/catalog/emotions.de.v2.json  # einziger fachlicher Datenstand
-│       │   └── java/com/valoon4/emotionskompass/
-│       │       ├── MainActivity.kt
-│       │       └── core/{model,navigation,designsystem,preferences}/
-│       └── test/java/com/valoon4/emotionskompass/EmotionCatalogTest.kt
-└── gradle/libs.versions.toml
-```
+### Datenschutz – wichtige Abgrenzung
 
-## Build und Test
+**M3 speichert keine Check-in-Daten dauerhaft.** Die privaten Inhalte liegen während des aktiven Navigators ausschließlich im Arbeitsspeicher des App-ViewModels. Beim Beenden/Verwerfen werden sie aus dem aktiven Entwurfsmodell entfernt. Ein abgebrochener Check-in ist nicht wiederherstellbar. Nur das **Onboarding-abgeschlossen**-Flag wird wie bisher in DataStore gespeichert.
 
-Das Unterprojekt wird unabhängig vom Androidbaze-Root-Projekt gebaut. Unter `games/Emotionskompass/src`:
+Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch kein verschlüsseltes Tagebuch. **M4** entwickelt die lokale, verantwortungsvoll geschützte Persistenz mit transparenter Löschung und Datenexport; **M5** überprüft Sicherheits- und Freigabegates.
 
-```sh
+## Build und Tests
+
+Java 17, Android SDK 36, Gradle 8.13:
+
+```bash
+cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Voraussetzungen: Java 17, Android SDK 36, Gradle 8.13. Alternativ nutzt GitHub Actions den Pfadfilter-Workflow `.github/workflows/emotionskompass-debug-apk.yml` und publiziert einen signierten Debug-Build als herunterladbares Workflow-Artefakt. Die CI verifiziert Paketname und Signatur.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M3-debug-apk` an.
 
-**Paketkennung:** `com.valoon4.emotionskompass` · **minSdk 26** · **versionCode 4**, aktualisiert daher die M1-Installation mit derselben Paket-ID (Android-Debugsignatur muss übereinstimmen).
+Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
-## Datenschutz- und Funktionsgrenzen
-
-Keine Internetberechtigung, kein Server, keine personenbezogene Emotionshistorie und keine Analyse. Ein Atlas kann persönliche Reflexion **nicht diagnostizieren**. Die Formulierungen sind Vorschläge zur eigenen Einordnung.
-
-Nächste Schritte:
-- **M3:** Gefühlsnavigator, optionale Wahrnehmung, 0–n gleichzeitig ausgewählte Emotionen, Intensitäten, unterbrechungsfeste Entwürfe.
-- **M4:** Reflexion und Tagebuch; echte Speicherung nur mit geeignetem Schutzkonzept.
-- **M5:** Sicherheits- und Accessibility-Release-Gates einschließlich verschlüsselter Persistenz und redaktioneller Fachprüfung.
-
-Weitere Details: `games/Emotionskompass/notes/M2_ATLAS.md` sowie die Produktspezifikation.
-
-
-## M2.1: Neues Entdecken
-
-Sechs thematische Lernpfade, A–Z-Filter, Filter nach Gefühlen/Stimmungen/Zuständen sowie ein zufällig vorgeschlagener Begriff machen das Lernen auch ohne Suchwort möglich. Details: `games/Emotionskompass/notes/M21_ATLAS_AUSBAU.md`.
-
-## M2.2 – Wissen entdecken
-
-Der Atlas umfasst jetzt **289 Begriffe**, **41 fachlich formulierte Vergleiche** und **14 thematische Lernpfade**. Die neue Kartenansicht hilft beim Finden von Wörtern anhand von Definitionen, ohne Noten oder gespeicherten Lernfortschritt. Ein Vergleichsverzeichnis macht alle redaktionell gepflegten Unterscheidungen auffindbar. Die lexikalischen Texte sind weiterhin eine **nicht extern fachlich validierte redaktionelle Arbeitsfassung**. Die nächsten Schritte zu persönlicher Reflexion und Datensicherheit bleiben von M2.2 getrennt. Details: `games/Emotionskompass/notes/M22_ATLAS.md`.
+Weitere Hinweise: `games/Emotionskompass/notes/M3_GEFUEHLSNAVIGATOR.md`.
