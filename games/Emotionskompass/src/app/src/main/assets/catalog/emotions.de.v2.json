@@ -5028,6 +5028,834 @@
         "unsicherheit"
       ],
       "reflectionQuestion": "Was ist mir wichtig?"
+    },
+    {
+      "id": "zorn",
+      "name": "Zorn",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Sehr starker Ärger über erlebtes Unrecht oder Grenzüberschreitung.",
+      "examples": [
+        "Ein unfairer Vorwurf macht dich zornig.",
+        "Eine wiederholte Grenzverletzung lässt dich aufbrausen."
+      ],
+      "synonyms": [
+        "zornig",
+        "zornesgefühl"
+      ],
+      "related": [
+        "wut",
+        "empoerung"
+      ],
+      "reflectionQuestion": "Welche Grenze wurde verletzt?"
+    },
+    {
+      "id": "erbostheit",
+      "name": "Erbostheit",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Heftiger Ärger über ein konkretes Verhalten.",
+      "examples": [
+        "Ein gebrochenes Versprechen macht dich erbost.",
+        "Eine grobe Bemerkung bringt dich auf."
+      ],
+      "synonyms": [
+        "erbost",
+        "sehr verärgert"
+      ],
+      "related": [
+        "wut",
+        "aerger"
+      ],
+      "reflectionQuestion": "Was hat mich so stark geärgert?"
+    },
+    {
+      "id": "aufgebrachtheit",
+      "name": "Aufgebrachtheit",
+      "kind": "STATE",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Starker innerer Aufruhr nach einer ärgerlichen Situation.",
+      "examples": [
+        "Du sprichst nach einem Streit schneller als sonst.",
+        "Ein Ereignis lässt dich kaum stillsitzen."
+      ],
+      "synonyms": [
+        "aufgebracht",
+        "erregter ärger"
+      ],
+      "related": [
+        "wut",
+        "anspannung"
+      ],
+      "reflectionQuestion": "Was würde mir helfen, wieder ruhiger zu werden?"
+    },
+    {
+      "id": "ekel",
+      "name": "Ekel",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Starkes Zurückweichen vor etwas als abstoßend Empfundenem.",
+      "examples": [
+        "Ein verdorbenes Lebensmittel stößt dich ab.",
+        "Ein unangenehmer Geruch lässt dich zurücktreten."
+      ],
+      "synonyms": [
+        "eklig",
+        "angeekelt"
+      ],
+      "related": [
+        "abscheu",
+        "abneigung"
+      ],
+      "reflectionQuestion": "Wovon möchte ich Abstand?"
+    },
+    {
+      "id": "abscheu",
+      "name": "Abscheu",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Intensive Ablehnung gegenüber etwas als besonders unangenehm oder verwerflich Erlebtem.",
+      "examples": [
+        "Eine grausame Handlung ruft starke Abscheu hervor.",
+        "Ein abstoßender Anblick lässt dich wegsehen."
+      ],
+      "synonyms": [
+        "abscheulich",
+        "angewidert"
+      ],
+      "related": [
+        "ekel",
+        "verachtung"
+      ],
+      "reflectionQuestion": "Welche Grenze oder welcher Wert ist betroffen?"
+    },
+    {
+      "id": "abstossung",
+      "name": "Abgestoßensein",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Gefühl, von einer Begegnung oder einem Eindruck Abstand nehmen zu wollen.",
+      "examples": [
+        "Ein aufdringliches Verhalten stößt dich ab.",
+        "Ein unhöflicher Kommentar lässt dich zurückweichen."
+      ],
+      "synonyms": [
+        "abgestoßen",
+        "abstoßend finden"
+      ],
+      "related": [
+        "abneigung",
+        "abscheu"
+      ],
+      "reflectionQuestion": "Was wirkt auf mich abstoßend?"
+    },
+    {
+      "id": "feindseligkeit",
+      "name": "Feindseligkeit",
+      "kind": "MOOD",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Anhaltend ablehnende oder kämpferische Haltung gegenüber anderen.",
+      "examples": [
+        "Nach mehreren Konflikten bist du im Gespräch auf Angriff eingestellt.",
+        "Du vermutest bei jemandem ständig schlechte Absichten."
+      ],
+      "synonyms": [
+        "feindselig",
+        "feindselige haltung"
+      ],
+      "related": [
+        "groll",
+        "hass"
+      ],
+      "reflectionQuestion": "Was hat meine Haltung verhärtet?"
+    },
+    {
+      "id": "hass",
+      "name": "Hass",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Sehr intensive und möglicherweise lang anhaltende feindselige Ablehnung.",
+      "examples": [
+        "Eine schwere Verletzung ruft starke Ablehnung hervor.",
+        "Du bemerkst einen heftigen Wunsch nach Distanz zu einer Person."
+      ],
+      "synonyms": [
+        "hassgefühl",
+        "hasserfüllt"
+      ],
+      "related": [
+        "feindseligkeit",
+        "verachtung"
+      ],
+      "reflectionQuestion": "Was steckt unter dieser starken Ablehnung?"
+    },
+    {
+      "id": "missfallen",
+      "name": "Missfallen",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Milde Ablehnung, weil dir etwas nicht zusagt.",
+      "examples": [
+        "Ein Vorschlag trifft nicht deinen Geschmack.",
+        "Ein Verhalten passt nicht zu deinen Vorstellungen."
+      ],
+      "synonyms": [
+        "nicht gefallen",
+        "missbilligung"
+      ],
+      "related": [
+        "abneigung",
+        "unzufriedenheit"
+      ],
+      "reflectionQuestion": "Was gefällt mir daran nicht?"
+    },
+    {
+      "id": "innerer_widerstand",
+      "name": "Innerer Widerstand",
+      "kind": "STATE",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Spürbares Nein gegenüber einem äußeren oder inneren Druck.",
+      "examples": [
+        "Eine Erwartung fühlt sich unpassend an.",
+        "Du bemerkst, dass du dich einer Aufgabe widersetzt."
+      ],
+      "synonyms": [
+        "widerstand",
+        "innerlich sträuben"
+      ],
+      "related": [
+        "widerwillen",
+        "trotz"
+      ],
+      "reflectionQuestion": "Wogegen richtet sich mein Widerstand?"
+    },
+    {
+      "id": "ungerechtigkeitsempfinden",
+      "name": "Ungerechtigkeitsempfinden",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Ärger über eine als unfair wahrgenommene Behandlung.",
+      "examples": [
+        "Ein Kollege bekommt ohne Erklärung Vorteile.",
+        "Eine Regel trifft manche härter als andere."
+      ],
+      "synonyms": [
+        "ungerecht behandelt",
+        "unfair finden"
+      ],
+      "related": [
+        "empoerung",
+        "wut"
+      ],
+      "reflectionQuestion": "Was genau empfinde ich als ungerecht?"
+    },
+    {
+      "id": "protestwille",
+      "name": "Protestwille",
+      "kind": "STATE",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Impuls, sich hörbar gegen etwas als falsch Empfundenes zu stellen.",
+      "examples": [
+        "Du möchtest einer unfairen Entscheidung widersprechen.",
+        "Eine Einschränkung motiviert dich, dich einzusetzen."
+      ],
+      "synonyms": [
+        "protestieren wollen",
+        "widerspruchsgeist"
+      ],
+      "related": [
+        "empoerung",
+        "innerer_widerstand"
+      ],
+      "reflectionQuestion": "Wofür möchte ich mich einsetzen?"
+    },
+    {
+      "id": "gekraenktheit",
+      "name": "Gekränktheit",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Schmerzhafter Ärger, wenn du dich persönlich herabgesetzt fühlst.",
+      "examples": [
+        "Ein spöttischer Kommentar bleibt dir im Kopf.",
+        "Du fühlst dich durch eine Bemerkung entwertet."
+      ],
+      "synonyms": [
+        "gekränkt",
+        "kränkung"
+      ],
+      "related": [
+        "verletztheit",
+        "groll"
+      ],
+      "reflectionQuestion": "Was hat mich persönlich getroffen?"
+    },
+    {
+      "id": "unversoehnlichkeit",
+      "name": "Unversöhnlichkeit",
+      "kind": "STATE",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Das Gefühl, eine Verletzung noch nicht hinter sich lassen zu können.",
+      "examples": [
+        "Nach einem Streit möchtest du keinen Kontakt.",
+        "Eine Entschuldigung fühlt sich vorerst nicht ausreichend an."
+      ],
+      "synonyms": [
+        "unversöhnlich",
+        "nicht verzeihen können"
+      ],
+      "related": [
+        "groll",
+        "verbitterung"
+      ],
+      "reflectionQuestion": "Was bräuchte ich vor einer Annäherung?"
+    },
+    {
+      "id": "unmut",
+      "name": "Unmut",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Alltäglicher Ärger über eine störende Situation.",
+      "examples": [
+        "Du ärgerst dich über unnötige Verzögerungen.",
+        "Ein wiederholtes Geräusch macht dich mürrisch."
+      ],
+      "synonyms": [
+        "missmut",
+        "ärgerlicher unmut"
+      ],
+      "related": [
+        "aerger",
+        "gereiztheit"
+      ],
+      "reflectionQuestion": "Was stört mich gerade?"
+    },
+    {
+      "id": "nachtragendsein",
+      "name": "Nachtragendsein",
+      "kind": "STATE",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Festhalten an früher empfundenem Unrecht.",
+      "examples": [
+        "Du erinnerst dich bei einer neuen Begegnung sofort an einen alten Streit.",
+        "Ein früherer Vertrauensbruch färbt deine Reaktion."
+      ],
+      "synonyms": [
+        "nachtragend",
+        "etwas nachtragen"
+      ],
+      "related": [
+        "groll",
+        "misstrauen"
+      ],
+      "reflectionQuestion": "Was ist für mich noch nicht geklärt?"
+    },
+    {
+      "id": "ungehaltenheit",
+      "name": "Ungehaltenheit",
+      "kind": "STATE",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Gereizter Ärger, der sich schnell nach außen zeigt.",
+      "examples": [
+        "Du antwortest schroff auf eine harmlose Frage.",
+        "Eine Kleinigkeit bringt dich zum Seufzen."
+      ],
+      "synonyms": [
+        "ungehalten",
+        "unwirsch"
+      ],
+      "related": [
+        "gereiztheit",
+        "unmut"
+      ],
+      "reflectionQuestion": "Welche Belastung steckt dahinter?"
+    },
+    {
+      "id": "genervtheit",
+      "name": "Genervtheit",
+      "kind": "EMOTION",
+      "family": "Ärger",
+      "families": [
+        "Ärger"
+      ],
+      "definition": "Leichter bis mittlerer Ärger über wiederholte Reize.",
+      "examples": [
+        "Eine dauernde Unterbrechung nervt dich.",
+        "Die gleiche Frage zum fünften Mal bringt dich aus der Ruhe."
+      ],
+      "synonyms": [
+        "genervt",
+        "es nervt"
+      ],
+      "related": [
+        "ungeduld",
+        "gereiztheit"
+      ],
+      "reflectionQuestion": "Welcher Reiz ist gerade zu viel?"
+    },
+    {
+      "id": "selbstmitgefuehl",
+      "name": "Selbstmitgefühl",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Zugewandtes Verständnis für die eigenen Schwierigkeiten.",
+      "examples": [
+        "Nach einem Fehler redest du freundlich mit dir.",
+        "Du erlaubst dir Trost nach einem Rückschlag."
+      ],
+      "synonyms": [
+        "mitgefühl mit mir",
+        "selbstfreundlichkeit"
+      ],
+      "related": [
+        "selbstakzeptanz",
+        "fuersorge"
+      ],
+      "reflectionQuestion": "Was würde ich einem Freund in meiner Lage sagen?"
+    },
+    {
+      "id": "selbstvorwurf",
+      "name": "Selbstvorwurf",
+      "kind": "EMOTION",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Belastendes inneres Anklagen wegen einer Handlung.",
+      "examples": [
+        "Du denkst immer wieder an einen Fehler.",
+        "Du gibst dir die Schuld für einen misslungenen Abend."
+      ],
+      "synonyms": [
+        "sich vorwerfen",
+        "selbstbeschuldigung"
+      ],
+      "related": [
+        "schuldgefuehl",
+        "reue"
+      ],
+      "reflectionQuestion": "Welchen Anteil trage ich wirklich?"
+    },
+    {
+      "id": "selbstabwertung",
+      "name": "Selbstabwertung",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Eine herabsetzende Bewertung der eigenen Person.",
+      "examples": [
+        "Nach Kritik nennst du dich innerlich unfähig.",
+        "Du übergehst alle deine Erfolge."
+      ],
+      "synonyms": [
+        "sich schlechtmachen",
+        "negative selbstbewertung"
+      ],
+      "related": [
+        "scham",
+        "selbstzweifel"
+      ],
+      "reflectionQuestion": "Welche Beschreibung wäre fairer?"
+    },
+    {
+      "id": "minderwertigkeitsgefuehl",
+      "name": "Minderwertigkeitsgefühl",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Gefühl, im Vergleich zu anderen weniger wert zu sein.",
+      "examples": [
+        "In einer Runde hältst du dich für unbedeutend.",
+        "Du vergleichst deine Fähigkeiten ständig negativ."
+      ],
+      "synonyms": [
+        "minderwertig fühlen",
+        "unterlegen fühlen"
+      ],
+      "related": [
+        "unzulaenglichkeit",
+        "selbstabwertung"
+      ],
+      "reflectionQuestion": "Woran messe ich meinen Wert?"
+    },
+    {
+      "id": "wertlosigkeitsgefuehl",
+      "name": "Wertlosigkeitsgefühl",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Schmerzhaftes Empfinden, nichts wert zu sein.",
+      "examples": [
+        "Ein Rückschlag lässt dich deine Bedeutung anzweifeln.",
+        "Du fühlst dich in einer Gruppe völlig übersehen."
+      ],
+      "synonyms": [
+        "wertlos fühlen",
+        "keinen wert fühlen"
+      ],
+      "related": [
+        "scham",
+        "selbstabwertung"
+      ],
+      "reflectionQuestion": "Kann ich Gefühl und Tatsache auseinanderhalten?"
+    },
+    {
+      "id": "versagenserleben",
+      "name": "Versagenserleben",
+      "kind": "EMOTION",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Schmerzhaftes Gefühl, eine persönliche Erwartung nicht erfüllt zu haben.",
+      "examples": [
+        "Eine Prüfung läuft schlechter als erhofft.",
+        "Ein wichtiges Vorhaben gelingt nicht."
+      ],
+      "synonyms": [
+        "versagt fühlen",
+        "misslingen"
+      ],
+      "related": [
+        "enttaeuschung",
+        "selbstvorwurf"
+      ],
+      "reflectionQuestion": "Welche Erwartung habe ich an mich gestellt?"
+    },
+    {
+      "id": "selbstsicherheit",
+      "name": "Selbstsicherheit",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Ruhiges Auftreten mit Zutrauen zur eigenen Haltung.",
+      "examples": [
+        "Du äußerst deine Meinung ohne große Angst.",
+        "Du kannst vor einer Gruppe ruhig sprechen."
+      ],
+      "synonyms": [
+        "selbstsicher",
+        "souverän"
+      ],
+      "related": [
+        "selbstvertrauen",
+        "selbstachtung"
+      ],
+      "reflectionQuestion": "Worauf stützt sich meine Sicherheit?"
+    },
+    {
+      "id": "innere_stimmigkeit",
+      "name": "Innere Stimmigkeit",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Empfinden, dass Handlung und eigene Werte zusammenpassen.",
+      "examples": [
+        "Eine schwierige Entscheidung fühlt sich richtig an.",
+        "Du setzt eine Grenze und bist innerlich ruhig."
+      ],
+      "synonyms": [
+        "stimmig handeln",
+        "im einklang sein"
+      ],
+      "related": [
+        "authentizitaet",
+        "innerer_frieden"
+      ],
+      "reflectionQuestion": "Was passt zu meinen Werten?"
+    },
+    {
+      "id": "peinlichberuehrtsein",
+      "name": "Peinlichberührtsein",
+      "kind": "EMOTION",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Kurzfristiges Unbehagen nach unerwünschter Aufmerksamkeit.",
+      "examples": [
+        "Du stolperst vor anderen über ein Wort.",
+        "Jemand erzählt eine private Anekdote über dich."
+      ],
+      "synonyms": [
+        "peinlich berührt",
+        "peinlichkeit"
+      ],
+      "related": [
+        "verlegenheit",
+        "scham"
+      ],
+      "reflectionQuestion": "Wie wichtig ist dieser Moment wirklich?"
+    },
+    {
+      "id": "bloessgestelltsein",
+      "name": "Bloßgestelltsein",
+      "kind": "EMOTION",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Schmerz darüber, gegen den eigenen Willen sichtbar oder vorgeführt zu werden.",
+      "examples": [
+        "Ein privater Fehler wird öffentlich erwähnt.",
+        "Jemand macht vor anderen eine abwertende Bemerkung."
+      ],
+      "synonyms": [
+        "bloßgestellt",
+        "vorführen"
+      ],
+      "related": [
+        "scham",
+        "verletztheit"
+      ],
+      "reflectionQuestion": "Welche Grenze wurde nicht respektiert?"
+    },
+    {
+      "id": "innerer_zwiespalt",
+      "name": "Innerer Zwiespalt",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Das Empfinden, zwischen widersprüchlichen Wünschen zu stehen.",
+      "examples": [
+        "Du möchtest Nähe und zugleich Abstand.",
+        "Eine Entscheidung widerspricht einem anderen Wunsch."
+      ],
+      "synonyms": [
+        "zwiespalt",
+        "hin und hergerissen"
+      ],
+      "related": [
+        "zweifel",
+        "unsicherheit"
+      ],
+      "reflectionQuestion": "Welche zwei Bedürfnisse ziehen in verschiedene Richtungen?"
+    },
+    {
+      "id": "selbstvergebung",
+      "name": "Selbstvergebung",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Nachsicht mit dir nach einem anerkannten Fehler.",
+      "examples": [
+        "Du gestehst dir einen Fehler zu, ohne dich dauerhaft abzuwerten.",
+        "Du lernst aus einer Entscheidung und lässt sie allmählich ruhen."
+      ],
+      "synonyms": [
+        "sich selbst vergeben",
+        "selbstverzeihen"
+      ],
+      "related": [
+        "reue",
+        "selbstmitgefuehl"
+      ],
+      "reflectionQuestion": "Was darf ich lernen und loslassen?"
+    },
+    {
+      "id": "selbstzuwendung",
+      "name": "Selbstzuwendung",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Fürsorgliche Aufmerksamkeit für das eigene Befinden.",
+      "examples": [
+        "Du merkst, dass du Ruhe brauchst.",
+        "Du hörst dir selbst zu, statt deine Gefühle abzuwerten."
+      ],
+      "synonyms": [
+        "sich zuwenden",
+        "achtsam mit sich"
+      ],
+      "related": [
+        "selbstmitgefuehl",
+        "selbstakzeptanz"
+      ],
+      "reflectionQuestion": "Was brauche ich gerade?"
+    },
+    {
+      "id": "anerkennungssehnsucht",
+      "name": "Anerkennungssehnsucht",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Starkes Bedürfnis, von anderen gesehen und geschätzt zu werden.",
+      "examples": [
+        "Du hoffst auf Lob für eine mühevolle Arbeit.",
+        "Du wartest gespannt auf eine Rückmeldung."
+      ],
+      "synonyms": [
+        "anerkennung suchen",
+        "gesehen werden wollen"
+      ],
+      "related": [
+        "anerkanntsein",
+        "selbstzweifel"
+      ],
+      "reflectionQuestion": "Welche Anerkennung wünsche ich mir?"
+    },
+    {
+      "id": "ehrgeiz",
+      "name": "Ehrgeiz",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Starker Antrieb, ein anspruchsvolles Ziel zu erreichen.",
+      "examples": [
+        "Du übst zusätzlich für einen Wettbewerb.",
+        "Du willst eine schwierige Aufgabe unbedingt lösen."
+      ],
+      "synonyms": [
+        "ehrgeizig",
+        "leistungswille"
+      ],
+      "related": [
+        "tatendrang",
+        "stolz"
+      ],
+      "reflectionQuestion": "Was motiviert meinen Ehrgeiz?"
+    },
+    {
+      "id": "vergleichsdruck",
+      "name": "Vergleichsdruck",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Belastendes Empfinden, dich an anderen messen zu müssen.",
+      "examples": [
+        "Erfolge anderer setzen dich unter Druck.",
+        "Du vergleichst dein Tempo ständig mit Kollegen."
+      ],
+      "synonyms": [
+        "sich vergleichen müssen",
+        "konkurrenzdruck"
+      ],
+      "related": [
+        "neid",
+        "selbstzweifel"
+      ],
+      "reflectionQuestion": "Wessen Maßstab ist hier wichtig?"
+    },
+    {
+      "id": "selbstueberschaetzung",
+      "name": "Selbstüberschätzung",
+      "kind": "STATE",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Das Erleben zu großer Gewissheit über die eigenen Möglichkeiten.",
+      "examples": [
+        "Du nimmst mehr Aufgaben an, als du schaffen kannst.",
+        "Du unterschätzt die Schwierigkeit einer Situation."
+      ],
+      "synonyms": [
+        "sich überschätzen",
+        "zu viel zutrauen"
+      ],
+      "related": [
+        "ueberlegenheit",
+        "selbstvertrauen"
+      ],
+      "reflectionQuestion": "Was könnte ich realistisch einschätzen?"
+    },
+    {
+      "id": "leistungstolz",
+      "name": "Leistungsstolz",
+      "kind": "EMOTION",
+      "family": "Selbstbewertung",
+      "families": [
+        "Selbstbewertung"
+      ],
+      "definition": "Freude darüber, durch eigene Ausdauer etwas erreicht zu haben.",
+      "examples": [
+        "Ein schwieriges Projekt ist abgeschlossen.",
+        "Du siehst nach Monaten den Lernerfolg."
+      ],
+      "synonyms": [
+        "stolz auf leistung",
+        "verdienter stolz"
+      ],
+      "related": [
+        "stolz",
+        "genugtuung"
+      ],
+      "reflectionQuestion": "Welche Mühe steckt hinter dem Ergebnis?"
     }
   ],
   "comparisons": [
