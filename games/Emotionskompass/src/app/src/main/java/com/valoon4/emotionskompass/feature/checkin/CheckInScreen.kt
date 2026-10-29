@@ -47,9 +47,9 @@ import com.valoon4.emotionskompass.core.checkin.FeelingDiscovery
 import com.valoon4.emotionskompass.core.checkin.CheckInDraft
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.LifeArea
-import com.valoon4.emotionskompass.core.checkin.PersonalNeed
 import com.valoon4.emotionskompass.core.checkin.NextStepIdea
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
+import com.valoon4.emotionskompass.core.model.NeedCatalog
 import kotlin.math.roundToInt
 
 /**
@@ -59,6 +59,7 @@ import kotlin.math.roundToInt
 @Composable
 fun CheckInScreen(
     catalog: EmotionCatalog,
+    needCatalog: NeedCatalog,
     draft: CheckInDraft,
     onMode: (CheckInMode) -> Unit,
     onToggleCue: (BodyCue) -> Unit,
@@ -68,7 +69,7 @@ fun CheckInScreen(
     onNote: (String) -> Unit,
     onSituation: (String) -> Unit,
     onInterpretation: (String) -> Unit,
-    onNeed: (PersonalNeed) -> Unit,
+    onNeed: (String) -> Unit,
     onInsight: (String) -> Unit,
     onNextStepIdea: (NextStepIdea?) -> Unit,
     onNextStepNote: (String) -> Unit,
@@ -475,6 +476,7 @@ fun CheckInScreen(
                 item {
                     DeepReflectionStep(
                         draft = draft,
+                        needCatalog = needCatalog,
                         onSituation = onSituation,
                         onInterpretation = onInterpretation,
                         onNeed = onNeed,
@@ -555,7 +557,10 @@ fun CheckInScreen(
                         }
                         if (draft.needs.isNotEmpty()) {
                             SummaryLine("Was mir wichtig sein könnte",
-                                draft.needs.joinToString(" · ") { it.label })
+                                draft.needs.joinToString(" · ") {
+                                    if (it == CheckInDraft.UNKNOWN_NEED_ID) "Ich weiß es noch nicht"
+                                    else needCatalog.find(it)?.name ?: it
+                                })
                         }
                         if (draft.insight.isNotBlank()) {
                             SummaryLine("Was mir klarer geworden ist", draft.insight)
