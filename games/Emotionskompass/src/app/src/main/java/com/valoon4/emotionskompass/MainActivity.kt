@@ -78,6 +78,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.valoon4.emotionskompass.core.designsystem.EmotionskompassTheme
 import com.valoon4.emotionskompass.core.model.Emotion
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
+import com.valoon4.emotionskompass.core.model.EmotionKind
+import com.valoon4.emotionskompass.core.model.LearningPath
+import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
 import com.valoon4.emotionskompass.core.navigation.Destination
@@ -169,6 +172,7 @@ private fun EmotionskompassApp(
     vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog))
 ) {
     val state by vm.state.collectAsState()
+    val filters by vm.filters.collectAsState()
     BackHandler(enabled = state.destination != Destination.MAIN) { vm.back() }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -220,7 +224,17 @@ private fun EmotionskompassApp(
                         onCheckin = vm::openCheckin,
                         onWord = { vm.openEmotion("wehmut") }
                     )
-                    MainSection.ENTDECKEN -> AtlasScreen(catalog = catalog, onEmotion = vm::openEmotion)
+                    MainSection.ENTDECKEN -> AtlasScreen(
+                        catalog = catalog,
+                        filters = filters,
+                        onEmotion = vm::openEmotion,
+                        onPath = vm::openPath,
+                        onSearch = vm::setSearch,
+                        onFamily = vm::setFamily,
+                        onKind = vm::setKind,
+                        onLetter = vm::setLetter,
+                        onClear = vm::clearFilters
+                    )
                     MainSection.TAGEBUCH -> ComingSoonScreen(
                         icon = Icons.Outlined.NoteAlt,
                         title = "Dein Tagebuch",
@@ -247,6 +261,10 @@ private fun EmotionskompassApp(
                     }
                 }
                 Destination.VERGLEICH -> ComparisonScreen(state, catalog)
+                Destination.PATH -> {
+                    val path = state.pathId?.let(catalog::findPath)
+                    if (path != null) LearningPathScreen(path, catalog, vm::openEmotion)
+                }
                 Destination.CHECKIN -> ComingSoonScreen(
                     icon = Icons.Outlined.FavoriteBorder,
                     title = "Dein Gefühlsnavigator",
@@ -301,7 +319,7 @@ private fun HomeScreen(onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () 
             icon = Icons.Outlined.Explore,
             title = "Emotionen entdecken",
             description = "Begriffe und feine Unterschiede kennenlernen.",
-            footnote = "48 Begriffe · 9 Vergleiche",
+            footnote = "144 Begriffe · Lernpfade",
             onClick = onExplore
         )
         Spacer(Modifier.height(10.dp))
@@ -326,7 +344,7 @@ private fun HomeScreen(onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () 
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M2 · Emotionsatlas in redaktioneller Arbeitsfassung. Noch kein Tagebuch.",
+        Text("M2.1 · 144 Wörter entdecken. Redaktionelle Arbeitsfassung, noch kein Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -362,69 +380,228 @@ private fun ActionCard(icon: ImageVector, title: String, description: String,
 }
 
 @Composable
-private fun AtlasScreen(catalog: EmotionCatalog, onEmotion: (String) -> Unit) {
-    var query by rememberSaveable { mutableStateOf("") }
-    var family by rememberSaveable { mutableStateOf("Alle") }
-    val result = remember(query, family, catalog) { catalog.search(query, family) }
-    Column(Modifier.fillMaxSize()) {
-        Column(Modifier.padding(start = 19.dp, end = 19.dp, top = 12.dp, bottom = 6.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("Emotionen entdecken", style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold)
-            Text("Finde neue Begriffe und lerne die feinen Unterschiede kennen.",
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedTextField(
-                value = query, onValueChange = { query = it },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
-                label = { Text("Gefühl oder Begriff suchen") }
-            )
-        }
-        LazyRow(contentPadding = PaddingValues(horizontal = 19.dp),
-            horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-            items(catalog.families) { value ->
-                FilterChip(selected = family == value, onClick = { family = value },
-                    label = { Text(value) })
-            }
-        }
-        Text("${result.size} von ${catalog.emotions.size} Begriffen · Arbeitsfassung v${catalog.schemaVersion}",
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant)
-        if (result.isEmpty()) {
-            Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Icon(Icons.Outlined.Search, contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Kein passender Begriff gefunden.")
-                    TextButton(onClick = { query = ""; family = "Alle" }) { Text("Filter zurücksetzen") }
+private fun AtlasScreen(
+    catalog: EmotionCatalog,
+    filters: AtlasFilters,
+    onEmotion: (String) -> Unit,
+    onPath: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    onFamily: (String) -> Unit,
+    onKind: (EmotionKind?) -> Unit,
+    onLetter: (String) -> Unit,
+    onClear: () -> Unit
+) {
+    val result = remember(catalog, filters) {
+        catalog.browse(filters.query, filters.family, filters.kind, filters.letter)
+    }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(start = 19.dp, end = 19.dp, bottom = 30.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Spacer(Modifier.height(4.dp))
+                Text("Emotionen entdecken", style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold)
+                Text("144 Begriffe, viele Nuancen. Du musst noch nicht wissen, wonach du suchst.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedTextField(
+                    value = filters.query, onValueChange = onSearch,
+                    modifier = Modifier.fillMaxWidth(), singleLine = true,
+                    leadingIcon = {
+                        Icon(Icons.Outlined.Search, contentDescription = null)
+                    },
+                    label = { Text("Begriff, Synonym oder Beschreibung") }
+                )
+                OutlinedButton(
+                    onClick = { onEmotion(catalog.emotions.random().id) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Outlined.AutoAwesome, contentDescription = null)
+                    Spacer(Modifier.size(8.dp))
+                    Text("Überrasch mich mit einem Begriff")
                 }
             }
-        } else {
-            LazyColumn(contentPadding = PaddingValues(start = 19.dp, end = 19.dp, bottom = 28.dp),
-                verticalArrangement = Arrangement.spacedBy(9.dp)) {
-                items(result, key = { it.id }) { emotion ->
-                    Card(onClick = { onEmotion(emotion.id) },
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
-                        Row(Modifier.fillMaxWidth().padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Column(Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Text(emotion.family.uppercase(), style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary, letterSpacing = 0.7.sp)
-                                Text(emotion.name, style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.SemiBold)
-                                Text(emotion.explanation, style = MaterialTheme.typography.bodySmall,
-                                    maxLines = 2, overflow = TextOverflow.Ellipsis,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        item {
+            Text("Entdeckungswege", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text("Kurze thematische Reisen durch ähnliche und unterschiedliche Gefühle.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                items(catalog.learningPaths, key = { it.id }) { path ->
+                    Card(
+                        onClick = { onPath(path.id) },
+                        modifier = Modifier.size(width = 230.dp, height = 146.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
+                        shape = RoundedCornerShape(19.dp)
+                    ) {
+                        Column(Modifier.fillMaxSize().padding(15.dp),
+                            verticalArrangement = Arrangement.SpaceBetween) {
+                            Text(path.title, style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.SemiBold)
+                            Text(path.description, style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Row(Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically) {
+                                Text("${path.emotionIds.size} Begriffe",
+                                    style = MaterialTheme.typography.labelSmall)
+                                Icon(Icons.Outlined.ChevronRight,
+                                    contentDescription = "Lernpfad öffnen")
                             }
-                            Icon(Icons.Outlined.ChevronRight, contentDescription = "Öffnen",
-                                tint = MaterialTheme.colorScheme.primary)
                         }
                     }
+                }
+            }
+        }
+        item {
+            Text("Gefühlsfamilie", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(catalog.families) { family ->
+                    FilterChip(
+                        selected = filters.family == family,
+                        onClick = { onFamily(family) },
+                        label = { Text(family) }
+                    )
+                }
+            }
+        }
+        item {
+            Text("Was möchtest du betrachten?",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                val kinds = listOf(
+                    null to "Alle Arten",
+                    EmotionKind.EMOTION to "Gefühle",
+                    EmotionKind.MOOD to "Stimmungen",
+                    EmotionKind.STATE to "Zustände"
+                )
+                items(kinds) { (kind, label) ->
+                    FilterChip(
+                        selected = filters.kind == kind,
+                        onClick = { onKind(kind) },
+                        label = { Text(label) }
+                    )
+                }
+            }
+        }
+        item {
+            Text("Alphabet", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                items(listOf("Alle") + ('A'..'Z').map(Char::toString)) { letter ->
+                    FilterChip(
+                        selected = filters.letter == letter,
+                        onClick = { onLetter(letter) },
+                        label = { Text(letter) }
+                    )
+                }
+            }
+        }
+        item {
+            Row(Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically) {
+                Text("${result.size} von ${catalog.emotions.size} Begriffen",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (filters != AtlasFilters()) {
+                    TextButton(onClick = onClear) { Text("Filter zurücksetzen") }
+                }
+            }
+            if (result.isEmpty()) {
+                Text("Keine Treffer. Versuche einen anderen Begriff oder setze die Filter zurück.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+        items(result, key = { it.id }) { emotion ->
+            Card(
+                onClick = { onEmotion(emotion.id) },
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Row(Modifier.fillMaxWidth().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Column(Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(emotion.family.uppercase() + " · " + emotionKindLabel(emotion.kind),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            letterSpacing = 0.4.sp)
+                        Text(emotion.name, style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold)
+                        Text(emotion.explanation, style = MaterialTheme.typography.bodySmall,
+                            maxLines = 2, overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Icon(Icons.Outlined.ChevronRight, contentDescription = "Öffnen",
+                        tint = MaterialTheme.colorScheme.primary)
+                }
+            }
+        }
+        item {
+            Text("Der Atlas ist eine redaktionelle Arbeitsfassung und keine psychologische Diagnose.",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+private fun emotionKindLabel(kind: EmotionKind): String = when (kind) {
+    EmotionKind.EMOTION -> "Gefühl"
+    EmotionKind.MOOD -> "Stimmung"
+    EmotionKind.STATE -> "Zustand"
+}
+
+@Composable
+private fun LearningPathScreen(
+    path: LearningPath,
+    catalog: EmotionCatalog,
+    onEmotion: (String) -> Unit
+) {
+    val entries = remember(path, catalog) { catalog.emotionsInPath(path) }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            Tag("LERNPFAD · ${entries.size} STATIONEN")
+            Spacer(Modifier.height(14.dp))
+            Text(path.title, style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold)
+            Text(path.description, style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Spacer(Modifier.height(9.dp))
+            Text("Entdecke die Begriffe in deinem eigenen Tempo. Alle Stationen sind freiwillig.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        items(entries, key = { it.id }) { emotion ->
+            Card(
+                onClick = { onEmotion(emotion.id) },
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Row(Modifier.fillMaxWidth().padding(17.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Column(Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text(emotion.name, style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold)
+                        Text(emotion.explanation, style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Icon(Icons.Outlined.ChevronRight, contentDescription = "Begriff ansehen")
                 }
             }
         }
@@ -638,14 +815,14 @@ private fun SettingsScreen() {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M2 · Emotionsatlas als native Android-Vorschau", style = MaterialTheme.typography.titleMedium,
+        Text("M2.1 · Umfangreicher Emotionsatlas", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Text("Der offline verfügbare Emotionsatlas enthält 48 Begriffe in einer redaktionellen Arbeitsfassung. Die App speichert nur, dass die Einführung abgeschlossen wurde. Tagebucheinträge und ihre geschützte Datenspeicherung folgen erst in weiteren Etappen.",
+        Text("Der offline verfügbare Emotionsatlas enthält 144 Begriffe und sechs Lernpfade in einer redaktionellen Arbeitsfassung. Die App speichert nur, dass die Einführung abgeschlossen wurde. Tagebucheinträge und ihre geschützte Datenspeicherung folgen erst in weiteren Etappen.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.2.0-m2", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.2.1-m2.1", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
