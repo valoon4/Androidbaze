@@ -5856,6 +5856,857 @@
         "genugtuung"
       ],
       "reflectionQuestion": "Welche Mühe steckt hinter dem Ergebnis?"
+    },
+    {
+      "id": "aha_erlebnis",
+      "name": "Aha-Erlebnis",
+      "kind": "EMOTION",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Freude über eine unerwartete Einsicht.",
+      "examples": [
+        "Plötzlich ergibt eine Aufgabe Sinn.",
+        "Du verstehst eine lange unklare Idee."
+      ],
+      "synonyms": [
+        "aha moment",
+        "verstehen"
+      ],
+      "related": [
+        "erkenntnisfreude",
+        "ueberraschung"
+      ],
+      "reflectionQuestion": "Was habe ich verstanden?"
+    },
+    {
+      "id": "wissensdurst",
+      "name": "Wissensdurst",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Starker Wunsch, etwas zu begreifen.",
+      "examples": [
+        "Du liest bis spät über ein Thema.",
+        "Eine Antwort weckt neue Fragen."
+      ],
+      "synonyms": [
+        "wissbegier",
+        "wissen wollen"
+      ],
+      "related": [
+        "neugier",
+        "interesse"
+      ],
+      "reflectionQuestion": "Welche Frage bleibt?"
+    },
+    {
+      "id": "forschergeist",
+      "name": "Forschergeist",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Freude am Erkunden unbekannter Zusammenhänge.",
+      "examples": [
+        "Du probierst etwas systematisch aus.",
+        "Ein Experiment weckt Ideen."
+      ],
+      "synonyms": [
+        "forschungsdrang",
+        "erfindergeist"
+      ],
+      "related": [
+        "entdeckungslust",
+        "wissensdurst"
+      ],
+      "reflectionQuestion": "Was untersuche ich?"
+    },
+    {
+      "id": "abenteuerlust",
+      "name": "Abenteuerlust",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Vorfreude auf ungewohnte Erfahrungen.",
+      "examples": [
+        "Du erkundest eine neue Stadt.",
+        "Ein unbekannter Weg reizt dich."
+      ],
+      "synonyms": [
+        "abenteuerfreude",
+        "abenteuerhungrig"
+      ],
+      "related": [
+        "neugier",
+        "vorfreude"
+      ],
+      "reflectionQuestion": "Welches Neue lockt?"
+    },
+    {
+      "id": "fremdeln",
+      "name": "Fremdeln",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Zurückhaltung in unbekannter Umgebung.",
+      "examples": [
+        "In einer neuen Gruppe brauchst du Zeit.",
+        "Ein fremder Ort fühlt sich seltsam an."
+      ],
+      "synonyms": [
+        "fremd fühlen",
+        "scheu vor neuem"
+      ],
+      "related": [
+        "befremden",
+        "scheu"
+      ],
+      "reflectionQuestion": "Was würde Vertrautheit schaffen?"
+    },
+    {
+      "id": "verwunderte_freude",
+      "name": "Verwunderte Freude",
+      "kind": "EMOTION",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Freude, die zugleich überrascht.",
+      "examples": [
+        "Ein unerwartetes Lob macht dich froh.",
+        "Eine Einladung kommt überraschend."
+      ],
+      "synonyms": [
+        "freudiges staunen",
+        "erfreutes wundern"
+      ],
+      "related": [
+        "ueberraschung",
+        "freudige_ueberraschung"
+      ],
+      "reflectionQuestion": "Was überrascht mich?"
+    },
+    {
+      "id": "ueberraschtes_lachen",
+      "name": "Überraschtes Lachen",
+      "kind": "EMOTION",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Spontane Belustigung durch etwas Unerwartetes.",
+      "examples": [
+        "Eine Pointe erwischt dich.",
+        "Ein Zufall bringt dich zum Lachen."
+      ],
+      "synonyms": [
+        "überrascht lachen",
+        "lachimpuls"
+      ],
+      "related": [
+        "amuesement",
+        "ueberraschung"
+      ],
+      "reflectionQuestion": "Was war komisch?"
+    },
+    {
+      "id": "erschauerung",
+      "name": "Erschauerung",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Kurzer spürbarer Schauer bei starker Berührung.",
+      "examples": [
+        "Musik löst Gänsehaut aus.",
+        "Ein Ausblick lässt dich erschaudern."
+      ],
+      "synonyms": [
+        "erschaudern",
+        "gänsehaut"
+      ],
+      "related": [
+        "ehrfurcht",
+        "ergriffenheit"
+      ],
+      "reflectionQuestion": "Was bewegt mich?"
+    },
+    {
+      "id": "unfassbarkeit",
+      "name": "Unfassbarkeit",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Gefühl, etwas kaum begreifen zu können.",
+      "examples": [
+        "Eine Nachricht macht dich sprachlos.",
+        "Ein Erfolg erscheint unwirklich."
+      ],
+      "synonyms": [
+        "unfassbar",
+        "kaum glauben"
+      ],
+      "related": [
+        "verblueffung",
+        "ueberwaeltigung"
+      ],
+      "reflectionQuestion": "Was ist so unfassbar?"
+    },
+    {
+      "id": "fragelust",
+      "name": "Fragelust",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Spielerischer Wunsch, Fragen zu stellen.",
+      "examples": [
+        "Du stellst viele Fragen im Vortrag.",
+        "Ein Gespräch macht neugierig."
+      ],
+      "synonyms": [
+        "fragenfreude",
+        "fragefreudig"
+      ],
+      "related": [
+        "neugier",
+        "wissensdurst"
+      ],
+      "reflectionQuestion": "Was möchte ich fragen?"
+    },
+    {
+      "id": "schoenheitsempfinden",
+      "name": "Schönheitsempfinden",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Bewusstes Wahrnehmen von Schönheit.",
+      "examples": [
+        "Ein Lichteinfall hält dich inne.",
+        "Eine Melodie berührt dich."
+      ],
+      "synonyms": [
+        "sinn für schönheit",
+        "ästhetische freude"
+      ],
+      "related": [
+        "faszination",
+        "verzauberung"
+      ],
+      "reflectionQuestion": "Was ist daran schön?"
+    },
+    {
+      "id": "neue_perspektive",
+      "name": "Perspektivwechsel",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Erleben einer neuen Sicht auf Bekanntes.",
+      "examples": [
+        "Ein Gespräch verändert deine Meinung.",
+        "Ein Buch zeigt dir eine andere Welt."
+      ],
+      "synonyms": [
+        "perspektive wechseln",
+        "neuer blick"
+      ],
+      "related": [
+        "erkenntnisfreude",
+        "offenheit"
+      ],
+      "reflectionQuestion": "Was sehe ich nun anders?"
+    },
+    {
+      "id": "raetselhaftigkeit",
+      "name": "Rätselhaftigkeit",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Faszinierendes Empfinden des Unerklärten.",
+      "examples": [
+        "Ein Fund beschäftigt dich.",
+        "Ein Gedanke wirft neue Fragen auf."
+      ],
+      "synonyms": [
+        "rätselhaft",
+        "geheimnisvoll"
+      ],
+      "related": [
+        "faszination",
+        "verwunderung"
+      ],
+      "reflectionQuestion": "Was bleibt geheimnisvoll?"
+    },
+    {
+      "id": "schaudernde_ehrfurcht",
+      "name": "Schaudernde Ehrfurcht",
+      "kind": "EMOTION",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Gemischtes Staunen und Respekt vor mächtigem Erleben.",
+      "examples": [
+        "Eine Felswand lässt dich still werden.",
+        "Ein Sturm flößt dir Respekt ein."
+      ],
+      "synonyms": [
+        "ehrfürchtiges erschaudern",
+        "schauder"
+      ],
+      "related": [
+        "ehrfurcht",
+        "erschauerung"
+      ],
+      "reflectionQuestion": "Was wirkt so mächtig?"
+    },
+    {
+      "id": "kreativer_funke",
+      "name": "Kreativer Funke",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Plötzlicher Impuls, eine Idee zu gestalten.",
+      "examples": [
+        "Farben inspirieren dich.",
+        "Ein Satz wird zur Geschichte."
+      ],
+      "synonyms": [
+        "ideenblitz",
+        "schaffensimpuls"
+      ],
+      "related": [
+        "inspiration",
+        "entdeckungslust"
+      ],
+      "reflectionQuestion": "Was möchte ich gestalten?"
+    },
+    {
+      "id": "kunstgenuss",
+      "name": "Kunstgenuss",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Vertieftes angenehmes Erleben von Kunst.",
+      "examples": [
+        "Ein Bild hält deinen Blick fest.",
+        "Du hörst einem Musikstück zu."
+      ],
+      "synonyms": [
+        "kunstfreude",
+        "ästhetischer genuss"
+      ],
+      "related": [
+        "vergnuegen",
+        "faszination"
+      ],
+      "reflectionQuestion": "Was berührt mich?"
+    },
+    {
+      "id": "staunende_stille",
+      "name": "Staunende Stille",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Stilles Innehalten vor einem besonderen Eindruck.",
+      "examples": [
+        "Ein Sonnenaufgang macht dich sprachlos.",
+        "Du schaust lange auf die Landschaft."
+      ],
+      "synonyms": [
+        "sprachloses staunen",
+        "still staunen"
+      ],
+      "related": [
+        "staunen",
+        "ergriffenheit"
+      ],
+      "reflectionQuestion": "Wobei verweile ich?"
+    },
+    {
+      "id": "faszinierte_neugier",
+      "name": "Faszinierte Neugier",
+      "kind": "STATE",
+      "family": "Staunen",
+      "families": [
+        "Staunen"
+      ],
+      "definition": "Besonders fesselnde Neugier.",
+      "examples": [
+        "Du liest immer weiter zu einer Frage.",
+        "Ein Fund macht dich neugierig."
+      ],
+      "synonyms": [
+        "fasziniert und neugierig",
+        "vertieftes interesse"
+      ],
+      "related": [
+        "neugier",
+        "faszination"
+      ],
+      "reflectionQuestion": "Was will ich entdecken?"
+    },
+    {
+      "id": "geloestheit",
+      "name": "Gelöstheit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Nachlassen von körperlicher oder innerer Spannung.",
+      "examples": [
+        "Nach einem Gespräch wirst du lockerer.",
+        "Ein freier Nachmittag tut gut."
+      ],
+      "synonyms": [
+        "gelöst",
+        "locker sein"
+      ],
+      "related": [
+        "entspannung",
+        "erleichterung"
+      ],
+      "reflectionQuestion": "Was löst Spannung?"
+    },
+    {
+      "id": "geerdetsein",
+      "name": "Geerdetsein",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Gefühl von Stabilität im Moment.",
+      "examples": [
+        "Ein Spaziergang bringt dich zu dir.",
+        "Du spürst den Boden bewusst."
+      ],
+      "synonyms": [
+        "geerdet",
+        "bodenhaftung"
+      ],
+      "related": [
+        "stabilitaet",
+        "innere_ruhe"
+      ],
+      "reflectionQuestion": "Was erdet mich?"
+    },
+    {
+      "id": "zentriertheit",
+      "name": "Zentriertheit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Ruhiges Gesammeltsein bei sich selbst.",
+      "examples": [
+        "Eine Pause klärt deinen Kopf.",
+        "Du konzentrierst dich gelassen."
+      ],
+      "synonyms": [
+        "zentriert",
+        "gesammelt"
+      ],
+      "related": [
+        "klarheit",
+        "innere_ruhe"
+      ],
+      "reflectionQuestion": "Wie bleibe ich bei mir?"
+    },
+    {
+      "id": "seelenruhe",
+      "name": "Seelenruhe",
+      "kind": "MOOD",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Tiefe innere Ruhe trotz Ungewissheit.",
+      "examples": [
+        "Ein offener Plan stört dich nicht.",
+        "Du wartest ohne große Sorge ab."
+      ],
+      "synonyms": [
+        "ruhe im herzen",
+        "seelenruhig"
+      ],
+      "related": [
+        "gelassenheit",
+        "innerer_frieden"
+      ],
+      "reflectionQuestion": "Was darf offen bleiben?"
+    },
+    {
+      "id": "friedfertigkeit",
+      "name": "Friedfertigkeit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Zugewandte Haltung zur friedlichen Konfliktlösung.",
+      "examples": [
+        "Du antwortest ruhig auf Ärger.",
+        "Du suchst ein Gespräch statt Streit."
+      ],
+      "synonyms": [
+        "friedfertig",
+        "versöhnliche haltung"
+      ],
+      "related": [
+        "sanftmut",
+        "besonnenheit"
+      ],
+      "reflectionQuestion": "Wie löse ich Spannung?"
+    },
+    {
+      "id": "bedachtsamkeit",
+      "name": "Bedachtsamkeit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Sorgfältiges ruhiges Nachdenken vor dem Handeln.",
+      "examples": [
+        "Du liest eine Nachricht zweimal.",
+        "Du entscheidest ohne Eile."
+      ],
+      "synonyms": [
+        "bedachtsam",
+        "behutsam überlegen"
+      ],
+      "related": [
+        "besonnenheit",
+        "geduld"
+      ],
+      "reflectionQuestion": "Was verdient Bedacht?"
+    },
+    {
+      "id": "entschleunigung",
+      "name": "Entschleunigung",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Erleben eines langsameren Tempos.",
+      "examples": [
+        "Du legst das Handy weg.",
+        "Ein Abend fühlt sich weit an."
+      ],
+      "synonyms": [
+        "langsamer werden",
+        "tempo rausnehmen"
+      ],
+      "related": [
+        "entspannung",
+        "erholung"
+      ],
+      "reflectionQuestion": "Wo kann ich langsamer werden?"
+    },
+    {
+      "id": "angekommensein",
+      "name": "Angekommensein",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Empfinden, am passenden Ort zu sein.",
+      "examples": [
+        "Nach einer Reise bist du zuhause.",
+        "Du musst gerade nichts suchen."
+      ],
+      "synonyms": [
+        "angekommen",
+        "am platz sein"
+      ],
+      "related": [
+        "geborgenheit",
+        "innerer_frieden"
+      ],
+      "reflectionQuestion": "Was lässt mich ankommen?"
+    },
+    {
+      "id": "losgeloestheit",
+      "name": "Losgelöstheit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Vorübergehendes Freiwerden von Druck.",
+      "examples": [
+        "Ein Spaziergang schafft Abstand.",
+        "Ein Problem darf bis morgen ruhen."
+      ],
+      "synonyms": [
+        "losgelöst",
+        "ungebunden fühlen"
+      ],
+      "related": [
+        "leichtigkeit",
+        "gelassenheit"
+      ],
+      "reflectionQuestion": "Was lasse ich los?"
+    },
+    {
+      "id": "versunkenheit",
+      "name": "Versunkenheit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Ruhiges Aufgehen in einer Tätigkeit.",
+      "examples": [
+        "Beim Lesen vergisst du die Zeit.",
+        "Du hörst ganz konzentriert Musik."
+      ],
+      "synonyms": [
+        "versunken",
+        "vertieft sein"
+      ],
+      "related": [
+        "innere_ruhe",
+        "interesse"
+      ],
+      "reflectionQuestion": "Worin gehe ich auf?"
+    },
+    {
+      "id": "kontemplation",
+      "name": "Kontemplation",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Stilles betrachtendes Verweilen.",
+      "examples": [
+        "Du schaust in die Landschaft.",
+        "Du sitzt und beobachtest Gedanken."
+      ],
+      "synonyms": [
+        "besinnung",
+        "stille betrachtung"
+      ],
+      "related": [
+        "innere_ruhe",
+        "versunkenheit"
+      ],
+      "reflectionQuestion": "Was möchte ich betrachten?"
+    },
+    {
+      "id": "unaufgeregtheit",
+      "name": "Unaufgeregtheit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Ruhiges Reagieren ohne starken Aufruhr.",
+      "examples": [
+        "Ein Planwechsel stört kaum.",
+        "Du sprichst im Streit leise."
+      ],
+      "synonyms": [
+        "unaufgeregt",
+        "nüchtern ruhig"
+      ],
+      "related": [
+        "gelassenheit",
+        "gleichmut"
+      ],
+      "reflectionQuestion": "Wo hilft Ruhe?"
+    },
+    {
+      "id": "ruhebeduerfnis",
+      "name": "Ruhebedürfnis",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Spürbarer Wunsch nach weniger Reizen.",
+      "examples": [
+        "Nach einem lauten Tag möchtest du Stille.",
+        "Du brauchst Abstand von Gesprächen."
+      ],
+      "synonyms": [
+        "ruhe brauchen",
+        "rückzugsbedürfnis"
+      ],
+      "related": [
+        "ueberforderung",
+        "erholung"
+      ],
+      "reflectionQuestion": "Welche Pause tut gut?"
+    },
+    {
+      "id": "behaglichkeit",
+      "name": "Behaglichkeit",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Wohliges Gefühl von Vertrautheit und Wärme.",
+      "examples": [
+        "Ein Raum wirkt gemütlich.",
+        "Du sitzt entspannt mit Freunden."
+      ],
+      "synonyms": [
+        "behaglich",
+        "gemütlichkeit"
+      ],
+      "related": [
+        "wohligkeit",
+        "geborgenheit"
+      ],
+      "reflectionQuestion": "Was ist hier behaglich?"
+    },
+    {
+      "id": "selbstberuhigung",
+      "name": "Selbstberuhigung",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Erleben, die eigene Anspannung senken zu können.",
+      "examples": [
+        "Du atmest bewusst langsamer.",
+        "Ein Spaziergang hilft beim Sortieren."
+      ],
+      "synonyms": [
+        "sich beruhigen",
+        "innere beruhigung"
+      ],
+      "related": [
+        "geloestheit",
+        "besonnenheit"
+      ],
+      "reflectionQuestion": "Was beruhigt mich?"
+    },
+    {
+      "id": "gedankliche_ruhe",
+      "name": "Gedankliche Ruhe",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Zustand mit weniger kreisenden Gedanken.",
+      "examples": [
+        "Eine aufgeschriebene Liste befreit.",
+        "Ein stiller Morgen klärt den Kopf."
+      ],
+      "synonyms": [
+        "ruhiger kopf",
+        "gedankenruhe"
+      ],
+      "related": [
+        "klarheit",
+        "innere_ruhe"
+      ],
+      "reflectionQuestion": "Was darf ruhen?"
+    },
+    {
+      "id": "geborgene_stille",
+      "name": "Geborgene Stille",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Stille, in der du dich sicher fühlst.",
+      "examples": [
+        "Mit einem Freund schweigst du.",
+        "Allein genießt du die Ruhe."
+      ],
+      "synonyms": [
+        "sichere stille",
+        "ruhige geborgenheit"
+      ],
+      "related": [
+        "geborgenheit",
+        "innere_ruhe"
+      ],
+      "reflectionQuestion": "Wann ist Stille angenehm?"
+    },
+    {
+      "id": "ruhige_zuversicht",
+      "name": "Ruhige Zuversicht",
+      "kind": "STATE",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Gelassenes Vertrauen in den nächsten Schritt.",
+      "examples": [
+        "Vor einem Termin bist du ruhig.",
+        "Ein offener Weg macht keine Angst."
+      ],
+      "synonyms": [
+        "stilles vertrauen",
+        "gelassene hoffnung"
+      ],
+      "related": [
+        "zuversicht",
+        "gelassenheit"
+      ],
+      "reflectionQuestion": "Worauf vertraue ich?"
+    },
+    {
+      "id": "inneres_aufatmen",
+      "name": "Inneres Aufatmen",
+      "kind": "EMOTION",
+      "family": "Ruhe",
+      "families": [
+        "Ruhe"
+      ],
+      "definition": "Spürbarer Moment nachlassender Sorge.",
+      "examples": [
+        "Eine Befürchtung löst sich auf.",
+        "Eine Aufgabe ist erledigt."
+      ],
+      "synonyms": [
+        "aufatmen",
+        "innerlich erleichtert"
+      ],
+      "related": [
+        "erleichterung",
+        "geloestheit"
+      ],
+      "reflectionQuestion": "Welche Sorge wird kleiner?"
     }
   ],
   "comparisons": [
