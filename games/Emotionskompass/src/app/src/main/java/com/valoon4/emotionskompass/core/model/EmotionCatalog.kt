@@ -1,112 +1,185 @@
 package com.valoon4.emotionskompass.core.model
 
-/** Redaktions-Demodaten für M1. Vollständiger, fachlich geprüfter Atlas folgt in M2. */
+import java.text.Normalizer
+import java.util.Locale
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+
+/**
+ * Immutable content model for the built-in versioned German lexicon.
+ * Read from assets/catalog/emotions.de.v2.json, with no internet or journal storage.
+ */
 data class Emotion(
     val id: String,
     val name: String,
     val family: String,
+    val families: List<String>,
+    val kind: EmotionKind,
     val explanation: String,
-    val example: String,
-    val related: List<String> = emptyList()
+    val examples: List<String>,
+    val synonyms: List<String>,
+    val related: List<String>,
+    val reflectionQuestion: String
+) {
+    val example: String get() = examples.first()
+}
+
+enum class EmotionKind { EMOTION, MOOD, STATE }
+
+data class EmotionComparison(
+    val first: String,
+    val second: String,
+    val overlap: String,
+    val firstDistinction: String,
+    val secondDistinction: String,
+    val question: String
 )
 
-object EmotionCatalog {
-    val families: List<String> = listOf(
-        "Alle", "Freude", "Verbundenheit", "Traurigkeit", "Unsicherheit",
-        "Ärger", "Selbstbewertung", "Staunen", "Ruhe"
-    )
+class EmotionCatalog private constructor(
+    val schemaVersion: Int,
+    val contentRevision: String,
+    val editorialStatus: String,
+    val familyNames: List<String>,
+    val emotions: List<Emotion>,
+    val comparisons: List<EmotionComparison>
+) {
+    val families: List<String> = listOf("Alle") + familyNames
+    private val lookup = emotions.associateBy { it.id }
 
-    val emotions: List<Emotion> = listOf(
-        Emotion("zufriedenheit", "Zufriedenheit", "Freude",
-            "Ein ruhiges Gefühl, bei dem etwas im Moment stimmig oder ausreichend erscheint.",
-            "Nach einem erfüllten Tag hast du das Gefühl, gerade nichts verändern zu müssen.",
-            listOf("gelassenheit", "erleichterung")),
-        Emotion("vorfreude", "Vorfreude", "Freude",
-            "Angenehme Erwartung auf etwas, das erst noch bevorsteht.",
-            "Du denkst an ein Treffen und merkst, wie du innerlich lebendig wirst.",
-            listOf("nervositaet", "begeisterung")),
-        Emotion("begeisterung", "Begeisterung", "Freude",
-            "Ein lebendiges Gefühl von Interesse, Freude und innerer Beteiligung.",
-            "Ein neues Projekt fasziniert dich so sehr, dass du sofort loslegen möchtest.",
-            listOf("vorfreude", "staunen")),
-        Emotion("geborgenheit", "Geborgenheit", "Verbundenheit",
-            "Das Erleben von Schutz, Zugehörigkeit und emotionaler Sicherheit.",
-            "Mit einem vertrauten Menschen kannst du dich entspannen und einfach du selbst sein.",
-            listOf("dankbarkeit", "gelassenheit")),
-        Emotion("dankbarkeit", "Dankbarkeit", "Verbundenheit",
-            "Wertschätzung für etwas, das du erhalten oder erlebt hast.",
-            "Jemand hört dir aufmerksam zu und du fühlst dich dadurch getragen.",
-            listOf("geborgenheit", "zufriedenheit")),
-        Emotion("wehmut", "Wehmut", "Traurigkeit",
-            "Leise Traurigkeit, die oft mit einer schönen Erinnerung oder Vergänglichkeit verbunden ist.",
-            "Ein altes Foto erinnert dich an eine Zeit, die du vermisst.",
-            listOf("melancholie", "enttaeuschung")),
-        Emotion("melancholie", "Melancholie", "Traurigkeit",
-            "Eine nachdenkliche, häufig sanfte Form der Traurigkeit.",
-            "An einem regnerischen Sonntag fühlst du dich still und etwas schwer.",
-            listOf("wehmut", "einsamkeit")),
-        Emotion("einsamkeit", "Einsamkeit", "Traurigkeit",
-            "Das schmerzhafte Gefühl, sich nicht ausreichend verbunden zu fühlen.",
-            "Obwohl Menschen um dich herum sind, vermisst du echte Nähe.",
-            listOf("geborgenheit", "melancholie")),
-        Emotion("unsicherheit", "Unsicherheit", "Unsicherheit",
-            "Das Gefühl, etwas nicht ausreichend einschätzen oder vorhersagen zu können.",
-            "Vor einer wichtigen Entscheidung weißt du noch nicht, welchen Weg du gehen möchtest.",
-            listOf("nervositaet", "besorgnis")),
-        Emotion("nervositaet", "Nervosität", "Unsicherheit",
-            "Innere Aktivierung, die mit Erwartung, Anspannung oder Sorge verbunden sein kann.",
-            "Kurz vor einem Gespräch bemerkst du ein schnelleres Herzklopfen.",
-            listOf("vorfreude", "unsicherheit")),
-        Emotion("besorgnis", "Besorgnis", "Unsicherheit",
-            "Gedanken über mögliche Schwierigkeiten, die dir wichtig erscheinen.",
-            "Du wartest auf eine Nachricht und überlegst, ob alles gut gegangen ist.",
-            listOf("unsicherheit", "frustration")),
-        Emotion("frustration", "Frustration", "Ärger",
-            "Unzufriedenheit oder Ärger, wenn ein Vorhaben auf Hindernisse stößt.",
-            "Du versuchst mehrfach, eine Aufgabe zu lösen, kommst aber nicht weiter.",
-            listOf("enttaeuschung", "gereiztheit")),
-        Emotion("enttaeuschung", "Enttäuschung", "Ärger",
-            "Das unangenehme Erleben, wenn eine Hoffnung oder Erwartung unerfüllt bleibt.",
-            "Du freust dich auf ein Treffen, das kurzfristig abgesagt wird.",
-            listOf("frustration", "wehmut")),
-        Emotion("gereiztheit", "Gereiztheit", "Ärger",
-            "Erhöhte Empfindlichkeit gegenüber kleinen Störungen oder Belastungen.",
-            "Nach einem anstrengenden Tag ärgern dich Kleinigkeiten stärker als sonst.",
-            listOf("frustration", "besorgnis")),
-        Emotion("verlegenheit", "Verlegenheit", "Selbstbewertung",
-            "Ein unangenehmes Gefühl, wenn man sich unerwartet im Mittelpunkt der Aufmerksamkeit sieht.",
-            "Du versprichst dich vor einer Gruppe und wirst rot.",
-            listOf("unsicherheit")),
-        Emotion("reue", "Reue", "Selbstbewertung",
-            "Bedauern über eine eigene Handlung, die man rückblickend anders machen möchte.",
-            "Du erinnerst dich an harte Worte und würdest sie gern zurücknehmen.",
-            listOf("enttaeuschung")),
-        Emotion("staunen", "Staunen", "Staunen",
-            "Ein Moment von Aufmerksamkeit und Überraschung angesichts von etwas Unerwartetem.",
-            "Du siehst zum ersten Mal einen besonders klaren Sternenhimmel.",
-            listOf("begeisterung")),
-        Emotion("erleichterung", "Erleichterung", "Ruhe",
-            "Nachlassende Anspannung, wenn eine Belastung oder Ungewissheit wegfällt.",
-            "Eine schwierige Aufgabe ist geschafft und du kannst durchatmen.",
-            listOf("gelassenheit", "zufriedenheit")),
-        Emotion("gelassenheit", "Gelassenheit", "Ruhe",
-            "Ein Zustand innerer Ruhe, in dem Herausforderungen weniger bedrohlich erscheinen.",
-            "Obwohl etwas anders läuft als geplant, bleibst du ruhig.",
-            listOf("zufriedenheit", "erleichterung"))
-    )
+    fun find(id: String): Emotion? = lookup[id]
 
-    fun find(id: String): Emotion? = emotions.firstOrNull { it.id == id }
+    /** Compares regardless of selection order, preserving correct contrast labels. */
+    fun compare(first: String, second: String): EmotionComparison? {
+        val item = comparisons.firstOrNull {
+            (it.first == first && it.second == second) ||
+                (it.first == second && it.second == first)
+        } ?: return null
+        return if (item.first == first) item else item.copy(
+            first = item.second,
+            second = item.first,
+            firstDistinction = item.secondDistinction,
+            secondDistinction = item.firstDistinction
+        )
+    }
 
-    fun search(query: String, family: String = "Alle"): List<Emotion> {
-        val trimmed = query.trim()
-        return emotions
-            .filter { family == "Alle" || it.family == family }
-            .filter {
-                trimmed.isEmpty() || it.name.contains(trimmed, ignoreCase = true) ||
-                    it.explanation.contains(trimmed, ignoreCase = true)
+    /** Curated comparisons whose other term is connected to this one. */
+    fun comparisonOptions(id: String): List<String> =
+        comparisons.mapNotNull {
+            when (id) {
+                it.first -> it.second
+                it.second -> it.first
+                else -> null
             }
-            .sortedWith(compareBy<Emotion> {
-                if (trimmed.isNotBlank() && it.name.startsWith(trimmed, ignoreCase = true)) 0 else 1
-            }.thenBy { it.name })
+        }.distinct()
+
+    /**
+     * Search is local, accent-/umlaut-/case-insensitive and prioritizes exact names,
+     * then prefixes, aliases, descriptions and example usage.
+     */
+    fun search(query: String, family: String = "Alle"): List<Emotion> {
+        if (family != "Alle" && family !in familyNames) return emptyList()
+        val needle = normalize(query)
+        val options = emotions.filter { family == "Alle" || family in it.families }
+        if (needle.isBlank()) return options.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
+
+        return options.mapNotNull { emotion ->
+            val name = normalize(emotion.name)
+            val aliases = emotion.synonyms.map(::normalize)
+            val definitions = normalize(emotion.explanation)
+            val examples = emotion.examples.map(::normalize)
+            val score = when {
+                name == needle -> 0
+                name.startsWith(needle) -> 1
+                name.contains(needle) -> 2
+                aliases.any { it == needle || it.startsWith(needle) } -> 3
+                aliases.any { it.contains(needle) } -> 4
+                definitions.contains(needle) -> 5
+                examples.any { it.contains(needle) } -> 6
+                else -> null
+            }
+            if (score == null) null else score to emotion
+        }.sortedWith(compareBy<Pair<Int, Emotion>> { it.first }
+            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.second.name })
+            .map { it.second }
+    }
+
+    companion object {
+        private const val VERSION = 2
+        private val marks = Regex("\\p{M}+")
+
+        private fun normalize(input: String): String {
+            val lower = input.trim().lowercase(Locale.ROOT)
+                .replace("ä", "a").replace("ö", "o").replace("ü", "u").replace("ß", "ss")
+                .replace("ae", "a").replace("oe", "o").replace("ue", "u")
+            return Normalizer.normalize(lower, Normalizer.Form.NFD)
+                .replace(marks, "")
+                .replace(Regex("\\s+"), " ")
+        }
+
+        fun fromJson(source: String): EmotionCatalog {
+            val json = Json.parseToJsonElement(source).jsonObject
+            fun JsonObject.required(key: String): String =
+                getValue(key).jsonPrimitive.content.also { require(it.isNotBlank()) { "Empty field: $key" } }
+            fun JsonObject.strings(key: String): List<String> =
+                getValue(key).jsonArray.map { it.jsonPrimitive.content }
+
+            val version = json.required("schemaVersion").toInt()
+            require(version == VERSION) { "Unsupported lexicon schema version $version" }
+            require(json.required("locale") == "de") { "Expected German catalog" }
+            val familyNames = json.strings("families")
+            require(familyNames.size == 8 && familyNames.toSet().size == familyNames.size)
+            val emotions = json.getValue("emotions").jsonArray.map { element ->
+                val e = element.jsonObject
+                Emotion(
+                    id = e.required("id"),
+                    name = e.required("name"),
+                    family = e.required("family"),
+                    families = e.strings("families"),
+                    kind = EmotionKind.valueOf(e.required("kind")),
+                    explanation = e.required("definition"),
+                    examples = e.strings("examples"),
+                    synonyms = e.strings("synonyms"),
+                    related = e.strings("related"),
+                    reflectionQuestion = e.required("reflectionQuestion")
+                )
+            }
+            require(emotions.size >= 24) { "M2 lexicon must have at least 24 entries" }
+            require(emotions.map { it.id }.toSet().size == emotions.size) { "Duplicate emotion IDs" }
+            val idSet = emotions.map { it.id }.toSet()
+            for (emotion in emotions) {
+                require(emotion.family in familyNames && emotion.family in emotion.families)
+                require(emotion.families.isNotEmpty() && emotion.families.all { it in familyNames })
+                require(emotion.examples.size >= 2 && emotion.examples.all { it.isNotBlank() })
+                require(emotion.synonyms.isNotEmpty() && emotion.synonyms.all { it.isNotBlank() })
+                require(emotion.related.distinct().size == emotion.related.size)
+                require(emotion.related.all { it in idSet && it != emotion.id }) {
+                    "Broken related emotion reference in ${emotion.id}"
+                }
+            }
+            val comparisons = json.getValue("comparisons").jsonArray.map { element ->
+                val c = element.jsonObject
+                EmotionComparison(
+                    first = c.required("first"),
+                    second = c.required("second"),
+                    overlap = c.required("overlap"),
+                    firstDistinction = c.required("firstDistinction"),
+                    secondDistinction = c.required("secondDistinction"),
+                    question = c.required("question")
+                )
+            }
+            require(comparisons.all { it.first in idSet && it.second in idSet && it.first != it.second })
+            require(comparisons.map { setOf(it.first, it.second) }.distinct().size == comparisons.size)
+            return EmotionCatalog(
+                schemaVersion = version,
+                contentRevision = json.required("contentRevision"),
+                editorialStatus = json.required("editorialStatus"),
+                familyNames = familyNames,
+                emotions = emotions,
+                comparisons = comparisons
+            )
+        }
     }
 }
