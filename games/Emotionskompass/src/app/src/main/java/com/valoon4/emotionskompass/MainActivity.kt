@@ -144,7 +144,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
                 Text("Ein ruhiger Raum, um Gefühle zu entdecken, die richtigen Worte zu finden und dich selbst besser zu verstehen.",
                     style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(15.dp))
-                FeatureLine(Icons.Outlined.MenuBook, "Emotionen kennenlernen", "Begriffe, Unterschiede und Beispiele entdecken.")
+                FeatureLine(Icons.Outlined.MenuBook, "Gefühle und Bedürfnisse kennenlernen", "Begriffe, Unterschiede und Beispiele entdecken.")
                 FeatureLine(Icons.Outlined.FavoriteBorder, "Dich selbst verstehen", "Gefühle und Erlebnisse achtsam reflektieren.")
                 FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Keine Tagebucheinträge. Nur die Einführung wird gespeichert.")
             }
@@ -406,6 +406,13 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
             footnote = "$termsCount Begriffe · Lernpfade",
             onClick = onExplore
         )
+        ActionCard(
+            icon = Icons.Outlined.Explore,
+            title = "Bedürfnisse verstehen",
+            description = "Erkennen, was dir wichtig ist und was dir guttut.",
+            footnote = "$needsCount Bedürfnisse · Kompass · Lernpfade",
+            onClick = onNeeds
+        )
         Spacer(Modifier.height(10.dp))
         Text("Heute entdecken", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Card(onClick = onWord, modifier = Modifier.fillMaxWidth(),
@@ -428,7 +435,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M3.2 · $termsCount Gefühle lernen, benennen und behutsam reflektieren.",
+        Text("M3.3 · $termsCount Gefühlswörter und $needsCount Bedürfnisbegriffe offline entdecken.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
