@@ -1,5 +1,8 @@
 package com.valoon4.emotionskompass.feature.needs
 
+import android.app.Activity
+import android.view.WindowManager
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,11 +30,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,6 +52,19 @@ fun NeedsScreen(catalog: NeedCatalog) {
     var detailId by remember { mutableStateOf<String?>(null) }
     var pathId by remember { mutableStateOf<String?>(null) }
     var comparison by remember { mutableStateOf<NeedComparison?>(null) }
+
+    // A personal needs-compass selection should not be exposed in recents/screenshots.
+    val activity = LocalContext.current as? Activity
+    DisposableEffect(activity, tab) {
+        if (tab == "Kompass") {
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+        onDispose {
+            if (tab == "Kompass") {
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
 
     if (detailId != null) {
         val need = catalog.find(detailId!!)
