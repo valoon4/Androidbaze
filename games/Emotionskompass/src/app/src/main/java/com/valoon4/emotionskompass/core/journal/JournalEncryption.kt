@@ -1,6 +1,5 @@
 package com.valoon4.emotionskompass.core.journal
 
-import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
@@ -12,7 +11,7 @@ object JournalEncryption {
     private const val IV_LENGTH = 12
     private const val TAG_LENGTH_BITS = 128
 
-    fun seal(plaintext: ByteArray, key: SecretKey, random: SecureRandom = SecureRandom()): ByteArray {
+    fun seal(plaintext: ByteArray, key: SecretKey): ByteArray {
         require(plaintext.size <= JournalFormat.MAX_PLAINTEXT_BYTES)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, key)
