@@ -166,7 +166,7 @@ class EmotionCatalog private constructor(
                     reflectionQuestion = e.required("reflectionQuestion")
                 )
             }
-            require(emotions.size >= 120) { "M2.1 lexicon must have at least 120 entries" }
+            require(emotions.size >= 250) { "M2.2 lexicon must have at least 250 entries" }
             require(emotions.map { it.id }.toSet().size == emotions.size) { "Duplicate emotion IDs" }
             val idSet = emotions.map { it.id }.toSet()
             for (emotion in emotions) {
@@ -190,6 +190,7 @@ class EmotionCatalog private constructor(
                     question = c.required("question")
                 )
             }
+            require(comparisons.size >= 35) { "M2.2 needs at least 35 curated comparisons" }
             require(comparisons.all { it.first in idSet && it.second in idSet && it.first != it.second })
             require(comparisons.map { setOf(it.first, it.second) }.distinct().size == comparisons.size)
             val paths = json.getValue("learningPaths").jsonArray.map { element ->
@@ -201,7 +202,7 @@ class EmotionCatalog private constructor(
                     emotionIds = path.strings("emotionIds")
                 )
             }
-            require(paths.size >= 4) { "M2.1 needs thematic learning paths" }
+            require(paths.size >= 12) { "M2.2 needs at least 12 thematic learning paths" }
             require(paths.map { it.id }.distinct().size == paths.size)
             require(paths.all {
                 it.emotionIds.size >= 3 &&
