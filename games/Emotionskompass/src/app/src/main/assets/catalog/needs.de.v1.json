@@ -39,7 +39,8 @@
       "name": "Schutz",
       "family": "Sicherheit & Stabilität",
       "families": [
-        "Sicherheit & Stabilität"
+        "Sicherheit & Stabilität",
+        "Autonomie & Grenzen"
       ],
       "definition": "Das Bedürfnis nach wirksamen Grenzen gegenüber möglichem Schaden.",
       "fulfilledExample": "Eine klare Abgrenzung schützt dich vor Überlastung.",
@@ -123,7 +124,8 @@
       "name": "Vertrauen",
       "family": "Sicherheit & Stabilität",
       "families": [
-        "Sicherheit & Stabilität"
+        "Sicherheit & Stabilität",
+        "Verbundenheit & Nähe"
       ],
       "definition": "Das Bedürfnis, sich auf Menschen oder Prozesse einlassen zu können, ohne alles zu kontrollieren.",
       "fulfilledExample": "Du kannst eine Sorge ehrlich teilen.",
@@ -165,7 +167,8 @@
       "name": "Klarheit",
       "family": "Sicherheit & Stabilität",
       "families": [
-        "Sicherheit & Stabilität"
+        "Sicherheit & Stabilität",
+        "Sinn & Orientierung"
       ],
       "definition": "Das Bedürfnis nach verständlichen Informationen und eindeutiger Kommunikation.",
       "fulfilledExample": "Ein offenes Gespräch räumt Missverständnisse aus.",
@@ -249,7 +252,8 @@
       "name": "Zugehörigkeit",
       "family": "Verbundenheit & Nähe",
       "families": [
-        "Verbundenheit & Nähe"
+        "Verbundenheit & Nähe",
+        "Sinn & Orientierung"
       ],
       "definition": "Das Bedürfnis, Teil einer Gruppe sein zu dürfen, ohne sich verstellen zu müssen.",
       "fulfilledExample": "In der Gruppe wirst du selbstverständlich einbezogen.",
@@ -375,7 +379,8 @@
       "name": "Einfühlung",
       "family": "Verbundenheit & Nähe",
       "families": [
-        "Verbundenheit & Nähe"
+        "Verbundenheit & Nähe",
+        "Wertschätzung & Fairness"
       ],
       "definition": "Das Bedürfnis nach mitfühlendem und achtsamem Kontakt.",
       "fulfilledExample": "Jemand erkennt, dass du einen schweren Tag hast.",
@@ -417,7 +422,8 @@
       "name": "Fürsorge",
       "family": "Verbundenheit & Nähe",
       "families": [
-        "Verbundenheit & Nähe"
+        "Verbundenheit & Nähe",
+        "Ruhe & Wohlbefinden"
       ],
       "definition": "Das Bedürfnis, dass Belastungen gesehen und unterstützend begleitet werden.",
       "fulfilledExample": "Jemand fragt, was dir helfen würde.",
@@ -585,7 +591,8 @@
       "name": "Raum für mich",
       "family": "Autonomie & Grenzen",
       "families": [
-        "Autonomie & Grenzen"
+        "Autonomie & Grenzen",
+        "Ruhe & Wohlbefinden"
       ],
       "definition": "Das Bedürfnis nach Alleinzeit oder persönlichem Rückzug ohne Rechtfertigung.",
       "fulfilledExample": "Du kannst einen Abend für dich nutzen.",
@@ -606,7 +613,8 @@
       "name": "Authentizität",
       "family": "Autonomie & Grenzen",
       "families": [
-        "Autonomie & Grenzen"
+        "Autonomie & Grenzen",
+        "Sinn & Orientierung"
       ],
       "definition": "Das Bedürfnis, eigenen Werten und dem eigenen Wesen treu sein zu dürfen.",
       "fulfilledExample": "Du kannst eine abweichende Meinung ehrlich sagen.",
@@ -627,7 +635,8 @@
       "name": "Ausdruck",
       "family": "Autonomie & Grenzen",
       "families": [
-        "Autonomie & Grenzen"
+        "Autonomie & Grenzen",
+        "Wertschätzung & Fairness"
       ],
       "definition": "Das Bedürfnis, eigene Gedanken, Gefühle oder Ideen nach außen bringen zu können.",
       "fulfilledExample": "Du kannst deine Gefühle in Worte fassen.",
@@ -816,7 +825,8 @@
       "name": "Würde",
       "family": "Wertschätzung & Fairness",
       "families": [
-        "Wertschätzung & Fairness"
+        "Wertschätzung & Fairness",
+        "Autonomie & Grenzen"
       ],
       "definition": "Das Bedürfnis, als Mensch unabhängig von Leistung respektiert zu werden.",
       "fulfilledExample": "Du wirst auch bei einem Fehler würdevoll behandelt.",
@@ -852,6 +862,898 @@
       ],
       "reflectionQuestion": "Welche Wahrheit ist mir wichtig?",
       "strategyExample": "Um ein offenes Gespräch bitten"
+    },
+    {
+      "id": "ruhe",
+      "name": "Ruhe",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis nach weniger Reizen, Druck und innerer Anspannung.",
+      "fulfilledExample": "Ein stiller Spaziergang gibt Raum zum Durchatmen.",
+      "unmetExample": "Unterbrechungen halten dich in Alarmbereitschaft.",
+      "synonyms": [
+        "stille",
+        "ruhe finden"
+      ],
+      "related": [
+        "raum_fuer_mich",
+        "entspannung"
+      ],
+      "reflectionQuestion": "Wie viel Ruhe brauche ich gerade?",
+      "strategyExample": "Das Handy für eine Weile weglegen"
+    },
+    {
+      "id": "erholung",
+      "name": "Erholung",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden",
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, nach Beanspruchung wieder Kraft zu sammeln.",
+      "fulfilledExample": "Ein freier Nachmittag bringt Energie zurück.",
+      "unmetExample": "Nach vielen Aufgaben fühlst du dich ausgelaugt.",
+      "synonyms": [
+        "regeneration",
+        "ausruhen"
+      ],
+      "related": [
+        "schlaf",
+        "ausgleich"
+      ],
+      "reflectionQuestion": "Wovon muss ich mich erholen?",
+      "strategyExample": "Eine echte Pause ohne Aufgaben planen"
+    },
+    {
+      "id": "schlaf",
+      "name": "Schlaf",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das körperliche Bedürfnis nach ausreichenden Schlafphasen.",
+      "fulfilledExample": "Nach einer guten Nacht fühlst du dich wacher.",
+      "unmetExample": "Zu wenig Schlaf macht den Tag mühsam.",
+      "synonyms": [
+        "schlafbedürfnis",
+        "nachtruhe"
+      ],
+      "related": [
+        "erholung",
+        "gesundheit"
+      ],
+      "reflectionQuestion": "Was erleichtert mir erholsamen Schlaf?",
+      "strategyExample": "Eine ruhige Schlafenszeit vorbereiten"
+    },
+    {
+      "id": "gesundheit",
+      "name": "Gesundheit",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis nach körperlichem und psychischem Wohlergehen und Versorgung.",
+      "fulfilledExample": "Du kannst Beschwerden ernst nehmen.",
+      "unmetExample": "Du fühlst dich mit Sorgen allein gelassen.",
+      "synonyms": [
+        "wohlbefinden",
+        "gesund bleiben"
+      ],
+      "related": [
+        "fuersorge",
+        "erholung"
+      ],
+      "reflectionQuestion": "Was unterstützt mein Wohlergehen?",
+      "strategyExample": "Bei Beschwerden fachlichen Rat einholen"
+    },
+    {
+      "id": "bewegung",
+      "name": "Bewegung",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis, den Körper passend zu seinen Möglichkeiten zu bewegen.",
+      "fulfilledExample": "Ein kleiner Spaziergang tut dir gut.",
+      "unmetExample": "Langes Sitzen macht dich unruhig.",
+      "synonyms": [
+        "aktivität",
+        "körperliche bewegung"
+      ],
+      "related": [
+        "gesundheit",
+        "ausgleich"
+      ],
+      "reflectionQuestion": "Welche Bewegung passt heute zu mir?",
+      "strategyExample": "Eine kurze Runde draußen gehen"
+    },
+    {
+      "id": "naehrung",
+      "name": "Nährung",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis nach ausreichend Essen, Trinken und körperlicher Versorgung.",
+      "fulfilledExample": "Du isst in Ruhe und fühlst dich versorgt.",
+      "unmetExample": "Du bemerkst Hunger oder Durst im hektischen Tag.",
+      "synonyms": [
+        "ernährung",
+        "sättigung"
+      ],
+      "related": [
+        "gesundheit",
+        "fuersorge"
+      ],
+      "reflectionQuestion": "Welche Versorgung brauche ich gerade?",
+      "strategyExample": "Dir etwas zu essen oder trinken bereitstellen"
+    },
+    {
+      "id": "entspannung",
+      "name": "Entspannung",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis, körperliche oder geistige Spannung loslassen zu dürfen.",
+      "fulfilledExample": "Nach einer Pause lösen sich deine Schultern.",
+      "unmetExample": "Du bist über längere Zeit verkrampft.",
+      "synonyms": [
+        "lockerheit",
+        "spannung abbauen"
+      ],
+      "related": [
+        "ruhe",
+        "erholung"
+      ],
+      "reflectionQuestion": "Was hilft mir, Spannung zu lösen?",
+      "strategyExample": "Einige Minuten ruhig sitzen"
+    },
+    {
+      "id": "ausgleich",
+      "name": "Ausgleich",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis nach tragfähiger Balance verschiedener Lebensbereiche.",
+      "fulfilledExample": "Nach Arbeit bleibt Zeit für Begegnungen.",
+      "unmetExample": "Nur noch Pflichten füllen deine Woche.",
+      "synonyms": [
+        "balance",
+        "gleichgewicht"
+      ],
+      "related": [
+        "erholung",
+        "freiraum"
+      ],
+      "reflectionQuestion": "Was kommt gerade zu kurz?",
+      "strategyExample": "Zeit ohne Leistungsziel einplanen"
+    },
+    {
+      "id": "entschleunigung",
+      "name": "Entschleunigung",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis nach einem Tempo, das zum eigenen Rhythmus passt.",
+      "fulfilledExample": "Du arbeitest ohne Eile.",
+      "unmetExample": "Dauernde Hast lässt dir keine Pause.",
+      "synonyms": [
+        "langsamer werden",
+        "zeit lassen"
+      ],
+      "related": [
+        "ruhe",
+        "ausgleich"
+      ],
+      "reflectionQuestion": "Wo wünsche ich mir weniger Tempo?",
+      "strategyExample": "Eine Verpflichtung verschieben"
+    },
+    {
+      "id": "koerperlicher_komfort",
+      "name": "Körperlicher Komfort",
+      "family": "Ruhe & Wohlbefinden",
+      "families": [
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis nach angenehmen körperlichen Bedingungen.",
+      "fulfilledExample": "Ein warmer Raum hilft dir.",
+      "unmetExample": "Du frierst oder sitzt unbequem.",
+      "synonyms": [
+        "behaglichkeit",
+        "körperliches wohlsein"
+      ],
+      "related": [
+        "gesundheit",
+        "naehrung"
+      ],
+      "reflectionQuestion": "Was tut meinem Körper gut?",
+      "strategyExample": "Den Arbeitsplatz angenehmer gestalten"
+    },
+    {
+      "id": "lernen",
+      "name": "Lernen",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis, Neues verstehen und Fähigkeiten entwickeln zu dürfen.",
+      "fulfilledExample": "Du begreifst ein neues Thema.",
+      "unmetExample": "Du darfst keine Fragen stellen.",
+      "synonyms": [
+        "wissenserwerb",
+        "bildung"
+      ],
+      "related": [
+        "neugier",
+        "entwicklung"
+      ],
+      "reflectionQuestion": "Was möchte ich lernen?",
+      "strategyExample": "Ein Thema in kleinen Schritten erkunden"
+    },
+    {
+      "id": "kompetenz",
+      "name": "Kompetenz",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis, etwas mit den eigenen Fähigkeiten bewältigen zu können.",
+      "fulfilledExample": "Du meisterst eine Aufgabe.",
+      "unmetExample": "Du wirst ohne Anleitung allein gelassen.",
+      "synonyms": [
+        "fähigkeiten",
+        "können"
+      ],
+      "related": [
+        "selbstwirksamkeit",
+        "meisterschaft"
+      ],
+      "reflectionQuestion": "Wobei möchte ich mich kompetent fühlen?",
+      "strategyExample": "Um eine Einführung bitten"
+    },
+    {
+      "id": "selbstwirksamkeit",
+      "name": "Selbstwirksamkeit",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz",
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis, mit eigenem Handeln etwas bewirken zu können.",
+      "fulfilledExample": "Du erkennst die Wirkung deiner Hilfe.",
+      "unmetExample": "Trotz Mühe scheint nichts zu gelingen.",
+      "synonyms": [
+        "wirksam sein",
+        "etwas bewirken"
+      ],
+      "related": [
+        "kompetenz",
+        "einfluss"
+      ],
+      "reflectionQuestion": "Wo bewirke ich selbst etwas?",
+      "strategyExample": "Ein kleines erreichbares Ziel setzen"
+    },
+    {
+      "id": "entwicklung",
+      "name": "Entwicklung",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis, neue Möglichkeiten entdecken und wachsen zu dürfen.",
+      "fulfilledExample": "Ein Projekt erweitert deine Fähigkeiten.",
+      "unmetExample": "Du fühlst dich dauerhaft festgefahren.",
+      "synonyms": [
+        "wachstum",
+        "fortschritt"
+      ],
+      "related": [
+        "lernen",
+        "herausforderung"
+      ],
+      "reflectionQuestion": "Wie möchte ich mich entwickeln?",
+      "strategyExample": "Einen Lernschritt ausprobieren"
+    },
+    {
+      "id": "meisterschaft",
+      "name": "Meisterschaft",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis, Fertigkeiten durch Übung zu vertiefen.",
+      "fulfilledExample": "Du bemerkst Fortschritt am Instrument.",
+      "unmetExample": "Du findest nie Zeit zum Üben.",
+      "synonyms": [
+        "könnerschaft",
+        "beherrschung"
+      ],
+      "related": [
+        "kompetenz",
+        "entwicklung"
+      ],
+      "reflectionQuestion": "Was möchte ich vertiefen?",
+      "strategyExample": "Regelmäßig kurz üben"
+    },
+    {
+      "id": "herausforderung",
+      "name": "Herausforderung",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis, dich an passenden Aufgaben zu erproben.",
+      "fulfilledExample": "Eine anspruchsvolle Aufgabe fordert dich angenehm.",
+      "unmetExample": "Du hast keine Gelegenheit zu wachsen.",
+      "synonyms": [
+        "anspruch",
+        "anregung"
+      ],
+      "related": [
+        "entwicklung",
+        "erfolg"
+      ],
+      "reflectionQuestion": "Was fordert mich passend heraus?",
+      "strategyExample": "Eine neue Aufgabe versuchen"
+    },
+    {
+      "id": "kreativitaet",
+      "name": "Kreativität",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz",
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis, eigene Ideen zu gestalten.",
+      "fulfilledExample": "Du kannst frei entwerfen.",
+      "unmetExample": "Du musst nur strikten Vorgaben folgen.",
+      "synonyms": [
+        "gestaltung",
+        "schaffenskraft"
+      ],
+      "related": [
+        "ausdruck",
+        "inspiration"
+      ],
+      "reflectionQuestion": "Wo möchte ich gestalten?",
+      "strategyExample": "Etwas ohne Ziel ausprobieren"
+    },
+    {
+      "id": "neugier",
+      "name": "Neugier",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz",
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis, unbekannte Dinge erkunden zu dürfen.",
+      "fulfilledExample": "Du verfolgst eine interessante Frage.",
+      "unmetExample": "Deine Fragen werden unterbrochen.",
+      "synonyms": [
+        "wissbegier",
+        "entdeckungsdrang"
+      ],
+      "related": [
+        "lernen",
+        "abenteuer"
+      ],
+      "reflectionQuestion": "Was möchte ich genauer wissen?",
+      "strategyExample": "Eine offene Frage erkunden"
+    },
+    {
+      "id": "erfolg",
+      "name": "Erfolg",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis, Fortschritte und Zielerreichung erleben zu können.",
+      "fulfilledExample": "Du schließt ein Vorhaben ab.",
+      "unmetExample": "Rückschläge lassen dich zweifeln.",
+      "synonyms": [
+        "zielerreichung",
+        "gelingen"
+      ],
+      "related": [
+        "meisterschaft",
+        "anerkennung"
+      ],
+      "reflectionQuestion": "Was gilt für mich als Erfolg?",
+      "strategyExample": "Einen Fortschritt anerkennen"
+    },
+    {
+      "id": "feedback",
+      "name": "Rückmeldung",
+      "family": "Entwicklung & Kompetenz",
+      "families": [
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis nach hilfreicher Orientierung über eigenes Handeln.",
+      "fulfilledExample": "Eine Rückmeldung zeigt dir Möglichkeiten.",
+      "unmetExample": "Du weißt nie, wie dein Beitrag ankommt.",
+      "synonyms": [
+        "feedback",
+        "qualifizierte rückmeldung"
+      ],
+      "related": [
+        "lernen",
+        "anerkennung"
+      ],
+      "reflectionQuestion": "Welche Rückmeldung hilft?",
+      "strategyExample": "Um eine faire Einschätzung bitten"
+    },
+    {
+      "id": "sinn",
+      "name": "Sinn",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis, eigenes Handeln als bedeutungsvoll zu erleben.",
+      "fulfilledExample": "Eine Tätigkeit entspricht deinen Werten.",
+      "unmetExample": "Alltagshandlungen wirken leer.",
+      "synonyms": [
+        "sinnhaftigkeit",
+        "bedeutung"
+      ],
+      "related": [
+        "werte",
+        "beitrag"
+      ],
+      "reflectionQuestion": "Was gibt meinem Tun Bedeutung?",
+      "strategyExample": "Eine Tätigkeit mit Werten verbinden"
+    },
+    {
+      "id": "werte",
+      "name": "Werteorientierung",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis, nach eigenen Überzeugungen zu leben.",
+      "fulfilledExample": "Du handelst deiner Haltung entsprechend.",
+      "unmetExample": "Du sollst gegen eigene Werte handeln.",
+      "synonyms": [
+        "werte leben",
+        "werteklarheit"
+      ],
+      "related": [
+        "sinn",
+        "authentizitaet"
+      ],
+      "reflectionQuestion": "Welcher Wert berührt mich?",
+      "strategyExample": "Einen wichtigen Wert notieren"
+    },
+    {
+      "id": "beitrag",
+      "name": "Beitrag leisten",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis, zum Wohlergehen anderer beitragen zu können.",
+      "fulfilledExample": "Deine Hilfe macht einen Unterschied.",
+      "unmetExample": "Dein Einsatz scheint bedeutungslos.",
+      "synonyms": [
+        "nützlich sein",
+        "beitragen"
+      ],
+      "related": [
+        "teilhabe",
+        "selbstwirksamkeit"
+      ],
+      "reflectionQuestion": "Wozu möchte ich beitragen?",
+      "strategyExample": "Eine kleine Hilfe anbieten"
+    },
+    {
+      "id": "teilhabe",
+      "name": "Teilhabe",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung",
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis, an bedeutsamen Entscheidungen mitwirken zu dürfen.",
+      "fulfilledExample": "Deine Stimme zählt.",
+      "unmetExample": "Du wirst ausgeschlossen.",
+      "synonyms": [
+        "beteiligung",
+        "mitwirken"
+      ],
+      "related": [
+        "gehoertwerden",
+        "gemeinschaft"
+      ],
+      "reflectionQuestion": "Wo möchte ich mitgestalten?",
+      "strategyExample": "Beteiligung ansprechen"
+    },
+    {
+      "id": "hoffnung",
+      "name": "Hoffnung",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis nach einer vorstellbaren positiven Möglichkeit.",
+      "fulfilledExample": "Du siehst trotz Unsicherheit Chancen.",
+      "unmetExample": "Alles erscheint aussichtslos.",
+      "synonyms": [
+        "hoffnung haben",
+        "zuversicht"
+      ],
+      "related": [
+        "perspektive",
+        "sicherheit"
+      ],
+      "reflectionQuestion": "Welche Möglichkeit sehe ich?",
+      "strategyExample": "Eine realistische Chance suchen"
+    },
+    {
+      "id": "perspektive",
+      "name": "Perspektive",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung",
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, einen Weg nach vorne erkennen zu können.",
+      "fulfilledExample": "Du siehst nächste Schritte.",
+      "unmetExample": "Ein Umbruch macht die Zukunft unklar.",
+      "synonyms": [
+        "zukunftsblick",
+        "aussicht"
+      ],
+      "related": [
+        "hoffnung",
+        "orientierung"
+      ],
+      "reflectionQuestion": "Welche Richtung kann ich erkunden?",
+      "strategyExample": "Den nächsten Schritt benennen"
+    },
+    {
+      "id": "stimmigkeit",
+      "name": "Stimmigkeit",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis, dass Lebensbereiche und Werte zusammenpassen.",
+      "fulfilledExample": "Eine Entscheidung passt innerlich.",
+      "unmetExample": "Eine Rolle widerspricht deinem Selbstbild.",
+      "synonyms": [
+        "kongruenz",
+        "im einklang"
+      ],
+      "related": [
+        "werte",
+        "authentizitaet"
+      ],
+      "reflectionQuestion": "Was ist für mich stimmig?",
+      "strategyExample": "Eine Verpflichtung prüfen"
+    },
+    {
+      "id": "verantwortung",
+      "name": "Verantwortung",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis, eigene Einflussmöglichkeiten bewusst wahrzunehmen.",
+      "fulfilledExample": "Du kannst eine Aufgabe übernehmen.",
+      "unmetExample": "Du haftest für Unbeeinflussbares.",
+      "synonyms": [
+        "zuständigkeit",
+        "verantwortlich sein"
+      ],
+      "related": [
+        "einfluss",
+        "beitrag"
+      ],
+      "reflectionQuestion": "Wofür möchte ich verantwortlich sein?",
+      "strategyExample": "Einflussbereich klären"
+    },
+    {
+      "id": "einfluss",
+      "name": "Einfluss",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das Bedürfnis, an wichtigen Entwicklungen mitwirken zu können.",
+      "fulfilledExample": "Dein Vorschlag verändert einen Plan.",
+      "unmetExample": "Deine Sicht wird stets ignoriert.",
+      "synonyms": [
+        "mitgestaltung",
+        "einflussnahme"
+      ],
+      "related": [
+        "teilhabe",
+        "selbstwirksamkeit"
+      ],
+      "reflectionQuestion": "Worauf möchte ich Einfluss nehmen?",
+      "strategyExample": "Eine Änderung anregen"
+    },
+    {
+      "id": "spiritualitaet",
+      "name": "Spiritualität",
+      "family": "Sinn & Orientierung",
+      "families": [
+        "Sinn & Orientierung"
+      ],
+      "definition": "Das mögliche Bedürfnis nach persönlicher Verbindung zu etwas Größerem.",
+      "fulfilledExample": "Ein Ritual schenkt dir Orientierung.",
+      "unmetExample": "Eine wichtige Praxis findet keinen Raum.",
+      "synonyms": [
+        "innere sinnverbindung",
+        "transzendenz"
+      ],
+      "related": [
+        "sinn",
+        "werte"
+      ],
+      "reflectionQuestion": "Ist das für mich bedeutsam?",
+      "strategyExample": "Ein passendes Ritual pflegen"
+    },
+    {
+      "id": "spiel",
+      "name": "Spiel",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude",
+        "Entwicklung & Kompetenz"
+      ],
+      "definition": "Das Bedürfnis nach zweckfreier spielerischer Erfahrung.",
+      "fulfilledExample": "Du probierst ohne Leistungsziel etwas aus.",
+      "unmetExample": "Alles muss nützlich sein.",
+      "synonyms": [
+        "spielen",
+        "spielerische freude"
+      ],
+      "related": [
+        "humor",
+        "spontanitaet"
+      ],
+      "reflectionQuestion": "Wo darf ich spielen?",
+      "strategyExample": "Ein Spiel ausprobieren"
+    },
+    {
+      "id": "freude",
+      "name": "Freude",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis nach beglückenden Erfahrungen.",
+      "fulfilledExample": "Ein Moment lässt dich lächeln.",
+      "unmetExample": "Erfreuliches kommt zu kurz.",
+      "synonyms": [
+        "erfreuliches erleben",
+        "fröhlichkeit"
+      ],
+      "related": [
+        "genuss",
+        "leichtigkeit"
+      ],
+      "reflectionQuestion": "Was schenkt mir Freude?",
+      "strategyExample": "Etwas Schönes genießen"
+    },
+    {
+      "id": "humor",
+      "name": "Humor",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis nach Lachen und Schmunzeln.",
+      "fulfilledExample": "Ihr lacht zusammen.",
+      "unmetExample": "Dem Alltag fehlt jede spielerische Note.",
+      "synonyms": [
+        "lachen",
+        "witz"
+      ],
+      "related": [
+        "spiel",
+        "leichtigkeit"
+      ],
+      "reflectionQuestion": "Was bringt mich zum Schmunzeln?",
+      "strategyExample": "Eine lustige Erinnerung teilen"
+    },
+    {
+      "id": "abenteuer",
+      "name": "Abenteuer",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis nach freiwilligem Neuen und Unvorhergesehenem.",
+      "fulfilledExample": "Ein neuer Weg macht dich neugierig.",
+      "unmetExample": "Jeder Tag fühlt sich gleich an.",
+      "synonyms": [
+        "abenteuerlust",
+        "entdecken"
+      ],
+      "related": [
+        "abwechslung",
+        "neugier"
+      ],
+      "reflectionQuestion": "Was möchte ich Neues erleben?",
+      "strategyExample": "Einen unbekannten Ort erkunden"
+    },
+    {
+      "id": "leichtigkeit",
+      "name": "Leichtigkeit",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis nach Momenten mit weniger Druck.",
+      "fulfilledExample": "Du genießt einen Nachmittag.",
+      "unmetExample": "Schöne Dinge werden zur Pflicht.",
+      "synonyms": [
+        "unbeschwertheit",
+        "leichtsein"
+      ],
+      "related": [
+        "humor",
+        "ruhe"
+      ],
+      "reflectionQuestion": "Wo darf es leichter sein?",
+      "strategyExample": "Etwas spielerisch angehen"
+    },
+    {
+      "id": "inspiration",
+      "name": "Inspiration",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis nach anregenden Eindrücken und Ideen.",
+      "fulfilledExample": "Ein Gespräch bringt neue Gedanken.",
+      "unmetExample": "Dir fehlen neue Impulse.",
+      "synonyms": [
+        "angeregt sein",
+        "ideen"
+      ],
+      "related": [
+        "kreativitaet",
+        "neugier"
+      ],
+      "reflectionQuestion": "Was inspiriert mich?",
+      "strategyExample": "Ein Thema entdecken"
+    },
+    {
+      "id": "genuss",
+      "name": "Genuss",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude",
+        "Ruhe & Wohlbefinden"
+      ],
+      "definition": "Das Bedürfnis, angenehme Erlebnisse bewusst wahrzunehmen.",
+      "fulfilledExample": "Du genießt in Ruhe eine Mahlzeit.",
+      "unmetExample": "Du hetzt durch angenehme Momente.",
+      "synonyms": [
+        "genießen",
+        "sinnesfreude"
+      ],
+      "related": [
+        "freude",
+        "ruhe"
+      ],
+      "reflectionQuestion": "Was genieße ich gerade?",
+      "strategyExample": "Einen Moment auskosten"
+    },
+    {
+      "id": "abwechslung",
+      "name": "Abwechslung",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis nach einem Wechsel von Aktivitäten.",
+      "fulfilledExample": "Eine neue Tätigkeit belebt dich.",
+      "unmetExample": "Routine ermüdet dich.",
+      "synonyms": [
+        "vielfalt",
+        "variation"
+      ],
+      "related": [
+        "abenteuer",
+        "inspiration"
+      ],
+      "reflectionQuestion": "Welche Abwechslung tut gut?",
+      "strategyExample": "Einen neuen Weg ausprobieren"
+    },
+    {
+      "id": "spontanitaet",
+      "name": "Spontaneität",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis, gelegentlich ungeplant zu handeln.",
+      "fulfilledExample": "Du gehst spontan zu einem Treffen.",
+      "unmetExample": "Jede Minute ist verplant.",
+      "synonyms": [
+        "spontan sein",
+        "ungeplant"
+      ],
+      "related": [
+        "spiel",
+        "freiheit"
+      ],
+      "reflectionQuestion": "Wann brauche ich Spontaneität?",
+      "strategyExample": "Zeit offen lassen"
+    },
+    {
+      "id": "lebendigkeit",
+      "name": "Lebendigkeit",
+      "family": "Lebendigkeit & Freude",
+      "families": [
+        "Lebendigkeit & Freude"
+      ],
+      "definition": "Das Bedürfnis, sich wach und beteiligt zu fühlen.",
+      "fulfilledExample": "Ein interessanter Tag belebt dich.",
+      "unmetExample": "Der Alltag wirkt eintönig.",
+      "synonyms": [
+        "vitalität",
+        "lebenslust"
+      ],
+      "related": [
+        "freude",
+        "entwicklung"
+      ],
+      "reflectionQuestion": "Was macht mich lebendig?",
+      "strategyExample": "Eine anregende Tätigkeit wählen"
+    },
+    {
+      "id": "unterstuetzung",
+      "name": "Unterstützung",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe",
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, bei Belastungen nicht auf dich allein gestellt zu sein.",
+      "fulfilledExample": "Jemand hilft dir bei einer schwierigen Aufgabe.",
+      "unmetExample": "Du musst eine große Last allein tragen.",
+      "synonyms": [
+        "hilfe",
+        "rückhalt"
+      ],
+      "related": [
+        "fuersorge",
+        "gemeinschaft"
+      ],
+      "reflectionQuestion": "Welche Unterstützung würde mir helfen?",
+      "strategyExample": "Um eine konkrete Hilfe bitten"
+    },
+    {
+      "id": "offenheit",
+      "name": "Offenheit",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe",
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis nach einem Kontakt, in dem Fragen und Gefühle Raum finden.",
+      "fulfilledExample": "Du kannst ohne Verurteilung nachfragen.",
+      "unmetExample": "Eine heikle Frage darf nicht gestellt werden.",
+      "synonyms": [
+        "offener umgang",
+        "aufgeschlossenheit"
+      ],
+      "related": [
+        "vertrauen",
+        "ehrlichkeit"
+      ],
+      "reflectionQuestion": "Wo wünsche ich mir mehr Offenheit?",
+      "strategyExample": "In einem sicheren Rahmen eine Frage stellen"
     }
   ],
   "comparisons": [],
