@@ -1,6 +1,7 @@
 package com.valoon4.emotionskompass
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -40,6 +41,7 @@ import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material.icons.outlined.NoteAlt
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -59,6 +61,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -109,7 +112,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 if (completed) {
-                    EmotionskompassApp(catalog)
+                    EmotionskompassApp(catalog, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -170,12 +173,38 @@ private fun FeatureLine(icon: ImageVector, title: String, subtitle: String) {
 @Composable
 private fun EmotionskompassApp(
     catalog: EmotionCatalog,
+    hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog))
 ) {
     val state by vm.state.collectAsState()
     val filters by vm.filters.collectAsState()
     val checkIn by vm.checkIn.collectAsState()
-    BackHandler(enabled = state.destination != Destination.MAIN) { vm.back() }
+    var confirmDiscard by remember { mutableStateOf(false) }
+
+    // Check-in content must not appear in Android screenshots or recent-app previews.
+    DisposableEffect(hostActivity, state.destination) {
+        if (state.destination == Destination.CHECKIN) {
+            hostActivity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+        onDispose {
+            if (state.destination == Destination.CHECKIN) {
+                hostActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
+
+    val requestDiscard: () -> Unit = {
+        if (checkIn.hasPersonalInput) confirmDiscard = true
+        else vm.closeCheckIn()
+    }
+    val requestBack: () -> Unit = {
+        if (state.destination == Destination.CHECKIN && checkIn.isFirstStep) {
+            requestDiscard()
+        } else {
+            vm.back()
+        }
+    }
+    BackHandler(enabled = state.destination != Destination.MAIN) { requestBack() }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -183,7 +212,7 @@ private fun EmotionskompassApp(
                 title = { Text("Emotionskompass", fontWeight = FontWeight.SemiBold, fontSize = 19.sp) },
                 navigationIcon = {
                     if (state.destination != Destination.MAIN) {
-                        IconButton(onClick = vm::back) {
+                        IconButton(onClick = requestBack) {
                             Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Zurück")
                         }
                     } else {
@@ -281,14 +310,40 @@ private fun EmotionskompassApp(
                     onIntensity = vm::setCheckInIntensity,
                     onArea = vm::setCheckInArea,
                     onNote = vm::setCheckInNote,
+                    onSituation = vm::setCheckInSituation,
+                    onInterpretation = vm::setCheckInInterpretation,
+                    onNeed = vm::toggleCheckInNeed,
+                    onInsight = vm::setCheckInInsight,
+                    onNextStepIdea = vm::setCheckInNextStep,
+                    onNextStepNote = vm::setCheckInNextStepNote,
                     onNext = vm::nextCheckInStep,
                     onPrevious = vm::previousCheckInStep,
                     onRestart = vm::restartCheckIn,
-                    onClose = vm::closeCheckIn
+                    onClose = requestDiscard
                 )
                 Destination.SETTINGS -> SettingsScreen(catalog)
             }
         }
+    }
+    if (confirmDiscard && state.destination == Destination.CHECKIN) {
+        AlertDialog(
+            onDismissRequest = { confirmDiscard = false },
+            title = { Text("Check-in verwerfen?") },
+            text = {
+                Text("Deine persönlichen Angaben wurden nicht gespeichert und gehen beim Verwerfen verloren. Möchtest du wirklich beenden?")
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmDiscard = false
+                    vm.closeCheckIn()
+                }) { Text("Angaben verwerfen") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDiscard = false }) {
+                    Text("Weiter reflektieren")
+                }
+            }
+        )
     }
 }
 
@@ -358,7 +413,7 @@ private fun HomeScreen(termsCount: Int, onExplore: () -> Unit, onCheckin: () -> 
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M3.1 · $termsCount Wörter entdecken und mit kurzer oder vertiefter Reflexion erkunden.",
+        Text("M3.2 · $termsCount Gefühle lernen, benennen und behutsam reflektieren.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -1006,14 +1061,14 @@ private fun SettingsScreen(catalog: EmotionCatalog) {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M3.1 · Geführte Gefühlssuche und zwei Check-in-Modi", style = MaterialTheme.typography.titleMedium,
+        Text("M3.2 · Vertiefte Selbsterkenntnis und zwei Check-in-Modi", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
         Text("Der offline verfügbare Emotionsatlas enthält ${catalog.emotions.size} Begriffe, ${catalog.comparisons.size} Vergleiche und ${catalog.learningPaths.size} Lernpfade in einer redaktionellen Arbeitsfassung. Der neue Gefühlsnavigator läuft nur im Arbeitsspeicher und verwirft persönliche Angaben beim Beenden. Weiterhin wird dauerhaft ausschließlich der Abschluss der Einführung gespeichert. Ein geschütztes Tagebuch folgt in einer späteren Etappe.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.3.1-m3.1", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.3.2-m3.2", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

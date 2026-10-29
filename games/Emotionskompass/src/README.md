@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M3.1
+# Emotionskompass – native Android-App M3.2
 
-**Version:** 0.3.1-m3.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.3.2-m3.2 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -37,7 +37,7 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M31-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M32-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
@@ -47,3 +47,8 @@ Weitere Hinweise: `games/Emotionskompass/notes/M3_GEFUEHLSNAVIGATOR.md`.
 ## M3.1 – Niedrigschwellige Gefühlswahl
 
 Ein Check-in kann **kurz** (drei Schritte) oder **vertieft** (vier Schritte) durchgeführt werden. Bei der Gefühlswahl startet der Nutzer mit sieben alltäglichen Beschreibungen statt der gesamten 289-Wörter-Liste; alle Begriffe bleiben aber ausdrücklich durchsuchbar. Die ausgewählte Wortliste ist beim Scrollen immer sichtbar. Die App zeigt bis zu zwei vorhandene redaktionelle Begriffsvergleiche als freiwillige Lernhilfe, ohne Emotionen automatisch zu interpretieren. Persönliche Angaben bleiben im flüchtigen Arbeitsspeicher und werden verworfen. Details: `games/Emotionskompass/notes/M31_GEFUEHLSNAVIGATOR.md`.
+
+
+## M3.2 – Eigene Erkenntnisse und nächste Schritte
+
+Der **Kurz-Check-in** bleibt bei drei Schritten. Der **vertiefte Check-in** enthält jetzt einen freiwilligen fünften Schritt, in dem beobachtete Situation, eigene Deutung, mögliche Bedürfnisse, selbst formulierte Erkenntnisse und ein selbst gewählter nächster Schritt getrennt erfasst werden können. Es gibt keine automatischen Diagnosen, Bedürfnis-Zuordnungen oder Handlungsanweisungen. Die Abschlussübersicht zeigt nur persönliche Angaben und die ausgewählten Atlasbegriffe. Ein Bestätigungsdialog schützt vor versehentlichem Verwerfen; während des Check-ins verbirgt `FLAG_SECURE` sensible Inhalte vor Screenshots und Android-App-Vorschauen. **Nach wie vor keine dauerhafte Datenspeicherung.** Details: `games/Emotionskompass/notes/M32_SELBSTERKENNTNIS.md`.

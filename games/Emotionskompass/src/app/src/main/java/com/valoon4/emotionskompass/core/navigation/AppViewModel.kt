@@ -7,6 +7,8 @@ import com.valoon4.emotionskompass.core.checkin.CheckInDraft
 import com.valoon4.emotionskompass.core.checkin.CheckInMode
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.LifeArea
+import com.valoon4.emotionskompass.core.checkin.PersonalNeed
+import com.valoon4.emotionskompass.core.checkin.NextStepIdea
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,6 +106,12 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
 
     fun setCheckInArea(area: LifeArea?) = modifyCheckIn { it.withArea(area) }
     fun setCheckInNote(note: String) = modifyCheckIn { it.withNote(note) }
+    fun setCheckInSituation(text: String) = modifyCheckIn { it.withSituation(text) }
+    fun setCheckInInterpretation(text: String) = modifyCheckIn { it.withInterpretation(text) }
+    fun toggleCheckInNeed(need: PersonalNeed) = modifyCheckIn { it.toggleNeed(need) }
+    fun setCheckInInsight(text: String) = modifyCheckIn { it.withInsight(text) }
+    fun setCheckInNextStep(idea: NextStepIdea?) = modifyCheckIn { it.withNextStepIdea(idea) }
+    fun setCheckInNextStepNote(text: String) = modifyCheckIn { it.withNextStepNote(text) }
     fun nextCheckInStep() = modifyCheckIn { it.next() }
     fun previousCheckInStep() = modifyCheckIn { it.previous() }
 

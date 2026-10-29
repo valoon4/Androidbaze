@@ -78,8 +78,8 @@ class FeelingDiscoveryTest {
         val draft = CheckInDraft()
         assertEquals(CheckInMode.VERTIEFT, draft.mode)
         assertEquals(CheckInStep.ANKOMMEN, draft.step)
-        assertEquals(1 to 4, draft.progress)
-        assertEquals(4 to 4, draft.next().next().next().progress)
+        assertEquals(1 to 5, draft.progress)
+        assertEquals(4 to 5, draft.next().next().next().progress)
     }
 
     @Test fun switchingModePreservesEmotionsAndIntensity() {
