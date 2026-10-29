@@ -1,6 +1,6 @@
 # Emotionskompass – natives Android-Unterprojekt (M1)
 
-Status: **0.1.0-m1**, Design D. Native Kotlin-/Jetpack-Compose-App. **Keine vollständige Tagebuch-App.**
+Status: **0.2.0-m2**, Design D. Native Kotlin-/Jetpack-Compose-App. **Keine vollständige Tagebuch-App.**
 
 ## Build
 
@@ -15,7 +15,7 @@ Voraussetzungen: JDK 17+, Gradle 8.13+, Android SDK Platform 36. Das Projekt wir
 
 Alternativ: GitHub Actions [Emotionskompass M1 Debug APK](../../../.github/workflows/emotionskompass-debug-apk.yml) (PR, Push nach main mit passenden Pfaden oder manuell).
 
-## M1 enthält
+## M2 enthält
 
 - First-run-Onboarding ohne Konto, einmalig über DataStore abgeschlossen (einzige persistente Einstellung).
 - Startseite mit zwei gleichwertigen Einstiegen und Design D.
@@ -27,9 +27,9 @@ Alternativ: GitHub Actions [Emotionskompass M1 Debug APK](../../../.github/workf
 
 ## Sicherheitsgrenze und folgende Meilensteine
 
-**Noch keine Tagebucheinträge!** Die App speichert in M1 ausschließlich den Abschluss des Onboardings als kleine Einstellung, keine persönlichen Emotionseinträge. Keine Verschlüsselung notwendig für diese nicht-sensible Einstellung; echte Datenhaltung, Entwürfe, Verschlüsselung, Backup-/Löschtests und Exporte folgen erst in M3–M5. Die App ist ein Lern-/UI-Prototyp, kein therapeutisches Tool.
+**Noch keine Tagebucheinträge!** Die App speichert in M2 ausschließlich den Abschluss des Onboardings als kleine Einstellung, keine persönlichen Emotionseinträge. Keine Verschlüsselung notwendig für diese nicht-sensible Einstellung; echte Datenhaltung, Entwürfe, Verschlüsselung, Backup-/Löschtests und Exporte folgen erst in M3–M5. Die App ist ein Lern-/UI-Prototyp, kein therapeutisches Tool.
 
-M2: Emotionsatlas auf >24 fachlich ausgearbeitete, versionierte Einträge ausbauen; persistenter redaktioneller Katalog und differenziertere Vergleiche.
+M2: 48 versionierte Atlas-Begriffe und neun redaktionelle Vergleichspaare, lokal im JSON-Asset. Dieser Katalog ist eine redaktionelle Arbeitsfassung, nicht klinisch validiert.
 M3: geführter Check-in mit mehreren Gefühlen, optionalen Angaben, Drafts.
 M4: sichere Reflexion-/Tagebucheinträge (lokales Modell + Transaktionen).
 M5: Release-Sicherheits-Gates, mindestens 80 geprüfte Begriffe.
