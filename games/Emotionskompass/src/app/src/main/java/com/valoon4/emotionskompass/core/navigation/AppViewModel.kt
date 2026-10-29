@@ -2,6 +2,10 @@ package com.valoon4.emotionskompass.core.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.valoon4.emotionskompass.core.checkin.BodyCue
+import com.valoon4.emotionskompass.core.checkin.CheckInDraft
+import com.valoon4.emotionskompass.core.checkin.CheckInStep
+import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +35,8 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
     private val history = ArrayDeque<AppUiState>()
     private val _filters = MutableStateFlow(AtlasFilters())
     val filters = _filters.asStateFlow()
+    private val _checkIn = MutableStateFlow(CheckInDraft())
+    val checkIn = _checkIn.asStateFlow()
 
     fun setSearch(query: String) { _filters.value = _filters.value.copy(query = query) }
     fun setFamily(family: String) { _filters.value = _filters.value.copy(family = family) }
@@ -44,6 +50,7 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
     }
 
     fun selectSection(section: MainSection) {
+        _checkIn.value = CheckInDraft()
         history.clear()
         _state.value = AppUiState(section = section)
     }
@@ -68,7 +75,44 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
         push(_state.value.copy(destination = Destination.VERGLEICH, emotionId = first, comparisonId = second))
     }
 
-    fun openCheckin() = push(_state.value.copy(destination = Destination.CHECKIN))
+    fun openCheckin(emotionId: String? = null) {
+        val validId = emotionId?.takeIf { catalog.find(it) != null }
+        _checkIn.value = CheckInDraft.startWith(validId)
+        push(_state.value.copy(destination = Destination.CHECKIN))
+    }
+
+    private fun modifyCheckIn(update: (CheckInDraft) -> CheckInDraft) {
+        if (_state.value.destination == Destination.CHECKIN) {
+            _checkIn.value = update(_checkIn.value)
+        }
+    }
+
+    fun toggleBodyCue(cue: BodyCue) = modifyCheckIn { it.toggleCue(cue) }
+
+    fun toggleCheckInEmotion(id: String) {
+        if (catalog.find(id) != null) modifyCheckIn { it.toggleEmotion(id) }
+    }
+
+    fun setCheckInIntensity(id: String, intensity: Int?) {
+        modifyCheckIn { draft ->
+            if (id in draft.emotions && (intensity == null || intensity in 0..10))
+                draft.withIntensity(id, intensity) else draft
+        }
+    }
+
+    fun setCheckInArea(area: LifeArea?) = modifyCheckIn { it.withArea(area) }
+    fun setCheckInNote(note: String) = modifyCheckIn { it.withNote(note) }
+    fun nextCheckInStep() = modifyCheckIn { it.next() }
+    fun previousCheckInStep() = modifyCheckIn { it.previous() }
+
+    /** Wipes sensitive draft values before navigating away. */
+    fun closeCheckIn() {
+        if (_state.value.destination != Destination.CHECKIN) return
+        _checkIn.value = CheckInDraft()
+        navigateBack()
+    }
+
+    fun restartCheckIn() = modifyCheckIn { CheckInDraft() }
     fun openSettings() = push(_state.value.copy(destination = Destination.SETTINGS))
 
     private fun push(next: AppUiState) {
@@ -77,6 +121,15 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
     }
 
     fun back() {
+        if (_state.value.destination == Destination.CHECKIN) {
+            if (_checkIn.value.step == CheckInStep.ANKOMMEN) closeCheckIn()
+            else previousCheckInStep()
+            return
+        }
+        navigateBack()
+    }
+
+    private fun navigateBack() {
         _state.value = if (history.isEmpty()) AppUiState(section = _state.value.section)
         else history.removeLast()
     }
