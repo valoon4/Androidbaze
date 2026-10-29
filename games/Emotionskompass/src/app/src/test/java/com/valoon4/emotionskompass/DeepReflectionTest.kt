@@ -4,7 +4,7 @@ import com.valoon4.emotionskompass.core.checkin.CheckInDraft
 import com.valoon4.emotionskompass.core.checkin.CheckInMode
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.NextStepIdea
-import com.valoon4.emotionskompass.core.checkin.PersonalNeed
+import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
 import com.valoon4.emotionskompass.core.navigation.Destination
@@ -17,6 +17,10 @@ class DeepReflectionTest {
         EmotionCatalog.fromJson(
             File("src/main/assets/catalog/emotions.de.v2.json").readText()
         )
+    }
+
+    private val needCatalog by lazy {
+        NeedCatalog.fromJson(File("src/main/assets/catalog/needs.de.v1.json").readText())
     }
 
     @Test fun allFiveDeepStepsCanBeTraversedWithoutAnswering() {
@@ -70,21 +74,21 @@ class DeepReflectionTest {
 
     @Test fun choosingSeveralNeedsAndDeselectingEachIsPossible() {
         val selected = CheckInDraft()
-            .toggleNeed(PersonalNeed.KLARHEIT)
-            .toggleNeed(PersonalNeed.RUHE)
-        assertEquals(setOf(PersonalNeed.KLARHEIT, PersonalNeed.RUHE), selected.needs)
-        assertEquals(setOf(PersonalNeed.RUHE),
-            selected.toggleNeed(PersonalNeed.KLARHEIT).needs)
+            .toggleNeed("klarheit")
+            .toggleNeed("ruhe")
+        assertEquals(setOf("klarheit", "ruhe"), selected.needs)
+        assertEquals(setOf("ruhe"),
+            selected.toggleNeed("klarheit").needs)
         assertTrue(selected.hasPersonalInput)
     }
 
     @Test fun notKnowingIsExclusiveWithConcreteNeeds() {
-        val unknown = CheckInDraft().toggleNeed(PersonalNeed.UNKLAR)
-        assertEquals(setOf(PersonalNeed.UNKLAR), unknown.needs)
-        val concrete = unknown.toggleNeed(PersonalNeed.SICHERHEIT)
-        assertEquals(setOf(PersonalNeed.SICHERHEIT), concrete.needs)
-        assertEquals(setOf(PersonalNeed.UNKLAR),
-            concrete.toggleNeed(PersonalNeed.UNKLAR).needs)
+        val unknown = CheckInDraft().toggleNeed("__unklar__")
+        assertEquals(setOf("__unklar__"), unknown.needs)
+        val concrete = unknown.toggleNeed("sicherheit")
+        assertEquals(setOf("sicherheit"), concrete.needs)
+        assertEquals(setOf("__unklar__"),
+            concrete.toggleNeed("__unklar__").needs)
     }
 
     @Test fun contextAndInsightFieldsHaveLengthLimits() {
@@ -119,19 +123,19 @@ class DeepReflectionTest {
         val draft = CheckInDraft()
             .toggleEmotion("enttaeuschung")
             .withIntensity("enttaeuschung", 0)
-            .toggleNeed(PersonalNeed.UNTERSTUETZUNG)
+            .toggleNeed("unterstuetzung")
             .withInsight("Ich wünsche mir Rückhalt.")
         assertEquals(0, draft.emotions["enttaeuschung"])
-        assertEquals(setOf(PersonalNeed.UNTERSTUETZUNG), draft.needs)
+        assertEquals(setOf("unterstuetzung"), draft.needs)
         assertEquals("Ich wünsche mir Rückhalt.", draft.insight)
     }
 
     @Test fun closingWipesAllReflectiveFieldsInViewModel() {
-        val vm = AppViewModel(catalog)
+        val vm = AppViewModel(catalog, needCatalog)
         vm.openCheckin("enttaeuschung")
         vm.setCheckInSituation("Ein Ereignis")
         vm.setCheckInInterpretation("Meine Sicht")
-        vm.toggleCheckInNeed(PersonalNeed.RESPEKT)
+        vm.toggleCheckInNeed("respekt")
         vm.setCheckInInsight("Meine Erkenntnis")
         vm.setCheckInNextStep(NextStepIdea.GESPRAECH)
         vm.setCheckInNextStepNote("Mein eigener Schritt")
@@ -142,7 +146,7 @@ class DeepReflectionTest {
     }
 
     @Test fun freshStartAfterClosingHasNoPreviousInsights() {
-        val vm = AppViewModel(catalog)
+        val vm = AppViewModel(catalog, needCatalog)
         vm.openCheckin()
         vm.setCheckInInsight("Private Einsicht")
         vm.closeCheckIn()
@@ -153,7 +157,7 @@ class DeepReflectionTest {
     }
 
     @Test fun backFromReflectionKeepsEditingAndBackFromFirstStepWipes() {
-        val vm = AppViewModel(catalog)
+        val vm = AppViewModel(catalog, needCatalog)
         vm.openCheckin()
         repeat(3) { vm.nextCheckInStep() }
         assertEquals(CheckInStep.VERSTEHEN, vm.checkIn.value.step)

@@ -83,6 +83,7 @@ import com.valoon4.emotionskompass.core.model.Emotion
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
+import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
@@ -90,6 +91,7 @@ import com.valoon4.emotionskompass.core.navigation.Destination
 import com.valoon4.emotionskompass.core.navigation.MainSection
 import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
+import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import kotlinx.coroutines.launch
 
 /**
@@ -111,8 +113,14 @@ class MainActivity : ComponentActivity() {
                             .bufferedReader(Charsets.UTF_8).use { it.readText() }
                     )
                 }
+                val needCatalog = remember {
+                    NeedCatalog.fromJson(
+                        assets.open("catalog/needs.de.v1.json")
+                            .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    )
+                }
                 if (completed) {
-                    EmotionskompassApp(catalog, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -136,7 +144,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
                 Text("Ein ruhiger Raum, um Gefühle zu entdecken, die richtigen Worte zu finden und dich selbst besser zu verstehen.",
                     style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(15.dp))
-                FeatureLine(Icons.Outlined.MenuBook, "Emotionen kennenlernen", "Begriffe, Unterschiede und Beispiele entdecken.")
+                FeatureLine(Icons.Outlined.MenuBook, "Gefühle und Bedürfnisse kennenlernen", "Begriffe, Unterschiede und Beispiele entdecken.")
                 FeatureLine(Icons.Outlined.FavoriteBorder, "Dich selbst verstehen", "Gefühle und Erlebnisse achtsam reflektieren.")
                 FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Keine Tagebucheinträge. Nur die Einführung wird gespeichert.")
             }
@@ -173,8 +181,9 @@ private fun FeatureLine(icon: ImageVector, title: String, subtitle: String) {
 @Composable
 private fun EmotionskompassApp(
     catalog: EmotionCatalog,
+    needCatalog: NeedCatalog,
     hostActivity: ComponentActivity,
-    vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog))
+    vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog, needCatalog))
 ) {
     val state by vm.state.collectAsState()
     val filters by vm.filters.collectAsState()
@@ -232,7 +241,8 @@ private fun EmotionskompassApp(
             if (state.destination != Destination.CHECKIN) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                 listOf(
                     Triple(MainSection.START, "Start", Icons.Outlined.Home),
-                    Triple(MainSection.ENTDECKEN, "Entdecken", Icons.Outlined.Explore),
+                    Triple(MainSection.ENTDECKEN, "Gefühle", Icons.Outlined.FavoriteBorder),
+                    Triple(MainSection.BEDUERFNISSE, "Bedürfnisse", Icons.Outlined.Explore),
                     Triple(MainSection.TAGEBUCH, "Tagebuch", Icons.Outlined.NoteAlt),
                     Triple(MainSection.RUECKBLICK, "Rückblick", Icons.Outlined.Insights)
                 ).forEach { (section, title, icon) ->
@@ -252,7 +262,9 @@ private fun EmotionskompassApp(
                 Destination.MAIN -> when (state.section) {
                     MainSection.START -> HomeScreen(
                         termsCount = catalog.emotions.size,
+                        needsCount = needCatalog.needs.size,
                         onExplore = { vm.selectSection(MainSection.ENTDECKEN) },
+                        onNeeds = { vm.selectSection(MainSection.BEDUERFNISSE) },
                         onCheckin = { vm.openCheckin() },
                         onWord = { vm.openEmotion("wehmut") }
                     )
@@ -269,6 +281,7 @@ private fun EmotionskompassApp(
                         onLetter = vm::setLetter,
                         onClear = vm::clearFilters
                     )
+                    MainSection.BEDUERFNISSE -> NeedsScreen(needCatalog)
                     MainSection.TAGEBUCH -> ComingSoonScreen(
                         icon = Icons.Outlined.NoteAlt,
                         title = "Dein Tagebuch",
@@ -303,6 +316,7 @@ private fun EmotionskompassApp(
                 }
                 Destination.CHECKIN -> CheckInScreen(
                     catalog = catalog,
+                    needCatalog = needCatalog,
                     draft = checkIn,
                     onMode = vm::setCheckInMode,
                     onToggleCue = vm::toggleBodyCue,
@@ -321,7 +335,7 @@ private fun EmotionskompassApp(
                     onRestart = vm::restartCheckIn,
                     onClose = requestDiscard
                 )
-                Destination.SETTINGS -> SettingsScreen(catalog)
+                Destination.SETTINGS -> SettingsScreen(catalog, needCatalog)
             }
         }
     }
@@ -362,7 +376,8 @@ private fun Mark(small: Boolean = false) {
 }
 
 @Composable
-private fun HomeScreen(termsCount: Int, onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit) {
+private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
+    onNeeds: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp)
@@ -391,6 +406,13 @@ private fun HomeScreen(termsCount: Int, onExplore: () -> Unit, onCheckin: () -> 
             footnote = "$termsCount Begriffe · Lernpfade",
             onClick = onExplore
         )
+        ActionCard(
+            icon = Icons.Outlined.Explore,
+            title = "Bedürfnisse verstehen",
+            description = "Erkennen, was dir wichtig ist und was dir guttut.",
+            footnote = "$needsCount Bedürfnisse · Kompass · Lernpfade",
+            onClick = onNeeds
+        )
         Spacer(Modifier.height(10.dp))
         Text("Heute entdecken", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Card(onClick = onWord, modifier = Modifier.fillMaxWidth(),
@@ -413,7 +435,7 @@ private fun HomeScreen(termsCount: Int, onExplore: () -> Unit, onCheckin: () -> 
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M3.2 · $termsCount Gefühle lernen, benennen und behutsam reflektieren.",
+        Text("M3.3 · $termsCount Gefühlswörter und $needsCount Bedürfnisbegriffe offline entdecken.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -1054,21 +1076,21 @@ private fun ComingSoonScreen(icon: ImageVector, title: String, subtitle: String,
 }
 
 @Composable
-private fun SettingsScreen(catalog: EmotionCatalog) {
+private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)) {
         Text("Einstellungen & Informationen", style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M3.2 · Vertiefte Selbsterkenntnis und zwei Check-in-Modi", style = MaterialTheme.typography.titleMedium,
+        Text("M3.3 · Bedürfnisatlas, Bedürfniskompass und Gefühlsnavigator", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Text("Der offline verfügbare Emotionsatlas enthält ${catalog.emotions.size} Begriffe, ${catalog.comparisons.size} Vergleiche und ${catalog.learningPaths.size} Lernpfade in einer redaktionellen Arbeitsfassung. Der neue Gefühlsnavigator läuft nur im Arbeitsspeicher und verwirft persönliche Angaben beim Beenden. Weiterhin wird dauerhaft ausschließlich der Abschluss der Einführung gespeichert. Ein geschütztes Tagebuch folgt in einer späteren Etappe.",
+        Text("Der offline verfügbare Gefühlsatlas umfasst ${catalog.emotions.size} Begriffe. Neu: ${needs.needs.size} Bedürfnisbegriffe, ${needs.comparisons.size} Vergleiche und ${needs.learningPaths.size} Lernpfade. Alle Inhalte sind redaktionelle Lernhilfen, keine wissenschaftlich abschließende Taxonomie. Check-in und Bedürfniskompass speichern keine persönlichen Angaben dauerhaft; weiterhin bleibt nur der Abschluss der Einführung gespeichert. Ein geschütztes Tagebuch folgt mit M4.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.3.2-m3.2", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.3.3-m3.3", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

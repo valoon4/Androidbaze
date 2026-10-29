@@ -7,14 +7,14 @@ import com.valoon4.emotionskompass.core.checkin.CheckInDraft
 import com.valoon4.emotionskompass.core.checkin.CheckInMode
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.LifeArea
-import com.valoon4.emotionskompass.core.checkin.PersonalNeed
 import com.valoon4.emotionskompass.core.checkin.NextStepIdea
+import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-enum class MainSection { START, ENTDECKEN, TAGEBUCH, RUECKBLICK }
+enum class MainSection { START, ENTDECKEN, BEDUERFNISSE, TAGEBUCH, RUECKBLICK }
 enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, CHECKIN, SETTINGS }
 
 data class AtlasFilters(
@@ -32,7 +32,7 @@ data class AppUiState(
     val pathId: String? = null
 )
 
-class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
+class AppViewModel(private val catalog: EmotionCatalog, private val needCatalog: NeedCatalog? = null) : ViewModel() {
     private val _state = MutableStateFlow(AppUiState())
     val state = _state.asStateFlow()
     private val history = ArrayDeque<AppUiState>()
@@ -108,7 +108,12 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
     fun setCheckInNote(note: String) = modifyCheckIn { it.withNote(note) }
     fun setCheckInSituation(text: String) = modifyCheckIn { it.withSituation(text) }
     fun setCheckInInterpretation(text: String) = modifyCheckIn { it.withInterpretation(text) }
-    fun toggleCheckInNeed(need: PersonalNeed) = modifyCheckIn { it.toggleNeed(need) }
+    fun toggleCheckInNeed(id: String) {
+        if (id == CheckInDraft.UNKNOWN_NEED_ID ||
+            needCatalog?.find(id) != null ||
+            needCatalog == null // Allows existing isolated ViewModel tests without catalog injection.
+        ) modifyCheckIn { it.toggleNeed(id) }
+    }
     fun setCheckInInsight(text: String) = modifyCheckIn { it.withInsight(text) }
     fun setCheckInNextStep(idea: NextStepIdea?) = modifyCheckIn { it.withNextStepIdea(idea) }
     fun setCheckInNextStepNote(text: String) = modifyCheckIn { it.withNextStepNote(text) }
@@ -145,12 +150,12 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
     }
 
     companion object {
-        fun factory(catalog: EmotionCatalog): ViewModelProvider.Factory =
+        fun factory(catalog: EmotionCatalog, needCatalog: NeedCatalog? = null): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     require(modelClass == AppViewModel::class.java)
-                    return AppViewModel(catalog) as T
+                    return AppViewModel(catalog, needCatalog) as T
                 }
             }
     }
