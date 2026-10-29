@@ -4200,6 +4200,834 @@
         "zugehoerigkeit"
       ],
       "reflectionQuestion": "Woran spüre ich Willkommen?"
+    },
+    {
+      "id": "kummer",
+      "name": "Kummer",
+      "kind": "EMOTION",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Traurigkeit über etwas, das dir Sorge bereitet.",
+      "examples": [
+        "Nach einem Streit ist dir schwer ums Herz.",
+        "Du denkst an einen vermissten Freund."
+      ],
+      "synonyms": [
+        "bekümmert",
+        "herzeleid"
+      ],
+      "related": [
+        "traurigkeit",
+        "besorgnis"
+      ],
+      "reflectionQuestion": "Was liegt mir auf dem Herzen?"
+    },
+    {
+      "id": "bekuemmertheit",
+      "name": "Bekümmertheit",
+      "kind": "MOOD",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Leise traurige Sorge um jemanden oder etwas.",
+      "examples": [
+        "Du denkst an eine Freundin in Not.",
+        "Eine unklare Entwicklung stimmt dich traurig."
+      ],
+      "synonyms": [
+        "bekümmert",
+        "sorgenvoll"
+      ],
+      "related": [
+        "kummer",
+        "mitgefuehl"
+      ],
+      "reflectionQuestion": "Worüber bin ich bekümmert?"
+    },
+    {
+      "id": "schwermut",
+      "name": "Schwermut",
+      "kind": "MOOD",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Schwere nachdenkliche Stimmung mit wenig Leichtigkeit.",
+      "examples": [
+        "Ein grauer Tag fühlt sich schwer an.",
+        "Du erinnerst dich still an Vergangenes."
+      ],
+      "synonyms": [
+        "schwermütig",
+        "schwere stimmung"
+      ],
+      "related": [
+        "melancholie",
+        "truebsinn"
+      ],
+      "reflectionQuestion": "Welche Schwere begleitet mich?"
+    },
+    {
+      "id": "truebsinn",
+      "name": "Trübsinn",
+      "kind": "MOOD",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Gedämpfte Stimmung, in der Erfreuliches wenig spürbar ist.",
+      "examples": [
+        "Du gehst lustlos durch den Nachmittag.",
+        "Kleine Freuden erreichen dich gerade kaum."
+      ],
+      "synonyms": [
+        "trübsinnig",
+        "düstere laune"
+      ],
+      "related": [
+        "niedergeschlagenheit",
+        "schwermut"
+      ],
+      "reflectionQuestion": "Was trübt meinen Blick?"
+    },
+    {
+      "id": "truebseligkeit",
+      "name": "Trübseligkeit",
+      "kind": "MOOD",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Stille traurige Stimmung mit Rückzugsneigung.",
+      "examples": [
+        "Du möchtest an einem Abend allein sein.",
+        "Ein Abschied lässt dich nachdenklich zurück."
+      ],
+      "synonyms": [
+        "trübselig",
+        "traurig gestimmt"
+      ],
+      "related": [
+        "melancholie",
+        "truebsinn"
+      ],
+      "reflectionQuestion": "Brauche ich Ruhe oder Verbindung?"
+    },
+    {
+      "id": "gram",
+      "name": "Gram",
+      "kind": "MOOD",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Tiefe länger wirkende Traurigkeit über einen Schmerz.",
+      "examples": [
+        "Ein Abschied beschäftigt dich lange.",
+        "Eine alte Verletzung schmerzt erneut."
+      ],
+      "synonyms": [
+        "gramgebeugt",
+        "tiefer kummer"
+      ],
+      "related": [
+        "trauer",
+        "kummer"
+      ],
+      "reflectionQuestion": "Welchen Schmerz trage ich?"
+    },
+    {
+      "id": "bedrueckung",
+      "name": "Bedrückung",
+      "kind": "STATE",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Das Gefühl, von einer Sorge niedergedrückt zu sein.",
+      "examples": [
+        "Vor einem Gespräch wirst du still.",
+        "Viele Aufgaben fühlen sich schwer an."
+      ],
+      "synonyms": [
+        "bedrückt",
+        "bedrücktheit"
+      ],
+      "related": [
+        "niedergeschlagenheit",
+        "ueberforderung"
+      ],
+      "reflectionQuestion": "Was lastet auf mir?"
+    },
+    {
+      "id": "verlorenheit",
+      "name": "Verlorenheit",
+      "kind": "STATE",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Gefühl, ohne vertrauten Halt zu sein.",
+      "examples": [
+        "In einer fremden Stadt bist du einsam.",
+        "Nach einer Trennung fehlt dir ein Bezugspunkt."
+      ],
+      "synonyms": [
+        "verloren fühlen",
+        "haltlosigkeit"
+      ],
+      "related": [
+        "einsamkeit",
+        "orientierungslosigkeit"
+      ],
+      "reflectionQuestion": "Welchen Halt vermisse ich?"
+    },
+    {
+      "id": "zurueckgewiesensein",
+      "name": "Zurückgewiesensein",
+      "kind": "EMOTION",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Schmerz, von anderen nicht gewollt zu sein.",
+      "examples": [
+        "Deine Einladung wird kühl abgelehnt.",
+        "In der Gruppe wirst du übergangen."
+      ],
+      "synonyms": [
+        "zurückgewiesen",
+        "abgelehnt fühlen"
+      ],
+      "related": [
+        "verlassenheit",
+        "verletztheit"
+      ],
+      "reflectionQuestion": "Welche Annahme hätte ich gebraucht?"
+    },
+    {
+      "id": "vermissen",
+      "name": "Vermissen",
+      "kind": "EMOTION",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Spürbares Fehlen eines Menschen oder Erlebnisses.",
+      "examples": [
+        "Du möchtest jemandem schreiben, der nicht da ist.",
+        "Ein vertrautes Ritual fehlt dir."
+      ],
+      "synonyms": [
+        "jemanden vermissen",
+        "fehlende nähe"
+      ],
+      "related": [
+        "sehnsucht",
+        "heimweh"
+      ],
+      "reflectionQuestion": "Was vermisse ich genau?"
+    },
+    {
+      "id": "abschiedsschmerz",
+      "name": "Abschiedsschmerz",
+      "kind": "EMOTION",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Traurigkeit am Ende einer Begegnung oder Lebensphase.",
+      "examples": [
+        "Nach einem Besuch fällt der Abschied schwer.",
+        "Du verlässt einen bedeutenden Ort."
+      ],
+      "synonyms": [
+        "abschiedsweh",
+        "schmerzhafter abschied"
+      ],
+      "related": [
+        "trauer",
+        "wehmut"
+      ],
+      "reflectionQuestion": "Wovon verabschiede ich mich?"
+    },
+    {
+      "id": "untroestlichkeit",
+      "name": "Untröstlichkeit",
+      "kind": "STATE",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Intensive Traurigkeit, bei der Trost noch wenig ankommt.",
+      "examples": [
+        "Nach einer Nachricht möchtest du weinen.",
+        "Liebe Worte erreichen dich noch nicht."
+      ],
+      "synonyms": [
+        "untröstlich",
+        "kaum zu trösten"
+      ],
+      "related": [
+        "trauer",
+        "verzweiflung"
+      ],
+      "reflectionQuestion": "Was darf jetzt traurig bleiben?"
+    },
+    {
+      "id": "herzschwere",
+      "name": "Herzschwere",
+      "kind": "STATE",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Spürbares Gewicht der Traurigkeit.",
+      "examples": [
+        "Du atmest nach einem Streit tief aus.",
+        "Eine Erinnerung beschwert den Tag."
+      ],
+      "synonyms": [
+        "schwer ums herz",
+        "schweres herz"
+      ],
+      "related": [
+        "bedrueckung",
+        "kummer"
+      ],
+      "reflectionQuestion": "Was macht mein Herz schwer?"
+    },
+    {
+      "id": "ernuechterung",
+      "name": "Ernüchterung",
+      "kind": "EMOTION",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Nachlassende Begeisterung, wenn Hoffnungen der Realität weichen.",
+      "examples": [
+        "Ein Plan erweist sich als mühsam.",
+        "Eine schöne Vorstellung erfüllt sich nicht."
+      ],
+      "synonyms": [
+        "ernüchtert",
+        "desillusionierung"
+      ],
+      "related": [
+        "enttaeuschung",
+        "bedauern"
+      ],
+      "reflectionQuestion": "Welche Erwartung ist zerplatzt?"
+    },
+    {
+      "id": "vergeblichkeit",
+      "name": "Vergeblichkeit",
+      "kind": "STATE",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Schmerzhaftes Empfinden, dass Mühe nichts bewirkt hat.",
+      "examples": [
+        "Nach vielen Versuchen bleibt etwas ungelöst.",
+        "Du kannst einen Verlust nicht verhindern."
+      ],
+      "synonyms": [
+        "vergeblich",
+        "umsonst gefühlt"
+      ],
+      "related": [
+        "resignation",
+        "frustration"
+      ],
+      "reflectionQuestion": "Wo endet mein Einfluss?"
+    },
+    {
+      "id": "entbehrung",
+      "name": "Entbehrung",
+      "kind": "STATE",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Belastendes Fehlen von etwas Wichtigem.",
+      "examples": [
+        "Du vermisst seit Wochen vertraute Nähe.",
+        "Eine lange Einschränkung zehrt an dir."
+      ],
+      "synonyms": [
+        "mangelgefühl",
+        "verzichtsschmerz"
+      ],
+      "related": [
+        "sehnsucht",
+        "vermissen"
+      ],
+      "reflectionQuestion": "Was fehlt mir besonders?"
+    },
+    {
+      "id": "verfehlte_hoffnung",
+      "name": "Enttäuschte Hoffnung",
+      "kind": "EMOTION",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Traurigkeit über eine unerfüllte Hoffnung.",
+      "examples": [
+        "Ein erwünschter Brief kommt nicht.",
+        "Eine lange erwartete Zusage bleibt aus."
+      ],
+      "synonyms": [
+        "zerplatzte hoffnung",
+        "unerfüllte hoffnung"
+      ],
+      "related": [
+        "enttaeuschung",
+        "hoffnungslosigkeit"
+      ],
+      "reflectionQuestion": "Welche Hoffnung war mir wichtig?"
+    },
+    {
+      "id": "traurige_beruehrtheit",
+      "name": "Traurige Berührtheit",
+      "kind": "EMOTION",
+      "family": "Traurigkeit",
+      "families": [
+        "Traurigkeit"
+      ],
+      "definition": "Sanfte Traurigkeit, weil etwas dich tief bewegt.",
+      "examples": [
+        "Eine Geschichte über Verlust berührt dich.",
+        "Du hörst von einem Abschied und wirst still."
+      ],
+      "synonyms": [
+        "gerührt und traurig",
+        "betroffen"
+      ],
+      "related": [
+        "mitgefuehl",
+        "ruehrung"
+      ],
+      "reflectionQuestion": "Was bewegt mich?"
+    },
+    {
+      "id": "verunsicherung",
+      "name": "Verunsicherung",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Gefühl, durch neue Informationen weniger sicher zu sein.",
+      "examples": [
+        "Ein Kommentar macht dich unsicher.",
+        "Ein Plan wird plötzlich geändert."
+      ],
+      "synonyms": [
+        "verunsichert",
+        "aus dem konzept"
+      ],
+      "related": [
+        "unsicherheit",
+        "zweifel"
+      ],
+      "reflectionQuestion": "Was hat meine Sicherheit erschüttert?"
+    },
+    {
+      "id": "beunruhigung",
+      "name": "Beunruhigung",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Sorge, die deine innere Ruhe stört.",
+      "examples": [
+        "Eine unklare Nachricht beschäftigt dich.",
+        "Du bemerkst eine unbekannte Veränderung."
+      ],
+      "synonyms": [
+        "beunruhigt",
+        "innere beunruhigung"
+      ],
+      "related": [
+        "besorgnis",
+        "unruhe"
+      ],
+      "reflectionQuestion": "Was beunruhigt mich?"
+    },
+    {
+      "id": "unbehagen",
+      "name": "Unbehagen",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Unbestimmtes Gefühl, dass etwas unstimmig ist.",
+      "examples": [
+        "Ein Gespräch fühlt sich seltsam an.",
+        "Bei einem Angebot zögerst du."
+      ],
+      "synonyms": [
+        "unbehaglich",
+        "ungutes gefühl"
+      ],
+      "related": [
+        "beklemmung",
+        "befremden"
+      ],
+      "reflectionQuestion": "Was ist unstimmig?"
+    },
+    {
+      "id": "panikgefuehl",
+      "name": "Panikgefühl",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Sehr starke Angst und Drang, Sicherheit zu finden.",
+      "examples": [
+        "Ein Zwischenfall lässt dein Herz rasen.",
+        "Eine Situation fühlt sich akut gefährlich an."
+      ],
+      "synonyms": [
+        "panisch",
+        "panik"
+      ],
+      "related": [
+        "angst",
+        "furcht"
+      ],
+      "reflectionQuestion": "Was gibt mir Sicherheit?"
+    },
+    {
+      "id": "alarmiertheit",
+      "name": "Alarmiertheit",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Starke Wachsamkeit bei möglicher Gefahr.",
+      "examples": [
+        "Ein Geräusch lässt dich aufhorchen.",
+        "Eine Warnung macht dich aufmerksam."
+      ],
+      "synonyms": [
+        "alarmiert",
+        "aufgeschreckt"
+      ],
+      "related": [
+        "furcht",
+        "anspannung"
+      ],
+      "reflectionQuestion": "Was hat mich alarmiert?"
+    },
+    {
+      "id": "eingeschuechtertsein",
+      "name": "Eingeschüchtertsein",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Angst oder Hemmung im Kontakt mit Druck.",
+      "examples": [
+        "Ein scharfer Ton lässt dich verstummen.",
+        "Bei einer dominanten Person kannst du kaum Nein sagen."
+      ],
+      "synonyms": [
+        "eingeschüchtert",
+        "klein gemacht"
+      ],
+      "related": [
+        "scheu",
+        "angst"
+      ],
+      "reflectionQuestion": "Wo brauche ich Abstand?"
+    },
+    {
+      "id": "schreckhaftigkeit",
+      "name": "Schreckhaftigkeit",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Neigung, auf Reize schnell zu erschrecken.",
+      "examples": [
+        "Du zuckst bei Geräuschen zusammen.",
+        "Nach einem stressigen Tag bist du empfindlicher."
+      ],
+      "synonyms": [
+        "schreckhaft",
+        "leicht erschrecken"
+      ],
+      "related": [
+        "schreck",
+        "anspannung"
+      ],
+      "reflectionQuestion": "Was hält mich so wachsam?"
+    },
+    {
+      "id": "zukunftsangst",
+      "name": "Zukunftsangst",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Angst vor ungewissen kommenden Veränderungen.",
+      "examples": [
+        "Du sorgst dich um die nächsten Monate.",
+        "Vor einem Neuanfang malst du Risiken aus."
+      ],
+      "synonyms": [
+        "angst vor der zukunft",
+        "zukunftssorgen"
+      ],
+      "related": [
+        "angst",
+        "besorgnis"
+      ],
+      "reflectionQuestion": "Was an der Zukunft fürchte ich?"
+    },
+    {
+      "id": "trennungsangst",
+      "name": "Trennungsangst",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Sorge, eine wichtige Nähe zu verlieren.",
+      "examples": [
+        "Vor einer Reise fürchtest du den Abschied.",
+        "Du sorgst dich um einen wichtigen Kontakt."
+      ],
+      "synonyms": [
+        "angst vor trennung",
+        "abschiedsangst"
+      ],
+      "related": [
+        "angst",
+        "verlassenheit"
+      ],
+      "reflectionQuestion": "Welche Nähe möchte ich bewahren?"
+    },
+    {
+      "id": "verlustangst",
+      "name": "Verlustangst",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Angst, etwas oder jemanden Bedeutsames zu verlieren.",
+      "examples": [
+        "Eine Veränderung bedroht eine Routine.",
+        "Du fürchtest den Verlust eines Kontakts."
+      ],
+      "synonyms": [
+        "angst vor verlust",
+        "etwas verlieren"
+      ],
+      "related": [
+        "angst",
+        "sehnsucht"
+      ],
+      "reflectionQuestion": "Was ist mir so wichtig?"
+    },
+    {
+      "id": "erwartungsdruck",
+      "name": "Erwartungsdruck",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Belastung durch eigene oder fremde Ansprüche.",
+      "examples": [
+        "Du möchtest allen gerecht werden.",
+        "Bei einer Aufgabe musst du scheinbar perfekt sein."
+      ],
+      "synonyms": [
+        "erwartungen erfüllen müssen",
+        "leistungsdruck"
+      ],
+      "related": [
+        "ueberforderung",
+        "anspannung"
+      ],
+      "reflectionQuestion": "Wessen Erwartung belastet mich?"
+    },
+    {
+      "id": "entscheidungsdruck",
+      "name": "Entscheidungsdruck",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Stress durch eine schnell nötige Wahl.",
+      "examples": [
+        "Ein Angebot verlangt sofort Antwort.",
+        "Du musst zwischen zwei Möglichkeiten wählen."
+      ],
+      "synonyms": [
+        "entscheidungszwang",
+        "entscheidungsstress"
+      ],
+      "related": [
+        "zweifel",
+        "anspannung"
+      ],
+      "reflectionQuestion": "Was bräuchte ich für eine gute Wahl?"
+    },
+    {
+      "id": "kontrollverlust",
+      "name": "Kontrollverlust",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Gefühl, den Verlauf nicht mehr steuern zu können.",
+      "examples": [
+        "Ein Plan gerät durcheinander.",
+        "Eine Entscheidung liegt bei anderen."
+      ],
+      "synonyms": [
+        "keine kontrolle",
+        "aus der hand gleiten"
+      ],
+      "related": [
+        "hilflosigkeit",
+        "ueberforderung"
+      ],
+      "reflectionQuestion": "Wo habe ich Einfluss?"
+    },
+    {
+      "id": "ausgeliefertsein",
+      "name": "Ausgeliefertsein",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Gefühl, ohne ausreichend Wahl zu sein.",
+      "examples": [
+        "Du musst auf eine Entscheidung warten.",
+        "Eine Situation lässt dir kaum Ausweichraum."
+      ],
+      "synonyms": [
+        "ausgeliefert",
+        "ohnmächtig fühlen"
+      ],
+      "related": [
+        "hilflosigkeit",
+        "angst"
+      ],
+      "reflectionQuestion": "Wo finde ich Unterstützung?"
+    },
+    {
+      "id": "ablehnungsangst",
+      "name": "Ablehnungsangst",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Sorge, nicht angenommen zu werden.",
+      "examples": [
+        "Du zögerst, deine Meinung zu teilen.",
+        "Vor einer Einladung erwartest du eine Absage."
+      ],
+      "synonyms": [
+        "angst vor ablehnung",
+        "zurückweisung fürchten"
+      ],
+      "related": [
+        "unsicherheit",
+        "selbstzweifel"
+      ],
+      "reflectionQuestion": "Was würde Ablehnung für mich bedeuten?"
+    },
+    {
+      "id": "lampenfieber",
+      "name": "Lampenfieber",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Aufregung vor einer sichtbaren Leistung.",
+      "examples": [
+        "Hinter der Bühne sind deine Hände kalt.",
+        "Vor einer Rede klopft dein Herz schnell."
+      ],
+      "synonyms": [
+        "auftrittsnervosität",
+        "bühnenangst"
+      ],
+      "related": [
+        "nervositaet",
+        "vorfreude"
+      ],
+      "reflectionQuestion": "Was brauche ich vor dem Auftritt?"
+    },
+    {
+      "id": "bammel",
+      "name": "Bammel",
+      "kind": "EMOTION",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Eher leichte alltägliche Angst vor einem Ereignis.",
+      "examples": [
+        "Vor dem Zahnarzttermin ist dir mulmig.",
+        "Du traust dich kaum anzurufen."
+      ],
+      "synonyms": [
+        "mulmiges gefühl",
+        "schiss haben"
+      ],
+      "related": [
+        "befuerchtung",
+        "angst"
+      ],
+      "reflectionQuestion": "Wovor habe ich Bammel?"
+    },
+    {
+      "id": "unentschlossenheit",
+      "name": "Unentschlossenheit",
+      "kind": "STATE",
+      "family": "Unsicherheit",
+      "families": [
+        "Unsicherheit"
+      ],
+      "definition": "Gefühl, zwischen Möglichkeiten nicht wählen zu können.",
+      "examples": [
+        "Du überlegst zwischen zwei Wegen.",
+        "Auch mehrere gute Angebote erschweren dir die Wahl."
+      ],
+      "synonyms": [
+        "unentschlossen",
+        "hin und her"
+      ],
+      "related": [
+        "zweifel",
+        "unsicherheit"
+      ],
+      "reflectionQuestion": "Was ist mir wichtig?"
     }
   ],
   "comparisons": [
