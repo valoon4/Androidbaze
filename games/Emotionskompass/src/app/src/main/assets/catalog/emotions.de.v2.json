@@ -3372,6 +3372,834 @@
         "besonnenheit"
       ],
       "reflectionQuestion": "Wo wäre eine sanfte Reaktion hilfreich?"
+    },
+    {
+      "id": "befriedigung",
+      "name": "Befriedigung",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Freude darüber, dass ein Bedürfnis erfüllt wurde.",
+      "examples": [
+        "Ein gutes Essen macht dich satt und zufrieden.",
+        "Du beendest eine wichtige Arbeit."
+      ],
+      "synonyms": [
+        "befriedigt",
+        "erfüllt"
+      ],
+      "related": [
+        "zufriedenheit",
+        "genugtuung"
+      ],
+      "reflectionQuestion": "Was wurde gerade erfüllt?"
+    },
+    {
+      "id": "genugtuung",
+      "name": "Genugtuung",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Zufriedenheit über ein als verdient empfundenes Ergebnis.",
+      "examples": [
+        "Dein Standpunkt findet nach langem Ringen Gehör.",
+        "Eine Mühe zahlt sich aus."
+      ],
+      "synonyms": [
+        "genugtuend",
+        "verdient"
+      ],
+      "related": [
+        "stolz",
+        "befriedigung"
+      ],
+      "reflectionQuestion": "Was fühlt sich gerecht an?"
+    },
+    {
+      "id": "gluecksgefuehl",
+      "name": "Glücksgefühl",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Deutliches und oft körperlich spürbares Glück.",
+      "examples": [
+        "Ein Wiedersehen lässt dich strahlen.",
+        "Du bekommst eine liebevolle Nachricht."
+      ],
+      "synonyms": [
+        "glücklich sein",
+        "glücksrausch"
+      ],
+      "related": [
+        "freude",
+        "seligkeit"
+      ],
+      "reflectionQuestion": "Wie spüre ich das Glück?"
+    },
+    {
+      "id": "seligkeit",
+      "name": "Seligkeit",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "MOOD",
+      "definition": "Ein inniges friedvolles Empfinden von Glück.",
+      "examples": [
+        "Du liegst in der Sonne und bist still froh.",
+        "Ein schöner Moment klingt lange in dir nach."
+      ],
+      "synonyms": [
+        "selig",
+        "glückseligkeit"
+      ],
+      "related": [
+        "innere_ruhe",
+        "gluecksgefuehl"
+      ],
+      "reflectionQuestion": "Was macht dieses Glück ruhig?"
+    },
+    {
+      "id": "wonne",
+      "name": "Wonne",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Intensiver, wohltuender Genuss.",
+      "examples": [
+        "Warme Sonnenstrahlen tun dir gut.",
+        "Ein Duft erfreut dich tief."
+      ],
+      "synonyms": [
+        "wonnig",
+        "wohlige freude"
+      ],
+      "related": [
+        "vergnuegen",
+        "genuss"
+      ],
+      "reflectionQuestion": "Was genieße ich so stark?"
+    },
+    {
+      "id": "genuss",
+      "name": "Genuss",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Bewusstes angenehmes Erleben eines Sinneseindrucks.",
+      "examples": [
+        "Du schmeckst einen frischen Apfel ganz bewusst.",
+        "Du lauschst deiner Lieblingsmusik."
+      ],
+      "synonyms": [
+        "genießen",
+        "genussgefühl"
+      ],
+      "related": [
+        "vergnuegen",
+        "wonne"
+      ],
+      "reflectionQuestion": "Welchen Eindruck genieße ich?"
+    },
+    {
+      "id": "leichtigkeit",
+      "name": "Leichtigkeit",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Empfinden von geringerem innerem Druck.",
+      "examples": [
+        "Nach einer Entscheidung atmest du auf.",
+        "Ein Gespräch läuft ganz von selbst."
+      ],
+      "synonyms": [
+        "leicht fühlen",
+        "unbeschwert"
+      ],
+      "related": [
+        "sorglosigkeit",
+        "erleichterung"
+      ],
+      "reflectionQuestion": "Was wurde leichter?"
+    },
+    {
+      "id": "aufbluehen",
+      "name": "Aufblühen",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Das Gefühl, wieder lebendig und ausdrucksfähig zu werden.",
+      "examples": [
+        "Du gehst in einem Hobby auf.",
+        "Nach einer Pause ist deine Freude wieder da."
+      ],
+      "synonyms": [
+        "aufleben",
+        "aufblühen"
+      ],
+      "related": [
+        "lebensfreude",
+        "selbstwirksamkeit"
+      ],
+      "reflectionQuestion": "Wo entfalte ich mich?"
+    },
+    {
+      "id": "schwung",
+      "name": "Schwung",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Lebendige Energie zum Anfangen.",
+      "examples": [
+        "Ein Spaziergang motiviert dich.",
+        "Nach einem Gespräch erledigst du Dinge mit Elan."
+      ],
+      "synonyms": [
+        "beschwingtheit",
+        "schwungvoll"
+      ],
+      "related": [
+        "tatendrang",
+        "heiterkeit"
+      ],
+      "reflectionQuestion": "Woher kommt dieser Schwung?"
+    },
+    {
+      "id": "frohsein",
+      "name": "Frohsein",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "MOOD",
+      "definition": "Schlichtes angenehmes Empfinden von Freude.",
+      "examples": [
+        "Du bemerkst ein grundloses Lächeln.",
+        "Der Morgen fühlt sich freundlich an."
+      ],
+      "synonyms": [
+        "froh sein",
+        "gute laune"
+      ],
+      "related": [
+        "freude",
+        "heiterkeit"
+      ],
+      "reflectionQuestion": "Darf Freude auch still sein?"
+    },
+    {
+      "id": "freudige_ueberraschung",
+      "name": "Freudige Überraschung",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Angenehme spontane Reaktion auf etwas Unerwartetes.",
+      "examples": [
+        "Ein Freund taucht plötzlich auf.",
+        "Eine gute Nachricht erreicht dich unerwartet."
+      ],
+      "synonyms": [
+        "positiv überrascht",
+        "freudiges erstaunen"
+      ],
+      "related": [
+        "ueberraschung",
+        "vorfreude"
+      ],
+      "reflectionQuestion": "Was hatte ich nicht erwartet?"
+    },
+    {
+      "id": "wiedersehensfreude",
+      "name": "Wiedersehensfreude",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Besondere Freude beim Wiedersehen.",
+      "examples": [
+        "Am Bahnhof umarmst du jemanden.",
+        "Nach Monaten triffst du deine Familie."
+      ],
+      "synonyms": [
+        "freude aufs wiedersehen",
+        "freudiges wiedersehen"
+      ],
+      "related": [
+        "vorfreude",
+        "zuneigung"
+      ],
+      "reflectionQuestion": "Wen habe ich vermisst?"
+    },
+    {
+      "id": "mitfreude",
+      "name": "Mitfreude",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Ehrliche Freude über das Glück anderer.",
+      "examples": [
+        "Eine Freundin erreicht ein Ziel.",
+        "Dein Bruder ist erleichtert und du freust dich mit."
+      ],
+      "synonyms": [
+        "mitfreuen",
+        "geteilte freude"
+      ],
+      "related": [
+        "mitgefuehl",
+        "dankbarkeit"
+      ],
+      "reflectionQuestion": "Was berührt mich am Glück anderer?"
+    },
+    {
+      "id": "verspieltheit",
+      "name": "Verspieltheit",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Lockere Freude am Ausprobieren ohne Leistungsdruck.",
+      "examples": [
+        "Du denkst dir ein albernes Spiel aus.",
+        "Du zeichnest ohne Plan."
+      ],
+      "synonyms": [
+        "spielerisch",
+        "spieltrieb"
+      ],
+      "related": [
+        "ausgelassenheit",
+        "neugier"
+      ],
+      "reflectionQuestion": "Wo darf ich spielen?"
+    },
+    {
+      "id": "uebermut",
+      "name": "Übermut",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Lebhafte Freude mit dem Impuls, Grenzen auszutesten.",
+      "examples": [
+        "Du wirst beim Feiern ausgelassen.",
+        "Du möchtest spontan etwas Mutiges tun."
+      ],
+      "synonyms": [
+        "übermütig",
+        "ausgelassen"
+      ],
+      "related": [
+        "ausgelassenheit",
+        "euphorie"
+      ],
+      "reflectionQuestion": "Wie viel Schwung tut mir gut?"
+    },
+    {
+      "id": "hochstimmung",
+      "name": "Hochstimmung",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "MOOD",
+      "definition": "Über längere Zeit besonders gute Stimmung.",
+      "examples": [
+        "Ein gelungenes Fest trägt dich durch den Tag.",
+        "Du bist nach einem Erfolg beschwingt."
+      ],
+      "synonyms": [
+        "gehobene stimmung",
+        "hochgefühl"
+      ],
+      "related": [
+        "euphorie",
+        "begeisterung"
+      ],
+      "reflectionQuestion": "Wie lange hält das Hoch an?"
+    },
+    {
+      "id": "freudiger_stolz",
+      "name": "Freudiger Stolz",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "EMOTION",
+      "definition": "Warmes Glück über einen eigenen Fortschritt.",
+      "examples": [
+        "Du betrachtest ein selbst gemaltes Bild.",
+        "Du bemerkst eine überwundene Schwierigkeit."
+      ],
+      "synonyms": [
+        "stolze freude",
+        "erfolgsstolz"
+      ],
+      "related": [
+        "stolz",
+        "selbstwirksamkeit"
+      ],
+      "reflectionQuestion": "Was erkenne ich an mir an?"
+    },
+    {
+      "id": "wohligkeit",
+      "name": "Wohligkeit",
+      "family": "Freude",
+      "families": [
+        "Freude"
+      ],
+      "kind": "STATE",
+      "definition": "Angenehme Wärme und Behaglichkeit.",
+      "examples": [
+        "Du sitzt unter einer weichen Decke.",
+        "Ein warmes Bad entspannt dich."
+      ],
+      "synonyms": [
+        "wohlig",
+        "behaglichkeit"
+      ],
+      "related": [
+        "entspannung",
+        "geborgenheit"
+      ],
+      "reflectionQuestion": "Was macht es gerade behaglich?"
+    },
+    {
+      "id": "herzlichkeit",
+      "name": "Herzlichkeit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Warme offen gezeigte Zuwendung.",
+      "examples": [
+        "Eine Kollegin begrüßt dich mit Freude.",
+        "Du lässt jemanden willkommen fühlen."
+      ],
+      "synonyms": [
+        "herzlich",
+        "herzenswärme"
+      ],
+      "related": [
+        "zuneigung",
+        "freundlichkeit"
+      ],
+      "reflectionQuestion": "Wie zeige ich Herzlichkeit?"
+    },
+    {
+      "id": "freundlichkeit",
+      "name": "Freundlichkeit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Wohlwollen, das sich in kleinen Gesten zeigt.",
+      "examples": [
+        "Jemand hilft dir ohne Gegenleistung.",
+        "Du findest trotz Eile freundliche Worte."
+      ],
+      "synonyms": [
+        "freundlich",
+        "wohlwollen"
+      ],
+      "related": [
+        "herzlichkeit",
+        "fuersorge"
+      ],
+      "reflectionQuestion": "Welche Geste tut gut?"
+    },
+    {
+      "id": "angenommensein",
+      "name": "Angenommensein",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, mit den eigenen Eigenheiten willkommen zu sein.",
+      "examples": [
+        "In einer Gruppe kannst du offen reden.",
+        "Jemand respektiert deine andere Meinung."
+      ],
+      "synonyms": [
+        "akzeptiert fühlen",
+        "angenommen fühlen"
+      ],
+      "related": [
+        "geborgenheit",
+        "selbstakzeptanz"
+      ],
+      "reflectionQuestion": "Wo darf ich ich selbst sein?"
+    },
+    {
+      "id": "gesehenwerden",
+      "name": "Gesehenwerden",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, von jemandem wirklich wahrgenommen zu werden.",
+      "examples": [
+        "Ein Freund bemerkt deine Mühe.",
+        "Jemand fragt aufmerksam nach."
+      ],
+      "synonyms": [
+        "gesehen sein",
+        "wahrgenommen werden"
+      ],
+      "related": [
+        "anerkanntsein",
+        "verstaendnis"
+      ],
+      "reflectionQuestion": "Was möchte ich zeigen?"
+    },
+    {
+      "id": "verstaendnis",
+      "name": "Verständnis",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Erleben, dass die eigene Lage nachvollzogen wird.",
+      "examples": [
+        "Jemand nimmt deine Sorge ernst.",
+        "Ein Freund versteht deine Unsicherheit."
+      ],
+      "synonyms": [
+        "verstanden fühlen",
+        "verständnis finden"
+      ],
+      "related": [
+        "gesehenwerden",
+        "mitgefuehl"
+      ],
+      "reflectionQuestion": "Was wurde verstanden?"
+    },
+    {
+      "id": "troestung",
+      "name": "Getröstetsein",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, durch Zuwendung etwas Halt zu finden.",
+      "examples": [
+        "Eine Umarmung spendet dir Trost.",
+        "Jemand bleibt nach einer schweren Nachricht bei dir."
+      ],
+      "synonyms": [
+        "getröstet",
+        "trost empfangen"
+      ],
+      "related": [
+        "geborgenheit",
+        "erleichterung"
+      ],
+      "reflectionQuestion": "Welche Art Trost brauche ich?"
+    },
+    {
+      "id": "loyalitaet",
+      "name": "Loyalität",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Verbundenheit durch verlässliches Einstehen füreinander.",
+      "examples": [
+        "Eine Freundin hält zu dir.",
+        "Du hältst ein gemeinsames Versprechen."
+      ],
+      "synonyms": [
+        "loyal",
+        "treuegefühl"
+      ],
+      "related": [
+        "vertrauen",
+        "solidaritaet"
+      ],
+      "reflectionQuestion": "Wofür stehe ich ein?"
+    },
+    {
+      "id": "kameradschaft",
+      "name": "Kameradschaft",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Zusammenhalt durch gemeinsam erlebte Aufgaben.",
+      "examples": [
+        "Ein Team hilft einander.",
+        "Ihr lacht über gemeisterte Schwierigkeiten."
+      ],
+      "synonyms": [
+        "kameradschaftlich",
+        "teamgeist"
+      ],
+      "related": [
+        "solidaritaet",
+        "zugehoerigkeit"
+      ],
+      "reflectionQuestion": "Was verbindet uns?"
+    },
+    {
+      "id": "freundschaftliche_naehe",
+      "name": "Freundschaftliche Nähe",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Entspannte persönliche Verbundenheit in einer Freundschaft.",
+      "examples": [
+        "Ihr sprecht über schwere Themen.",
+        "Ein Freund ist auch ohne Worte für dich da."
+      ],
+      "synonyms": [
+        "freundschaftsgefühl",
+        "freundschaftliche verbundenheit"
+      ],
+      "related": [
+        "naehe",
+        "vertrautheit"
+      ],
+      "reflectionQuestion": "Welche Freundschaft trägt mich?"
+    },
+    {
+      "id": "verlaesslichkeit",
+      "name": "Verlässlichkeit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Beruhigendes Erleben erfüllter Zusagen.",
+      "examples": [
+        "Jemand hält ein wichtiges Versprechen.",
+        "Ein Mensch bleibt in einer Krise erreichbar."
+      ],
+      "synonyms": [
+        "verlässlich",
+        "sich verlassen können"
+      ],
+      "related": [
+        "vertrauen",
+        "sicherheit"
+      ],
+      "reflectionQuestion": "Woran erkenne ich Verlässlichkeit?"
+    },
+    {
+      "id": "einverstaendnis",
+      "name": "Einverständnis",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl einer gemeinsamen Grundlage.",
+      "examples": [
+        "Ihr findet einen guten Kompromiss.",
+        "Eine Grenze wird respektiert."
+      ],
+      "synonyms": [
+        "übereinstimmung",
+        "einigkeit"
+      ],
+      "related": [
+        "harmonie",
+        "respekt"
+      ],
+      "reflectionQuestion": "Womit bin ich einverstanden?"
+    },
+    {
+      "id": "wertgeschaetztsein",
+      "name": "Wertgeschätztsein",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, mit dem eigenen Beitrag geschätzt zu werden.",
+      "examples": [
+        "Jemand dankt dir für Mühe.",
+        "Deine Sicht wird respektiert."
+      ],
+      "synonyms": [
+        "geschätzt fühlen",
+        "wertschätzung erfahren"
+      ],
+      "related": [
+        "anerkanntsein",
+        "respekt"
+      ],
+      "reflectionQuestion": "Wofür möchte ich Anerkennung?"
+    },
+    {
+      "id": "gemeinsinn",
+      "name": "Gemeinsinn",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Verbundenheit mit dem Wohl einer Gemeinschaft.",
+      "examples": [
+        "Ihr organisiert Nachbarschaftshilfe.",
+        "Ein Teamerfolg macht dich froh."
+      ],
+      "synonyms": [
+        "gemeinschaftssinn",
+        "wirgefühl"
+      ],
+      "related": [
+        "solidaritaet",
+        "zugehoerigkeit"
+      ],
+      "reflectionQuestion": "Wo fühle ich ein Wir?"
+    },
+    {
+      "id": "wiedernaeherung",
+      "name": "Wiederannäherung",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Vorsichtiges Wiederentstehen von Nähe nach Distanz.",
+      "examples": [
+        "Nach einer Pause redet ihr offen.",
+        "Ein alter Freund meldet sich."
+      ],
+      "synonyms": [
+        "annäherung",
+        "aufeinander zugehen"
+      ],
+      "related": [
+        "versoehnung",
+        "vertrauen"
+      ],
+      "reflectionQuestion": "Wie viel Nähe passt jetzt?"
+    },
+    {
+      "id": "fuereinander_dasein",
+      "name": "Füreinander-da-Sein",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Warmes Erleben gegenseitiger Hilfe.",
+      "examples": [
+        "Ihr unterstützt euch abwechselnd.",
+        "Jemand begleitet dich zu einem Termin."
+      ],
+      "synonyms": [
+        "beistand",
+        "gegenseitige hilfe"
+      ],
+      "related": [
+        "fuersorge",
+        "solidaritaet"
+      ],
+      "reflectionQuestion": "Wo erlebe ich Beistand?"
+    },
+    {
+      "id": "mitmenschlichkeit",
+      "name": "Mitmenschlichkeit",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Wohlwollen gegenüber der Verletzlichkeit anderer.",
+      "examples": [
+        "Du bietest respektvoll Hilfe an.",
+        "Ein freundlicher Akt berührt dich."
+      ],
+      "synonyms": [
+        "menschlichkeit",
+        "mitmenschlich"
+      ],
+      "related": [
+        "mitgefuehl",
+        "freundlichkeit"
+      ],
+      "reflectionQuestion": "Wie kann ich zugewandt reagieren?"
+    },
+    {
+      "id": "gegenseitiges_vertrauen",
+      "name": "Gegenseitiges Vertrauen",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Vertrauen, das in beide Richtungen erlebt wird.",
+      "examples": [
+        "Ihr sprecht offen über Zweifel.",
+        "Ihr arbeitet ohne ständige Kontrolle zusammen."
+      ],
+      "synonyms": [
+        "wechselseitiges vertrauen",
+        "gegenseitige sicherheit"
+      ],
+      "related": [
+        "vertrauen",
+        "verlaesslichkeit"
+      ],
+      "reflectionQuestion": "Wie wächst Vertrauen auf beiden Seiten?"
+    },
+    {
+      "id": "willkommensein",
+      "name": "Willkommensein",
+      "family": "Verbundenheit",
+      "families": [
+        "Verbundenheit"
+      ],
+      "kind": "STATE",
+      "definition": "Gefühl, gern aufgenommen zu werden.",
+      "examples": [
+        "Du wirst beim Eintreten freundlich begrüßt.",
+        "Eine neue Gruppe bezieht dich ein."
+      ],
+      "synonyms": [
+        "willkommen fühlen",
+        "willkommensgefühl"
+      ],
+      "related": [
+        "angenommensein",
+        "zugehoerigkeit"
+      ],
+      "reflectionQuestion": "Woran spüre ich Willkommen?"
     }
   ],
   "comparisons": [
