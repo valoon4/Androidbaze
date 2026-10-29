@@ -1756,6 +1756,272 @@
       "strategyExample": "In einem sicheren Rahmen eine Frage stellen"
     }
   ],
-  "comparisons": [],
-  "learningPaths": []
+  "comparisons": [
+    {
+      "first": "sicherheit",
+      "second": "geborgenheit",
+      "overlap": "Beide geben Halt.",
+      "firstDistinction": "Sicherheit betont Schutz und Handlungsfähigkeit.",
+      "secondDistinction": "Geborgenheit betont das Gefühl, gut aufgehoben zu sein.",
+      "question": "Geht es mir um Schutz oder um warme Nähe?"
+    },
+    {
+      "first": "respekt",
+      "second": "wertschaetzung",
+      "overlap": "Beide nehmen Menschen ernst.",
+      "firstDistinction": "Respekt achtet Würde und Grenzen.",
+      "secondDistinction": "Wertschätzung zeigt, dass jemand als Person geschätzt wird.",
+      "question": "Was wünsche ich mir besonders?"
+    },
+    {
+      "first": "anerkennung",
+      "second": "wertschaetzung",
+      "overlap": "Beide können sich wie Gesehenwerden anfühlen.",
+      "firstDistinction": "Anerkennung bezieht sich häufiger auf Beiträge oder Fähigkeiten.",
+      "secondDistinction": "Wertschätzung gilt der Person auch ohne Leistung.",
+      "question": "Wünsche ich mir Rückmeldung oder grundsätzliche Zuwendung?"
+    },
+    {
+      "first": "selbstbestimmung",
+      "second": "freiheit",
+      "overlap": "Beide eröffnen Handlungsspielraum.",
+      "firstDistinction": "Selbstbestimmung betont Entscheidungen nach eigenen Werten.",
+      "secondDistinction": "Freiheit betont das Fehlen unangemessener Einschränkungen.",
+      "question": "Brauche ich eine eigene Entscheidung oder mehr Möglichkeiten?"
+    },
+    {
+      "first": "unabhaengigkeit",
+      "second": "raum_fuer_mich",
+      "overlap": "Beide schaffen Abstand.",
+      "firstDistinction": "Unabhängigkeit betrifft eigenständiges Handeln.",
+      "secondDistinction": "Raum für mich betrifft persönliche Zeit und Rückzug.",
+      "question": "Will ich etwas allein können oder allein sein?"
+    },
+    {
+      "first": "ruhe",
+      "second": "erholung",
+      "overlap": "Beide können entlasten.",
+      "firstDistinction": "Ruhe beschreibt eine Umgebung mit weniger Reizen und Druck.",
+      "secondDistinction": "Erholung meint das Wiedergewinnen von Kraft nach Belastung.",
+      "question": "Brauche ich weniger Reize oder neue Energie?"
+    },
+    {
+      "first": "schlaf",
+      "second": "erholung",
+      "overlap": "Beide können Kräfte zurückbringen.",
+      "firstDistinction": "Schlaf ist eine konkrete körperliche Grundfunktion.",
+      "secondDistinction": "Erholung kann auch durch Pausen oder abwechslungsreiche Tätigkeiten entstehen.",
+      "question": "Geht es mir um Schlaf oder allgemein um Regeneration?"
+    },
+    {
+      "first": "empathie",
+      "second": "verstandenwerden",
+      "overlap": "Beide betreffen einfühlsamen Kontakt.",
+      "firstDistinction": "Einfühlung betont achtsames Mitgefühl.",
+      "secondDistinction": "Verstandenwerden betont das Nachvollziehen der eigenen Sicht.",
+      "question": "Brauche ich Trost oder verstanden zu werden?"
+    },
+    {
+      "first": "gehoertwerden",
+      "second": "verstandenwerden",
+      "overlap": "Beide haben mit Kommunikation zu tun.",
+      "firstDistinction": "Gehörtwerden meint, aussprechen zu dürfen.",
+      "secondDistinction": "Verstandenwerden meint, dass der andere das Erleben nachvollzieht.",
+      "question": "Möchte ich erst einmal ausreden oder verstanden werden?"
+    },
+    {
+      "first": "fairness",
+      "second": "gleichbehandlung",
+      "overlap": "Beide beziehen sich auf faire Behandlung.",
+      "firstDistinction": "Fairness kann unterschiedliche Bedürfnisse angemessen berücksichtigen.",
+      "secondDistinction": "Gleichbehandlung betont gleiche Chancen ohne Willkür.",
+      "question": "Ist gleiche oder angemessene Behandlung nötig?"
+    },
+    {
+      "first": "kompetenz",
+      "second": "selbstwirksamkeit",
+      "overlap": "Beide betreffen Handlungsfähigkeit.",
+      "firstDistinction": "Kompetenz beschreibt das Bewältigen mit Fähigkeiten.",
+      "secondDistinction": "Selbstwirksamkeit beschreibt die erlebte Wirkung des Handelns.",
+      "question": "Möchte ich etwas können oder etwas bewirken?"
+    },
+    {
+      "first": "entwicklung",
+      "second": "meisterschaft",
+      "overlap": "Beide brauchen Übung.",
+      "firstDistinction": "Entwicklung meint breites persönliches Wachsen.",
+      "secondDistinction": "Meisterschaft meint die Vertiefung einer konkreten Fertigkeit.",
+      "question": "Möchte ich Neues erkunden oder Bestehendes vertiefen?"
+    },
+    {
+      "first": "sinn",
+      "second": "erfolg",
+      "overlap": "Beide können sich erfüllend anfühlen.",
+      "firstDistinction": "Sinn betrifft die Bedeutung einer Handlung.",
+      "secondDistinction": "Erfolg betrifft das Erreichen eines angestrebten Ziels.",
+      "question": "Ist mir die Bedeutung oder das Ergebnis wichtiger?"
+    },
+    {
+      "first": "naehe",
+      "second": "zugehoerigkeit",
+      "overlap": "Beide verbinden mit anderen.",
+      "firstDistinction": "Nähe meint persönlichen Kontakt und emotionale Verbundenheit.",
+      "secondDistinction": "Zugehörigkeit meint Teil einer Gemeinschaft sein zu dürfen.",
+      "question": "Wünsche ich mir persönlichen Kontakt oder einen Platz in einer Gruppe?"
+    },
+    {
+      "first": "abwechslung",
+      "second": "abenteuer",
+      "overlap": "Beide bringen Neues.",
+      "firstDistinction": "Abwechslung kann schon ein kleiner Wechsel im Alltag sein.",
+      "secondDistinction": "Abenteuer betont bewusst ungewohnte offene Erfahrungen.",
+      "question": "Reicht ein kleiner Wechsel oder reizt mich Unbekanntes?"
+    },
+    {
+      "first": "genuss",
+      "second": "freude",
+      "overlap": "Beide können angenehm sein.",
+      "firstDistinction": "Genuss betrifft bewusstes Verweilen bei einer angenehmen Erfahrung.",
+      "secondDistinction": "Freude kann auch ohne konkreten Sinneseindruck entstehen.",
+      "question": "Genieße ich gerade etwas oder freue ich mich allgemein?"
+    },
+    {
+      "first": "freiraum",
+      "second": "privatsphaere",
+      "overlap": "Beide schützen einen eigenen Bereich.",
+      "firstDistinction": "Freiraum meint Gestaltungsspielraum.",
+      "secondDistinction": "Privatsphäre meint die Kontrolle über persönliche Informationen und Rückzug.",
+      "question": "Brauche ich kreative Freiheit oder Schutz meines Privaten?"
+    },
+    {
+      "first": "inspiration",
+      "second": "lernen",
+      "overlap": "Beide bringen Ideen.",
+      "firstDistinction": "Inspiration meint einen belebenden Impuls.",
+      "secondDistinction": "Lernen meint das schrittweise Erwerben von Wissen oder Können.",
+      "question": "Brauche ich einen Funken oder Zeit zum Verstehen?"
+    },
+    {
+      "first": "unterstuetzung",
+      "second": "fuersorge",
+      "overlap": "Beide können Entlastung bringen.",
+      "firstDistinction": "Unterstützung betont konkrete Hilfe oder Rückhalt.",
+      "secondDistinction": "Fürsorge betont das wohlwollende Kümmern um Befinden.",
+      "question": "Wünsche ich mir praktische Hilfe oder Zuwendung?"
+    },
+    {
+      "first": "grenzen",
+      "second": "schutz",
+      "overlap": "Beide helfen, Belastungen zu begrenzen.",
+      "firstDistinction": "Grenzen benennen den persönlichen erlaubten Rahmen.",
+      "secondDistinction": "Schutz bezieht sich auf das Fernhalten möglicher Schäden.",
+      "question": "Welche Grenze oder Schutzmaßnahme ist für mich sinnvoll?"
+    }
+  ],
+  "learningPaths": [
+    {
+      "id": "sicher_und_klar",
+      "title": "Was mir Sicherheit gibt",
+      "description": "Schutz, Orientierung und tragfähige Beziehungen unterscheiden.",
+      "needIds": [
+        "sicherheit",
+        "schutz",
+        "stabilitaet",
+        "verlaesslichkeit",
+        "klarheit",
+        "geborgenheit"
+      ]
+    },
+    {
+      "id": "verbindung",
+      "title": "Wie ich Verbundenheit erlebe",
+      "description": "Verschiedene Formen von Nähe und Gemeinschaft entdecken.",
+      "needIds": [
+        "naehe",
+        "freundschaft",
+        "zugehoerigkeit",
+        "verstandenwerden",
+        "empathie",
+        "gemeinschaft"
+      ]
+    },
+    {
+      "id": "meine_grenzen",
+      "title": "Freiheit und Grenzen",
+      "description": "Eigenständigkeit, Privatsphäre und Freiraum erkunden.",
+      "needIds": [
+        "selbstbestimmung",
+        "entscheidungsfreiheit",
+        "grenzen",
+        "privatsphaere",
+        "raum_fuer_mich",
+        "authentizitaet"
+      ]
+    },
+    {
+      "id": "gesehen_werden",
+      "title": "Gesehen und geachtet sein",
+      "description": "Zwischen Anerkennung, Würde und Fairness unterscheiden.",
+      "needIds": [
+        "respekt",
+        "anerkennung",
+        "wertschaetzung",
+        "gehoertwerden",
+        "wuerde",
+        "fairness"
+      ]
+    },
+    {
+      "id": "energie",
+      "title": "Was meinen Kräften guttut",
+      "description": "Ruhe, Schlaf, Versorgung und Erholung betrachten.",
+      "needIds": [
+        "ruhe",
+        "erholung",
+        "schlaf",
+        "naehrung",
+        "entspannung",
+        "ausgleich"
+      ]
+    },
+    {
+      "id": "wachsen",
+      "title": "Lernen und wachsen",
+      "description": "Kompetenz, Selbstwirksamkeit und Herausforderungen erkunden.",
+      "needIds": [
+        "lernen",
+        "kompetenz",
+        "selbstwirksamkeit",
+        "entwicklung",
+        "neugier",
+        "meisterschaft"
+      ]
+    },
+    {
+      "id": "richtung_finden",
+      "title": "Was meinem Leben Richtung gibt",
+      "description": "Werte, Sinn, Hoffnung und Beteiligung entdecken.",
+      "needIds": [
+        "werte",
+        "sinn",
+        "perspektive",
+        "hoffnung",
+        "teilhabe",
+        "beitrag"
+      ]
+    },
+    {
+      "id": "lebendig",
+      "title": "Mehr Lebendigkeit im Alltag",
+      "description": "Freude, Spiel und Inspiration auf eigene Weise erleben.",
+      "needIds": [
+        "spiel",
+        "freude",
+        "humor",
+        "abenteuer",
+        "genuss",
+        "lebendigkeit"
+      ]
+    }
+  ]
 }
