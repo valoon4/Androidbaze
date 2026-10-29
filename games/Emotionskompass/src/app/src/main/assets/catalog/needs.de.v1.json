@@ -1,0 +1,859 @@
+{
+  "schemaVersion": 1,
+  "contentRevision": "2026-10-m3.3",
+  "editorialStatus": "working-draft-not-clinically-validated",
+  "familyNames": [
+    "Sicherheit & Stabilität",
+    "Verbundenheit & Nähe",
+    "Autonomie & Grenzen",
+    "Wertschätzung & Fairness",
+    "Ruhe & Wohlbefinden",
+    "Entwicklung & Kompetenz",
+    "Sinn & Orientierung",
+    "Lebendigkeit & Freude"
+  ],
+  "needs": [
+    {
+      "id": "sicherheit",
+      "name": "Sicherheit",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, vor Gefahren geschützt und grundsätzlich handlungsfähig zu sein.",
+      "fulfilledExample": "Du fühlst dich an einem vertrauten Ort sicher.",
+      "unmetExample": "Eine unklare Bedrohung lässt dich Schutz suchen.",
+      "synonyms": [
+        "sicher sein",
+        "schutzgefühl"
+      ],
+      "related": [
+        "schutz",
+        "stabilitaet"
+      ],
+      "reflectionQuestion": "Was vermittelt mir gerade Sicherheit?",
+      "strategyExample": "Eine vertraute Person um Begleitung bitten"
+    },
+    {
+      "id": "schutz",
+      "name": "Schutz",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis nach wirksamen Grenzen gegenüber möglichem Schaden.",
+      "fulfilledExample": "Eine klare Abgrenzung schützt dich vor Überlastung.",
+      "unmetExample": "Eine Grenzüberschreitung lässt dich ungeschützt fühlen.",
+      "synonyms": [
+        "geschützt sein",
+        "abschirmung"
+      ],
+      "related": [
+        "sicherheit",
+        "grenzen"
+      ],
+      "reflectionQuestion": "Wovor möchte ich geschützt sein?",
+      "strategyExample": "Eine sichere Umgebung aufsuchen"
+    },
+    {
+      "id": "stabilitaet",
+      "name": "Stabilität",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis nach einem tragfähigen und nicht ständig wechselnden Rahmen.",
+      "fulfilledExample": "Wiederkehrende Abläufe geben dir Halt.",
+      "unmetExample": "Viele plötzliche Änderungen verunsichern dich.",
+      "synonyms": [
+        "beständiger rahmen",
+        "halt"
+      ],
+      "related": [
+        "bestaendigkeit",
+        "orientierung"
+      ],
+      "reflectionQuestion": "Welche Struktur gibt mir Halt?",
+      "strategyExample": "Eine kleine Routine vereinbaren"
+    },
+    {
+      "id": "bestaendigkeit",
+      "name": "Beständigkeit",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, dass Wichtiges über eine gewisse Zeit verlässlich bleibt.",
+      "fulfilledExample": "Ein vertrautes Ritual bleibt auch bei Stress erhalten.",
+      "unmetExample": "Ständige Veränderungen machen es schwer anzukommen.",
+      "synonyms": [
+        "dauerhaftigkeit",
+        "kontinuität"
+      ],
+      "related": [
+        "stabilitaet",
+        "verlaesslichkeit"
+      ],
+      "reflectionQuestion": "Was darf in meinem Leben beständig sein?",
+      "strategyExample": "Ein wertvolles Ritual bewusst pflegen"
+    },
+    {
+      "id": "verlaesslichkeit",
+      "name": "Verlässlichkeit",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, Zusagen und Absprachen vertrauen zu können.",
+      "fulfilledExample": "Eine eingehaltene Vereinbarung beruhigt dich.",
+      "unmetExample": "Ein wiederholt gebrochenes Versprechen belastet dich.",
+      "synonyms": [
+        "zuverlässigkeit",
+        "verbindlichkeit"
+      ],
+      "related": [
+        "vertrauen",
+        "bestaendigkeit"
+      ],
+      "reflectionQuestion": "Welche Zusage ist für mich besonders wichtig?",
+      "strategyExample": "Erwartungen offen miteinander klären"
+    },
+    {
+      "id": "vertrauen",
+      "name": "Vertrauen",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, sich auf Menschen oder Prozesse einlassen zu können, ohne alles zu kontrollieren.",
+      "fulfilledExample": "Du kannst eine Sorge ehrlich teilen.",
+      "unmetExample": "Ein Vertrauensbruch lässt dich vorsichtiger werden.",
+      "synonyms": [
+        "vertrauen können",
+        "zuversicht in andere"
+      ],
+      "related": [
+        "verlaesslichkeit",
+        "offenheit"
+      ],
+      "reflectionQuestion": "Wann fällt es mir leicht, Vertrauen zu wagen?",
+      "strategyExample": "Schrittweise eine kleine Abmachung treffen"
+    },
+    {
+      "id": "orientierung",
+      "name": "Orientierung",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, eine Situation und ihre Möglichkeiten einordnen zu können.",
+      "fulfilledExample": "Ein klarer Ablauf hilft dir bei einem Neuanfang.",
+      "unmetExample": "Widersprüchliche Informationen machen dich ratlos.",
+      "synonyms": [
+        "überblick",
+        "wegweisung"
+      ],
+      "related": [
+        "klarheit",
+        "vorhersehbarkeit"
+      ],
+      "reflectionQuestion": "Welche Information würde mir Orientierung geben?",
+      "strategyExample": "Nach dem nächsten konkreten Schritt fragen"
+    },
+    {
+      "id": "klarheit",
+      "name": "Klarheit",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis nach verständlichen Informationen und eindeutiger Kommunikation.",
+      "fulfilledExample": "Ein offenes Gespräch räumt Missverständnisse aus.",
+      "unmetExample": "Unklare Erwartungen verunsichern dich.",
+      "synonyms": [
+        "eindeutigkeit",
+        "transparenz"
+      ],
+      "related": [
+        "orientierung",
+        "ehrlichkeit"
+      ],
+      "reflectionQuestion": "Welche Frage ist für mich noch offen?",
+      "strategyExample": "Eine konkrete Rückfrage stellen"
+    },
+    {
+      "id": "vorhersehbarkeit",
+      "name": "Vorhersehbarkeit",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, Entwicklungen grob abschätzen und sich vorbereiten zu können.",
+      "fulfilledExample": "Ein angekündigter Planwechsel lässt dir Zeit.",
+      "unmetExample": "Eine plötzliche Entscheidung überrumpelt dich.",
+      "synonyms": [
+        "planbarkeit",
+        "berechenbarkeit"
+      ],
+      "related": [
+        "stabilitaet",
+        "orientierung"
+      ],
+      "reflectionQuestion": "Was müsste ich im Voraus wissen?",
+      "strategyExample": "Um eine rechtzeitige Ankündigung bitten"
+    },
+    {
+      "id": "kontrolle_ueber_eigenes",
+      "name": "Einfluss auf das Eigene",
+      "family": "Sicherheit & Stabilität",
+      "families": [
+        "Sicherheit & Stabilität"
+      ],
+      "definition": "Das Bedürfnis, wichtige persönliche Angelegenheiten mitgestalten zu können.",
+      "fulfilledExample": "Du kannst einen Tagesablauf selbst planen.",
+      "unmetExample": "Über deinen Kopf hinweg wird entschieden.",
+      "synonyms": [
+        "einfluss",
+        "steuerbarkeit"
+      ],
+      "related": [
+        "selbstbestimmung",
+        "sicherheit"
+      ],
+      "reflectionQuestion": "Worauf möchte ich selbst Einfluss haben?",
+      "strategyExample": "Ein eigenes Mitspracherecht ansprechen"
+    },
+    {
+      "id": "naehe",
+      "name": "Nähe",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis nach emotionaler oder körperlicher Verbundenheit in einem passenden Maß.",
+      "fulfilledExample": "Ein ruhiges Gespräch schafft Vertrautheit.",
+      "unmetExample": "Du vermisst persönlichen Kontakt.",
+      "synonyms": [
+        "verbunden sein",
+        "herzensnähe"
+      ],
+      "related": [
+        "geborgenheit",
+        "freundschaft"
+      ],
+      "reflectionQuestion": "Welche Art von Nähe ist mir angenehm?",
+      "strategyExample": "Einem vertrauten Menschen Zeit vorschlagen"
+    },
+    {
+      "id": "zugehoerigkeit",
+      "name": "Zugehörigkeit",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis, Teil einer Gruppe sein zu dürfen, ohne sich verstellen zu müssen.",
+      "fulfilledExample": "In der Gruppe wirst du selbstverständlich einbezogen.",
+      "unmetExample": "Andere planen etwas, ohne dich zu beachten.",
+      "synonyms": [
+        "dazugehören",
+        "gemeinschaftsgefühl"
+      ],
+      "related": [
+        "gemeinschaft",
+        "akzeptanz"
+      ],
+      "reflectionQuestion": "Wo fühle ich mich wirklich zugehörig?",
+      "strategyExample": "Ein gemeinsames Interesse mit anderen pflegen"
+    },
+    {
+      "id": "liebe",
+      "name": "Liebe",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis nach tiefer gegenseitiger Zuwendung in unterschiedlichen Beziehungsformen.",
+      "fulfilledExample": "Jemand begegnet dir auch an schwierigen Tagen zugewandt.",
+      "unmetExample": "Dir fehlt liebevolle Aufmerksamkeit.",
+      "synonyms": [
+        "liebhaben",
+        "liebe erfahren"
+      ],
+      "related": [
+        "naehe",
+        "fuersorge"
+      ],
+      "reflectionQuestion": "Was bedeutet liebevolle Zuwendung für mich?",
+      "strategyExample": "Zuneigung in einer passenden Form ausdrücken"
+    },
+    {
+      "id": "freundschaft",
+      "name": "Freundschaft",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis nach freiwilliger persönlicher Verbundenheit und gegenseitigem Interesse.",
+      "fulfilledExample": "Ein Freund nimmt sich Zeit für dich.",
+      "unmetExample": "Du wünschst dir jemanden für ein ehrliches Gespräch.",
+      "synonyms": [
+        "freundschaftliche verbindung",
+        "freundeskreis"
+      ],
+      "related": [
+        "naehe",
+        "gemeinschaft"
+      ],
+      "reflectionQuestion": "Welche Freundschaft möchte ich nähren?",
+      "strategyExample": "Einem Freund eine Nachricht schreiben"
+    },
+    {
+      "id": "gemeinschaft",
+      "name": "Gemeinschaft",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis, mit anderen ein gemeinsames Wir zu erleben.",
+      "fulfilledExample": "Beim gemeinsamen Projekt entsteht Zusammenhalt.",
+      "unmetExample": "Du fühlst dich bei einer Aktivität ausgeschlossen.",
+      "synonyms": [
+        "zusammenhalt",
+        "wirgefühl"
+      ],
+      "related": [
+        "zugehoerigkeit",
+        "teilhabe"
+      ],
+      "reflectionQuestion": "Welche Gemeinschaft tut mir gut?",
+      "strategyExample": "An einer gemeinsamen Aktivität teilnehmen"
+    },
+    {
+      "id": "akzeptanz",
+      "name": "Akzeptanz",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis, mit persönlichen Eigenschaften grundsätzlich angenommen zu werden.",
+      "fulfilledExample": "Du darfst dich ohne Maske zeigen.",
+      "unmetExample": "Du hast Angst, wegen einer Eigenheit abgelehnt zu werden.",
+      "synonyms": [
+        "angenommensein",
+        "annahme"
+      ],
+      "related": [
+        "zugehoerigkeit",
+        "respekt"
+      ],
+      "reflectionQuestion": "Wo kann ich unverstellt sein?",
+      "strategyExample": "Einen sicheren Rahmen für Offenheit suchen"
+    },
+    {
+      "id": "verstandenwerden",
+      "name": "Verstandenwerden",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis, mit dem eigenen Erleben ernst genommen und nachvollzogen zu werden.",
+      "fulfilledExample": "Jemand hört zu und fragt interessiert nach.",
+      "unmetExample": "Deine Sicht wird vorschnell abgetan.",
+      "synonyms": [
+        "verständnis",
+        "verstanden sein"
+      ],
+      "related": [
+        "empathie",
+        "gehoertwerden"
+      ],
+      "reflectionQuestion": "Was wünsche ich mir, dass andere verstehen?",
+      "strategyExample": "Um Zuhören ohne sofortigen Rat bitten"
+    },
+    {
+      "id": "empathie",
+      "name": "Einfühlung",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis nach mitfühlendem und achtsamem Kontakt.",
+      "fulfilledExample": "Jemand erkennt, dass du einen schweren Tag hast.",
+      "unmetExample": "Deine Verletzlichkeit wird belächelt.",
+      "synonyms": [
+        "mitgefühl",
+        "einfühlungsvermögen"
+      ],
+      "related": [
+        "verstandenwerden",
+        "fuersorge"
+      ],
+      "reflectionQuestion": "Wie wünsche ich mir Mitgefühl?",
+      "strategyExample": "Eine vertraute Person um Zeit bitten"
+    },
+    {
+      "id": "geborgenheit",
+      "name": "Geborgenheit",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis, sich aufgehoben, willkommen und geschützt zu fühlen.",
+      "fulfilledExample": "Bei vertrauten Menschen kannst du entspannen.",
+      "unmetExample": "Du fühlst dich allein in einer ungewohnten Lage.",
+      "synonyms": [
+        "aufgehoben sein",
+        "behütetsein"
+      ],
+      "related": [
+        "naehe",
+        "sicherheit"
+      ],
+      "reflectionQuestion": "Wo fühle ich mich geborgen?",
+      "strategyExample": "Einen wohltuenden Ort aufsuchen"
+    },
+    {
+      "id": "fuersorge",
+      "name": "Fürsorge",
+      "family": "Verbundenheit & Nähe",
+      "families": [
+        "Verbundenheit & Nähe"
+      ],
+      "definition": "Das Bedürfnis, dass Belastungen gesehen und unterstützend begleitet werden.",
+      "fulfilledExample": "Jemand fragt, was dir helfen würde.",
+      "unmetExample": "Du musst dich trotz Erschöpfung um alles allein kümmern.",
+      "synonyms": [
+        "umsorgt werden",
+        "kümmern"
+      ],
+      "related": [
+        "unterstuetzung",
+        "empathie"
+      ],
+      "reflectionQuestion": "Welche Art von Fürsorge wünsche ich mir?",
+      "strategyExample": "Ein konkretes Hilfsangebot erbitten"
+    },
+    {
+      "id": "selbstbestimmung",
+      "name": "Selbstbestimmung",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis, persönliche Entscheidungen im Einklang mit eigenen Werten zu treffen.",
+      "fulfilledExample": "Du entscheidest selbst, ob du zusagst.",
+      "unmetExample": "Andere bestimmen ungefragt über dich.",
+      "synonyms": [
+        "autonomie",
+        "eigenbestimmung"
+      ],
+      "related": [
+        "entscheidungsfreiheit",
+        "freiheit"
+      ],
+      "reflectionQuestion": "Wo möchte ich selbst entscheiden?",
+      "strategyExample": "Eine eigene Präferenz aussprechen"
+    },
+    {
+      "id": "freiheit",
+      "name": "Freiheit",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis nach passenden Möglichkeiten ohne unnötige Einschränkungen.",
+      "fulfilledExample": "Du hast Raum, deinen Tag zu gestalten.",
+      "unmetExample": "Starre Regeln nehmen dir jeden Spielraum.",
+      "synonyms": [
+        "freiheit haben",
+        "offenheit"
+      ],
+      "related": [
+        "selbstbestimmung",
+        "freiraum"
+      ],
+      "reflectionQuestion": "Welche Freiheit ist mir wichtig?",
+      "strategyExample": "Eine Alternative zu einer Regel besprechen"
+    },
+    {
+      "id": "entscheidungsfreiheit",
+      "name": "Entscheidungsfreiheit",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis, unter echten Optionen wählen zu können.",
+      "fulfilledExample": "Du kannst zwei passende Wege in Ruhe abwägen.",
+      "unmetExample": "Dir wird nur eine Lösung aufgezwungen.",
+      "synonyms": [
+        "wahlfreiheit",
+        "wahlmöglichkeit"
+      ],
+      "related": [
+        "selbstbestimmung",
+        "orientierung"
+      ],
+      "reflectionQuestion": "Welche Wahl wäre wirklich meine?",
+      "strategyExample": "Um Bedenkzeit bitten"
+    },
+    {
+      "id": "unabhaengigkeit",
+      "name": "Unabhängigkeit",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis, eigene Aufgaben und Wege ohne unangemessene Abhängigkeit zu bewältigen.",
+      "fulfilledExample": "Du erledigst etwas aus eigener Kraft.",
+      "unmetExample": "Du musst für jede Kleinigkeit um Erlaubnis bitten.",
+      "synonyms": [
+        "eigenständigkeit",
+        "selbstständigkeit"
+      ],
+      "related": [
+        "kompetenz",
+        "freiheit"
+      ],
+      "reflectionQuestion": "Wo wünsche ich mir mehr Eigenständigkeit?",
+      "strategyExample": "Eine Aufgabe eigenverantwortlich übernehmen"
+    },
+    {
+      "id": "privatsphaere",
+      "name": "Privatsphäre",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis nach einem geschützten persönlichen Bereich und eigener Informationskontrolle.",
+      "fulfilledExample": "Deine Grenzen beim Teilen persönlicher Dinge werden respektiert.",
+      "unmetExample": "Jemand liest ohne Erlaubnis deine Nachrichten.",
+      "synonyms": [
+        "privatheit",
+        "rückzugsrecht"
+      ],
+      "related": [
+        "grenzen",
+        "raum_fuer_mich"
+      ],
+      "reflectionQuestion": "Was möchte ich für mich behalten?",
+      "strategyExample": "Eine Datenschutzgrenze deutlich benennen"
+    },
+    {
+      "id": "grenzen",
+      "name": "Grenzen",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis, eigene Belastungs- und Kontaktgrenzen wahren zu dürfen.",
+      "fulfilledExample": "Ein Nein wird ohne Diskussion respektiert.",
+      "unmetExample": "Deine freie Zeit wird ständig verplant.",
+      "synonyms": [
+        "abgrenzung",
+        "grenzen respektieren"
+      ],
+      "related": [
+        "schutz",
+        "selbstbestimmung"
+      ],
+      "reflectionQuestion": "Welche Grenze brauche ich jetzt?",
+      "strategyExample": "Eine klare und freundliche Absage formulieren"
+    },
+    {
+      "id": "freiraum",
+      "name": "Freiraum",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis nach Zeit oder Möglichkeiten, etwas nach eigener Art zu gestalten.",
+      "fulfilledExample": "Du kannst bei einer Aufgabe kreativ vorgehen.",
+      "unmetExample": "Jeder Schritt wird dir vorgeschrieben.",
+      "synonyms": [
+        "spielraum",
+        "gestaltungsspielraum"
+      ],
+      "related": [
+        "freiheit",
+        "kreativitaet"
+      ],
+      "reflectionQuestion": "Wofür brauche ich mehr Spielraum?",
+      "strategyExample": "Eine eigene Vorgehensweise vorschlagen"
+    },
+    {
+      "id": "raum_fuer_mich",
+      "name": "Raum für mich",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis nach Alleinzeit oder persönlichem Rückzug ohne Rechtfertigung.",
+      "fulfilledExample": "Du kannst einen Abend für dich nutzen.",
+      "unmetExample": "Ständig wird deine Aufmerksamkeit eingefordert.",
+      "synonyms": [
+        "rückzugsraum",
+        "zeit für mich"
+      ],
+      "related": [
+        "privatsphaere",
+        "ruhe"
+      ],
+      "reflectionQuestion": "Wie viel Zeit allein tut mir gut?",
+      "strategyExample": "Eine ungestörte Pause einplanen"
+    },
+    {
+      "id": "authentizitaet",
+      "name": "Authentizität",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis, eigenen Werten und dem eigenen Wesen treu sein zu dürfen.",
+      "fulfilledExample": "Du kannst eine abweichende Meinung ehrlich sagen.",
+      "unmetExample": "Du passt dich dauerhaft gegen deine Überzeugung an.",
+      "synonyms": [
+        "echtsein",
+        "ich selbst sein"
+      ],
+      "related": [
+        "selbstbestimmung",
+        "akzeptanz"
+      ],
+      "reflectionQuestion": "Wann fühle ich mich echt?",
+      "strategyExample": "Eine eigene Haltung vorsichtig benennen"
+    },
+    {
+      "id": "ausdruck",
+      "name": "Ausdruck",
+      "family": "Autonomie & Grenzen",
+      "families": [
+        "Autonomie & Grenzen"
+      ],
+      "definition": "Das Bedürfnis, eigene Gedanken, Gefühle oder Ideen nach außen bringen zu können.",
+      "fulfilledExample": "Du kannst deine Gefühle in Worte fassen.",
+      "unmetExample": "Du hast das Gefühl, nichts sagen zu dürfen.",
+      "synonyms": [
+        "ausdrucksfreiheit",
+        "äußerung"
+      ],
+      "related": [
+        "gehoertwerden",
+        "kreativitaet"
+      ],
+      "reflectionQuestion": "Wie möchte ich mich ausdrücken?",
+      "strategyExample": "Gedanken aufschreiben oder teilen"
+    },
+    {
+      "id": "respekt",
+      "name": "Respekt",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis, mit Würde und Rücksicht behandelt zu werden.",
+      "fulfilledExample": "Deine Grenze wird ernst genommen.",
+      "unmetExample": "Du wirst herablassend angesprochen.",
+      "synonyms": [
+        "achtung",
+        "rücksichtnahme"
+      ],
+      "related": [
+        "wuerde",
+        "akzeptanz"
+      ],
+      "reflectionQuestion": "Woran merke ich Respekt?",
+      "strategyExample": "Eine verletzende Ansprache benennen"
+    },
+    {
+      "id": "anerkennung",
+      "name": "Anerkennung",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis, mit Fähigkeiten oder Beiträgen gesehen zu werden.",
+      "fulfilledExample": "Jemand würdigt deine investierte Arbeit.",
+      "unmetExample": "Deine Mühe bleibt unsichtbar.",
+      "synonyms": [
+        "lob",
+        "würdigung"
+      ],
+      "related": [
+        "wertschaetzung",
+        "sichtbarkeit"
+      ],
+      "reflectionQuestion": "Welche Leistung wünsche ich mir anerkannt?",
+      "strategyExample": "Um konkrete Rückmeldung bitten"
+    },
+    {
+      "id": "wertschaetzung",
+      "name": "Wertschätzung",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis, als Mensch und nicht nur für Leistung geschätzt zu werden.",
+      "fulfilledExample": "Du wirst auch ohne Erfolg freundlich behandelt.",
+      "unmetExample": "Du fühlst dich nur bei Leistung willkommen.",
+      "synonyms": [
+        "geschätzt werden",
+        "wertschätzung erfahren"
+      ],
+      "related": [
+        "respekt",
+        "anerkennung"
+      ],
+      "reflectionQuestion": "Was lässt mich wertgeschätzt fühlen?",
+      "strategyExample": "Dankbarkeit oder Würdigung ansprechen"
+    },
+    {
+      "id": "gehoertwerden",
+      "name": "Gehörtwerden",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis, mit der eigenen Stimme Gehör zu finden.",
+      "fulfilledExample": "Du kannst in Ruhe ausreden.",
+      "unmetExample": "Jemand fällt dir ständig ins Wort.",
+      "synonyms": [
+        "gehört sein",
+        "zuhören"
+      ],
+      "related": [
+        "verstandenwerden",
+        "ausdruck"
+      ],
+      "reflectionQuestion": "Was möchte ich aussprechen?",
+      "strategyExample": "Um ungestörte Redezeit bitten"
+    },
+    {
+      "id": "sichtbarkeit",
+      "name": "Sichtbarkeit",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis, nicht übersehen oder übergangen zu werden.",
+      "fulfilledExample": "Dein Beitrag wird bei Entscheidungen berücksichtigt.",
+      "unmetExample": "Du wirst bei Treffen regelmäßig vergessen.",
+      "synonyms": [
+        "gesehen werden",
+        "wahrgenommen werden"
+      ],
+      "related": [
+        "anerkennung",
+        "teilhabe"
+      ],
+      "reflectionQuestion": "Wo möchte ich mehr wahrgenommen werden?",
+      "strategyExample": "Die eigene Beteiligung sichtbar machen"
+    },
+    {
+      "id": "fairness",
+      "name": "Fairness",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis nach nachvollziehbaren und ausgewogenen Regeln.",
+      "fulfilledExample": "Eine Entscheidung wird offen und gleich begründet.",
+      "unmetExample": "Für andere gelten heimlich mildere Regeln.",
+      "synonyms": [
+        "fair behandelt",
+        "redlichkeit"
+      ],
+      "related": [
+        "gerechtigkeit",
+        "gleichbehandlung"
+      ],
+      "reflectionQuestion": "Welche Regel empfinde ich als fair?",
+      "strategyExample": "Um eine transparente Begründung bitten"
+    },
+    {
+      "id": "gleichbehandlung",
+      "name": "Gleichbehandlung",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis, ohne willkürliche Benachteiligung behandelt zu werden.",
+      "fulfilledExample": "Alle erhalten dieselbe faire Chance.",
+      "unmetExample": "Eine Person wird grundlos bevorzugt.",
+      "synonyms": [
+        "gleichberechtigung",
+        "nicht benachteiligt"
+      ],
+      "related": [
+        "fairness",
+        "wuerde"
+      ],
+      "reflectionQuestion": "Wo wünsche ich mir gleiche Chancen?",
+      "strategyExample": "Ungleichbehandlung sachlich ansprechen"
+    },
+    {
+      "id": "gerechtigkeit",
+      "name": "Gerechtigkeit",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis nach angemessener Verantwortung und fairen Folgen.",
+      "fulfilledExample": "Ein Fehler wird offen und fair geklärt.",
+      "unmetExample": "Ein Unrecht bleibt ohne Gehör.",
+      "synonyms": [
+        "gerecht behandelt",
+        "rechtmäßigkeit"
+      ],
+      "related": [
+        "fairness",
+        "verantwortung"
+      ],
+      "reflectionQuestion": "Was wäre in dieser Situation gerecht?",
+      "strategyExample": "Ein ruhiges klärendes Gespräch suchen"
+    },
+    {
+      "id": "wuerde",
+      "name": "Würde",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis, als Mensch unabhängig von Leistung respektiert zu werden.",
+      "fulfilledExample": "Du wirst auch bei einem Fehler würdevoll behandelt.",
+      "unmetExample": "Du wirst bloßgestellt oder erniedrigt.",
+      "synonyms": [
+        "menschenwürde",
+        "achtung der person"
+      ],
+      "related": [
+        "respekt",
+        "wertschaetzung"
+      ],
+      "reflectionQuestion": "Was stärkt mein Gefühl von Würde?",
+      "strategyExample": "Ein entwürdigendes Verhalten begrenzen"
+    },
+    {
+      "id": "ehrlichkeit",
+      "name": "Ehrlichkeit",
+      "family": "Wertschätzung & Fairness",
+      "families": [
+        "Wertschätzung & Fairness"
+      ],
+      "definition": "Das Bedürfnis nach wahrhaftiger Kommunikation ohne bewusste Täuschung.",
+      "fulfilledExample": "Eine schwierige Wahrheit wird respektvoll angesprochen.",
+      "unmetExample": "Eine wiederholte Lüge erschüttert dein Vertrauen.",
+      "synonyms": [
+        "aufrichtigkeit",
+        "wahrhaftigkeit"
+      ],
+      "related": [
+        "vertrauen",
+        "klarheit"
+      ],
+      "reflectionQuestion": "Welche Wahrheit ist mir wichtig?",
+      "strategyExample": "Um ein offenes Gespräch bitten"
+    }
+  ],
+  "comparisons": [],
+  "learningPaths": []
+}
