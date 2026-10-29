@@ -35,24 +35,6 @@ enum class LifeArea(val label: String) {
     ANDERES("Etwas anderes")
 }
 
-/** Possible needs are prompts chosen by the user, never inferred from their emotion. */
-enum class PersonalNeed(val label: String) {
-    RUHE("Ruhe"),
-    SICHERHEIT("Sicherheit"),
-    NAEHE("Nähe & Verbundenheit"),
-    VERSTAENDNIS("Verständnis"),
-    RESPEKT("Respekt"),
-    SELBSTBESTIMMUNG("Selbstbestimmung"),
-    KLARHEIT("Klarheit"),
-    UNTERSTUETZUNG("Unterstützung"),
-    GERECHTIGKEIT("Fairness"),
-    ERHOLUNG("Erholung"),
-    AUSDRUCK("Ausdruck & Gehörtwerden"),
-    RAUM("Raum für mich"),
-    ANDERES("Etwas anderes"),
-    UNKLAR("Ich weiß es noch nicht")
-}
-
 /** An optional self-chosen idea, not automatically prescribed advice. */
 enum class NextStepIdea(val label: String) {
     PAUSE("Eine Pause"),
@@ -80,7 +62,7 @@ data class CheckInDraft(
     val note: String = "",
     val situation: String = "",
     val interpretation: String = "",
-    val needs: Set<PersonalNeed> = emptySet(),
+    val needs: Set<String> = emptySet(),
     val insight: String = "",
     val nextStepIdea: NextStepIdea? = null,
     val nextStepNote: String = ""
@@ -143,13 +125,19 @@ data class CheckInDraft(
     fun withInterpretation(value: String): CheckInDraft =
         copy(interpretation = value.take(MAX_CONTEXT_LENGTH))
 
-    fun toggleNeed(need: PersonalNeed): CheckInDraft = copy(
-        needs = when {
-            need in needs -> needs - need
-            need == PersonalNeed.UNKLAR -> setOf(PersonalNeed.UNKLAR)
-            else -> (needs - PersonalNeed.UNKLAR) + need
-        }
-    )
+    /**
+     * Stable needs-catalog IDs; UNKNOWN_NEED_ID is a deliberate user choice and
+     * mutually exclusive with concrete needs. Validation against the atlas occurs
+     * in the ViewModel before this reducer is called.
+     */
+    fun toggleNeed(id: String): CheckInDraft {
+        require(id.isNotBlank())
+        return copy(needs = when {
+            id in needs -> needs - id
+            id == UNKNOWN_NEED_ID -> setOf(UNKNOWN_NEED_ID)
+            else -> (needs - UNKNOWN_NEED_ID) + id
+        })
+    }
 
     fun withInsight(value: String): CheckInDraft =
         copy(insight = value.take(MAX_INSIGHT_LENGTH))
@@ -174,6 +162,7 @@ data class CheckInDraft(
     })
 
     companion object {
+        const val UNKNOWN_NEED_ID = "__unklar__"
         const val MAX_NOTE_LENGTH = 500
         const val MAX_CONTEXT_LENGTH = 280
         const val MAX_INSIGHT_LENGTH = 400
