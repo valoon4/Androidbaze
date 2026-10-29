@@ -1,0 +1,64 @@
+name: Build Emotionskompass M1 Debug APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "games/Emotionskompass/src/**"
+      - ".github/workflows/emotionskompass-debug-apk.yml"
+  pull_request:
+    paths:
+      - "games/Emotionskompass/src/**"
+      - ".github/workflows/emotionskompass-debug-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: games/Emotionskompass/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Install Android SDK 36
+        run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          SDKMGR=$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)
+          test -n "$SDKMGR"
+          yes | "$SDKMGR" --licenses > /dev/null || true
+          "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
+      - name: Test Kotlin domain model
+        run: gradle :app:testDebugUnitTest --no-daemon --stacktrace
+      - name: Build native Debug APK
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+      - name: Verify APK identity and signature
+        run: |
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
+          grep -q "package: name='com.valoon4.emotionskompass'" apk-badging.txt
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
+          cp "$APK" Emotionskompass-M1-v0.1.0-debug.apk
+          sha256sum Emotionskompass-M1-v0.1.0-debug.apk | tee Emotionskompass-M1-v0.1.0-debug.apk.sha256
+      - name: Upload installable Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Emotionskompass-M1-debug-apk
+          path: |
+            games/Emotionskompass/src/Emotionskompass-M1-v0.1.0-debug.apk
+            games/Emotionskompass/src/Emotionskompass-M1-v0.1.0-debug.apk.sha256
+            games/Emotionskompass/src/apk-badging.txt
+          if-no-files-found: error
+          retention-days: 30
