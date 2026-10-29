@@ -1,6 +1,7 @@
 package com.valoon4.emotionskompass.core.navigation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,7 @@ data class AppUiState(
     val comparisonId: String? = null
 )
 
-class AppViewModel : ViewModel() {
+class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
     private val _state = MutableStateFlow(AppUiState())
     val state = _state.asStateFlow()
     private val history = ArrayDeque<AppUiState>()
@@ -26,13 +27,14 @@ class AppViewModel : ViewModel() {
     }
 
     fun openEmotion(id: String) {
-        if (EmotionCatalog.find(id) == null) return
-        push(_state.value.copy(destination = Destination.EMOTION, emotionId = id))
+        if (catalog.find(id) == null) return
+        push(_state.value.copy(destination = Destination.EMOTION, emotionId = id,
+            comparisonId = null))
     }
 
     fun compareWith(id: String) {
         val first = _state.value.emotionId ?: return
-        if (EmotionCatalog.find(id) == null || first == id) return
+        if (catalog.find(id) == null || first == id) return
         push(_state.value.copy(destination = Destination.VERGLEICH, comparisonId = id))
     }
 
@@ -45,10 +47,18 @@ class AppViewModel : ViewModel() {
     }
 
     fun back() {
-        _state.value = if (history.isEmpty()) {
-            AppUiState(section = _state.value.section)
-        } else {
-            history.removeLast()
-        }
+        _state.value = if (history.isEmpty()) AppUiState(section = _state.value.section)
+        else history.removeLast()
+    }
+
+    companion object {
+        fun factory(catalog: EmotionCatalog): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    require(modelClass == AppViewModel::class.java)
+                    return AppViewModel(catalog) as T
+                }
+            }
     }
 }

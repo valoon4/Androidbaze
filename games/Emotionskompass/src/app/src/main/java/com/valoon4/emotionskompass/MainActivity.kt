@@ -98,8 +98,14 @@ class MainActivity : ComponentActivity() {
                 val preferences = remember { OnboardingPreferences(applicationContext) }
                 val completed by preferences.completed.collectAsState(initial = false)
                 val scope = rememberCoroutineScope()
+                val catalog = remember {
+                    EmotionCatalog.fromJson(
+                        assets.open("catalog/emotions.de.v2.json")
+                            .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    )
+                }
                 if (completed) {
-                    EmotionskompassApp()
+                    EmotionskompassApp(catalog)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -158,7 +164,10 @@ private fun FeatureLine(icon: ImageVector, title: String, subtitle: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EmotionskompassApp(vm: AppViewModel = viewModel()) {
+private fun EmotionskompassApp(
+    catalog: EmotionCatalog,
+    vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog))
+) {
     val state by vm.state.collectAsState()
     BackHandler(enabled = state.destination != Destination.MAIN) { vm.back() }
     Scaffold(
@@ -211,7 +220,7 @@ private fun EmotionskompassApp(vm: AppViewModel = viewModel()) {
                         onCheckin = vm::openCheckin,
                         onWord = { vm.openEmotion("wehmut") }
                     )
-                    MainSection.ENTDECKEN -> AtlasScreen(onEmotion = vm::openEmotion)
+                    MainSection.ENTDECKEN -> AtlasScreen(catalog = catalog, onEmotion = vm::openEmotion)
                     MainSection.TAGEBUCH -> ComingSoonScreen(
                         icon = Icons.Outlined.NoteAlt,
                         title = "Dein Tagebuch",
@@ -226,17 +235,18 @@ private fun EmotionskompassApp(vm: AppViewModel = viewModel()) {
                     )
                 }
                 Destination.EMOTION -> {
-                    val emotion = state.emotionId?.let(EmotionCatalog::find)
+                    val emotion = state.emotionId?.let(catalog::find)
                     if (emotion != null) {
                         EmotionDetailScreen(
                             emotion,
+                            catalog = catalog,
                             onRelated = vm::openEmotion,
                             onCompare = vm::compareWith,
                             onReflect = vm::openCheckin
                         )
                     }
                 }
-                Destination.VERGLEICH -> ComparisonScreen(state)
+                Destination.VERGLEICH -> ComparisonScreen(state, catalog)
                 Destination.CHECKIN -> ComingSoonScreen(
                     icon = Icons.Outlined.FavoriteBorder,
                     title = "Dein Gefühlsnavigator",
@@ -291,7 +301,7 @@ private fun HomeScreen(onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () 
             icon = Icons.Outlined.Explore,
             title = "Emotionen entdecken",
             description = "Begriffe und feine Unterschiede kennenlernen.",
-            footnote = "Atlas-Vorschau erkunden",
+            footnote = "48 Begriffe · 9 Vergleiche",
             onClick = onExplore
         )
         Spacer(Modifier.height(10.dp))
@@ -316,7 +326,7 @@ private fun HomeScreen(onExplore: () -> Unit, onCheckin: () -> Unit, onWord: () 
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M1 · Frühe Android-Vorschau. Noch kein echtes Tagebuch und keine persönlichen Einträge.",
+        Text("M2 · Emotionsatlas in redaktioneller Arbeitsfassung. Noch kein Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -352,10 +362,10 @@ private fun ActionCard(icon: ImageVector, title: String, description: String,
 }
 
 @Composable
-private fun AtlasScreen(onEmotion: (String) -> Unit) {
+private fun AtlasScreen(catalog: EmotionCatalog, onEmotion: (String) -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
     var family by rememberSaveable { mutableStateOf("Alle") }
-    val result = remember(query, family) { EmotionCatalog.search(query, family) }
+    val result = remember(query, family, catalog) { catalog.search(query, family) }
     Column(Modifier.fillMaxSize()) {
         Column(Modifier.padding(start = 19.dp, end = 19.dp, top = 12.dp, bottom = 6.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -373,12 +383,12 @@ private fun AtlasScreen(onEmotion: (String) -> Unit) {
         }
         LazyRow(contentPadding = PaddingValues(horizontal = 19.dp),
             horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-            items(EmotionCatalog.families) { value ->
+            items(catalog.families) { value ->
                 FilterChip(selected = family == value, onClick = { family = value },
                     label = { Text(value) })
             }
         }
-        Text("${result.size} Begriffe · redaktionelle Vorschau M1",
+        Text("${result.size} von ${catalog.emotions.size} Begriffen · Arbeitsfassung v${catalog.schemaVersion}",
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 7.dp),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -422,33 +432,91 @@ private fun AtlasScreen(onEmotion: (String) -> Unit) {
 }
 
 @Composable
-private fun EmotionDetailScreen(emotion: Emotion, onRelated: (String) -> Unit,
-                                onCompare: (String) -> Unit, onReflect: () -> Unit) {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
-        verticalArrangement = Arrangement.spacedBy(17.dp)) {
-        Tag(emotion.family)
+private fun EmotionDetailScreen(
+    emotion: Emotion,
+    catalog: EmotionCatalog,
+    onRelated: (String) -> Unit,
+    onCompare: (String) -> Unit,
+    onReflect: () -> Unit
+) {
+    val comparisons = catalog.comparisonOptions(emotion.id)
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
+        verticalArrangement = Arrangement.spacedBy(17.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Tag(emotion.family)
+            if (emotion.kind != com.valoon4.emotionskompass.core.model.EmotionKind.EMOTION) {
+                Tag(if (emotion.kind == com.valoon4.emotionskompass.core.model.EmotionKind.MOOD) "Stimmung" else "Zustand")
+            }
+        }
         Text(emotion.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
         Text(emotion.explanation, style = MaterialTheme.typography.bodyLarge)
+        if (emotion.families.size > 1) {
+            Text("Kann auch in andere Themenbereiche passen: " + emotion.families.drop(1).joinToString(),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+
         HorizontalDivider()
         Text("So könnte es sich zeigen", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Surface(color = MaterialTheme.colorScheme.secondaryContainer,
-            shape = RoundedCornerShape(17.dp)) {
-            Text("„${emotion.example}“", modifier = Modifier.padding(17.dp),
-                style = MaterialTheme.typography.bodyMedium)
+        emotion.examples.forEach { example ->
+            Surface(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = RoundedCornerShape(17.dp)
+            ) {
+                Text("„$example“", modifier = Modifier.fillMaxWidth().padding(17.dp),
+                    style = MaterialTheme.typography.bodyMedium)
+            }
         }
-        Text("Ähnliche und verwandte Gefühle", style = MaterialTheme.typography.titleMedium,
+
+        Text("Ein Gedanke zum Nachspüren",
+            style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(emotion.reflectionQuestion, style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.primary)
+        Text("Auch bekannt als: " + emotion.synonyms.joinToString(" · "),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        if (comparisons.isNotEmpty()) {
+            HorizontalDivider()
+            Text("Unterschiede entdecken", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text("Was ähnelt sich, was ist anders?",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            comparisons.forEach { id ->
+                val other = catalog.find(id)
+                if (other != null) {
+                    OutlinedButton(onClick = { onCompare(other.id) },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Icon(Icons.Outlined.CompareArrows, contentDescription = null)
+                        Spacer(Modifier.size(8.dp))
+                        Text("${emotion.name} und ${other.name}", modifier = Modifier.weight(1f))
+                        Icon(Icons.Outlined.ChevronRight, contentDescription = null)
+                    }
+                }
+            }
+        }
+
+        HorizontalDivider()
+        Text("Verwandte Begriffe", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        emotion.related.forEach { related ->
-            val other = EmotionCatalog.find(related)
+        emotion.related.forEach { id ->
+            val other = catalog.find(id)
             if (other != null) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     OutlinedButton(onClick = { onRelated(other.id) }, modifier = Modifier.weight(1f)) {
                         Text(other.name)
                     }
                     IconButton(onClick = { onCompare(other.id) }) {
-                        Icon(Icons.Outlined.CompareArrows, contentDescription = "Mit ${other.name} vergleichen")
+                        Icon(Icons.Outlined.CompareArrows,
+                            contentDescription = "Mit ${other.name} vergleichen")
                     }
                 }
             }
@@ -459,42 +527,71 @@ private fun EmotionDetailScreen(emotion: Emotion, onRelated: (String) -> Unit,
             Spacer(Modifier.size(9.dp))
             Text("Über meine Erfahrung nachdenken")
         }
-        Text("Die Inhalte sind Orientierungshilfen. Du entscheidest, welche Begriffe passen.",
+        Text("Arbeitsfassung: Die Erklärungen sind Anregungen, keine Diagnosen. Du entscheidest, was passt.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
 @Composable
-private fun ComparisonScreen(state: AppUiState) {
-    val first = state.emotionId?.let(EmotionCatalog::find)
-    val second = state.comparisonId?.let(EmotionCatalog::find)
+private fun ComparisonScreen(state: AppUiState, catalog: EmotionCatalog) {
+    val first = state.emotionId?.let(catalog::find)
+    val second = state.comparisonId?.let(catalog::find)
     if (first == null || second == null) return
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp)) {
+    val comparison = catalog.compare(first.id, second.id)
+
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
+    ) {
         Tag("BEGRIFFE UNTERSCHEIDEN")
-        Text("Wie unterscheiden sich diese Gefühle?",
+        Text("Ähnlich – und doch anders",
             style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         listOf(first, second).forEach { emotion ->
             Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
-                Column(Modifier.fillMaxWidth().padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(emotion.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+                Column(
+                    Modifier.fillMaxWidth().padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(emotion.name, style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold)
                     Text(emotion.explanation, style = MaterialTheme.typography.bodyMedium)
-                    Text("Beispiel: ${emotion.example}", style = MaterialTheme.typography.bodySmall,
+                    Text("Beispiel: ${emotion.example}",
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
-        if (first.id == "frustration" && second.id == "enttaeuschung" ||
-            first.id == "enttaeuschung" && second.id == "frustration") {
+        if (comparison != null) {
+            Surface(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = RoundedCornerShape(18.dp)
+            ) {
+                Column(Modifier.fillMaxWidth().padding(19.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Was beide gemeinsam haben",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold)
+                    Text(comparison.overlap)
+                    HorizontalDivider()
+                    Text(first.name, fontWeight = FontWeight.SemiBold)
+                    Text(comparison.firstDistinction)
+                    Text(second.name, fontWeight = FontWeight.SemiBold)
+                    Text(comparison.secondDistinction)
+                    HorizontalDivider()
+                    Text("Frage zum Nachspüren", fontWeight = FontWeight.SemiBold)
+                    Text(comparison.question, color = MaterialTheme.colorScheme.primary)
+                }
+            }
+        } else {
             Surface(color = MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(18.dp)) {
-                Text("Frustration kann entstehen, wenn etwas nicht vorangeht. Enttäuschung kann auftreten, wenn eine Erwartung unerfüllt bleibt. Beide Gefühle können gleichzeitig vorkommen.",
-                    modifier = Modifier.padding(18.dp), style = MaterialTheme.typography.bodyMedium)
+                Text("Für dieses Begriffspaar ist noch kein fachlich formulierter Vergleich hinterlegt. Die Erklärungen oben können trotzdem beim Einordnen helfen.",
+                    modifier = Modifier.padding(18.dp),
+                    style = MaterialTheme.typography.bodyMedium)
             }
         }
-        Text("Gefühle überschneiden sich häufig. Es gibt nicht immer nur eine passende Bezeichnung.",
+        Text("Gefühle können sich überschneiden oder gleichzeitig auftreten. Dieser Vergleich soll Möglichkeiten zeigen, keine eindeutige Einordnung vorgeben.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -541,14 +638,14 @@ private fun SettingsScreen() {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M1 · Native Android-Vorschau", style = MaterialTheme.typography.titleMedium,
+        Text("M2 · Emotionsatlas als native Android-Vorschau", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Text("Die App speichert derzeit nur, dass die Einführung abgeschlossen wurde. Tagebucheinträge, verschlüsselte Datenspeicherung und Datenexport folgen erst in weiteren Etappen.",
+        Text("Der offline verfügbare Emotionsatlas enthält 48 Begriffe in einer redaktionellen Arbeitsfassung. Die App speichert nur, dass die Einführung abgeschlossen wurde. Tagebucheinträge und ihre geschützte Datenspeicherung folgen erst in weiteren Etappen.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.1.0-m1", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.2.0-m2", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
