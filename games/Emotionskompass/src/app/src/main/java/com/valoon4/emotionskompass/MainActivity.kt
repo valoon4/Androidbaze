@@ -86,11 +86,12 @@ import com.valoon4.emotionskompass.core.navigation.AppViewModel
 import com.valoon4.emotionskompass.core.navigation.Destination
 import com.valoon4.emotionskompass.core.navigation.MainSection
 import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
+import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import kotlinx.coroutines.launch
 
 /**
- * Milestone M1: Native Compose shell and navigation, *not* a production journal.
- * Personal entries, encryption and the actual reflection navigator follow in M3-M5.
+ * M3: Native offline emotions atlas and ephemeral guided check-in.
+ * No personal reflection is persisted; protected journaling follows in M4-M5.
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,6 +174,7 @@ private fun EmotionskompassApp(
 ) {
     val state by vm.state.collectAsState()
     val filters by vm.filters.collectAsState()
+    val checkIn by vm.checkIn.collectAsState()
     BackHandler(enabled = state.destination != Destination.MAIN) { vm.back() }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -189,7 +191,7 @@ private fun EmotionskompassApp(
                     }
                 },
                 actions = {
-                    if (state.destination != Destination.SETTINGS) {
+                    if (state.destination != Destination.SETTINGS && state.destination != Destination.CHECKIN) {
                         IconButton(onClick = vm::openSettings) {
                             Icon(Icons.Outlined.Settings, contentDescription = "Einstellungen")
                         }
@@ -198,7 +200,7 @@ private fun EmotionskompassApp(
             )
         },
         bottomBar = {
-            NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+            if (state.destination != Destination.CHECKIN) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                 listOf(
                     Triple(MainSection.START, "Start", Icons.Outlined.Home),
                     Triple(MainSection.ENTDECKEN, "Entdecken", Icons.Outlined.Explore),
@@ -222,7 +224,7 @@ private fun EmotionskompassApp(
                     MainSection.START -> HomeScreen(
                         termsCount = catalog.emotions.size,
                         onExplore = { vm.selectSection(MainSection.ENTDECKEN) },
-                        onCheckin = vm::openCheckin,
+                        onCheckin = { vm.openCheckin() },
                         onWord = { vm.openEmotion("wehmut") }
                     )
                     MainSection.ENTDECKEN -> AtlasScreen(
@@ -259,7 +261,7 @@ private fun EmotionskompassApp(
                             catalog = catalog,
                             onRelated = vm::openEmotion,
                             onCompare = vm::compareWith,
-                            onReflect = vm::openCheckin
+                            onReflect = { vm.openCheckin(emotion.id) }
                         )
                     }
                 }
@@ -270,12 +272,18 @@ private fun EmotionskompassApp(
                     val path = state.pathId?.let(catalog::findPath)
                     if (path != null) LearningPathScreen(path, catalog, vm::openEmotion)
                 }
-                Destination.CHECKIN -> ComingSoonScreen(
-                    icon = Icons.Outlined.FavoriteBorder,
-                    title = "Dein Gefühlsnavigator",
-                    subtitle = "Der geführte Check-in mit mehreren Emotionen, optionalen Fragen und einem geschützten Tagebuch entsteht in M3 und M4.",
-                    milestone = "Vorschau · noch keine Dateneingabe",
-                    onExplore = { vm.selectSection(MainSection.ENTDECKEN) }
+                Destination.CHECKIN -> CheckInScreen(
+                    catalog = catalog,
+                    draft = checkIn,
+                    onToggleCue = vm::toggleBodyCue,
+                    onToggleEmotion = vm::toggleCheckInEmotion,
+                    onIntensity = vm::setCheckInIntensity,
+                    onArea = vm::setCheckInArea,
+                    onNote = vm::setCheckInNote,
+                    onNext = vm::nextCheckInStep,
+                    onPrevious = vm::previousCheckInStep,
+                    onRestart = vm::restartCheckIn,
+                    onClose = vm::closeCheckIn
                 )
                 Destination.SETTINGS -> SettingsScreen(catalog)
             }
@@ -349,7 +357,7 @@ private fun HomeScreen(termsCount: Int, onExplore: () -> Unit, onCheckin: () -> 
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M2.2 · $termsCount Wörter entdecken. Redaktionelle Arbeitsfassung, noch kein Tagebuch.",
+        Text("M3 · $termsCount Wörter entdecken und privat reflektieren. Noch kein gespeichertes Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -997,14 +1005,14 @@ private fun SettingsScreen(catalog: EmotionCatalog) {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M2.2 · Umfangreicher Emotionsatlas", style = MaterialTheme.typography.titleMedium,
+        Text("M3 · Gefühlsnavigator und umfangreicher Emotionsatlas", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Text("Der offline verfügbare Emotionsatlas enthält ${catalog.emotions.size} Begriffe, ${catalog.comparisons.size} Vergleiche und ${catalog.learningPaths.size} Lernpfade in einer redaktionellen Arbeitsfassung. Die App speichert nur, dass die Einführung abgeschlossen wurde. Tagebucheinträge und ihre geschützte Datenspeicherung folgen erst in weiteren Etappen.",
+        Text("Der offline verfügbare Emotionsatlas enthält ${catalog.emotions.size} Begriffe, ${catalog.comparisons.size} Vergleiche und ${catalog.learningPaths.size} Lernpfade in einer redaktionellen Arbeitsfassung. Der neue Gefühlsnavigator läuft nur im Arbeitsspeicher und verwirft persönliche Angaben beim Beenden. Weiterhin wird dauerhaft ausschließlich der Abschluss der Einführung gespeichert. Ein geschütztes Tagebuch folgt in einer späteren Etappe.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.2.2-m2.2", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.3.0-m3", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
