@@ -1,14 +1,14 @@
 # Emotionskompass – native Android-App (M2)
 
-**Version:** 0.2.1-m2.1 · **Status:** Offline-Emotionsatlas als Android-Testversion. Kein produktives Tagebuch, keine medizinische Anwendung.
+**Version:** 0.2.2-m2.2 · **Status:** Offline-Emotionsatlas als Android-Testversion. Kein produktives Tagebuch, keine medizinische Anwendung.
 
 ## Inhalte dieser Etappe
 
 - Native Kotlin-/Jetpack-Compose-App mit Onboarding ohne Konto, Startseite und Design D in Hell/Dunkel.
 - Vier Navigationsbereiche: Start, Entdecken, Tagebuch (Platzhalter), Rückblick (Platzhalter).
-- **144 versionierte deutschsprachige Begriffe** in acht Emotionsfamilien, wobei ein Begriff zu mehreren Kategorien gehören darf.
-- 144 Definitionen, je zwei Beispiele, Synonyme, verwandte Einträge und offene Reflexionsfragen.
-- **21 redaktionell formulierte Vergleiche**; bei anderen Paaren bewusst nur Gegenüberstellung ohne erfundene Abgrenzung.
+- **289 versionierte deutschsprachige Begriffe** in acht Emotionsfamilien, wobei ein Begriff zu mehreren Kategorien gehören darf.
+- 289 Definitionen, je zwei Beispiele, Synonyme, verwandte Einträge und offene Reflexionsfragen.
+- **41 redaktionell formulierte Vergleiche**; bei anderen Paaren bewusst nur Gegenüberstellung ohne erfundene Abgrenzung.
 - Vollständig lokale Suche nach Namen, Alias und Beschreibung, tolerant für Umlaute und Groß-/Kleinschreibung, mit Relevanzsortierung.
 - Qualitätssicherung mit JVM-Unit-Tests zu Schema, Verweisen, Familien, Vergleichen und Suche.
 - Jede persönliche Journal-/Check-in-Funktion ist ausdrücklich noch nicht nutzbar. Es wird nur der Abschluss des Onboardings lokal als DataStore-Präferenz gespeichert.
@@ -41,7 +41,7 @@ gradle :app:testDebugUnitTest :app:assembleDebug
 
 Voraussetzungen: Java 17, Android SDK 36, Gradle 8.13. Alternativ nutzt GitHub Actions den Pfadfilter-Workflow `.github/workflows/emotionskompass-debug-apk.yml` und publiziert einen signierten Debug-Build als herunterladbares Workflow-Artefakt. Die CI verifiziert Paketname und Signatur.
 
-**Paketkennung:** `com.valoon4.emotionskompass` · **minSdk 26** · **versionCode 3**, aktualisiert daher die M1-Installation mit derselben Paket-ID (Android-Debugsignatur muss übereinstimmen).
+**Paketkennung:** `com.valoon4.emotionskompass` · **minSdk 26** · **versionCode 4**, aktualisiert daher die M1-Installation mit derselben Paket-ID (Android-Debugsignatur muss übereinstimmen).
 
 ## Datenschutz- und Funktionsgrenzen
 
@@ -58,3 +58,7 @@ Weitere Details: `games/Emotionskompass/notes/M2_ATLAS.md` sowie die Produktspez
 ## M2.1: Neues Entdecken
 
 Sechs thematische Lernpfade, A–Z-Filter, Filter nach Gefühlen/Stimmungen/Zuständen sowie ein zufällig vorgeschlagener Begriff machen das Lernen auch ohne Suchwort möglich. Details: `games/Emotionskompass/notes/M21_ATLAS_AUSBAU.md`.
+
+## M2.2 – Wissen entdecken
+
+Der Atlas umfasst jetzt **289 Begriffe**, **41 fachlich formulierte Vergleiche** und **14 thematische Lernpfade**. Die neue Kartenansicht hilft beim Finden von Wörtern anhand von Definitionen, ohne Noten oder gespeicherten Lernfortschritt. Ein Vergleichsverzeichnis macht alle redaktionell gepflegten Unterscheidungen auffindbar. Die lexikalischen Texte sind weiterhin eine **nicht extern fachlich validierte redaktionelle Arbeitsfassung**. Die nächsten Schritte zu persönlicher Reflexion und Datensicherheit bleiben von M2.2 getrennt. Details: `games/Emotionskompass/notes/M22_ATLAS.md`.
