@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentRevision": "2026-10-m2.1",
+  "contentRevision": "2026-10-m2.2",
   "locale": "de",
   "editorialStatus": "working-draft-not-clinically-validated",
   "families": [
@@ -3447,7 +3447,8 @@
       "name": "Seligkeit",
       "family": "Freude",
       "families": [
-        "Freude"
+        "Freude",
+        "Ruhe"
       ],
       "kind": "MOOD",
       "definition": "Ein inniges friedvolles Empfinden von Glück.",
@@ -3631,7 +3632,8 @@
       "name": "Wiedersehensfreude",
       "family": "Freude",
       "families": [
-        "Freude"
+        "Freude",
+        "Verbundenheit"
       ],
       "kind": "EMOTION",
       "definition": "Besondere Freude beim Wiedersehen.",
@@ -3654,7 +3656,8 @@
       "name": "Mitfreude",
       "family": "Freude",
       "families": [
-        "Freude"
+        "Freude",
+        "Verbundenheit"
       ],
       "kind": "EMOTION",
       "definition": "Ehrliche Freude über das Glück anderer.",
@@ -3976,7 +3979,8 @@
       "name": "Freundschaftliche Nähe",
       "family": "Verbundenheit",
       "families": [
-        "Verbundenheit"
+        "Verbundenheit",
+        "Ruhe"
       ],
       "kind": "STATE",
       "definition": "Entspannte persönliche Verbundenheit in einer Freundschaft.",
@@ -4391,7 +4395,8 @@
       "kind": "EMOTION",
       "family": "Traurigkeit",
       "families": [
-        "Traurigkeit"
+        "Traurigkeit",
+        "Selbstbewertung"
       ],
       "definition": "Schmerz, von anderen nicht gewollt zu sein.",
       "examples": [
@@ -4437,7 +4442,8 @@
       "kind": "EMOTION",
       "family": "Traurigkeit",
       "families": [
-        "Traurigkeit"
+        "Traurigkeit",
+        "Verbundenheit"
       ],
       "definition": "Traurigkeit am Ende einer Begegnung oder Lebensphase.",
       "examples": [
@@ -4805,7 +4811,8 @@
       "kind": "EMOTION",
       "family": "Unsicherheit",
       "families": [
-        "Unsicherheit"
+        "Unsicherheit",
+        "Verbundenheit"
       ],
       "definition": "Sorge, eine wichtige Nähe zu verlieren.",
       "examples": [
@@ -4828,7 +4835,8 @@
       "kind": "EMOTION",
       "family": "Unsicherheit",
       "families": [
-        "Unsicherheit"
+        "Unsicherheit",
+        "Traurigkeit"
       ],
       "definition": "Angst, etwas oder jemanden Bedeutsames zu verlieren.",
       "examples": [
@@ -5311,7 +5319,8 @@
       "kind": "EMOTION",
       "family": "Ärger",
       "families": [
-        "Ärger"
+        "Ärger",
+        "Traurigkeit"
       ],
       "definition": "Schmerzhafter Ärger, wenn du dich persönlich herabgesetzt fühlst.",
       "examples": [
@@ -5449,7 +5458,8 @@
       "kind": "STATE",
       "family": "Selbstbewertung",
       "families": [
-        "Selbstbewertung"
+        "Selbstbewertung",
+        "Verbundenheit"
       ],
       "definition": "Zugewandtes Verständnis für die eigenen Schwierigkeiten.",
       "examples": [
@@ -5863,7 +5873,8 @@
       "kind": "EMOTION",
       "family": "Staunen",
       "families": [
-        "Staunen"
+        "Staunen",
+        "Freude"
       ],
       "definition": "Freude über eine unerwartete Einsicht.",
       "examples": [
@@ -5955,7 +5966,8 @@
       "kind": "STATE",
       "family": "Staunen",
       "families": [
-        "Staunen"
+        "Staunen",
+        "Unsicherheit"
       ],
       "definition": "Zurückhaltung in unbekannter Umgebung.",
       "examples": [
@@ -6277,7 +6289,8 @@
       "kind": "STATE",
       "family": "Ruhe",
       "families": [
-        "Ruhe"
+        "Ruhe",
+        "Freude"
       ],
       "definition": "Nachlassen von körperlicher oder innerer Spannung.",
       "examples": [
@@ -6645,7 +6658,8 @@
       "kind": "STATE",
       "family": "Ruhe",
       "families": [
-        "Ruhe"
+        "Ruhe",
+        "Verbundenheit"
       ],
       "definition": "Stille, in der du dich sicher fühlst.",
       "examples": [
@@ -6877,6 +6891,166 @@
       "firstDistinction": "Zweifel können jede Entscheidung oder Behauptung betreffen.",
       "secondDistinction": "Selbstzweifel richten sich speziell auf die eigene Person und Fähigkeit.",
       "question": "Zweifle ich an einer Sache oder an mir als Person?"
+    },
+    {
+      "first": "ekel",
+      "second": "abscheu",
+      "overlap": "Beide können ein starkes Zurückweichen auslösen.",
+      "firstDistinction": "Ekel bezieht sich häufig auf einen abstoßenden Sinneseindruck.",
+      "secondDistinction": "Abscheu kann auch eine moralisch verurteilte Handlung betreffen.",
+      "question": "Ist es ein Eindruck oder ein Verhalten?"
+    },
+    {
+      "first": "freundlichkeit",
+      "second": "herzlichkeit",
+      "overlap": "Beide zeigen Wohlwollen.",
+      "firstDistinction": "Freundlichkeit liegt oft schon in kleinen respektvollen Gesten.",
+      "secondDistinction": "Herzlichkeit vermittelt zusätzliche persönliche Wärme.",
+      "question": "Ist es höflich oder besonders warm?"
+    },
+    {
+      "first": "gesehenwerden",
+      "second": "anerkanntsein",
+      "overlap": "Beide vermitteln Wertschätzung.",
+      "firstDistinction": "Gesehenwerden betont das Wahrnehmen deines Erlebens.",
+      "secondDistinction": "Anerkanntsein betont die Würdigung deiner Person oder Leistung.",
+      "question": "Möchte ich verstanden oder gewürdigt werden?"
+    },
+    {
+      "first": "sorglosigkeit",
+      "second": "leichtigkeit",
+      "overlap": "Beide enthalten wenig inneren Druck.",
+      "firstDistinction": "Sorglosigkeit bedeutet, wenige Sorgen zu erleben.",
+      "secondDistinction": "Leichtigkeit beschreibt allgemeiner das Nachlassen von Schwere.",
+      "question": "Fehlen Sorgen oder wird etwas einfacher?"
+    },
+    {
+      "first": "schwermut",
+      "second": "melancholie",
+      "overlap": "Beide sind nachdenkliche Stimmungen.",
+      "firstDistinction": "Schwermut wird meist als schwer erlebt.",
+      "secondDistinction": "Melancholie kann zugleich eine bittersüße Note tragen.",
+      "question": "Ist es schwer oder auch tröstlich?"
+    },
+    {
+      "first": "kummer",
+      "second": "besorgnis",
+      "overlap": "Beide betreffen etwas Wichtiges.",
+      "firstDistinction": "Kummer enthält oft eine schmerzliche Traurigkeit.",
+      "secondDistinction": "Besorgnis richtet sich stärker auf mögliche Schwierigkeiten.",
+      "question": "Tut etwas bereits weh oder fürchte ich etwas?"
+    },
+    {
+      "first": "abschiedsschmerz",
+      "second": "wehmut",
+      "overlap": "Beide können bei Verlust auftauchen.",
+      "firstDistinction": "Abschiedsschmerz bezieht sich direkt auf ein Ende.",
+      "secondDistinction": "Wehmut verbindet Vermissen oft mit schönen Erinnerungen.",
+      "question": "Geht es um einen Abschied oder Erinnerung?"
+    },
+    {
+      "first": "verunsicherung",
+      "second": "unsicherheit",
+      "overlap": "Beide betreffen fehlende Orientierung.",
+      "firstDistinction": "Verunsicherung folgt oft einem erschütternden Ereignis.",
+      "secondDistinction": "Unsicherheit kann ohne einen solchen Auslöser bestehen.",
+      "question": "Was hat meine Gewissheit verändert?"
+    },
+    {
+      "first": "bammel",
+      "second": "panikgefuehl",
+      "overlap": "Beide betreffen befürchtete Schwierigkeiten.",
+      "firstDistinction": "Bammel bezeichnet eher leichte umgangssprachliche Angst.",
+      "secondDistinction": "Panikgefühl ist deutlich intensiver und unmittelbarer.",
+      "question": "Wie stark ist die Angst?"
+    },
+    {
+      "first": "lampenfieber",
+      "second": "nervositaet",
+      "overlap": "Beide können als Aufregung spürbar sein.",
+      "firstDistinction": "Lampenfieber ist auf einen Auftritt gerichtet.",
+      "secondDistinction": "Nervosität kann viele positive und belastende Ursachen haben.",
+      "question": "Steht eine Präsentation bevor?"
+    },
+    {
+      "first": "groll",
+      "second": "nachtragendsein",
+      "overlap": "Beide können nach Verletzungen bleiben.",
+      "firstDistinction": "Groll ist das länger anhaltende Ärgergefühl.",
+      "secondDistinction": "Nachtragendsein betont das Festhalten an einem Ereignis.",
+      "question": "Was fühle ich und woran halte ich fest?"
+    },
+    {
+      "first": "aerger",
+      "second": "genervtheit",
+      "overlap": "Beide reagieren auf Störungen.",
+      "firstDistinction": "Ärger kann auf Grenzverletzungen oder Hindernisse folgen.",
+      "secondDistinction": "Genervtheit betrifft häufiger wiederkehrende kleine Reize.",
+      "question": "Ist eine Grenze verletzt oder ist es zu viel?"
+    },
+    {
+      "first": "stolz",
+      "second": "leistungstolz",
+      "overlap": "Beide würdigen Positives am eigenen Handeln.",
+      "firstDistinction": "Stolz kann sich auf viele Entwicklungen beziehen.",
+      "secondDistinction": "Leistungsstolz bezieht sich besonders auf eine erreichte Leistung.",
+      "question": "Was genau möchte ich anerkennen?"
+    },
+    {
+      "first": "selbstmitgefuehl",
+      "second": "selbstmitleid",
+      "overlap": "Beide richten den Blick auf eigene Schwierigkeiten.",
+      "firstDistinction": "Selbstmitgefühl begegnet eigenem Schmerz freundlich.",
+      "secondDistinction": "Selbstmitleid kann stärker beim Bedauern verweilen.",
+      "question": "Kann ich mir Trost geben und handeln?"
+    },
+    {
+      "first": "selbstvorwurf",
+      "second": "reue",
+      "overlap": "Beide können auf einen Fehler folgen.",
+      "firstDistinction": "Selbstvorwurf ist manchmal eine harte wiederholte Anklage.",
+      "secondDistinction": "Reue kann den Wunsch nach Veränderung einschließen.",
+      "question": "Klage ich mich an oder möchte ich etwas ändern?"
+    },
+    {
+      "first": "selbstvertrauen",
+      "second": "selbstueberschaetzung",
+      "overlap": "Beide betreffen eigene Fähigkeiten.",
+      "firstDistinction": "Selbstvertrauen kann realistische Grenzen anerkennen.",
+      "secondDistinction": "Selbstüberschätzung blendet Grenzen eher aus.",
+      "question": "Was kann ich tatsächlich?"
+    },
+    {
+      "first": "staunende_stille",
+      "second": "ueberwaeltigung",
+      "overlap": "Beide können sprachlos machen.",
+      "firstDistinction": "Staunende Stille lässt Raum für ruhiges Betrachten.",
+      "secondDistinction": "Überwältigung betont eine kaum verarbeitbare Intensität.",
+      "question": "Kann ich genießen oder ist es zu viel?"
+    },
+    {
+      "first": "gelassenheit",
+      "second": "seelenruhe",
+      "overlap": "Beide betreffen innere Ruhe.",
+      "firstDistinction": "Gelassenheit zeigt sich oft im Umgang mit Veränderung.",
+      "secondDistinction": "Seelenruhe beschreibt tiefen inneren Frieden.",
+      "question": "Ist es Umgang mit Stress oder Grundzustand?"
+    },
+    {
+      "first": "erleichterung",
+      "second": "inneres_aufatmen",
+      "overlap": "Beide folgen abnehmender Belastung.",
+      "firstDistinction": "Erleichterung kann als Gefühl länger bestehen.",
+      "secondDistinction": "Inneres Aufatmen bezeichnet besonders den kurzen Übergang.",
+      "question": "Spüre ich die Veränderung oder Ruhe danach?"
+    },
+    {
+      "first": "entspannung",
+      "second": "versunkenheit",
+      "overlap": "Beide können angenehm ruhig wirken.",
+      "firstDistinction": "Entspannung meint nachlassende Spannung.",
+      "secondDistinction": "Versunkenheit meint vertieftes Aufgehen in einer Tätigkeit.",
+      "question": "Bin ich lockerer oder ganz vertieft?"
     }
   ],
   "learningPaths": [
@@ -6954,6 +7128,111 @@
         "angst",
         "erleichterung",
         "gelassenheit"
+      ]
+    },
+    {
+      "id": "feine_traurigkeit",
+      "title": "Die vielen Arten von Traurigkeit",
+      "description": "Kummer, Schwermut, Heimweh und Abschied.",
+      "emotionIds": [
+        "kummer",
+        "schwermut",
+        "wehmut",
+        "abschiedsschmerz",
+        "vermissen",
+        "trauer"
+      ]
+    },
+    {
+      "id": "wenn_sorgen_wachsen",
+      "title": "Wenn Sorgen größer werden",
+      "description": "Zwischen Sorge, Bammel und Angst.",
+      "emotionIds": [
+        "besorgnis",
+        "bammel",
+        "unbehagen",
+        "angst",
+        "panikgefuehl",
+        "erleichterung"
+      ]
+    },
+    {
+      "id": "wut_und_grenzen",
+      "title": "Grenzen, Ärger und starke Abwehr",
+      "description": "Vom milden Unmut bis zu intensiver Wut.",
+      "emotionIds": [
+        "genervtheit",
+        "unmut",
+        "aerger",
+        "zorn",
+        "abscheu",
+        "innerer_widerstand"
+      ]
+    },
+    {
+      "id": "selbstkritik_und_mitgefuehl",
+      "title": "Mit dir selbst umgehen",
+      "description": "Selbstvorwurf und Selbstmitgefühl kennenlernen.",
+      "emotionIds": [
+        "selbstkritik",
+        "selbstvorwurf",
+        "scham",
+        "reue",
+        "selbstmitgefuehl",
+        "selbstvergebung"
+      ]
+    },
+    {
+      "id": "freude_am_entdecken",
+      "title": "Wissen, Staunen und Entdecken",
+      "description": "Von Fragen zu Erkenntnisfreude.",
+      "emotionIds": [
+        "fragelust",
+        "wissensdurst",
+        "neugier",
+        "faszination",
+        "aha_erlebnis",
+        "erkenntnisfreude"
+      ]
+    },
+    {
+      "id": "zurueck_in_die_ruhe",
+      "title": "Von Anspannung zu Ruhe",
+      "description": "Gelöstheit und innere Ruhe unterscheiden.",
+      "emotionIds": [
+        "anspannung",
+        "unruhe",
+        "erleichterung",
+        "inneres_aufatmen",
+        "geloestheit",
+        "geerdetsein",
+        "seelenruhe"
+      ]
+    },
+    {
+      "id": "gemeinsam_und_gesehen",
+      "title": "Gesehen und verbunden sein",
+      "description": "Vertrauen und gegenseitige Nähe.",
+      "emotionIds": [
+        "gesehenwerden",
+        "verstaendnis",
+        "wertgeschaetztsein",
+        "vertrauen",
+        "naehe",
+        "zugehoerigkeit"
+      ]
+    },
+    {
+      "id": "kleine_freuden",
+      "title": "Kleine Freuden im Alltag",
+      "description": "Leichtigkeit, Genuss und stilles Glück.",
+      "emotionIds": [
+        "wohligkeit",
+        "genuss",
+        "frohsein",
+        "mitfreude",
+        "seligkeit",
+        "zufriedenheit"
       ]
     }
   ]
