@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M3
+# Emotionskompass – native Android-App M3.1
 
-**Version:** 0.3.0-m3 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.3.1-m3.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -13,7 +13,7 @@ Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompa
 - A–Z-Filter, Suche, Kategorien, Gefühl/Stimmung/Zustand, Entdeckungs-Karten.
 - Atlasinhalte bleiben redaktionelle Arbeitsfassung; keine medizinischen Diagnosen und keine externe klinische Validierung.
 
-### M3 – persönlicher Gefühlsnavigator
+### M3.1 – persönlicher Gefühlsnavigator
 - Schritt 1: *Ankommen*, optionale körperliche Eindrücke benennen.
 - Schritt 2: *Gefühle benennen*, keine, eine oder beliebig viele Begriffe aus dem Offline-Atlas wählen; Suche und Familienfilter.
 - Schritt 3: *Nachspüren*, für jedes ausgewählte Gefühl optional Intensität 0 bis 10 einschätzen (0 ist nicht dasselbe wie keine Angabe); optionaler Lebensbereich und freier Text (max. 500 Zeichen).
@@ -37,8 +37,13 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M3-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M31-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
 Weitere Hinweise: `games/Emotionskompass/notes/M3_GEFUEHLSNAVIGATOR.md`.
+
+
+## M3.1 – Niedrigschwellige Gefühlswahl
+
+Ein Check-in kann **kurz** (drei Schritte) oder **vertieft** (vier Schritte) durchgeführt werden. Bei der Gefühlswahl startet der Nutzer mit sieben alltäglichen Beschreibungen statt der gesamten 289-Wörter-Liste; alle Begriffe bleiben aber ausdrücklich durchsuchbar. Die ausgewählte Wortliste ist beim Scrollen immer sichtbar. Die App zeigt bis zu zwei vorhandene redaktionelle Begriffsvergleiche als freiwillige Lernhilfe, ohne Emotionen automatisch zu interpretieren. Persönliche Angaben bleiben im flüchtigen Arbeitsspeicher und werden verworfen. Details: `games/Emotionskompass/notes/M31_GEFUEHLSNAVIGATOR.md`.

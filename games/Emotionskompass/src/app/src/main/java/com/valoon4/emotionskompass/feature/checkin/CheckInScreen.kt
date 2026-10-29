@@ -41,6 +41,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.checkin.BodyCue
+import com.valoon4.emotionskompass.core.checkin.CheckInMode
+import com.valoon4.emotionskompass.core.checkin.FeelingDirection
+import com.valoon4.emotionskompass.core.checkin.FeelingDiscovery
 import com.valoon4.emotionskompass.core.checkin.CheckInDraft
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.LifeArea
@@ -55,6 +58,7 @@ import kotlin.math.roundToInt
 fun CheckInScreen(
     catalog: EmotionCatalog,
     draft: CheckInDraft,
+    onMode: (CheckInMode) -> Unit,
     onToggleCue: (BodyCue) -> Unit,
     onToggleEmotion: (String) -> Unit,
     onIntensity: (String, Int?) -> Unit,
@@ -68,6 +72,8 @@ fun CheckInScreen(
     // Search and family are UI-only, also intentionally not saveable into Android instance state.
     var query by remember { mutableStateOf("") }
     var family by remember { mutableStateOf("Alle") }
+    var direction by remember { mutableStateOf<FeelingDirection?>(null) }
+    var showAll by remember { mutableStateOf(false) }
 
     val stage = draft.step
     val heading = when (stage) {
@@ -83,12 +89,37 @@ fun CheckInScreen(
         CheckInStep.AUSKLANG -> "Das ist eine Momentaufnahme, keine Diagnose oder Bewertung."
     }
 
-    val matches = remember(catalog, stage, query, family) {
-        if (stage == CheckInStep.BENENNEN) catalog.search(query, family) else emptyList()
+    val matches = remember(catalog, stage, query, family, direction, showAll) {
+        if (stage == CheckInStep.BENENNEN)
+            FeelingDiscovery.suggestions(catalog, direction, query, family, showAll)
+        else emptyList()
+    }
+    val contrasts = remember(catalog, draft.emotions.keys) {
+        FeelingDiscovery.contrasts(catalog, draft.emotions.keys)
     }
 
+    Column(Modifier.fillMaxSize()) {
+        // Selected terms remain visible while scrolling through the catalog.
+        if (stage == CheckInStep.BENENNEN && draft.emotions.isNotEmpty()) {
+            Surface(color = MaterialTheme.colorScheme.secondaryContainer) {
+                Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    Text("Deine Auswahl · ${draft.selectedCount} · Antippen zum Entfernen",
+                        style = MaterialTheme.typography.labelMedium)
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                        items(draft.emotions.keys.toList(), key = { it }) { id ->
+                            val name = catalog.find(id)?.name ?: id
+                            FilterChip(
+                                selected = true,
+                                onClick = { onToggleEmotion(id) },
+                                label = { Text("$name  ×") }
+                            )
+                        }
+                    }
+                }
+            }
+        }
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.weight(1f),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
@@ -98,7 +129,7 @@ fun CheckInScreen(
                 Text("DEIN GEFÜHLSNAVIGATOR", style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary)
-                Text("${stage.ordinal + 1} / 4", style = MaterialTheme.typography.labelMedium,
+                Text("${draft.progress.first} / ${draft.progress.second}", style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Spacer(Modifier.size(10.dp))
@@ -107,6 +138,39 @@ fun CheckInScreen(
             Spacer(Modifier.size(7.dp))
             Text(subtitle, style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        item {
+            if (stage == CheckInStep.ANKOMMEN) {
+                Text("Wie möchtest du beginnen?",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold)
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = { onMode(CheckInMode.KURZ) }) {
+                        Text("Kurz")
+                    }
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = { onMode(CheckInMode.VERTIEFT) }) {
+                        Text("Vertieft")
+                    }
+                }
+                Text("Kurz: Wörter und Intensitäten. Vertieft: zusätzlich Körperwahrnehmung und Kontext.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.size(8.dp))
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    listOf(CheckInMode.KURZ, CheckInMode.VERTIEFT).forEach { option ->
+                        FilterChip(
+                            selected = draft.mode == option,
+                            onClick = { onMode(option) },
+                            label = { Text(if (option == CheckInMode.KURZ) "Kurz" else "Vertieft") }
+                        )
+                    }
+                }
+            }
         }
         item {
             Surface(shape = RoundedCornerShape(15.dp),
@@ -176,10 +240,39 @@ fun CheckInScreen(
                     }
                 }
                 item {
+                    Text("Welche Richtung passt ungefähr?",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold)
+                    Text("Wähle eine grobe Richtung oder suche direkt. Die Vorschläge sind keine automatische Einschätzung.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                        items(FeelingDirection.entries) { option ->
+                            FilterChip(
+                                selected = direction == option,
+                                onClick = {
+                                    direction = if (direction == option) null else option
+                                    query = ""
+                                    showAll = false
+                                },
+                                label = { Text(option.label) }
+                            )
+                        }
+                    }
+                    if (direction != null && query.isBlank() && !showAll) {
+                        Text(direction!!.explanation,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                    Spacer(Modifier.size(8.dp))
                     OutlinedTextField(
-                        value = query, onValueChange = { query = it },
+                        value = query,
+                        onValueChange = {
+                            query = it
+                            if (it.isNotBlank()) showAll = false
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text("Gefühl oder Synonym suchen") },
+                        label = { Text("Begriff oder Synonym suchen") },
                         singleLine = true
                     )
                     Spacer(Modifier.size(8.dp))
@@ -190,9 +283,19 @@ fun CheckInScreen(
                                 label = { Text(option) })
                         }
                     }
-                    Text("${matches.size} passende Begriffe",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Row(Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Text("${matches.size} ${if (query.isBlank() && !showAll) "Vorschläge" else "Treffer"}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = {
+                            showAll = !showAll
+                            if (showAll) query = ""
+                        }) {
+                            Text(if (showAll) "Zur Orientierung zurück" else "Alle ${catalog.emotions.size} durchsuchen")
+                        }
+                    }
                 }
                 items(matches, key = { it.id }) { emotion ->
                     val selected = draft.emotions.containsKey(emotion.id)
@@ -220,8 +323,50 @@ fun CheckInScreen(
                 }
                 if (matches.isEmpty()) {
                     item {
-                        Text("Kein passender Begriff gefunden. Du kannst anders suchen oder ohne Auswahl weitergehen.",
+                        Text(if (query.isBlank() && direction == null && !showAll)
+                            "Wähle eine grobe Richtung, nutze die Suche oder öffne den gesamten Atlas."
+                        else "Keine passenden Vorschläge. Versuche eine andere Richtung oder suche im gesamten Atlas.",
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+                if (contrasts.isNotEmpty()) {
+                    item {
+                        HorizontalDivider()
+                        Text("Ähnliche Gefühle unterscheiden",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold)
+                        Text("Diese Unterschiede stammen aus unserem redaktionellen Atlas. Sie sind Anregungen, keine Deutungen deiner Gefühle.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    items(contrasts, key = { "contrast-${it.first}-${it.second}" }) { pair ->
+                        val a = catalog.find(pair.first)
+                        val b = catalog.find(pair.second)
+                        if (a != null && b != null) {
+                            Card(colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                                Column(Modifier.fillMaxWidth().padding(15.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text("${a.name} oder ${b.name}?",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.SemiBold)
+                                    Text(pair.overlap, style = MaterialTheme.typography.bodySmall)
+                                    Text("${a.name}: ${pair.firstDistinction}",
+                                        style = MaterialTheme.typography.bodySmall)
+                                    Text("${b.name}: ${pair.secondDistinction}",
+                                        style = MaterialTheme.typography.bodySmall)
+                                    Text(pair.question, color = MaterialTheme.colorScheme.primary)
+                                    val other = listOf(a, b).firstOrNull {
+                                        it.id !in draft.emotions
+                                    }
+                                    if (other != null) {
+                                        OutlinedButton(onClick = { onToggleEmotion(other.id) }) {
+                                            Text("${other.name} ebenfalls auswählen")
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -275,6 +420,7 @@ fun CheckInScreen(
                         }
                     }
                 }
+                if (draft.mode == CheckInMode.VERTIEFT) {
                 item {
                     HorizontalDivider()
                     Text("Was könnte dazugehört haben?",
@@ -310,6 +456,7 @@ fun CheckInScreen(
                         }
                     )
                 }
+                } // Optional context is only shown in the deeper mode.
             }
 
             CheckInStep.AUSKLANG -> {
@@ -376,7 +523,13 @@ fun CheckInScreen(
             HorizontalDivider()
             if (stage == CheckInStep.AUSKLANG) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = {
+                        query = ""
+                        family = "Alle"
+                        direction = null
+                        showAll = false
+                        onRestart()
+                    }, modifier = Modifier.fillMaxWidth()) {
                         Text("Neuen Check-in beginnen")
                     }
                     OutlinedButton(onClick = onClose, modifier = Modifier.fillMaxWidth()) {
@@ -397,7 +550,7 @@ fun CheckInScreen(
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                    if (stage == CheckInStep.ANKOMMEN) {
+                    if (draft.isFirstStep) {
                         TextButton(onClick = onClose) { Text("Beenden und verwerfen") }
                     } else {
                         TextButton(onClick = onPrevious) { Text("Zum vorherigen Schritt") }
@@ -406,5 +559,6 @@ fun CheckInScreen(
                 }
             }
         }
+    }
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.valoon4.emotionskompass.core.checkin.BodyCue
 import com.valoon4.emotionskompass.core.checkin.CheckInDraft
+import com.valoon4.emotionskompass.core.checkin.CheckInMode
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
@@ -87,6 +88,7 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
         }
     }
 
+    fun setCheckInMode(mode: CheckInMode) = modifyCheckIn { it.withMode(mode) }
     fun toggleBodyCue(cue: BodyCue) = modifyCheckIn { it.toggleCue(cue) }
 
     fun toggleCheckInEmotion(id: String) {
@@ -122,7 +124,7 @@ class AppViewModel(private val catalog: EmotionCatalog) : ViewModel() {
 
     fun back() {
         if (_state.value.destination == Destination.CHECKIN) {
-            if (_checkIn.value.step == CheckInStep.ANKOMMEN) closeCheckIn()
+            if (_checkIn.value.isFirstStep) closeCheckIn()
             else previousCheckInStep()
             return
         }

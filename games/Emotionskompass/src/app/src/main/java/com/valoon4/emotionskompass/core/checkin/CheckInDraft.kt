@@ -4,6 +4,10 @@ package com.valoon4.emotionskompass.core.checkin
  * Ephemeral personal check-in. This model is deliberately never serialised or written to disk.
  * On leaving the navigator it is replaced with an empty instance; M4 will design durable storage.
  */
+enum class CheckInMode(val label: String) {
+    KURZ("Kurz"), VERTIEFT("Vertieft")
+}
+
 enum class CheckInStep {
     ANKOMMEN, BENENNEN, NACHSPUEREN, AUSKLANG;
 
@@ -37,12 +41,27 @@ enum class LifeArea(val label: String) {
  */
 data class CheckInDraft(
     val step: CheckInStep = CheckInStep.ANKOMMEN,
+    val mode: CheckInMode = CheckInMode.VERTIEFT,
     val bodyCues: Set<BodyCue> = emptySet(),
     val emotions: Map<String, Int?> = emptyMap(),
     val area: LifeArea? = null,
     val note: String = ""
 ) {
     val selectedCount: Int get() = emotions.size
+
+    val progress: Pair<Int, Int> get() = when (mode) {
+        CheckInMode.VERTIEFT -> (step.ordinal + 1) to 4
+        CheckInMode.KURZ -> step.ordinal.coerceAtLeast(1) to 3
+    }
+
+    fun withMode(nextMode: CheckInMode): CheckInDraft =
+        copy(mode = nextMode,
+            step = if (nextMode == CheckInMode.KURZ && step == CheckInStep.ANKOMMEN)
+                CheckInStep.BENENNEN else step)
+
+    val isFirstStep: Boolean get() =
+        step == CheckInStep.ANKOMMEN ||
+            (mode == CheckInMode.KURZ && step == CheckInStep.BENENNEN)
 
     fun toggleCue(cue: BodyCue): CheckInDraft =
         copy(bodyCues = if (cue in bodyCues) bodyCues - cue else bodyCues + cue)
@@ -65,7 +84,9 @@ data class CheckInDraft(
         copy(note = value.take(MAX_NOTE_LENGTH))
 
     fun next(): CheckInDraft = copy(step = step.next())
-    fun previous(): CheckInDraft = copy(step = step.previous())
+    fun previous(): CheckInDraft = copy(
+        step = if (isFirstStep) step else step.previous()
+    )
 
     companion object {
         const val MAX_NOTE_LENGTH = 500

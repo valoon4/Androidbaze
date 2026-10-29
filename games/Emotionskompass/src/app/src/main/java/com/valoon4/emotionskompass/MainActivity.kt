@@ -275,6 +275,7 @@ private fun EmotionskompassApp(
                 Destination.CHECKIN -> CheckInScreen(
                     catalog = catalog,
                     draft = checkIn,
+                    onMode = vm::setCheckInMode,
                     onToggleCue = vm::toggleBodyCue,
                     onToggleEmotion = vm::toggleCheckInEmotion,
                     onIntensity = vm::setCheckInIntensity,
@@ -357,7 +358,7 @@ private fun HomeScreen(termsCount: Int, onExplore: () -> Unit, onCheckin: () -> 
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M3 · $termsCount Wörter entdecken und privat reflektieren. Noch kein gespeichertes Tagebuch.",
+        Text("M3.1 · $termsCount Wörter entdecken und mit kurzer oder vertiefter Reflexion erkunden.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -1005,14 +1006,14 @@ private fun SettingsScreen(catalog: EmotionCatalog) {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M3 · Gefühlsnavigator und umfangreicher Emotionsatlas", style = MaterialTheme.typography.titleMedium,
+        Text("M3.1 · Geführte Gefühlssuche und zwei Check-in-Modi", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
         Text("Der offline verfügbare Emotionsatlas enthält ${catalog.emotions.size} Begriffe, ${catalog.comparisons.size} Vergleiche und ${catalog.learningPaths.size} Lernpfade in einer redaktionellen Arbeitsfassung. Der neue Gefühlsnavigator läuft nur im Arbeitsspeicher und verwirft persönliche Angaben beim Beenden. Weiterhin wird dauerhaft ausschließlich der Abschluss der Einführung gespeichert. Ein geschütztes Tagebuch folgt in einer späteren Etappe.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.3.0-m3", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.3.1-m3.1", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
