@@ -113,11 +113,12 @@ class EmotionCatalog private constructor(
             val score = when {
                 name == needle -> 0
                 name.startsWith(needle) -> 1
-                name.contains(needle) -> 2
-                aliases.any { it == needle || it.startsWith(needle) } -> 3
-                aliases.any { it.contains(needle) } -> 4
-                definitions.contains(needle) -> 5
-                examples.any { it.contains(needle) } -> 6
+                aliases.any { it == needle } -> 2
+                name.contains(needle) -> 3
+                aliases.any { it.startsWith(needle) } -> 4
+                aliases.any { it.contains(needle) } -> 5
+                definitions.contains(needle) -> 6
+                examples.any { it.contains(needle) } -> 7
                 else -> null
             }
             if (score == null) null else score to emotion
