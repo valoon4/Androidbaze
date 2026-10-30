@@ -163,10 +163,22 @@ class MainActivity : ComponentActivity() {
                 }
                 val strategyCatalog = remember {
                     runCatching {
-                        StrategyCatalog.fromJson(
-                            assets.open("catalog/strategies.de.v1.json")
-                                .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        val rootJson = assets.open("catalog/strategies.de.v1.json")
+                            .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        val partNames = listOf(
+                            "catalog/strategies.situation.de.v1.json",
+                            "catalog/strategies.regulation-a.de.v1.json",
+                            "catalog/strategies.regulation-b.de.v1.json",
+                            "catalog/strategies.cognition-a.de.v1.json",
+                            "catalog/strategies.cognition-b.de.v1.json",
+                            "catalog/strategies.social.de.v1.json",
+                            "catalog/strategies.values.de.v1.json",
+                            "catalog/strategies.recovery.de.v1.json",
+                            "catalog/strategies.patterns.de.v1.json"
                         )
+                        StrategyCatalog.fromJsonParts(rootJson, partNames.map { filename ->
+                            assets.open(filename).bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        })
                     }.getOrNull()
                 }
                 if (completed) {
