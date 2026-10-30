@@ -599,7 +599,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/39423429/",
         "https://pubmed.ncbi.nlm.nih.gov/33749936/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Selbstwahrnehmung ist eine Einladung, keine weitere Aufgabe, die du erfüllen musst.",
+      "commonMistake": "Selbstwahrnehmung verlangt jederzeit eine ausführliche Analyse.",
+      "check": {
+        "prompt": "Welche Frage ist ein unkomplizierter Einstieg?",
+        "choices": [
+          "Was bemerke ich gerade?",
+          "Warum kann ich mich nicht endlich perfekt erklären?"
+        ],
+        "correctIndex": 0,
+        "explanation": "Eine kurze offene Frage kann genügen; Unklarheit ist erlaubt."
+      }
     },
     {
       "id": "gedanken-und-gefuehle",
@@ -626,7 +637,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/39423429/",
         "https://pubmed.ncbi.nlm.nih.gov/33749936/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Gedanken, Gefühle und beobachtete Ereignisse lassen sich unterscheiden.",
+      "commonMistake": "Ein belastender Gedanke muss eine gesicherte Tatsache sein.",
+      "check": {
+        "prompt": "Welche Aussage beschreibt eher ein Gefühl?",
+        "choices": [
+          "Niemand interessiert sich für mich.",
+          "Ich bin gerade verunsichert."
+        ],
+        "correctIndex": 1,
+        "explanation": "Gefühle beschreiben Erleben; Vermutungen über andere brauchen weitere Hinweise."
+      }
     },
     {
       "id": "achtsam-ohne-druck",
@@ -653,7 +675,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/39423429/",
         "https://pubmed.ncbi.nlm.nih.gov/33749936/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Achtsamkeit darf klein, alltagsnah und jederzeit abbrechbar sein.",
+      "commonMistake": "Achtsamkeit muss sofort zu einem ruhigen Zustand führen.",
+      "check": {
+        "prompt": "Was ist eine freiwillige achtsame Beobachtung?",
+        "choices": [
+          "Ein paar Geräusche in der Umgebung wahrnehmen.",
+          "Alle Gedanken sofort unterdrücken müssen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Aufmerksamkeit darf kurz sein und muss keinen bestimmten Zustand erzeugen."
+      }
     },
     {
       "id": "selbstmitgefuehl",
@@ -680,7 +713,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/39423429/",
         "https://pubmed.ncbi.nlm.nih.gov/33749936/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Freundlichkeit sich selbst gegenüber und Verantwortungsübernahme können zusammengehen.",
+      "commonMistake": "Mitgefühl mit sich selbst bedeutet, Fehler vollständig zu ignorieren.",
+      "check": {
+        "prompt": "Welche Formulierung zeigt Verantwortung und Selbstmitgefühl?",
+        "choices": [
+          "Ein Fehler beweist, dass ich nichts wert bin.",
+          "Ich habe etwas falsch gemacht und kann daraus lernen."
+        ],
+        "correctIndex": 1,
+        "explanation": "Verantwortung und ein respektvoller Umgang mit sich selbst passen zusammen."
+      }
     },
     {
       "id": "reflektieren-und-handeln",
@@ -707,7 +751,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/39423429/",
         "https://pubmed.ncbi.nlm.nih.gov/33749936/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein guter nächster Schritt ist freiwillig, konkret und zur eigenen Situation passend.",
+      "commonMistake": "Reflexion ist nur sinnvoll, wenn daraus eine große Veränderung folgt.",
+      "check": {
+        "prompt": "Was wäre nach einer anstrengenden Woche ein realistischer Schritt?",
+        "choices": [
+          "Eine überschaubare Pause vereinbaren.",
+          "Sofort das gesamte Leben umstrukturieren."
+        ],
+        "correctIndex": 0,
+        "explanation": "Kleine machbare Schritte können ein guter freiwilliger Ausgangspunkt sein."
+      }
     }
   ],
   "series": [
