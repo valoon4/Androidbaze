@@ -111,7 +111,7 @@ class StrategyCatalogTest {
             StrategyCatalog.fromJsonParts(
                 raw, parts.mapIndexed { index, value ->
                     if (index == 0) value.replaceFirst(
-                        "\"schemaVersion\":1", "\"schemaVersion\":2"
+                        Regex("\"schemaVersion\"\\s*:\\s*1"), "\"schemaVersion\":2"
                     ) else value
                 }
             )
