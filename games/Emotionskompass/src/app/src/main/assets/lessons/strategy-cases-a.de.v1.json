@@ -28,7 +28,7 @@
       "scenario": "Ein geplanter Ausflug wurde wegen starken Regens abgesagt. Du bist enttäuscht und möchtest nicht so tun, als sei das erfreulich.",
       "prompt": "Welche Frage könnte in dieser Situation passen?",
       "choices": [
-        "Welche Schritte muss ich unternehmen, um das heutige Wetter doch noch zu verändern?",
+        "Könnte ich einen geeigneten Alternativtermin oder eine wetterunabhängige Aktivität organisieren, statt mich länger mit der Enttäuschung zu beschäftigen?",
         "Welche Pläne kann ich gegebenenfalls ändern, während ich die Enttäuschung anerkenne?"
       ],
       "bestIndex": 1,
@@ -49,7 +49,7 @@
       "prompt": "Welche Unterscheidung ist hier nützlich?",
       "choices": [
         "Ruhe kann ein Bedürfnis sein; allein verbringen wäre nur eine mögliche Strategie dafür.",
-        "Allein verbringen ist zwingend das Bedürfnis selbst; andere Wege sind ausgeschlossen."
+        "Vielleicht ist allein sein hier gerade die naheliegendste Lösung; ich könnte zunächst diesen konkreten Weg ausprobieren."
       ],
       "bestIndex": 0,
       "feedback": "Der Wunsch nach Ruhe beschreibt ein Anliegen; die konkrete Abendgestaltung ist ein möglicher Weg. Eine andere Person könnte Ruhe auch anders erleben.",
@@ -68,7 +68,7 @@
       "scenario": "Eine Person ist vor einem wichtigen Telefonat unruhig. Sie versucht eine Atemübung, merkt dabei aber mehr Unwohlsein.",
       "prompt": "Welche nächste Überlegung achtet die Grenzen?",
       "choices": [
-        "Vielleicht sollte sie die Atemübung intensiver durchführen, damit sie endlich wirkt.",
+        "Vielleicht könnte eine kürzere und langsamere Atembeobachtung angenehmer sein; das müsste ich allerdings zunächst neu ausprobieren.",
         "Sie könnte aufhören und einen neutralen Sinneseindruck oder einfach eine Pause wählen."
       ],
       "bestIndex": 1,
@@ -89,7 +89,7 @@
       "prompt": "Welche Entscheidung berücksichtigt die Lage?",
       "choices": [
         "Zuerst die feste Frist prüfen und danach die übrigen Aufgaben realistisch einordnen.",
-        "Zuerst alle Aufgaben gleichzeitig anfangen, damit keine Priorität verloren geht."
+        "Vielleicht beginne ich mit den schnellsten Aufgaben, um etwas abzuschließen, bevor ich die feste Frist genauer prüfe."
       ],
       "bestIndex": 0,
       "feedback": "Priorisieren bedeutet nicht, alles zu schaffen. Die Frist kann ein Hinweis sein, danach folgen eigene Kräfte und mögliche Unterstützung.",
