@@ -24,6 +24,16 @@ M6 baut den bereits vorhandenen Offline-Gefühls- und Bedürfnisatlas zu einem p
 - Der M5-Passphrase-Export enthält absichtlich nur das Tagebuch, **nicht** die eigenständigen Lernfavoriten. Lernverlauf ist nicht geräteübertragbar; bei Deinstallation verschwinden die lokalen Markierungen.
 - **Fehlerfall:** Falls das verschlüsselte Lernstandsformat unlesbar ist oder der Schlüssel fehlt, wird die Datei nicht stillschweigend überschrieben. Die UI zeigt einen Fehler und bietet „erneut öffnen“.
 
+## M6.1 – Didaktische Korrektur: Keine Antwortvorgabe in Lernfragen
+
+- Vergleichsantworten zeigten zuvor bereits im ersten Wort die abgefragte Emotion bzw. das Bedürfnis (z. B. „Bei Frustration …“ oder „Sicherheit betont …“).
+- Die App ersetzt in beiden Antwortmöglichkeiten diese einleitenden Begriffe durch einen neutralen, identischen Bezug („Bei diesem Gefühl …“ / „Dieses Bedürfnis …“). Die vollständige ursprüngliche Formulierung wird weiterhin **erst nach einer Auswahl** in der Erklärung angezeigt.
+- Die Antwortreihenfolge wird beim Start der Lerneinheit einmalig gemischt; die korrekte Bedeutung und Zuordnung bleibt dabei erhalten. Die Auswahl wird während des Beantwortens nicht neu gemischt.
+- Bei Übungen „Bedürfnis oder Handlung?“ wird auch das verräterische „Das Bedürfnis …“ am Anfang der Definitionsantwort entfernt. Die redaktionelle Einordnung erscheint erst im erklärenden Feedback.
+- Wenn ein künftiger Katalogvergleich nicht eindeutig und ohne Begriffsnennung neutralisiert werden kann, wird **nur diese Aufgabe nicht angeboten**. Es wird keine neue, ungeprüfte Antwort erfunden.
+- **Zusätzliche Regressionstests für alle 41 Gefühls- und 20 Bedürfnisvergleiche sowie 32 Strategie-Aufgaben** und für die Zuordnung der richtigen Antwort nach dem Mischen.
+- Die zugrunde liegenden Katalogtexte und das Daten-/Journalformat bleiben unverändert.
+
 ## Automatische Tests
 
 `LearningEngineTest` prüft:
