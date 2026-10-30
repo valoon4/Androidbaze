@@ -26,13 +26,17 @@ data class StrategyCase(
 class StrategyCaseCatalog private constructor(val cases: List<StrategyCase>) {
     fun find(id: String): StrategyCase? = cases.firstOrNull { it.id == id }
     val themes: List<String> get() = cases.map { it.theme }.distinct()
+    /** Explicit editor-provided strategy associations, never inferred from a user. */
+    fun forStrategy(id: String): List<StrategyCase> =
+        cases.filter { id in it.relatedStrategyIds }
+
 
     fun browse(query: String = "", theme: String? = null): List<StrategyCase> {
         val q = normalize(query.trim())
         return cases.filter { item ->
             (theme == null || item.theme == theme) &&
-                (q.isEmpty() || normalize(listOf(item.theme, item.scenario, item.prompt,
-                    item.reflection).joinToString(" ")).contains(q))
+                (q.isEmpty() || normalize((listOf(item.theme, item.scenario, item.prompt,
+                    item.reflection, item.feedback) + item.choices).joinToString(" ")).contains(q))
         }
     }
 

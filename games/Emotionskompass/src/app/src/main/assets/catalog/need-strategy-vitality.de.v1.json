@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "spiel",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn zweckfreies Spielen dir wichtig ist, kann eine kleine selbst gewählte spielerische Handlung Raum dafür schaffen, ohne Leistungsziel."
+        }
+      ]
+    },
+    {
+      "needId": "freude",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du eine Tätigkeit gern machst, kann ein freiwilliger kleiner Schritt ihr Platz geben; Freude lässt sich dadurch nicht erzwingen."
+        },
+        {
+          "strategyId": "mindful-observation",
+          "reason": "Wenn ein angenehmer Moment von selbst entsteht, kannst du ihn bewusst wahrnehmen, ohne ihn festhalten zu müssen."
+        }
+      ]
+    },
+    {
+      "needId": "abenteuer",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn dich etwas Neues reizt und es sicher ist, kann ein kleiner freiwilliger Erkundungsschritt dazu passen."
+        },
+        {
+          "strategyId": "planning",
+          "reason": "Wenn ein Vorhaben Unsicherheiten birgt, kann eine lockere Vorbereitung Sicherheit und Freiwilligkeit unterstützen."
+        }
+      ]
+    },
+    {
+      "needId": "leichtigkeit",
+      "items": [
+        {
+          "strategyId": "restorative-rest",
+          "reason": "Wenn Druck und Verpflichtungen viel Raum einnehmen, kann eine bewusst zweckfreie Pause Entlastung ermöglichen."
+        },
+        {
+          "strategyId": "self-compassion",
+          "reason": "Wenn du dich wegen kleiner Fehler stark kritisierst, kann ein weniger harter innerer Umgang Druck vermindern."
+        }
+      ]
+    },
+    {
+      "needId": "inspiration",
+      "items": [
+        {
+          "strategyId": "mindful-observation",
+          "reason": "Wenn neue Eindrücke dich anregen, kann ein bewusstes Beobachten eine offene Erkundung ermöglichen."
+        },
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du einer Idee folgen möchtest, kann ein kleiner freiwilliger Versuch Raum für neue Erfahrungen schaffen."
+        }
+      ]
+    },
+    {
+      "needId": "genuss",
+      "items": [
+        {
+          "strategyId": "mindful-observation",
+          "reason": "Wenn du einen angenehmen Eindruck bemerkst und es sich gut anfühlt, kannst du ihm kurz Aufmerksamkeit schenken, ohne daraus eine Übung zu machen."
+        }
+      ]
+    },
+    {
+      "needId": "abwechslung",
+      "items": [
+        {
+          "strategyId": "changing-situation",
+          "reason": "Wenn ein Ablauf eintönig geworden und beeinflussbar ist, kann ein kleiner Wechsel von Ort oder Tätigkeit Abwechslung bringen."
+        },
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn dich ein neues Thema interessiert, kann eine freiwillige kleine Aktivität eine andere Erfahrung ermöglichen."
+        }
+      ]
+    },
+    {
+      "needId": "lebendigkeit",
+      "items": [
+        {
+          "strategyId": "movement",
+          "reason": "Wenn du körperlich fit genug bist und Bewegung angenehm ist, kann ein selbst gewählter Ortswechsel neue Eindrücke bieten."
+        },
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn eine Tätigkeit dir wichtig und anregend erscheint, kann ein kleiner Schritt dahin Beteiligung ermöglichen, ohne ein Gefühl zu versprechen."
+        }
+      ]
+    }
+  ]
+}

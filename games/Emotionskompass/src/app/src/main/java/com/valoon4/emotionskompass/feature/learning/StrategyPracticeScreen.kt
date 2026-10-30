@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -21,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,26 +42,52 @@ import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 fun StrategyPracticeScreen(
     catalog: StrategyCaseCatalog,
     onBackToKnowledge: () -> Unit,
-    onStrategies: () -> Unit
+    onStrategy: (String, String) -> Unit,
+    strategyTitles: Map<String, String> = emptyMap(),
+    requestedCaseId: String? = null,
+    onRequestConsumed: () -> Unit = {},
+    onReturnToSource: (() -> Unit)? = null
 ) {
     var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
     var query by rememberSaveable { mutableStateOf("") }
     var theme by rememberSaveable { mutableStateOf<String?>(null) }
+    var openedFromSource by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(requestedCaseId) {
+        if (requestedCaseId != null && catalog.find(requestedCaseId) != null) {
+            selectedId = requestedCaseId
+            openedFromSource = true
+            onRequestConsumed()
+        }
+    }
+    val closeCase: () -> Unit = {
+        if (openedFromSource && onReturnToSource != null) {
+            openedFromSource = false
+            onReturnToSource()
+        } else {
+            selectedId = null
+            openedFromSource = false
+        }
+    }
     val listState = rememberLazyListState()
     val selected = selectedId?.let(catalog::find)
-    BackHandler(enabled = selected != null) { selectedId = null }
+    BackHandler(enabled = selected != null) { closeCase() }
     if (selected != null) {
         // This choice exists only as local in-memory state; it is not saved or exported.
         var answer by remember(selected.id) { mutableStateOf<Int?>(null) }
         val context = LocalContext.current
         var sourceError by remember(selected.id) { mutableStateOf(false) }
+        val caseScroll = rememberSaveable(selected.id, saver = LazyListState.Saver) { LazyListState() }
         LazyColumn(
+            state = caseScroll,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
-                TextButton(onClick = { selectedId = null }) { Text("← Alle Praxisfälle") }
+                TextButton(onClick = closeCase) {
+                    Text(if (openedFromSource && onReturnToSource != null) "← Zur Strategie"
+                        else "← Alle Praxisfälle")
+                }
                 Text(selected.theme, style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary)
                 Text("Eine Alltagssituation", style = MaterialTheme.typography.headlineSmall,
@@ -114,18 +142,27 @@ fun StrategyPracticeScreen(
                 }
             }
             item {
-                OutlinedButton(onClick = onStrategies, modifier = Modifier.fillMaxWidth()) {
-                    Text("Die zugehörigen Strategien im Atlas erkunden")
+                Text("Verknüpfte Strategien im Atlas",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold)
+                Text("Die Verweise sind redaktionelle Beispiele – keine persönliche Zuordnung.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                selected.relatedStrategyIds.forEach { id ->
+                    OutlinedButton(onClick = { onStrategy(id, selected.id) },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text(strategyTitles[id] ?: "Strategie im Atlas ansehen")
+                    }
                 }
                 Text("Wissenschaftliche Ausgangsquellen; die Fälle sind redaktionell erfundene Lernbeispiele und keine individuellen Handlungsanweisungen.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                selected.sources.forEach { source ->
+                selected.sources.forEachIndexed { index, source ->
                     TextButton(onClick = {
                         try {
                             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(source)))
                         } catch (_: Exception) { sourceError = true }
-                    }) { Text("Wissenschaftliche Quelle extern öffnen") }
+                    }) { Text("Quelle ${index + 1}: ${Uri.parse(source).host ?: "externe Website"} öffnen") }
                 }
                 if (sourceError) Text("Kein Browser verfügbar. Die Übung bleibt vollständig offline lesbar.",
                     color = MaterialTheme.colorScheme.error)
@@ -173,7 +210,7 @@ fun StrategyPracticeScreen(
             }
         }
         items(results, key = { it.id }) { item ->
-            Card(onClick = { selectedId = item.id }) {
+            Card(onClick = { selectedId = item.id; openedFromSource = false }) {
                 Column(Modifier.fillMaxWidth().padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(item.theme, style = MaterialTheme.typography.labelSmall,

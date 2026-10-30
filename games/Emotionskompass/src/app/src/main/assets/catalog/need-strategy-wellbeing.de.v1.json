@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "ruhe",
+      "items": [
+        {
+          "strategyId": "restorative-rest",
+          "reason": "Wenn du eine Pause brauchst und gerade nichts Dringendes zu deinem Schutz tun musst, kann bewusstes Ausruhen passen."
+        },
+        {
+          "strategyId": "changing-situation",
+          "reason": "Wenn Reize oder Abläufe beeinflussbar sind, kann eine ruhigere Umgebung unmittelbare Entlastung ermöglichen."
+        }
+      ]
+    },
+    {
+      "needId": "erholung",
+      "items": [
+        {
+          "strategyId": "restorative-rest",
+          "reason": "Wenn deine Kräfte begrenzt sind, kann eine freiwillige Pause ohne Leistungsziel körperliche und mentale Erholung respektieren."
+        },
+        {
+          "strategyId": "prioritizing",
+          "reason": "Wenn zu viele Aufgaben die Erholung verdrängen, kann eine realistische Reihenfolge kleine Pausen schützen."
+        }
+      ]
+    },
+    {
+      "needId": "bewegung",
+      "items": [
+        {
+          "strategyId": "movement",
+          "reason": "Wenn Bewegung gesundheitlich möglich und angenehm ist, kann ein kleiner selbst gewählter Ortswechsel deinem Bewegungswunsch entsprechen."
+        }
+      ]
+    },
+    {
+      "needId": "entspannung",
+      "items": [
+        {
+          "strategyId": "muscle-relaxation",
+          "reason": "Wenn leichte schmerzfreie Lockerung angenehm ist, kannst du eine bequemere Körperhaltung ausprobieren; bei Beschwerden abbrechen."
+        },
+        {
+          "strategyId": "restorative-rest",
+          "reason": "Wenn du ohne Übungsdruck ausruhen möchtest, kann eine einfache Pause eine passende Alternative sein."
+        }
+      ]
+    },
+    {
+      "needId": "ausgleich",
+      "items": [
+        {
+          "strategyId": "prioritizing",
+          "reason": "Wenn mehrere Aufgaben um Zeit konkurrieren, kann Priorisieren Raum für unterschiedliche Lebensbereiche schaffen."
+        },
+        {
+          "strategyId": "restorative-rest",
+          "reason": "Wenn Erholung zu kurz kommt, kann eine bewusst geschützte Pause eine Balance unterstützen, ohne alle Belastungen zu lösen."
+        }
+      ]
+    },
+    {
+      "needId": "entschleunigung",
+      "items": [
+        {
+          "strategyId": "prioritizing",
+          "reason": "Wenn Anforderungen verschiebbar sind, kann ein bewusster Verzicht auf einen Schritt das Tempo reduzieren."
+        },
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn andere zu viel von dir verlangen und das Ansprechen sicher ist, kann eine Grenze ein langsameres Tempo ermöglichen."
+        }
+      ]
+    },
+    {
+      "needId": "koerperlicher_komfort",
+      "items": [
+        {
+          "strategyId": "changing-situation",
+          "reason": "Wenn Sitzplatz, Licht, Temperatur oder Abläufe beeinflussbar sind, kann eine kleine äußere Anpassung mehr Komfort schaffen."
+        },
+        {
+          "strategyId": "muscle-relaxation",
+          "reason": "Wenn es schmerzfrei möglich ist, kann eine bequemere Körperhaltung gegen unnötige Verspannung helfen."
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +49,10 @@ import com.valoon4.emotionskompass.core.model.HumanNeed
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.NeedComparison
 import com.valoon4.emotionskompass.core.model.NeedLearningPath
+import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyOption
 
 /** Offline educational reference; all browsing state stays in memory. */
 @Composable
@@ -56,16 +62,34 @@ fun NeedsScreen(
     seen: Set<String> = emptySet(),
     canSave: Boolean = false,
     onFavorite: (String) -> Unit = {},
-    onSeen: (String) -> Unit = {}
+    onSeen: (String) -> Unit = {},
+    strategyCatalog: StrategyCatalog? = null,
+    needStrategyLinks: NeedStrategyLinkIndex? = null,
+    onStrategy: (String) -> Unit = {},
+    onOpenStrategyAtlas: () -> Unit = {},
+    requestedNeedId: String? = null,
+    onRequestConsumed: () -> Unit = {},
+    onReturnToStrategy: (() -> Unit)? = null
 ) {
     var tab by rememberSaveable { mutableStateOf("Atlas") }
     var detailId by rememberSaveable { mutableStateOf<String?>(null) }
     var pathId by rememberSaveable { mutableStateOf<String?>(null) }
     var comparison by remember { mutableStateOf<NeedComparison?>(null) }
     val tabStates = rememberSaveableStateHolder()
+    LaunchedEffect(requestedNeedId) {
+        if (requestedNeedId != null && catalog.find(requestedNeedId) != null) {
+            tab = "Atlas"
+            detailId = requestedNeedId
+            onRequestConsumed()
+        }
+    }
+    val closeDetail: () -> Unit = {
+        detailId = null
+        if (onReturnToStrategy != null) onReturnToStrategy()
+    }
     BackHandler(enabled = detailId != null || pathId != null || comparison != null) {
         when {
-            detailId != null -> detailId = null
+            detailId != null -> closeDetail()
             comparison != null -> comparison = null
             else -> pathId = null
         }
@@ -88,8 +112,13 @@ fun NeedsScreen(
         val need = catalog.find(detailId!!)
         if (need != null) {
             NeedDetailScreen(need, catalog,
-                onBack = { detailId = null },
+                onBack = closeDetail,
                 onRelated = { detailId = it },
+                backLabel = if (onReturnToStrategy != null) "Zur Strategie" else "Zum Bedürfnisatlas",
+                strategyCatalog = strategyCatalog,
+                needStrategyLinks = needStrategyLinks,
+                onStrategy = onStrategy,
+                onOpenStrategyAtlas = onOpenStrategyAtlas,
                 favorite = "n:${need.id}" in favorites,
                 seen = "n:${need.id}" in seen,
                 canSave = canSave,
@@ -216,17 +245,24 @@ private fun NeedDetailScreen(
     catalog: NeedCatalog,
     onBack: () -> Unit,
     onRelated: (String) -> Unit,
+    backLabel: String,
+    strategyCatalog: StrategyCatalog?,
+    needStrategyLinks: NeedStrategyLinkIndex?,
+    onStrategy: (String) -> Unit,
+    onOpenStrategyAtlas: () -> Unit,
     favorite: Boolean,
     seen: Boolean,
     canSave: Boolean,
     onFavorite: () -> Unit,
     onSeen: () -> Unit
 ) {
-    LazyColumn(Modifier.fillMaxSize(),
+    // Related needs start at the top instead of inheriting the previous detail's position.
+    val detailScroll = rememberSaveable(need.id, saver = LazyListState.Saver) { LazyListState() }
+    LazyColumn(Modifier.fillMaxSize(), state = detailScroll,
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(13.dp)) {
         item {
-            TextButton(onClick = onBack) { Text("Zurück zum Bedürfnisatlas") }
+            TextButton(onClick = onBack) { Text("← $backLabel") }
             Text(need.family.uppercase(), style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
             Text(need.name, style = MaterialTheme.typography.headlineSmall,
@@ -248,11 +284,64 @@ private fun NeedDetailScreen(
         item {
             NeedInfoCard("Zum Nachdenken", need.reflectionQuestion)
             Spacer(Modifier.size(12.dp))
-            NeedInfoCard("Eine mögliche Strategie – nicht das Bedürfnis selbst",
+            NeedInfoCard("Ein Alltagsbeispiel – kein festes Rezept",
                 need.strategyExample)
             Text("Es gibt viele mögliche Wege, ein Bedürfnis zu berücksichtigen. Du entscheidest, welcher zu dir passt.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        // Prefer the reviewed manual index. If an optional asset is corrupted,
+        // keep the original 8-ID links rather than affecting the needs atlas.
+        val relevantOptions = strategyCatalog?.let { strategyBook ->
+            needStrategyLinks?.optionsForNeed(need.id, strategyBook)
+                ?: StrategyLearningIndex.strategiesForNeed(need.id, strategyBook)
+                    // Social acceptance (a need) is not inner acceptance (a coping tool).
+                    .filterNot { need.id == "akzeptanz" && it.id == "acceptance" }
+                    .map { NeedStrategyOption(it, "") }
+        }.orEmpty()
+        item {
+            Text("Mögliche Wege für dieses Bedürfnis",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text("Redaktionell ausgewählte Beispiele, keine Empfehlung für deine persönliche Situation. Entscheidend ist, ob der Weg für dich sicher und passend erscheint.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        if (need.id == "akzeptanz") item {
+            Text("Wichtig: Hier bedeutet Akzeptanz, von anderen angenommen zu werden. Die Strategie „Annehmen, was gerade ist“ beschreibt dagegen den Umgang mit dem eigenen Erleben – nicht dasselbe.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        if (relevantOptions.isNotEmpty()) {
+            items(relevantOptions, key = { "strategy-${it.strategy.id}" }) { option ->
+                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                    OutlinedButton(onClick = { onStrategy(option.strategy.id) },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text(option.strategy.title)
+                    }
+                    if (option.reason.isNotBlank()) Text(
+                        option.reason,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else if (strategyCatalog != null) {
+            item {
+                val emptyNote = when (need.id) {
+                    "schlaf", "gesundheit", "naehrung" ->
+                        "Dafür gibt es im aktuellen Strategieatlas keine ausreichend spezifische Karte. Ruhe- oder Gedankenübungen ersetzen keine körperliche Versorgung oder nötige medizinische Hilfe."
+                    else ->
+                        "Für dieses Bedürfnis ist im aktuellen Atlas noch kein ausreichend konkreter Bezug beschrieben. Du musst deshalb nichts aus den vorhandenen Strategien auswählen."
+                }
+                Text(emptyNote, style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+        if (strategyCatalog != null) item {
+            TextButton(onClick = onOpenStrategyAtlas) {
+                Text("Alle Strategien selbst entdecken")
+            }
         }
         item {
             Text("Verwandte Bedürfnisse", fontWeight = FontWeight.SemiBold)

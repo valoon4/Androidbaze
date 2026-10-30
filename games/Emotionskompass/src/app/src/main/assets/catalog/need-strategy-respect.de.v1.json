@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "respekt",
+      "items": [
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn du respektlos angesprochen wirst, kann eine sichere eigene Grenze hilfreich sein; sie verpflichtet andere nicht automatisch zur Änderung."
+        },
+        {
+          "strategyId": "social-support",
+          "reason": "Wenn ein Machtgefälle oder Unsicherheit besteht, kann eine geeignete unabhängige Unterstützung sinnvoller sein als direkte Konfrontation."
+        }
+      ]
+    },
+    {
+      "needId": "anerkennung",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn dir deine Beiträge zu wenig sichtbar erscheinen, kann eine konkrete Bitte um Rückmeldung Klarheit schaffen, ohne Lob einzufordern."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn der Rahmen respektvoll ist, kann ein Gespräch über Zuständigkeiten und Beiträge eine gemeinsame Sicht fördern."
+        }
+      ]
+    },
+    {
+      "needId": "wertschaetzung",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn du dir mehr persönliche Würdigung wünschst, kannst du dieses Anliegen in einer sicheren Beziehung offen ansprechen."
+        },
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn dir gerade Verständnis fehlt, kann ein Kontakt mit einer zugewandten Person emotional unterstützen."
+        }
+      ]
+    },
+    {
+      "needId": "gehoertwerden",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn deine Perspektive untergeht, kannst du um konkrete Gesprächszeit oder eine Rückfrage bitten, sofern das sicher ist."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn gegenseitige Gesprächsbereitschaft besteht, kann ein ruhiger Austausch helfen, beide Anliegen zu hören."
+        }
+      ]
+    },
+    {
+      "needId": "sichtbarkeit",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn dein Beitrag übersehen wird, kann eine klare Mitteilung über eigene Aufgaben oder Wünsche das Thema ansprechbar machen."
+        },
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du einen selbst gewählten Beitrag zeigen möchtest, könnte eine kleine freiwillige Handlung deinen eigenen Ausdruck stärken."
+        }
+      ]
+    },
+    {
+      "needId": "fairness",
+      "items": [
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn Entscheidungen unklar oder ungleich wirken, kann in einer sicheren Gesprächssituation eine konkrete Nachfrage sinnvoll sein."
+        },
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn du einen veränderbaren Ablauf siehst, kann ein nachvollziehbarer Vorschlag für fairere Regeln helfen."
+        }
+      ]
+    },
+    {
+      "needId": "gleichbehandlung",
+      "items": [
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn eine Benachteiligung sicher ansprechbar ist, kann eine konkrete Frage nach Regeln und Entscheidungen Klarheit schaffen."
+        },
+        {
+          "strategyId": "social-support",
+          "reason": "Bei Machtmissbrauch oder diskriminierendem Verhalten kann unabhängige Unterstützung wichtiger sein als ein Gespräch mit Verantwortlichen."
+        }
+      ]
+    },
+    {
+      "needId": "gerechtigkeit",
+      "items": [
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn eine konkrete Regel oder Entscheidung beeinflussbar ist, kann ein gemeinsamer Lösungsvorschlag einen nächsten Schritt eröffnen."
+        },
+        {
+          "strategyId": "social-support",
+          "reason": "Wenn Verantwortliche nicht sicher ansprechbar sind, kann eine unabhängige passende Ansprechstelle helfen, Optionen zu prüfen."
+        }
+      ]
+    },
+    {
+      "needId": "wuerde",
+      "items": [
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn du entwürdigendes Verhalten erlebst, kann eine Grenze sinnvoll sein, aber nur sofern das gefahrlos möglich ist."
+        },
+        {
+          "strategyId": "social-support",
+          "reason": "Wenn Selbstschutz oder eine Grenzsetzung nicht allein möglich ist, kann eine sichere Unterstützung besonders wichtig sein."
+        }
+      ]
+    },
+    {
+      "needId": "ehrlichkeit",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn dir wahrhaftige Kommunikation wichtig ist, kannst du in einer sicheren Beziehung um eine klare Auskunft bitten."
+        },
+        {
+          "strategyId": "assumptions",
+          "reason": "Wenn du unsicher bist, was wirklich gesagt wurde, kann die Trennung von Beobachtung und Vermutung vorschnelle Zuschreibungen vermeiden."
+        }
+      ]
+    }
+  ]
+}

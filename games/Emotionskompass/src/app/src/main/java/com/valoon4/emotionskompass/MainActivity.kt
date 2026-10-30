@@ -101,6 +101,7 @@ import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
 import com.valoon4.emotionskompass.core.learning.LearningRepository
@@ -190,6 +191,24 @@ class MainActivity : ComponentActivity() {
                         })
                     }.getOrNull()
                 }
+                // Offline editorial links only; failure leaves the original atlases intact.
+                val needStrategyLinks = remember(needCatalog, strategyCatalog) {
+                    strategyCatalog?.let { strategies ->
+                        runCatching {
+                            NeedStrategyLinkIndex.fromJsonParts(
+                                listOf(
+                                    "security", "relationships", "autonomy", "respect",
+                                    "wellbeing", "growth", "purpose", "vitality"
+                                ).map { category ->
+                                    assets.open("catalog/need-strategy-$category.de.v1.json")
+                                        .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                                },
+                                needs = needCatalog,
+                                strategies = strategies
+                            )
+                        }.getOrNull()
+                    }
+                }
                 val caseCatalog = remember(strategyCatalog) {
                     runCatching {
                         StrategyCaseCatalog.fromJsonParts(
@@ -206,7 +225,7 @@ class MainActivity : ComponentActivity() {
                     }.getOrNull()
                 }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, needStrategyLinks, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -274,6 +293,7 @@ private fun EmotionskompassApp(
     lessonCatalog: LessonCatalog?,
     strategyCatalog: StrategyCatalog?,
     caseCatalog: StrategyCaseCatalog?,
+    needStrategyLinks: NeedStrategyLinkIndex?,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -348,10 +368,53 @@ private fun EmotionskompassApp(
     val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
     var selectedStrategyId by rememberSaveable { mutableStateOf<String?>(null) }
+    var strategyHistory by rememberSaveable { mutableStateOf(emptyList<String>()) }
+    var strategyReturnTarget by rememberSaveable { mutableStateOf<String?>(null) }
+    var returnCaseId by rememberSaveable { mutableStateOf<String?>(null) }
+    var requestedNeedId by rememberSaveable { mutableStateOf<String?>(null) }
+    var needReturnToStrategy by rememberSaveable { mutableStateOf(false) }
+    var requestedCaseId by rememberSaveable { mutableStateOf<String?>(null) }
     var requestedKnowledgeArticleId by rememberSaveable { mutableStateOf<String?>(null) }
     var discoveryAtlas by rememberSaveable { mutableStateOf(DiscoveryAtlas.GEFUEHLE) }
     val mainScreenStates = rememberSaveableStateHolder()
     val atlasStates = rememberSaveableStateHolder()
+    val strategyTitles = remember(strategyCatalog) {
+        strategyCatalog?.strategies?.associate { it.id to it.title } ?: emptyMap()
+    }
+    val openStrategy: (String, String?) -> Unit = { id, origin ->
+        strategyHistory = emptyList()
+        selectedStrategyId = id
+        strategyReturnTarget = origin
+        discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+        vm.selectSection(MainSection.ENTDECKEN)
+    }
+    val openStrategyOverview: () -> Unit = {
+        selectedStrategyId = null
+        strategyHistory = emptyList()
+        strategyReturnTarget = null
+        discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+        vm.selectSection(MainSection.ENTDECKEN)
+    }
+    val returnFromStrategy: () -> Unit = {
+        when (strategyReturnTarget) {
+            "need" -> {
+                selectedStrategyId = null
+                strategyHistory = emptyList()
+                strategyReturnTarget = null
+                discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
+                vm.selectSection(MainSection.ENTDECKEN)
+            }
+            "case" -> {
+                selectedStrategyId = null
+                strategyHistory = emptyList()
+                strategyReturnTarget = null
+                requestedCaseId = returnCaseId
+                returnCaseId = null
+                vm.selectSection(MainSection.WISSEN)
+            }
+            else -> selectedStrategyId = null
+        }
+    }
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
     val privateScreen = !unlocked || state.destination == Destination.CHECKIN ||
@@ -475,9 +538,19 @@ private fun EmotionskompassApp(
                         termsCount = catalog.emotions.size,
                         needsCount = needCatalog.needs.size,
                         strategyCount = strategyCatalog?.strategies?.size ?: 0,
-                        onExplore = { discoveryAtlas = DiscoveryAtlas.GEFUEHLE; vm.selectSection(MainSection.ENTDECKEN) },
-                        onNeeds = { discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE; vm.selectSection(MainSection.ENTDECKEN) },
-                        onStrategies = { discoveryAtlas = DiscoveryAtlas.STRATEGIEN; vm.selectSection(MainSection.ENTDECKEN) },
+                        onExplore = {
+                            strategyReturnTarget = null
+                            needReturnToStrategy = false
+                            discoveryAtlas = DiscoveryAtlas.GEFUEHLE
+                            vm.selectSection(MainSection.ENTDECKEN)
+                        },
+                        onNeeds = {
+                            strategyReturnTarget = null
+                            needReturnToStrategy = false
+                            discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
+                            vm.selectSection(MainSection.ENTDECKEN)
+                        },
+                        onStrategies = openStrategyOverview,
                         onCheckin = vm::openCheckin,
                         onWord = vm::openLearning,
                         onKnowledge = { vm.selectSection(MainSection.WISSEN) },
@@ -491,7 +564,11 @@ private fun EmotionskompassApp(
                                     DiscoveryAtlas.entries.forEach { atlas ->
                                         FilterChip(
                                             selected = discoveryAtlas == atlas,
-                                            onClick = { discoveryAtlas = atlas },
+                                            onClick = {
+                                                discoveryAtlas = atlas
+                                                if (atlas != DiscoveryAtlas.STRATEGIEN) strategyReturnTarget = null
+                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) needReturnToStrategy = false
+                                            },
                                             label = { Text(atlas.label) },
                                             modifier = Modifier.fillMaxWidth()
                                         )
@@ -503,7 +580,11 @@ private fun EmotionskompassApp(
                                     DiscoveryAtlas.entries.forEach { atlas ->
                                         FilterChip(
                                             selected = discoveryAtlas == atlas,
-                                            onClick = { discoveryAtlas = atlas },
+                                            onClick = {
+                                                discoveryAtlas = atlas
+                                                if (atlas != DiscoveryAtlas.STRATEGIEN) strategyReturnTarget = null
+                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) needReturnToStrategy = false
+                                            },
                                             label = {
                                                 Text(atlas.label, textAlign = TextAlign.Center,
                                                     maxLines = 2, overflow = TextOverflow.Ellipsis)
@@ -536,18 +617,72 @@ private fun EmotionskompassApp(
                                         seen = learning.progress.seen,
                                         canSave = !learning.busy && learning.error == null,
                                         onFavorite = learningVm::toggleFavorite,
-                                        onSeen = learningVm::markSeen
+                                        onSeen = learningVm::markSeen,
+                                        strategyCatalog = strategyCatalog,
+                                        needStrategyLinks = needStrategyLinks,
+                                        onStrategy = {
+                                            needReturnToStrategy = false
+                                            openStrategy(it, "need")
+                                        },
+                                        onOpenStrategyAtlas = {
+                                            needReturnToStrategy = false
+                                            openStrategyOverview()
+                                        },
+                                        requestedNeedId = requestedNeedId,
+                                        onRequestConsumed = { requestedNeedId = null },
+                                        onReturnToStrategy = if (needReturnToStrategy) {
+                                            {
+                                                needReturnToStrategy = false
+                                                discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+                                                vm.selectSection(MainSection.ENTDECKEN)
+                                            }
+                                        } else null
                                     )
                                     DiscoveryAtlas.STRATEGIEN -> if (strategyCatalog != null) {
                                         StrategyAtlasScreen(
                                             catalog = strategyCatalog,
                                             selectedId = selectedStrategyId,
-                                            onSelect = { selectedStrategyId = it },
-                                            onBackToList = { selectedStrategyId = null },
+                                            onSelect = { id ->
+                                                val previous = selectedStrategyId
+                                                if (previous != null && previous != id) {
+                                                    strategyHistory = (strategyHistory + previous).takeLast(12)
+                                                }
+                                                selectedStrategyId = id
+                                            },
+                                            onBackToList = {
+                                                if (strategyHistory.isNotEmpty()) {
+                                                    selectedStrategyId = strategyHistory.last()
+                                                    strategyHistory = strategyHistory.dropLast(1)
+                                                } else {
+                                                    selectedStrategyId = null
+                                                    strategyReturnTarget = null
+                                                }
+                                            },
                                             onKnowledgeArticle = { id ->
                                                 requestedKnowledgeArticleId = id
                                                 vm.openKnowledgeWorld()
-                                            }
+                                            },
+                                            needCatalog = needCatalog,
+                                            needStrategyLinks = needStrategyLinks,
+                                            lessonCatalog = lessonCatalog,
+                                            caseCatalog = caseCatalog,
+                                            onNeed = { id ->
+                                                requestedNeedId = id
+                                                needReturnToStrategy = true
+                                                discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
+                                                vm.selectSection(MainSection.ENTDECKEN)
+                                            },
+                                            onPracticeCase = { id ->
+                                                requestedCaseId = id
+                                                vm.openKnowledgeWorld()
+                                            },
+                                            onReturnToSource = if (strategyReturnTarget != null) returnFromStrategy else null,
+                                            sourceLabel = when (strategyReturnTarget) {
+                                                "need" -> "Zum Bedürfnis"
+                                                "case" -> "Zum Praxisfall"
+                                                else -> ""
+                                            },
+                                            hasPreviousStrategy = strategyHistory.isNotEmpty()
                                         )
                                     } else {
                                         Text("Der Strategieatlas konnte nicht geladen werden. Die anderen Atlanten bleiben verfügbar.",
@@ -565,10 +700,14 @@ private fun EmotionskompassApp(
                             onRead = learningVm::markArticleRead,
                             onLearning = vm::openLearning,
                             caseCatalog = caseCatalog,
-                            onStrategies = {
-                                discoveryAtlas = DiscoveryAtlas.STRATEGIEN
-                                vm.selectSection(MainSection.ENTDECKEN)
-                            }
+                            strategyTitles = strategyTitles,
+                            onStrategyDetail = { id, caseId ->
+                                returnCaseId = caseId
+                                openStrategy(id, "case")
+                            },
+                            requestedCaseId = requestedCaseId,
+                            onCaseRequestConsumed = { requestedCaseId = null },
+                            onStrategies = openStrategyOverview
                         )
                     } else {
                         Text("Die Wissenswelt konnte nicht geladen werden. Deine übrigen Bereiche bleiben verfügbar.",
@@ -624,13 +763,18 @@ private fun EmotionskompassApp(
                         ui = learning,
                         onBookmark = learningVm::toggleArticleBookmark,
                         onRead = learningVm::markArticleRead,
-                        onStrategies = {
-                            discoveryAtlas = DiscoveryAtlas.STRATEGIEN
-                            vm.selectSection(MainSection.ENTDECKEN)
-                        },
+                        onStrategies = openStrategyOverview,
                         onLearning = vm::openLearning,
                         caseCatalog = caseCatalog,
+                        strategyTitles = strategyTitles,
+                        onStrategyDetail = { id, caseId ->
+                            returnCaseId = caseId
+                            openStrategy(id, "case")
+                        },
+                        requestedCaseId = requestedCaseId,
+                        onCaseRequestConsumed = { requestedCaseId = null },
                         onReturnToSource = { vm.back() },
+                        returnLabel = if (selectedStrategyId == null) "Zur Atlasübersicht" else "Zur Strategie",
                         requestedArticleId = requestedKnowledgeArticleId,
                         onRequestConsumed = { requestedKnowledgeArticleId = null }
                     )

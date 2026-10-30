@@ -49,7 +49,8 @@ data class KnowledgeLesson(
     val commonMistake: String,
     val check: LessonCheck
 ) {
-    val allText: String get() = (listOf(title, lead, example, takeaway, learningGoal, commonMistake) +
+    val allText: String get() = (listOf(title, lead, example, takeaway, reflection,
+        learningGoal, commonMistake, check.prompt, check.explanation) +
         sections.flatMap { listOf(it.title, it.text) }).joinToString(" ")
     val readingMinutes: Int get() = ((allText.split(Regex("\\s+")).size + 149) / 150).coerceAtLeast(2)
 }

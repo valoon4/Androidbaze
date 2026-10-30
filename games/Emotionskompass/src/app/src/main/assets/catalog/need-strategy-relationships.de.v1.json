@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "naehe",
+      "items": [
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn du eine vertrauensvolle Beziehung hast, kann die Bitte um Zuhören oder gemeinsame Zeit emotionale Nähe ermöglichen, ohne sie einzufordern."
+        },
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn es sicher ist, kannst du aussprechen, welche Form von Nähe dir angenehm wäre; die andere Person entscheidet mit."
+        }
+      ]
+    },
+    {
+      "needId": "zugehoerigkeit",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn dir Verbindung wichtig ist, kann eine freiwillige kleine gemeinsame Aktivität einen Kontakt ermöglichen, ohne Zugehörigkeit zu garantieren."
+        },
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn du dich ausgeschlossen fühlst, kann eine vertrauenswürdige Person ein sicherer Gesprächskontakt sein."
+        }
+      ]
+    },
+    {
+      "needId": "liebe",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn eine Beziehung sicher und gegenseitig ist, können Wünsche nach Zuwendung behutsam ausgesprochen werden; Gefühle anderer lassen sich nicht steuern."
+        },
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn dir liebevolle Verbundenheit wichtig ist, könnte eine freiwillige kleine Geste deine eigene Haltung ausdrücken."
+        }
+      ]
+    },
+    {
+      "needId": "freundschaft",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du Kontakt pflegen möchtest, kann eine kleine selbst gewählte Nachricht oder gemeinsame Aktivität dazu passen."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn Missverständnisse eine sichere Freundschaft belasten, könnte ein respektvolles Gespräch Klarheit schaffen."
+        }
+      ]
+    },
+    {
+      "needId": "gemeinschaft",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn gemeinsames Tun dir wichtig ist, könnte eine kleine freiwillige Beteiligung an einer passenden Gruppe ein Anfang sein."
+        }
+      ]
+    },
+    {
+      "needId": "akzeptanz",
+      "items": [
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn du eine respektvolle Person kennst, kann ein offenes Gespräch das Gefühl unterstützen, gesehen zu werden; Zustimmung lässt sich nicht erzwingen."
+        },
+        {
+          "strategyId": "self-compassion",
+          "reason": "Wenn du dir selbst wegen einer Eigenheit Vorwürfe machst, kann eine freundlichere Haltung zusätzlichen Druck mindern."
+        }
+      ]
+    },
+    {
+      "needId": "verstandenwerden",
+      "items": [
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn eine vertraute Person erreichbar ist, kann eine Bitte um Zuhören ohne sofortige Ratschläge dein Anliegen verständlicher machen."
+        },
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn ein Gespräch sicher ist, kannst du genauer formulieren, welche Erfahrung oder Sorge du teilen möchtest."
+        }
+      ]
+    },
+    {
+      "needId": "empathie",
+      "items": [
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn du Trost oder Mitgefühl brauchst, kann die bewusste Wahl einer vertrauenswürdigen Ansprechperson ein Weg sein."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn beide Seiten offen dafür sind, kann ein ruhiges Gespräch unterschiedliche Sichtweisen nachvollziehbarer machen."
+        }
+      ]
+    },
+    {
+      "needId": "geborgenheit",
+      "items": [
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn ein sicherer vertrauter Kontakt vorhanden ist, kann freiwilliges Zuhören oder Nähe Geborgenheit unterstützen."
+        },
+        {
+          "strategyId": "protective-withdrawal",
+          "reason": "Wenn eine Umgebung unruhig oder belastend ist, kann ein geschützter Ort vorübergehend mehr Sicherheit ermöglichen."
+        }
+      ]
+    },
+    {
+      "needId": "fuersorge",
+      "items": [
+        {
+          "strategyId": "practical-support",
+          "reason": "Wenn eine konkrete Entlastung gebraucht wird, kann eine freiwillige Bitte um Unterstützung hilfreich sein."
+        },
+        {
+          "strategyId": "emotional-support",
+          "reason": "Wenn du Begleitung statt einer praktischen Lösung möchtest, kann eine vertrauenswürdige Person zuhören."
+        }
+      ]
+    },
+    {
+      "needId": "unterstuetzung",
+      "items": [
+        {
+          "strategyId": "practical-support",
+          "reason": "Wenn eine Aufgabe zu viel wird, kann eine konkrete Bitte um praktische Hilfe die Belastung teilen."
+        },
+        {
+          "strategyId": "social-support",
+          "reason": "Wenn Orientierung oder Begleitung fehlt, kann die Suche nach einer geeigneten sicheren Ansprechperson passen."
+        }
+      ]
+    },
+    {
+      "needId": "offenheit",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn eine Beziehung ausreichend sicher ist, kannst du eine offene Frage oder ein eigenes Anliegen behutsam formulieren."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn ein respektvoller Austausch möglich ist, können Beobachtungen und Fragen im Gespräch geklärt werden."
+        }
+      ]
+    }
+  ]
+}

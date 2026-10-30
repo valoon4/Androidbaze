@@ -50,11 +50,13 @@ class StrategyCatalogTest {
             catalog.browse("ablenkung").map { it.id })
         assertEquals(catalog.browse("Lösen").map { it.id },
             catalog.browse("losen").map { it.id })
-        assertEquals(listOf("reappraisal"),
-            catalog.browse("neubewertung").map { it.id })
-        assertTrue(catalog.browse("neubewertung", "social").isEmpty())
-        assertEquals(listOf("reappraisal"),
-            catalog.browse("neubewertung", "cognition").map { it.id })
+        // Full-text search intentionally also returns other cards that discuss
+        // reappraisal in their caveats or reflection, not only the title match.
+        assertTrue(catalog.browse("neubewertung").any { it.id == "reappraisal" })
+        assertTrue(catalog.browse("neubewertung", "social")
+            .none { it.id == "reappraisal" })
+        assertTrue(catalog.browse("neubewertung", "cognition")
+            .any { it.id == "reappraisal" })
     }
 
     @Test fun alternativeLinksResolveWithoutSelfLinks() {

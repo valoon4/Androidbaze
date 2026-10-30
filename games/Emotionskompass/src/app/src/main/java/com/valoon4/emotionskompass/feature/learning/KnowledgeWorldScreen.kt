@@ -53,7 +53,12 @@ fun KnowledgeWorldScreen(
     onStrategies: () -> Unit = {},
     onLearning: () -> Unit = {},
     caseCatalog: StrategyCaseCatalog? = null,
+    onStrategyDetail: (String, String) -> Unit = { _, _ -> },
+    strategyTitles: Map<String, String> = emptyMap(),
+    requestedCaseId: String? = null,
+    onCaseRequestConsumed: () -> Unit = {},
     onReturnToSource: (() -> Unit)? = null,
+    returnLabel: String = "Zur Strategie",
     requestedArticleId: String? = null,
     onRequestConsumed: () -> Unit = {}
 ) {
@@ -62,6 +67,16 @@ fun KnowledgeWorldScreen(
     var topic by rememberSaveable { mutableStateOf("Alle") }
     var seriesId by rememberSaveable { mutableStateOf<String?>(null) }
     var articleId by rememberSaveable { mutableStateOf<String?>(null) }
+    var pendingCaseId by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(requestedCaseId) {
+        if (requestedCaseId != null && caseCatalog?.find(requestedCaseId) != null) {
+            mode = "Praxisfälle"
+            articleId = null
+            seriesId = null
+            pendingCaseId = requestedCaseId
+            onCaseRequestConsumed()
+        }
+    }
     val series = catalog.series.firstOrNull { it.id == seriesId }
     val article = articleId?.let(catalog::find)
     LaunchedEffect(requestedArticleId) {
@@ -93,7 +108,7 @@ fun KnowledgeWorldScreen(
             TextButton(onClick = {
                 if (onReturnToSource != null) onReturnToSource() else articleId = null
             }) {
-                Text(if (onReturnToSource != null) "← Zur Strategie"
+                Text(if (onReturnToSource != null) "← $returnLabel"
                     else if (series != null) "← Zur Lernreihe" else "← Zur Bibliothek")
             }
             Text(article.topic.label.uppercase(), style = MaterialTheme.typography.labelSmall,
@@ -190,14 +205,14 @@ fun KnowledgeWorldScreen(
             Text("Redaktionelle Lerntexte, keine medizinische Diagnose oder Therapie. Die folgenden Quellen öffnen sich nur auf deinen Wunsch im externen Browser.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-            article.sources.forEach { url ->
+            article.sources.forEachIndexed { index, url ->
                 TextButton(onClick = {
                     try {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     } catch (_: Exception) {
                         externalError = true
                     }
-                }) { Text(sourceLabel(url)) }
+                }) { Text("${index + 1}. " + sourceLabel(url)) }
             }
             if (externalError) Text("Kein externer Browser verfügbar. Du kannst den Artikel weiterhin offline lesen.",
                 color = MaterialTheme.colorScheme.error,
@@ -246,7 +261,11 @@ fun KnowledgeWorldScreen(
         StrategyPracticeScreen(
             catalog = caseCatalog,
             onBackToKnowledge = { mode = "Start" },
-            onStrategies = onStrategies
+            onStrategy = onStrategyDetail,
+            strategyTitles = strategyTitles,
+            requestedCaseId = pendingCaseId,
+            onRequestConsumed = { pendingCaseId = null },
+            onReturnToSource = onReturnToSource
         )
         return
     }
@@ -263,8 +282,9 @@ fun KnowledgeWorldScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(listOf("Start", "Artikel", "Lernreihen", "Merkliste") +
-                    (if (caseCatalog != null) listOf("Praxisfälle") else emptyList())) { option ->
+                items(listOf("Start", "Artikel") +
+                    (if (caseCatalog != null) listOf("Praxisfälle") else emptyList()) +
+                    listOf("Lernreihen", "Merkliste")) { option ->
                     FilterChip(selected = mode == option, onClick = { mode = option },
                         label = { Text(option) })
                 }
@@ -411,7 +431,9 @@ private fun ArticleTile(
     Card(onClick = onOpen) {
         Column(Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            Text(article.topic.label, style = MaterialTheme.typography.labelSmall,
+            Text(if (article.id.startsWith("s-vertiefung-"))
+                "Vertiefung · " + article.topic.label else article.topic.label,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
             Text(article.title, style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
@@ -444,5 +466,15 @@ private fun sourceLabel(url: String): String = when (url) {
         "Praxisansatz: GFK-Kurzübersicht – BayNVC"
     "https://www.cnvc.org/certification/cpp/preparation/" ->
         "Praxisansatz: GFK-Lernmaterial – CNVC"
-    else -> "Externe Vertiefungsquelle"
+    "https://pubmed.ncbi.nlm.nih.gov/26173226/" ->
+        "Wissenschaft: Bonanno & Burton – Regulationsflexibilität (2013)"
+    "https://pubmed.ncbi.nlm.nih.gov/12696840/" ->
+        "Wissenschaft: Skinner et al. – Coping-Klassifikationen (2003)"
+    "https://pubmed.ncbi.nlm.nih.gov/24145331/" ->
+        "Wissenschaft: Troy et al. – Neubewertung und Kontext (2013)"
+    "https://doi.org/10.1080/1047840X.2014.940781" ->
+        "Wissenschaft: Gross – Emotionsregulation (2015)"
+    "https://www.paho.org/en/documents/doing-what-matters-times-stress-illustrated-guide" ->
+        "Praxisleitfaden: WHO/PAHO – Umgang mit Stress"
+    else -> "Externe Quelle auf " + (Uri.parse(url).host ?: "unbekannter Website")
 }

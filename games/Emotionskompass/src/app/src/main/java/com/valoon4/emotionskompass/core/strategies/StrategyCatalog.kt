@@ -43,8 +43,9 @@ data class StrategyCard(
     val sources: List<StrategySource>
 ) {
     val searchText: String get() = (
-        listOf(title, shortDefinition, purpose, whenUseful, example, clarification) +
-            aliases + benefits + drawbacks
+        listOf(title, shortDefinition, purpose, whenUseful, limitations,
+            example, misconception, clarification, reflection, optionalPractice) +
+            aliases + benefits + drawbacks + sources.map { it.description }
         ).joinToString(" ")
 }
 

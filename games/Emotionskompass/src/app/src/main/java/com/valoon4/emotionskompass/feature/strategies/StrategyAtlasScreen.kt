@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilterChip
@@ -33,6 +35,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.strategies.StrategyCard
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
+import com.valoon4.emotionskompass.core.strategies.StrategyNeedOption
+import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.core.lessons.LessonCatalog
+import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 
 /** Read-only offline strategy atlas; user experiences are never inferred. */
 @Composable
@@ -41,15 +49,43 @@ fun StrategyAtlasScreen(
     selectedId: String?,
     onSelect: (String) -> Unit,
     onBackToList: () -> Unit,
-    onKnowledgeArticle: (String) -> Unit
+    onKnowledgeArticle: (String) -> Unit,
+    needCatalog: NeedCatalog? = null,
+    needStrategyLinks: NeedStrategyLinkIndex? = null,
+    lessonCatalog: LessonCatalog? = null,
+    caseCatalog: StrategyCaseCatalog? = null,
+    onNeed: (String) -> Unit = {},
+    onPracticeCase: (String) -> Unit = {},
+    onReturnToSource: (() -> Unit)? = null,
+    sourceLabel: String = "",
+    hasPreviousStrategy: Boolean = false
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var familyId by rememberSaveable { mutableStateOf<String?>(null) }
+    var showExplanation by rememberSaveable { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val selected = selectedId?.let(catalog::find)
-    BackHandler(enabled = selected != null) { onBackToList() }
+    val returnFromDetail: () -> Unit = {
+        if (hasPreviousStrategy || onReturnToSource == null) onBackToList()
+        else onReturnToSource()
+    }
+    BackHandler(enabled = selected != null) { returnFromDetail() }
     if (selected != null) {
-        StrategyDetail(selected, catalog, onBackToList, onSelect, onKnowledgeArticle)
+        StrategyDetail(
+            card = selected,
+            catalog = catalog,
+            onBack = returnFromDetail,
+            onRelated = onSelect,
+            onKnowledgeArticle = onKnowledgeArticle,
+            lessonCatalog = lessonCatalog,
+            needCatalog = needCatalog,
+            needStrategyLinks = needStrategyLinks,
+            caseCatalog = caseCatalog,
+            onNeed = onNeed,
+            onPracticeCase = onPracticeCase,
+            backLabel = if (hasPreviousStrategy) "Zur vorherigen Strategie"
+                else if (onReturnToSource != null) sourceLabel else "Zum Strategieatlas"
+        )
         return
     }
     val filtered = catalog.browse(query, familyId)
@@ -65,7 +101,18 @@ fun StrategyAtlasScreen(
             Text("${catalog.strategies.size} ausführliche Strategiekarten zu Coping, Emotionsregulation und Bedürfnissen.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(catalog.intro, modifier = Modifier.padding(top = 8.dp))
+            Text("Eine Strategie ist eine mögliche Vorgehensweise, kein Patentrezept. Was passt, hängt von der Situation, Sicherheit und deinen Möglichkeiten ab.",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 8.dp))
+            if (lessonCatalog?.find("s-vertiefung-begriffe") != null) {
+                TextButton(onClick = { onKnowledgeArticle("s-vertiefung-begriffe") }) {
+                    Text("Strategie, Bedürfnis und Coping: kurz erklärt")
+                }
+            }
+            TextButton(onClick = { showExplanation = !showExplanation }) {
+                Text(if (showExplanation) "Einordnung einklappen" else "Mehr zur Einordnung")
+            }
+            if (showExplanation) Text(catalog.intro, style = MaterialTheme.typography.bodySmall)
             Text("Redaktionelle Entwürfe – unabhängige fachliche Prüfung steht noch aus.",
                 modifier = Modifier.padding(top = 6.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -129,17 +176,28 @@ private fun StrategyDetail(
     catalog: StrategyCatalog,
     onBack: () -> Unit,
     onRelated: (String) -> Unit,
-    onKnowledgeArticle: (String) -> Unit
+    onKnowledgeArticle: (String) -> Unit,
+    lessonCatalog: LessonCatalog?,
+    needCatalog: NeedCatalog?,
+    needStrategyLinks: NeedStrategyLinkIndex?,
+    caseCatalog: StrategyCaseCatalog?,
+    onNeed: (String) -> Unit,
+    onPracticeCase: (String) -> Unit,
+    backLabel: String
 ) {
     val context = LocalContext.current
     var externalError by remember(card.id) { mutableStateOf(false) }
+    var showAllNeeds by rememberSaveable(card.id) { mutableStateOf(false) }
+    // Each card starts at its beginning; saved position survives a temporary article detour.
+    val detailScroll = rememberSaveable(card.id, saver = LazyListState.Saver) { LazyListState() }
     LazyColumn(
+        state = detailScroll,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(18.dp),
         verticalArrangement = Arrangement.spacedBy(13.dp)
     ) {
         item {
-            TextButton(onClick = onBack) { Text("← Zum Strategieatlas") }
+            TextButton(onClick = onBack) { Text("← $backLabel") }
             Text(card.familyIds.joinToString(" · ") { catalog.familyName(it) },
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
@@ -148,16 +206,26 @@ private fun StrategyDetail(
             Text(card.shortDefinition, style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 8.dp))
         }
+        item {
+            Card {
+                Column(Modifier.fillMaxWidth().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                    SectionHeading("Auf einen Blick")
+                    Text("Wann es passen könnte", fontWeight = FontWeight.SemiBold)
+                    Text(card.whenUseful)
+                    Text("Wichtige Grenze", fontWeight = FontWeight.SemiBold)
+                    Text(card.limitations)
+                }
+            }
+        }
         item { DetailSection("Wozu könnte das dienen?", card.purpose) }
-        item { DetailSection("Wann könnte es passen?", card.whenUseful) }
         item {
             SectionHeading("Mögliche Vorteile")
             card.benefits.forEach { Text("• $it", modifier = Modifier.padding(top = 6.dp)) }
         }
         item {
-            SectionHeading("Mögliche Nachteile und Grenzen")
+            SectionHeading("Mögliche Nachteile")
             card.drawbacks.forEach { Text("• $it", modifier = Modifier.padding(top = 6.dp)) }
-            Text(card.limitations, modifier = Modifier.padding(top = 8.dp))
         }
         item {
             Card {
@@ -195,20 +263,54 @@ private fun StrategyDetail(
             OutlinedButton(onClick = { onRelated(alternative.id) },
                 modifier = Modifier.fillMaxWidth()) { Text(alternative.title) }
         }
-        if (card.relatedLessonIds.isNotEmpty()) {
-            item { SectionHeading("Passende Artikel in der Wissenswelt") }
-            items(card.relatedLessonIds, key = { "lesson-$it" }) { lessonId ->
-                OutlinedButton(onClick = { onKnowledgeArticle(lessonId) },
+        // These links are explicit editorial associations, not inferred personal advice.
+        val linkedNeeds = needCatalog?.let { needBook ->
+            needStrategyLinks?.needsForStrategy(card.id, needBook)
+                ?: card.relatedNeedIds.mapNotNull { id ->
+                    needBook.find(id)?.let { StrategyNeedOption(it, "") }
+                }
+        }.orEmpty()
+        if (linkedNeeds.isNotEmpty()) {
+            item {
+                SectionHeading("Bedürfnisse, die dabei eine Rolle spielen könnten")
+                Text("Ein Bedürfnis legt keine Handlung fest. Auch derselbe Weg kann in verschiedenen Situationen unterschiedliche Zwecke haben.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            val visibleNeeds = if (showAllNeeds) linkedNeeds else linkedNeeds.take(5)
+            items(visibleNeeds, key = { "need-${it.need.id}" }) { option ->
+                OutlinedButton(onClick = { onNeed(option.need.id) },
                     modifier = Modifier.fillMaxWidth()) {
-                    Text(when (lessonId) {
-                        "strategien-pruefen" -> "Was tun, wenn eine Strategie nicht hilft?"
-                        "mehrere-wege" -> "Mehr als einen Weg ausprobieren"
-                        "beobachtung-interpretation" -> "Beobachtung und Interpretation trennen"
-                        "gedanken-und-gefuehle" -> "Gedanken sind nicht dasselbe wie Gefühle"
-                        "achtsam-ohne-druck" -> "Achtsamkeit ohne Leistungsdruck"
-                        "bitte-statt-forderung" -> "Eine Bitte formulieren, die ein Nein zulässt"
-                        else -> "Artikel ansehen"
-                    })
+                    Text(option.need.name + " im Bedürfnisatlas ansehen")
+                }
+            }
+            if (linkedNeeds.size > 5) item {
+                TextButton(onClick = { showAllNeeds = !showAllNeeds }) {
+                    Text(if (showAllNeeds) "Weniger Bedürfnisse zeigen"
+                        else "Weitere ${linkedNeeds.size - 5} Bedürfnisse zeigen")
+                }
+            }
+        }
+        val articles = lessonCatalog?.let { StrategyLearningIndex.articlesFor(card, it) }.orEmpty()
+        if (articles.isNotEmpty()) {
+            item { SectionHeading("Passende Vertiefungen in der Wissenswelt") }
+            items(articles, key = { "lesson-${it.id}" }) { lesson ->
+                OutlinedButton(onClick = { onKnowledgeArticle(lesson.id) },
+                    modifier = Modifier.fillMaxWidth()) { Text(lesson.title) }
+            }
+        }
+        val examples = caseCatalog?.forStrategy(card.id)?.take(2).orEmpty()
+        if (examples.isNotEmpty()) {
+            item {
+                SectionHeading("An Alltagssituationen vergleichen")
+                Text("Die Fallbeispiele stellen Möglichkeiten gegenüber – sie messen nicht, ob eine Strategie für dich funktioniert.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            items(examples, key = { "case-${it.id}" }) { example ->
+                OutlinedButton(onClick = { onPracticeCase(example.id) },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(example.theme + ": " + example.prompt)
                 }
             }
         }
@@ -219,7 +321,7 @@ private fun StrategyDetail(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        items(card.sources, key = { it.url }) { source ->
+        itemsIndexed(card.sources, key = { _, source -> source.url }) { index, source ->
             Text(source.description)
             Text("Quellentyp: ${when (source.evidenceType) {
                 "PRIMARY_STUDY" -> "Einzelstudie"
@@ -235,7 +337,7 @@ private fun StrategyDetail(
                 } catch (_: Exception) {
                     externalError = true
                 }
-            }) { Text("Quelle extern öffnen") }
+            }) { Text("Quelle ${index + 1} von ${card.sources.size} extern öffnen") }
         }
         if (externalError) item {
             Text("Kein Browser verfügbar. Der Strategieartikel bleibt offline lesbar.",

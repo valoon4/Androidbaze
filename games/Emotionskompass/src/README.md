@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M6.3.2
+# Emotionskompass – native Android-App M6.3.3
 
-**Version:** 0.6.3.2-m6.3.2 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.6.3.3-m6.3.3 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -49,6 +49,21 @@ Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch 
 - Direkt über Wissen → Praxisfälle verfügbar. Alle Quellen sind offline im Text verlinkt und öffnen sich nur auf Wunsch extern; keine neue Internetberechtigung.
 - Strikte Versionierung/Referenzprüfungen, vollständige JVM-Tests, behutsamer Fallback zu alten Artikeln bei einem defekten neuen Inhaltsasset.
 - Details und noch offene fachliche/manuelle Abnahme: `games/Emotionskompass/notes/M632_WISSENSWELT_VERTIEFUNG.md`.
+
+### Ergänzung: Bedürfnisse ↔ Strategien nachvollziehbar verbinden
+- Alle 82 Bedürfnisse einzeln gegen die 30 vorhandenen Strategien geprüft. **76 Bedürfnisse** erhalten insgesamt **143 bedingte, redaktionell begründete und direkt anklickbare Verknüpfungen**; **6** ohne fachlich genügend konkreten Bezug.
+- Je Bedürfnis maximal drei Optionen **mit einem eigenen „Wann könnte das passen?“-Grund** statt bloßen Titelchips oder automatischer Erkennung. Strategieartikel zeigen die verknüpften Bedürfnisse mit einer aufklappbaren Liste.
+- Keine pauschale Empfehlung für Schlaf, Gesundheit, Ernährung, Spiritualität, Humor oder Spontaneität; keine krankheitsbezogene Pseudoberatung und keine Musterkarten als Handlungsoption.
+- Acht zusätzliche strikt validierte Offline-Katalogteile; bei beschädigtem Zusatzasset sichere Rückkehr zu den früheren Links. Alle Tagebuch- und Lernstandsdaten bleiben unverändert.
+- Vollständige redaktionelle Beurteilung: `games/Emotionskompass/notes/M633_BEDUERFNIS_STRATEGIE_ABGLEICH.md`. **Kein unabhängiger psychologischer Einzelbeleg für die 143 Verknüpfungen.**
+
+### M6.3.3 – Übersichtliche Verbindungen statt zusätzlicher Funktionen
+- Strategieatlas: kurzer Einstieg, freiwilliges Glossar, wichtige Grenzen direkt im Überblick und maximal drei wirklich benannte Vertiefungsartikel je Karte.
+- Alle 30 Karten mit den zwölf neuen Vertiefungen redaktionell verbunden; bisherige Artikel bleiben erreichbar.
+- Direkte, gezielte Wechsel **Strategie ↔ Bedürfnis**, **Strategie ↔ Praxisfall**, **Strategie ↔ Wissensartikel**; nachvollziehbarer Zurück-Weg und eine begrenzte Historie für Strategie-Alternativen.
+- Bedürfnisdetails zeigen nur ausdrücklich erfasste, harmlose Beispielstrategien; für fehlende Verknüpfungen wird nichts geraten.
+- Volltextsuche findet auch Grenzen, Fehlannahmen und Reflexionsfragen; Quellenlinks für Screenreader unterscheidbar beschriftet. Die fünf Hauptnavigationseinträge bleiben unverändert.
+- Ausführliche kritische Gegenüberstellung, Testmatrix und noch **nicht** abgeschlossene Geräte-/Fachprüfungen in `games/Emotionskompass/notes/M633_UX_QUALITAETSRUNDE.md`.
 
 ## Build und Tests
 

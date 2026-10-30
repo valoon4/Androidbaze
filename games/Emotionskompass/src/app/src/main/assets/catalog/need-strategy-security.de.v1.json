@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "sicherheit",
+      "items": [
+        {
+          "strategyId": "social-support",
+          "reason": "Wenn du unsicher bist, kann eine verlässliche Person oder geeignete Stelle beim Einschätzen der Lage und bei sicherer Unterstützung helfen."
+        },
+        {
+          "strategyId": "protective-withdrawal",
+          "reason": "Wenn eine Umgebung belastend oder unsicher ist, kann sicherer Abstand ein Schutzschritt sein; bei akuter Gefahr hat Hilfe Vorrang."
+        }
+      ]
+    },
+    {
+      "needId": "schutz",
+      "items": [
+        {
+          "strategyId": "protective-withdrawal",
+          "reason": "Wenn Abstand tatsächlich Sicherheit erhöht, kann ein geschützter Rückzug passender sein als ein weiteres Gespräch."
+        },
+        {
+          "strategyId": "social-support",
+          "reason": "Wenn du Schutz nicht allein herstellen kannst, kann Hilfe durch eine vertrauenswürdige oder fachlich geeignete Stelle wichtig sein."
+        }
+      ]
+    },
+    {
+      "needId": "stabilitaet",
+      "items": [
+        {
+          "strategyId": "planning",
+          "reason": "Wenn kleine Routinen beeinflussbar sind, können überschaubare Schritte einen verlässlicheren Ablauf unterstützen."
+        },
+        {
+          "strategyId": "changing-situation",
+          "reason": "Wenn Ort, Zeit oder Regeln veränderbar sind, könnte eine konkrete Absprache mehr Stabilität ermöglichen."
+        }
+      ]
+    },
+    {
+      "needId": "bestaendigkeit",
+      "items": [
+        {
+          "strategyId": "planning",
+          "reason": "Wenn dir ein wiederkehrendes Ritual wichtig ist, könnte ein bewusst geplanter kleiner Schritt Raum dafür lassen."
+        }
+      ]
+    },
+    {
+      "needId": "verlaesslichkeit",
+      "items": [
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn ein Gespräch sicher und beidseitig möglich ist, können konkrete Erwartungen und Vereinbarungen geklärt werden; Vertrauen lässt sich nicht erzwingen."
+        },
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn du Zusagen besser verstehen möchtest, kannst du konkrete Verbindlichkeiten erfragen, ohne ihre Einhaltung garantieren zu können."
+        }
+      ]
+    },
+    {
+      "needId": "vertrauen",
+      "items": [
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn die Beziehung sicher ist, kann ein offenes Gespräch über Erwartungen und Grenzen helfen, Vertrauen behutsam zu prüfen; es stellt es nicht automatisch her."
+        }
+      ]
+    },
+    {
+      "needId": "orientierung",
+      "items": [
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn eine Situation beeinflussbare Teile hat, können benannte Möglichkeiten und ein erster Schritt Orientierung geben."
+        },
+        {
+          "strategyId": "planning",
+          "reason": "Wenn mehrere Aufgaben offen sind, könnte eine kleine Reihenfolge die nächsten Möglichkeiten überschaubar machen."
+        }
+      ]
+    },
+    {
+      "needId": "klarheit",
+      "items": [
+        {
+          "strategyId": "assumptions",
+          "reason": "Wenn etwas mehrdeutig ist, kann das Trennen von Beobachtung und Deutung helfen, Wissenslücken zu erkennen."
+        },
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn ein Gespräch sicher ist, kann eine konkrete Rückfrage Erwartungen und Informationen klären."
+        }
+      ]
+    },
+    {
+      "needId": "vorhersehbarkeit",
+      "items": [
+        {
+          "strategyId": "planning",
+          "reason": "Wenn bestimmte Abläufe bekannt sind, kann eine lockere Planung helfen, sich auf beeinflussbare Schritte vorzubereiten."
+        },
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn rechtzeitige Informationen fehlen, kann eine sachliche Bitte um frühere Ankündigung eine Möglichkeit sein."
+        }
+      ]
+    },
+    {
+      "needId": "kontrolle_ueber_eigenes",
+      "items": [
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn deine eigenen Entscheidungen betroffen sind, kann eine sichere Grenze den persönlichen Gestaltungsspielraum schützen."
+        },
+        {
+          "strategyId": "changing-situation",
+          "reason": "Wenn du äußere Bedingungen mitgestalten kannst, könnte eine kleine Änderung mehr eigene Einflussmöglichkeiten schaffen."
+        }
+      ]
+    }
+  ]
+}
