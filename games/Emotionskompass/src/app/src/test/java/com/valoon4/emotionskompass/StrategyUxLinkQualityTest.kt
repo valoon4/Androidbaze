@@ -5,6 +5,7 @@ import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
 import java.io.File
 import org.junit.Assert.*
 import org.junit.Test
@@ -29,6 +30,15 @@ class StrategyUxLinkQualityTest {
         )
     }
     private val needs by lazy { NeedCatalog.fromJson(asset("catalog/needs.de.v1.json")) }
+    private val linkShards by lazy {
+        listOf("security", "relationships", "autonomy", "respect",
+            "wellbeing", "growth", "purpose", "vitality").map {
+            asset("catalog/need-strategy-$it.de.v1.json")
+        }
+    }
+    private val needLinks by lazy {
+        NeedStrategyLinkIndex.fromJsonParts(linkShards, needs, strategies)
+    }
     private val cases by lazy {
         StrategyCaseCatalog.fromJsonParts(
             listOf("a", "b", "c").map { asset("lessons/strategy-cases-$it.de.v1.json") },
@@ -57,20 +67,63 @@ class StrategyUxLinkQualityTest {
         }
     }
 
-    @Test fun needsOnlyHaveExplicitNonDiagnosticStrategyExamples() {
+    @Test fun seventySixNeedsHaveExplicitContextualLinksWithoutForcingSixOthers() {
         assertEquals(82, needs.needs.size)
-        val withLinks = needs.needs.filter {
-            StrategyLearningIndex.strategiesForNeed(it.id, strategies).isNotEmpty()
-        }
-        assertTrue(withLinks.isNotEmpty())
-        assertTrue(withLinks.size < needs.needs.size) // Honest empty-link states exist.
+        assertEquals(76, needLinks.linkedNeedIds.size)
+        assertEquals(143, needLinks.associations.size)
+        val deliberatelyUnmapped = needs.needs.map { it.id }.toSet() - needLinks.linkedNeedIds
+        assertEquals(setOf("schlaf", "gesundheit", "naehrung",
+            "spiritualitaet", "humor", "spontanitaet"), deliberatelyUnmapped)
         needs.needs.forEach { need ->
-            val links = StrategyLearningIndex.strategiesForNeed(need.id, strategies)
-            assertTrue(links.size <= 3)
-            assertTrue(links.all { need.id in it.relatedNeedIds })
-            assertTrue("Harmful pattern suggested for ${need.id}",
-                links.none { "patterns" in it.familyIds })
+            val options = needLinks.optionsForNeed(need.id, strategies)
+            assertTrue("Too many suggestions: ${need.id}", options.size <= 3)
+            assertEquals(options.size, options.map { it.strategy.id }.toSet().size)
+            assertTrue(options.all { it.reason.length in 55..300 })
+            assertTrue("Pattern accidentally presented for ${need.id}",
+                options.none { "patterns" in it.strategy.familyIds })
+            options.forEach { option ->
+                assertTrue(needLinks.needsForStrategy(option.strategy.id, needs)
+                    .any { it.need.id == need.id && it.reason == option.reason })
+            }
         }
+        assertTrue(needLinks.optionsForNeed("sicherheit", strategies)
+            .any { it.strategy.id == "social-support" })
+        assertTrue(needLinks.optionsForNeed("privatsphaere", strategies)
+            .any { it.strategy.id == "boundaries" })
+        assertTrue(needLinks.optionsForNeed("bewegung", strategies)
+            .any { it.strategy.id == "movement" })
+    }
+
+    @Test fun brokenNeedLinksAndDuplicatedEditorialDefinitionsFailClosed() {
+        assertThrows(IllegalArgumentException::class.java) {
+            NeedStrategyLinkIndex.fromJsonParts(linkShards + linkShards.first(), needs, strategies)
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            NeedStrategyLinkIndex.fromJsonParts(linkShards.mapIndexed { i, raw ->
+                if (i == 0) raw.replaceFirst(
+                    Regex("\"schemaVersion\"\\s*:\\s*1"), "\"schemaVersion\":2"
+                ) else raw
+            }, needs, strategies)
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            NeedStrategyLinkIndex.fromJsonParts(linkShards.mapIndexed { i, raw ->
+                if (i == 0) raw.replaceFirst(
+                    Regex("\"strategyId\"\\s*:\\s*\"[a-z-]+\""),
+                    "\"strategyId\":\"prolonged-avoidance\""
+                ) else raw
+            }, needs, strategies)
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            NeedStrategyLinkIndex.fromJsonParts(linkShards.mapIndexed { i, raw ->
+                if (i == 0) raw.replaceFirst(
+                    Regex("\"needId\"\\s*:\\s*\"[a-z_]+\""),
+                    "\"needId\":\"unbekanntes-beduerfnis\""
+                ) else raw
+            }, needs, strategies)
+        }
+        // A malformed optional index must not invalidate the 30-card catalog.
+        assertEquals(30, strategies.strategies.size)
+        assertEquals(82, needs.needs.size)
     }
 
     @Test fun allFifteenCasesOpenNamedStrategyDetails() {
