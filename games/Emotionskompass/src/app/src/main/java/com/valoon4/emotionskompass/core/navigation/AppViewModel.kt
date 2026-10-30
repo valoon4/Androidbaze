@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 enum class MainSection { START, ENTDECKEN, BEDUERFNISSE, TAGEBUCH, RUECKBLICK }
-enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, CHECKIN, SETTINGS }
+enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, LEARNING, CHECKIN, SETTINGS }
 
 data class AtlasFilters(
     val query: String = "",
@@ -317,6 +317,7 @@ class AppViewModel(
         push(_state.value.copy(destination = Destination.VERGLEICH, comparisonId = id))
     }
 
+    fun openLearning() = push(_state.value.copy(destination = Destination.LEARNING))
     fun openLearningCards() = push(_state.value.copy(destination = Destination.LEARN_CARDS))
     fun openComparisons() = push(_state.value.copy(destination = Destination.COMPARISONS))
 
