@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "lernen",
+      "items": [
+        {
+          "strategyId": "planning",
+          "reason": "Wenn du etwas Neues erkunden möchtest, kann ein kleiner Lernplan die nächsten freiwilligen Schritte überschaubar machen."
+        },
+        {
+          "strategyId": "practical-support",
+          "reason": "Wenn wichtige Informationen fehlen, kann eine konkrete Bitte um Einführung oder Hilfestellung passend sein."
+        }
+      ]
+    },
+    {
+      "needId": "kompetenz",
+      "items": [
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn eine Aufgabe beeinflussbar ist, kann das Aufteilen eines Problems deine eigenen Handlungsmöglichkeiten sichtbar machen."
+        },
+        {
+          "strategyId": "practical-support",
+          "reason": "Wenn eine Erklärung oder ein Beispiel fehlt, kann die Bitte um passende Anleitung beim Kompetenzerleben helfen."
+        }
+      ]
+    },
+    {
+      "needId": "selbstwirksamkeit",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du selbst handeln möchtest, kann ein kleiner freiwilliger Schritt zeigen, was im eigenen Einflussbereich liegt."
+        },
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn ein konkretes Hindernis veränderbar ist, kann eine machbare Lösung eigene Gestaltungsmöglichkeiten erfahrbar machen."
+        }
+      ]
+    },
+    {
+      "needId": "entwicklung",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn Wachstum zu deinen Werten gehört, kann eine kleine selbst gewählte Lernerfahrung zu deiner Richtung passen."
+        },
+        {
+          "strategyId": "planning",
+          "reason": "Wenn du etwas erproben möchtest, kann eine lockere Schrittfolge helfen, Überforderung zu vermeiden."
+        }
+      ]
+    },
+    {
+      "needId": "meisterschaft",
+      "items": [
+        {
+          "strategyId": "planning",
+          "reason": "Wenn du eine Fertigkeit behutsam vertiefen willst, kann eine überschaubare Reihenfolge freiwilliger Übungsschritte helfen."
+        }
+      ]
+    },
+    {
+      "needId": "herausforderung",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du eine sichere Aufgabe ausprobieren willst, kann ein selbst gewählter kleiner Schritt eine angemessene Herausforderung sein."
+        },
+        {
+          "strategyId": "planning",
+          "reason": "Wenn die Aufgabe anspruchsvoll wirkt, kann eine grobe Planung helfen, Fähigkeiten und Grenzen realistisch einzuschätzen."
+        }
+      ]
+    },
+    {
+      "needId": "kreativitaet",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du einen kreativen Ausdruck ausprobieren möchtest, kann eine kleine selbst gewählte Handlung Raum für eine eigene Idee schaffen."
+        }
+      ]
+    },
+    {
+      "needId": "neugier",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn dich eine Frage interessiert, kann ein kleiner frei gewählter Erkundungsschritt deine Neugier aufgreifen."
+        },
+        {
+          "strategyId": "mindful-observation",
+          "reason": "Wenn ein neutraler Eindruck dein Interesse weckt, kannst du ihn freiwillig genauer betrachten, ohne eine Leistung erreichen zu müssen."
+        }
+      ]
+    },
+    {
+      "needId": "erfolg",
+      "items": [
+        {
+          "strategyId": "planning",
+          "reason": "Wenn du ein selbst gewähltes erreichbares Ziel hast, kann ein kleiner Plan Fortschritte sichtbarer machen, ohne Erfolg zu garantieren."
+        },
+        {
+          "strategyId": "self-compassion",
+          "reason": "Wenn ein Ziel nicht erreicht wurde, kann eine weniger abwertende Haltung helfen, dich nicht mit dem Ergebnis gleichzusetzen."
+        }
+      ]
+    },
+    {
+      "needId": "feedback",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn du Orientierung zu deiner Arbeit brauchst, kann eine konkrete Bitte um sachliche Rückmeldung passend sein."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn gegenseitige Gesprächsbereitschaft besteht, kann ein respektvoller Austausch hilfreichere Hinweise ermöglichen."
+        }
+      ]
+    }
+  ]
+}
