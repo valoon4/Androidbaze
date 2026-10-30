@@ -8,7 +8,7 @@
       "scenario": "Du hast einer Kollegin geschrieben und keine Antwort erhalten. Du fragst dich, ob sie verärgert ist, weißt aber nicht, was passiert ist.",
       "prompt": "Wie könntest du mehrere Möglichkeiten offenlassen?",
       "choices": [
-        "Die ausbleibende Antwort als Beweis ansehen, dass sie dich nicht mag.",
+        "Ich könnte annehmen, dass die letzte Besprechung eine Rolle spielt, und mir zunächst etwas Abstand geben.",
         "Beobachtung und Vermutung unterscheiden und gegebenenfalls freundlich nachfragen."
       ],
       "bestIndex": 1,
@@ -29,7 +29,7 @@
       "prompt": "Welche Möglichkeit ist passend zu prüfen?",
       "choices": [
         "Eine konkrete Grenze zu deiner Verfügbarkeit nennen und über Alternativen sprechen.",
-        "Die Überforderung als Zeichen verstehen, jede Bitte ausnahmslos erfüllen zu müssen."
+        "Ich könnte zunächst abwarten, ob sich die zusätzliche Arbeitsmenge von selbst wieder reduziert."
       ],
       "bestIndex": 0,
       "feedback": "In einer sicheren Beziehung können Grenzen und Absprachen den Handlungsspielraum klären. Bei Bedrohung wäre dagegen Schutz vor direkter Konfrontation wichtiger.",
@@ -48,7 +48,7 @@
       "scenario": "Nach einem Streit fühlst du dich erschöpft. Eine vertraute Person bietet an, entweder zuzuhören oder bei einer praktischen Aufgabe zu helfen.",
       "prompt": "Welche Frage klärt deinen Bedarf besser?",
       "choices": [
-        "Ich sollte jede verfügbare Hilfe annehmen, unabhängig davon, was ich brauche.",
+        "Die praktische Hilfe könnte sofort etwas Arbeit abnehmen; vielleicht nehme ich sie zuerst an und prüfe später meine Gefühle.",
         "Brauche ich gerade eher Zuhören, praktische Entlastung oder bewusst Zeit für mich?"
       ],
       "bestIndex": 1,
@@ -69,7 +69,7 @@
       "prompt": "Welche Einordnung berücksichtigt die Sicherheit?",
       "choices": [
         "Die Erfahrung ernst nehmen und eine sichere Grenze oder Unterstützung erwägen.",
-        "Die Bemerkungen grundsätzlich beschönigen, damit die Gefühle endlich verschwinden."
+        "Ich könnte erst nach einer anderen Erklärung für die Bemerkungen suchen und die Frage nach meinen Grenzen später klären."
       ],
       "bestIndex": 0,
       "feedback": "Ein anderer Blickwinkel darf konkrete Grenzverletzungen nicht relativieren. Sicherheit, Handlungsspielraum und Vertrauen sind hier wichtiger als erzwungene positive Deutungen.",
@@ -88,7 +88,7 @@
       "scenario": "Du hast einen kleinen Fehler gemacht und beschreibst dich daraufhin als grundsätzlich unfähig. Zugleich möchtest du aus der Situation lernen.",
       "prompt": "Welche Haltung hält beides offen?",
       "choices": [
-        "Den Fehler ganz vergessen und jede Verantwortung grundsätzlich vermeiden.",
+        "Ich könnte zuerst überlegen, wie ich denselben Fehler künftig vermeide, und mich erst danach mit meiner Selbstkritik befassen.",
         "Den konkreten Fehler anerkennen und auf eine pauschale Abwertung deiner Person verzichten."
       ],
       "bestIndex": 1,
