@@ -100,9 +100,10 @@ fun StrategyAtlasScreen(
             Text("Eine Strategie ist eine mögliche Vorgehensweise, kein Patentrezept. Was passt, hängt von der Situation, Sicherheit und deinen Möglichkeiten ab.",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 8.dp))
-            TextButton(onClick = { onKnowledgeArticle("s-vertiefung-begriffe") },
-                enabled = lessonCatalog?.find("s-vertiefung-begriffe") != null) {
-                Text("Strategie, Bedürfnis und Coping: kurz erklärt")
+            if (lessonCatalog?.find("s-vertiefung-begriffe") != null) {
+                TextButton(onClick = { onKnowledgeArticle("s-vertiefung-begriffe") }) {
+                    Text("Strategie, Bedürfnis und Coping: kurz erklärt")
+                }
             }
             TextButton(onClick = { showExplanation = !showExplanation }) {
                 Text(if (showExplanation) "Einordnung einklappen" else "Mehr zur Einordnung")
