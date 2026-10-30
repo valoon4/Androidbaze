@@ -105,7 +105,7 @@ import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import kotlinx.coroutines.launch
 
 /**
- * M4: Native offline emotions/needs atlas and explicitly saved AES-GCM journal.
+ * M5: Native offline emotions/needs atlas and explicitly saved AES-GCM journal.
  * Data stays on device; security review and backup/export are separate release gates.
  */
 class MainActivity : ComponentActivity() {
@@ -549,7 +549,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M4 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe und dein geschütztes Tagebuch.",
+        Text("M5 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe und dein geschütztes Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -1197,14 +1197,14 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M4 · Verschlüsseltes Reflexionstagebuch", style = MaterialTheme.typography.titleMedium,
+        Text("M5 · Schutz & verschlüsselte Sicherung", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Text("Der Gefühlsatlas enthält ${catalog.emotions.size} Begriffe, der Bedürfnisatlas ${needs.needs.size}. Der Check-in kann ab M4 nur auf ausdrücklichen Wunsch verschlüsselt im lokalen Tagebuch gespeichert, bearbeitet und gelöscht werden. Der Schlüssel liegt im Android Keystore. Kein Account und keine Cloud; App-Daten und Schlüssel sind nicht wiederherstellbar, wenn du das Gerät wechselst oder die App-Daten löschst. Der Bedürfniskompass bleibt flüchtig.",
+        Text("Der Gefühlsatlas enthält ${catalog.emotions.size} Begriffe, der Bedürfnisatlas ${needs.needs.size}. Das Tagebuch bleibt mit Android Keystore verschlüsselt. Neu in M5 sind eine freiwillige App-Sperre mit Geräte-PIN/Muster/Passwort und ausdrücklich passphrasegeschützte Export-/Importdateien. Eine Sicherung kann nach Bestätigung auf einem anderen Gerät wiederhergestellt werden; ohne Sicherung können Deinstallation und Geräteverlust deine Einträge endgültig vernichten. Keine automatische Cloud-Synchronisation. Der Bedürfniskompass bleibt flüchtig.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.4.0-m4", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.5.0-m5", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
