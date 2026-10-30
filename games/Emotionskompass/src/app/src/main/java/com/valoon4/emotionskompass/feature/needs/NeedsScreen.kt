@@ -304,12 +304,14 @@ private fun NeedDetailScreen(
             }
         } else if (strategyCatalog != null) {
             item {
-                Text("Für dieses Bedürfnis gibt es noch keine einzeln geprüfte Strategie-Verknüpfung.",
+                Text("Es gibt keine feste Zuordnung: Auch dieses Bedürfnis kann auf unterschiedlichen Wegen berücksichtigt werden.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                TextButton(onClick = onOpenStrategyAtlas) {
-                    Text("Strategien selbst entdecken")
-                }
+            }
+        }
+        if (strategyCatalog != null) item {
+            TextButton(onClick = onOpenStrategyAtlas) {
+                Text("Alle Strategien selbst entdecken")
             }
         }
         item {
