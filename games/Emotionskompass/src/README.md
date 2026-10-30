@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M6.2.1
+# Emotionskompass – native Android-App M6.3.1
 
-**Version:** 0.6.2.1-m6.2.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.6.3.1-m6.3.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -28,6 +28,14 @@ Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompa
 
 Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch kein verschlüsseltes Tagebuch. **M4** entwickelt die lokale, verantwortungsvoll geschützte Persistenz mit transparenter Löschung und Datenexport; **M5** überprüft Sicherheits- und Freigabegates.
 
+
+### M6.3.1 – Strategieatlas (Referenzpaket)
+- Fünf offline lesbare Strategiekarten: Problemlösen, bewusste Ablenkung, kognitive Neubewertung, soziale Unterstützung, Akzeptanz.
+- Eigener Einstieg aus der Wissenswelt, Suche mit Umlaut-/ASCII-Toleranz, sieben didaktische Familien mit Mehrfachzuordnung, vertiefende Vorteile/Nachteile, Grenzen, Beispiel, Missverständnis, Reflexion, Alternativen und Quellen.
+- Alle Querverweise auf bestehende Wissensartikel sind freiwillig; die 82 bisherigen Bedürfnis-Strategiebeispiele bleiben unangetastet. Kein automatisches persönliches Strategie-Matching, kein Nachverfolgen von Strategieversuchen (erst M7).
+- Der Katalog ist ein **fachredaktioneller Entwurf**, kein unabhängig begutachtetes Behandlungsangebot. Weitere 25 Karten und die Qualitätssicherung folgen in M6.3.1–M6.3.3.
+- JSON-Schema, referenzielle Integrität und Suche werden per JVM-Test geprüft. Externe Quellen werden nur nach bewusstem Tippen im installierten Browser geöffnet; die App selbst benötigt kein Netzwerk.
+
 ## Build und Tests
 
 Java 17, Android SDK 36, Gradle 8.13:
@@ -37,7 +45,7 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M621-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M631-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
