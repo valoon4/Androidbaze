@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "strategies": [
+    {
+      "id": "planning",
+      "title": "Kleine Schritte planen",
+      "aliases": [
+        "Planung",
+        "Handlungsplan"
+      ],
+      "familyIds": [
+        "situation"
+      ],
+      "tags": [
+        "coping",
+        "needs-action"
+      ],
+      "shortDefinition": "Eine große Aufgabe in überschaubare Handlungsschritte aufteilen, um sich nicht alle Anforderungen gleichzeitig vornehmen zu müssen.",
+      "purpose": "Bei vielen offenen Aufgaben kann ein kleiner Plan Orientierung schaffen und eine nächste Entscheidung erleichtern.",
+      "whenUseful": "Wenn ein nächster Schritt tatsächlich beeinflussbar und mit der gerade vorhandenen Zeit und Kraft machbar ist.",
+      "benefits": [
+        "Du musst nicht alle offenen Aufgaben gleichzeitig im Kopf behalten und kannst dich zunächst einem Abschnitt widmen.",
+        "Die Reihenfolge zeigt, an welchen Stellen Informationen oder Unterstützung noch fehlen könnten."
+      ],
+      "drawbacks": [
+        "Ein zu detaillierter Plan kann selbst belasten, wenn sich Rahmenbedingungen immer wieder verändern.",
+        "Unrealistische Pläne können zusätzliche Selbstvorwürfe auslösen, wenn Zeit oder Kraft fehlen."
+      ],
+      "limitations": "Nicht jeder Lebensbereich lässt sich planen. Krankheit, Verlust und unvorhersehbare Ereignisse können Akzeptanz oder Unterstützung statt weiterer Kontrolle erfordern.",
+      "example": "Für einen Umzug stehen viele Aufgaben an. Du notierst für heute nur die Suche nach einem Transporttermin und lässt den übrigen Teil zunächst offen.",
+      "misconception": "Ein guter Plan muss jede Schwierigkeit vorhersehen und darf später nicht mehr verändert werden.",
+      "clarification": "Planung ist ein Werkzeug und keine Prüfung auf Selbstdisziplin. Ein Plan darf jederzeit verkürzt, angepasst oder verworfen werden.",
+      "reflection": "Welcher kleine nächste Schritt ist heute wirklich realistisch, und was darf ausdrücklich warten?",
+      "optionalPractice": "Notiere bei Bedarf nur zwei kleine Schritte und prüfe, ob einer davon heute passen würde.",
+      "alternativeIds": [
+        "problem-solving",
+        "acceptance"
+      ],
+      "relatedNeedIds": [
+        "orientierung"
+      ],
+      "relatedLessonIds": [
+        "mehrere-wege"
+      ],
+      "sources": [
+        {
+          "url": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/problem-solving/",
+          "description": "NHS: Alltagshilfe zu Problemlösen, Priorisieren und realistischer Handlungsplanung; kein individueller Wirksamkeitsnachweis.",
+          "evidenceType": "PRACTICE_GUIDE"
+        },
+        {
+          "url": "https://www.psychologicalscience.org/journals/perspectives/1745691613504116/",
+          "description": "Bonanno und Burton: wissenschaftlicher Überblick zu kontextabhängiger Bewältigungsflexibilität und ihren Grenzen.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    },
+    {
+      "id": "prioritizing",
+      "title": "Prioritäten setzen",
+      "aliases": [
+        "Priorisieren",
+        "Wichtiges zuerst"
+      ],
+      "familyIds": [
+        "situation",
+        "values"
+      ],
+      "tags": [
+        "coping",
+        "needs-action"
+      ],
+      "shortDefinition": "Zwischen wichtigen, dringenden und verschiebbaren Anforderungen unterscheiden, um begrenzte Zeit und Energie bewusster einzusetzen.",
+      "purpose": "Wenn vieles gleichzeitig Aufmerksamkeit verlangt, kann eine grobe Reihenfolge Überforderung etwas ordnen.",
+      "whenUseful": "Wenn verschiedene Aufgaben konkurrieren, aber nicht jede Forderung sofort erfüllt werden muss.",
+      "benefits": [
+        "Das persönlich Wichtige erhält sichtbaren Raum, statt dass stets die lauteste Forderung gewinnt.",
+        "Du darfst selbst entscheiden, welche Erwartungen später oder nur mithilfe anderer erfüllbar sind."
+      ],
+      "drawbacks": [
+        "Eine starre Rangliste kann menschliche Bedürfnisse und neue Umstände unzureichend berücksichtigen.",
+        "Dauerhaft nur Dringendes zu bearbeiten kann Erholung und langfristige Ziele ausblenden."
+      ],
+      "limitations": "Priorisieren ist kein Ersatz für realistische Arbeitsmengen und faire Rahmenbedingungen. Dauerhafte Überlastung lässt sich nicht allein durch Sortieren lösen.",
+      "example": "Vor Feierabend sind vier Aufgaben offen. Du identifizierst eine feste Frist, klärst bei einer Aufgabe Unterstützung und verschiebst eine andere bewusst.",
+      "misconception": "Wer Prioritäten setzt, muss die weniger wichtigen Menschen oder Aufgaben grundsätzlich ignorieren.",
+      "clarification": "Prioritäten sind veränderliche Orientierungshilfen, keine moralische Bewertung. Neue Informationen können die Reihenfolge berechtigt ändern.",
+      "reflection": "Was ist heute wirklich wichtig, und welche Anforderung wirkt lediglich besonders laut?",
+      "optionalPractice": "Wenn du magst, ordne drei Aufgaben grob nach wichtig, dringend und später.",
+      "alternativeIds": [
+        "problem-solving",
+        "acceptance"
+      ],
+      "relatedNeedIds": [
+        "klarheit"
+      ],
+      "relatedLessonIds": [
+        "mehrere-wege"
+      ],
+      "sources": [
+        {
+          "url": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/problem-solving/",
+          "description": "NHS: Alltagshilfe zu Problemlösen, Priorisieren und realistischer Handlungsplanung; kein individueller Wirksamkeitsnachweis.",
+          "evidenceType": "PRACTICE_GUIDE"
+        },
+        {
+          "url": "https://www.psychologicalscience.org/journals/perspectives/1745691613504116/",
+          "description": "Bonanno und Burton: wissenschaftlicher Überblick zu kontextabhängiger Bewältigungsflexibilität und ihren Grenzen.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    },
+    {
+      "id": "practical-support",
+      "title": "Praktische Hilfe erbitten",
+      "aliases": [
+        "Aufgaben teilen",
+        "Unterstützung im Alltag"
+      ],
+      "familyIds": [
+        "situation",
+        "social"
+      ],
+      "tags": [
+        "coping",
+        "communication"
+      ],
+      "shortDefinition": "Eine konkrete Aufgabe oder Information bei einer geeigneten Person erfragen und mögliche Zusammenarbeit respektvoll abstimmen.",
+      "purpose": "Praktische Unterstützung kann die tatsächliche Belastung verändern, statt allein den Umgang mit ihr zu erleichtern.",
+      "whenUseful": "Wenn vertrauenswürdige Hilfe erreichbar ist und die Bitte freiwillig sowie ohne Druck formuliert werden kann.",
+      "benefits": [
+        "Geteilte Aufgaben können vorhandene Zeit und Energie tatsächlich entlasten, statt nur kurzfristig abzulenken.",
+        "Eine konkrete Bitte hilft beiden Beteiligten zu verstehen, was gebraucht und was angeboten werden kann."
+      ],
+      "drawbacks": [
+        "Ein Nein oder ausbleibende Hilfe kann enttäuschen, obwohl die Bitte angemessen gestellt wurde.",
+        "Unklare Absprachen oder mangelnde Zuverlässigkeit können zusätzliche Koordinationsarbeit auslösen."
+      ],
+      "limitations": "In unsicheren Beziehungen, Machtgefällen oder bei Grenzverletzungen ist Offenheit nicht automatisch ratsam. Eigene Sicherheit geht immer vor.",
+      "example": "Mehrere Termine belasten dich. Du fragst eine vertraute Person, ob sie einen Einkauf übernehmen kann, und lässt eine ehrliche Ablehnung zu.",
+      "misconception": "Wer um praktische Hilfe bittet, gibt damit die Verantwortung für das eigene Leben ab.",
+      "clarification": "Sich Hilfe zu organisieren kann sehr selbstbestimmt sein. Beide Seiten dürfen eigene Möglichkeiten und Grenzen respektieren.",
+      "reflection": "Welche einzelne Aufgabe könnte dich entlasten, und welche Person wäre dafür wirklich geeignet?",
+      "optionalPractice": "Formuliere auf Wunsch eine einzige konkrete Bitte, die ausdrücklich ein Nein zulässt.",
+      "alternativeIds": [
+        "social-support",
+        "problem-solving"
+      ],
+      "relatedNeedIds": [
+        "unterstuetzung"
+      ],
+      "relatedLessonIds": [
+        "bitte-statt-forderung"
+      ],
+      "sources": [
+        {
+          "url": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/problem-solving/",
+          "description": "NHS: Alltagshilfe zu Problemlösen, Priorisieren und realistischer Handlungsplanung; kein individueller Wirksamkeitsnachweis.",
+          "evidenceType": "PRACTICE_GUIDE"
+        },
+        {
+          "url": "https://www.psychologicalscience.org/journals/perspectives/1745691613504116/",
+          "description": "Bonanno und Burton: wissenschaftlicher Überblick zu kontextabhängiger Bewältigungsflexibilität und ihren Grenzen.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    },
+    {
+      "id": "boundaries",
+      "title": "Eigene Grenzen ausdrücken",
+      "aliases": [
+        "Nein sagen",
+        "Abgrenzung",
+        "Grenzen setzen"
+      ],
+      "familyIds": [
+        "situation",
+        "social"
+      ],
+      "tags": [
+        "communication",
+        "needs-action"
+      ],
+      "shortDefinition": "Eigene zeitliche, körperliche oder soziale Grenzen erkennen und bei Bedarf klar mitteilen, ohne andere Menschen kontrollieren zu wollen.",
+      "purpose": "Grenzen können dazu beitragen, eigene Kräfte zu schützen und Erwartungen im Miteinander verständlicher zu machen.",
+      "whenUseful": "Wenn du über dein Verhalten entscheiden kannst und das Mitteilen einer Grenze in dieser Situation sicher ist.",
+      "benefits": [
+        "Eine eindeutige Aussage über eigene Möglichkeiten kann widersprüchliche Erwartungen vermindern.",
+        "Ein verständliches Nein ermöglicht anderen Personen, die eigene Verfügbarkeit besser einzuschätzen."
+      ],
+      "drawbacks": [
+        "Andere Menschen können enttäuscht oder verärgert reagieren und respektieren eine Grenze nicht immer sofort.",
+        "Sehr starre Formulierungen können in eigentlich sicheren Beziehungen Missverständnisse begünstigen."
+      ],
+      "limitations": "Bei Drohung, Gewalt oder Machtmissbrauch ist direkte Konfrontation nicht zwingend sicher. Schutz und externe Unterstützung gehen vor.",
+      "example": "Eine Kollegin möchte dir noch eine Aufgabe geben. Du sagst, dass du sie heute nicht übernehmen kannst, und bietest freiwillig einen anderen Zeitpunkt an.",
+      "misconception": "Eine Grenze ist nur richtig gesetzt, wenn die andere Person sofort freundlich darauf reagiert.",
+      "clarification": "Grenzen beziehen sich zuerst auf das eigene Verhalten, nicht auf die Kontrolle anderer. Ein Nein muss nicht immer ausführlich gerechtfertigt werden.",
+      "reflection": "Welche Grenze möchtest du schützen, und welche Formulierung wäre zugleich klar und sicher?",
+      "optionalPractice": "Du könntest einen einfachen Grenzsatz formulieren, ohne ihn tatsächlich aussprechen zu müssen.",
+      "alternativeIds": [
+        "social-support",
+        "acceptance"
+      ],
+      "relatedNeedIds": [
+        "selbstbestimmung",
+        "sicherheit"
+      ],
+      "relatedLessonIds": [
+        "bitte-statt-forderung"
+      ],
+      "sources": [
+        {
+          "url": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/problem-solving/",
+          "description": "NHS: Alltagshilfe zu Problemlösen, Priorisieren und realistischer Handlungsplanung; kein individueller Wirksamkeitsnachweis.",
+          "evidenceType": "PRACTICE_GUIDE"
+        },
+        {
+          "url": "https://www.psychologicalscience.org/journals/perspectives/1745691613504116/",
+          "description": "Bonanno und Burton: wissenschaftlicher Überblick zu kontextabhängiger Bewältigungsflexibilität und ihren Grenzen.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    },
+    {
+      "id": "changing-situation",
+      "title": "Eine Situation verändern",
+      "aliases": [
+        "Rahmenbedingungen anpassen",
+        "Situation verbessern"
+      ],
+      "familyIds": [
+        "situation",
+        "regulation"
+      ],
+      "tags": [
+        "coping",
+        "emotion-regulation"
+      ],
+      "shortDefinition": "Einen beeinflussbaren äußeren Umstand verändern, statt ausschließlich die eigene Reaktion auf eine belastende Situation zu bearbeiten.",
+      "purpose": "Manchmal ist die Anpassung einer Umgebung oder Absprache passender als ein Versuch, sich nur innerlich zu beruhigen.",
+      "whenUseful": "Wenn Ort, Zeit, Ablauf oder eine Absprache wirklich veränderbar sind und Sicherheit dabei erhalten bleibt.",
+      "benefits": [
+        "Ein besser gestaltetes Umfeld kann einen Teil der Belastung unmittelbar verringern.",
+        "Das Ausprobieren kleiner äußerer Änderungen macht real vorhandene Handlungsmöglichkeiten sichtbar."
+      ],
+      "drawbacks": [
+        "Nicht jede Umgebung lässt sich verändern, und ein fehlgeschlagener Versuch kann enttäuschend sein.",
+        "Äußere Veränderungen betreffen manchmal auch andere Menschen und benötigen gemeinsame Absprachen."
+      ],
+      "limitations": "Unfaire oder gefährliche Bedingungen allein zu reparieren ist keine persönliche Pflicht. Bei Gefahr steht Schutz vor dem Experimentieren mit Änderungen.",
+      "example": "Ein Gespräch wird durch dauernden Lärm erschwert. Ihr verabredet einen ruhigeren Ort, statt nur zu versuchen, eure Reaktionen auf den Lärm zu kontrollieren.",
+      "misconception": "Wenn mich etwas belastet, liegt das Problem grundsätzlich nur an meiner persönlichen Einstellung.",
+      "clarification": "Innere Regulation und äußere Veränderung können sich ergänzen. Manchmal ist die Situation selbst ein wichtiger Teil des Problems.",
+      "reflection": "Welchen äußeren Aspekt könntest du sicher beeinflussen, ohne deine eigenen Grenzen zu übergehen?",
+      "optionalPractice": "Wenn passend, notiere eine mögliche Änderung von Ort, Ablauf oder Zeitpunkt.",
+      "alternativeIds": [
+        "problem-solving",
+        "reappraisal"
+      ],
+      "relatedNeedIds": [
+        "ruhe",
+        "sicherheit"
+      ],
+      "relatedLessonIds": [
+        "mehrere-wege"
+      ],
+      "sources": [
+        {
+          "url": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/problem-solving/",
+          "description": "NHS: Alltagshilfe zu Problemlösen, Priorisieren und realistischer Handlungsplanung; kein individueller Wirksamkeitsnachweis.",
+          "evidenceType": "PRACTICE_GUIDE"
+        },
+        {
+          "url": "https://www.psychologicalscience.org/journals/perspectives/1745691613504116/",
+          "description": "Bonanno und Burton: wissenschaftlicher Überblick zu kontextabhängiger Bewältigungsflexibilität und ihren Grenzen.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    }
+  ]
+}
