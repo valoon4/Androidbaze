@@ -4,6 +4,8 @@ import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -78,7 +80,10 @@ class StrategyNavigationEmulatorTest {
             }
         }
         rule.waitForIdle()
-        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(
             hasText("Emotionalen Beistand erbitten", substring = true)
         )
         val item = rule.onNode(
@@ -102,7 +107,10 @@ class StrategyNavigationEmulatorTest {
             }
         }
         rule.waitForIdle()
-        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(
             hasText("Privatsphäre im Bedürfnisatlas ansehen", substring = true)
         )
         rule.onNodeWithText("Privatsphäre im Bedürfnisatlas ansehen")
@@ -122,12 +130,18 @@ class StrategyNavigationEmulatorTest {
             }
         }
         rule.waitForIdle()
-        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(
             hasText("Ruhe- oder Gedankenübungen ersetzen", substring = true)
         )
         rule.onNodeWithText("Ruhe- oder Gedankenübungen ersetzen", substring = true)
             .assertExists()
-        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(
             hasText("Alle Strategien selbst entdecken")
         )
         rule.onNodeWithText("Alle Strategien selbst entdecken").performClick()
