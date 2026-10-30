@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -669,56 +670,62 @@ private fun Mark(small: Boolean = false) {
 }
 
 @Composable
-private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
-    onNeeds: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit,
-    onLearn: () -> Unit, onKnowledge: () -> Unit, daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
+private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
+    onExplore: () -> Unit, onNeeds: () -> Unit, onStrategies: () -> Unit,
+    onCheckin: () -> Unit, onWord: () -> Unit, onKnowledge: () -> Unit,
+    daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp)
     ) {
         Spacer(Modifier.height(8.dp))
-        Text("DEIN RAUM FÜR GEFÜHLE", style = MaterialTheme.typography.labelSmall,
+        Text("DEIN EMOTIONSKOMPASS", style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary, letterSpacing = 1.2.sp)
-        Text("Wie geht es dir\ngerade?", style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, lineHeight = 38.sp)
-        Text("Du musst es noch nicht wissen. Finde in deinem Tempo die passenden Worte.",
+        Text("Gefühle verstehen. Eigene Wege finden.",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold)
+        Text("Entdecke Gefühle, Bedürfnisse und Strategien – in deinem Tempo.",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(3.dp))
         ActionCard(
             icon = Icons.Outlined.FavoriteBorder,
-            title = "Mein Gefühl erkunden",
-            description = "Wahrnehmen, benennen und reflektieren.",
-            footnote = "Geführter Check-in · ab M3",
+            title = "Wie geht es dir gerade?",
+            description = "Nimm dir einen Moment für dich. Alles darf, nichts muss.",
+            footnote = "Freiwilligen Check-in starten",
             emphasized = true,
             onClick = onCheckin
         )
-        ActionCard(
-            icon = Icons.Outlined.Explore,
-            title = "Emotionen entdecken",
-            description = "Begriffe und feine Unterschiede kennenlernen.",
-            footnote = "$termsCount Begriffe · Lernpfade",
-            onClick = onExplore
-        )
-        ActionCard(
-            icon = Icons.Outlined.Explore,
-            title = "Bedürfnisse verstehen",
-            description = "Erkennen, was dir wichtig ist und was dir guttut.",
-            footnote = "$needsCount Bedürfnisse · Kompass · Lernpfade",
-            onClick = onNeeds
-        )
-        ActionCard(
-            icon = Icons.Outlined.MenuBook,
-            title = "Lernen & Entdecken",
-            description = "Favoriten, kurze Übungen, Wiederholungen und Lernpfade.",
-            footnote = "Neu in M6 · alles offline",
-            onClick = onLearn
-        )
+        Text("Drei Atlanten entdecken",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold)
+        val largeText = LocalDensity.current.fontScale > 1.3f
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            if (maxWidth < 340.dp || largeText) {
+                Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                    AtlasShortcut(Icons.Outlined.FavoriteBorder, "Gefühle",
+                        "$termsCount Begriffe", onExplore, Modifier.fillMaxWidth())
+                    AtlasShortcut(Icons.Outlined.Explore, "Bedürfnisse",
+                        "$needsCount Begriffe", onNeeds, Modifier.fillMaxWidth())
+                    AtlasShortcut(Icons.Outlined.AutoAwesome, "Strategien",
+                        "$strategyCount Karten", onStrategies, Modifier.fillMaxWidth())
+                }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                    AtlasShortcut(Icons.Outlined.FavoriteBorder, "Gefühle",
+                        "$termsCount Begriffe", onExplore, Modifier.weight(1f))
+                    AtlasShortcut(Icons.Outlined.Explore, "Bedürfnisse",
+                        "$needsCount Begriffe", onNeeds, Modifier.weight(1f))
+                    AtlasShortcut(Icons.Outlined.AutoAwesome, "Strategien",
+                        "$strategyCount Karten", onStrategies, Modifier.weight(1f))
+                }
+            }
+        }
         ActionCard(
             icon = Icons.Outlined.MenuBook,
             title = "Wissenswelt",
-            description = "Artikel frei lesen oder in vier Lernreihen Schritt für Schritt lernen.",
-            footnote = "20 Artikel · Deine Lesemarke · komplett offline",
+            description = "Artikel, freie Lernreihen und Übungen – ohne Leistungsdruck.",
+            footnote = "Wissen entdecken · komplett offline",
             onClick = onKnowledge
         )
         Spacer(Modifier.height(10.dp))
@@ -743,7 +750,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Card(onClick = onLearn, modifier = Modifier.fillMaxWidth(),
+        Card(onClick = onNeeds, modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(Modifier.padding(17.dp)) {
                 Text("Bedürfnis des Tages: ${daily.need.name}",
@@ -752,8 +759,36 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Text("M6 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe, Lernen und dein geschütztes Tagebuch.",
+        Text("Alles offline · $termsCount Gefühle · $needsCount Bedürfnisse · $strategyCount Strategiekarten · geschütztes Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun AtlasShortcut(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 110.dp),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(Modifier.fillMaxWidth().padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(27.dp))
+            Text(title, style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
+            Text(subtitle, style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center)
+        }
     }
 }
 
