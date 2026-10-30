@@ -79,6 +79,8 @@ class LearningViewModel(private val store: LearningRepository,
     fun toggleFavorite(key: String) = change { it.toggleFavorite(key) }
     fun markSeen(key: String) = change { it.markSeen(key) }
     fun review(key: String) = change { it.markReviewed(key) }
+    fun toggleArticleBookmark(id: String) = change { it.toggleArticleBookmark(id) }
+    fun markArticleRead(id: String) = change { it.markArticleRead(id) }
     fun completeStation(station: String) = change { state ->
         val wordKey = station.substringAfter('/')
         state.markSeen(wordKey).markStation(station)
