@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.strategies.StrategyCard
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
+import com.valoon4.emotionskompass.core.strategies.StrategyNeedOption
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
@@ -49,6 +51,7 @@ fun StrategyAtlasScreen(
     onBackToList: () -> Unit,
     onKnowledgeArticle: (String) -> Unit,
     needCatalog: NeedCatalog? = null,
+    needStrategyLinks: NeedStrategyLinkIndex? = null,
     lessonCatalog: LessonCatalog? = null,
     caseCatalog: StrategyCaseCatalog? = null,
     onNeed: (String) -> Unit = {},
@@ -76,6 +79,7 @@ fun StrategyAtlasScreen(
             onKnowledgeArticle = onKnowledgeArticle,
             lessonCatalog = lessonCatalog,
             needCatalog = needCatalog,
+            needStrategyLinks = needStrategyLinks,
             caseCatalog = caseCatalog,
             onNeed = onNeed,
             onPracticeCase = onPracticeCase,
@@ -175,6 +179,7 @@ private fun StrategyDetail(
     onKnowledgeArticle: (String) -> Unit,
     lessonCatalog: LessonCatalog?,
     needCatalog: NeedCatalog?,
+    needStrategyLinks: NeedStrategyLinkIndex?,
     caseCatalog: StrategyCaseCatalog?,
     onNeed: (String) -> Unit,
     onPracticeCase: (String) -> Unit,
@@ -182,6 +187,7 @@ private fun StrategyDetail(
 ) {
     val context = LocalContext.current
     var externalError by remember(card.id) { mutableStateOf(false) }
+    var showAllNeeds by rememberSaveable(card.id) { mutableStateOf(false) }
     // Each card starts at its beginning; saved position survives a temporary article detour.
     val detailScroll = rememberSaveable(card.id, saver = LazyListState.Saver) { LazyListState() }
     LazyColumn(
@@ -258,17 +264,31 @@ private fun StrategyDetail(
                 modifier = Modifier.fillMaxWidth()) { Text(alternative.title) }
         }
         // These links are explicit editorial associations, not inferred personal advice.
-        val needs = card.relatedNeedIds.mapNotNull { id -> needCatalog?.find(id) }
-        if (needs.isNotEmpty()) {
+        val linkedNeeds = needCatalog?.let { needBook ->
+            needStrategyLinks?.needsForStrategy(card.id, needBook)
+                ?: card.relatedNeedIds.mapNotNull { id ->
+                    needBook.find(id)?.let { StrategyNeedOption(it, "") }
+                }
+        }.orEmpty()
+        if (linkedNeeds.isNotEmpty()) {
             item {
-                SectionHeading("Verwandte Bedürfnisse")
-                Text("Was dir wichtig ist und wie du darauf reagierst, sind verschiedene Fragen. Diese Links sind keine automatische Zuordnung.",
+                SectionHeading("Bedürfnisse, die dabei eine Rolle spielen könnten")
+                Text("Ein Bedürfnis legt keine Handlung fest. Auch derselbe Weg kann in verschiedenen Situationen unterschiedliche Zwecke haben.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            items(needs, key = { "need-${it.id}" }) { need ->
-                OutlinedButton(onClick = { onNeed(need.id) },
-                    modifier = Modifier.fillMaxWidth()) { Text(need.name + " im Bedürfnisatlas ansehen") }
+            val visibleNeeds = if (showAllNeeds) linkedNeeds else linkedNeeds.take(5)
+            items(visibleNeeds, key = { "need-${it.need.id}" }) { option ->
+                OutlinedButton(onClick = { onNeed(option.need.id) },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(option.need.name + " im Bedürfnisatlas ansehen")
+                }
+            }
+            if (linkedNeeds.size > 5) item {
+                TextButton(onClick = { showAllNeeds = !showAllNeeds }) {
+                    Text(if (showAllNeeds) "Weniger Bedürfnisse zeigen"
+                        else "Weitere ${linkedNeeds.size - 5} Bedürfnisse zeigen")
+                }
             }
         }
         val articles = lessonCatalog?.let { StrategyLearningIndex.articlesFor(card, it) }.orEmpty()
