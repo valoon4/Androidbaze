@@ -31,6 +31,12 @@
 - Die 15 erfundenen Praxisfälle verlinken ihre bereits vorhandenen, über IDs geprüften Strategien; Auswahl/Antworten bleiben flüchtig im Arbeitsspeicher.
 - Keine neue Netzwerkberechtigung, kein neues Nutzertracking, keine Änderungen an Journalverschlüsselung, Backup oder Lernstandsformat.
 
+### Abdeckung und bewusste Nicht-Zuordnung
+
+Die 30 Strategiekarten enthalten **48 Bedürfnis-Referenzen, aber nur 8 verschiedene Bedürfnis-IDs**. Von den 82 Bedürfnisdetails erhalten daher viele bewusst **keine** direkte Strategiekartenliste. Die neue neutral formulierte Atlas-Verlinkung bleibt offen, statt 74 ungeprüfte Zuordnungen automatisch zu erzeugen. Eine größere, tatsächlich fachlich kuratierte Verknüpfungsabdeckung wäre ein **eigener redaktioneller Auftrag**, kein Nebenprodukt einer UI-Qualitätsrunde.
+
+Die 30 Karten enthalten **62 Quellenverweise auf nur 16 unterschiedliche URLs**. Besonders ein theoretischer Überblick von Bonanno/Burton wird für viele Karten wiederverwendet. Der bloße Link reicht deshalb **nicht** als Beleg dafür, dass alle konkreten Behauptungen über Nutzen, Nachteile oder Sicherheit der einzelnen Karte empirisch belegt sind. Die fachliche Claim-by-Claim-Prüfung bleibt hoch priorisiert; schwächere Belege sollten später gekennzeichnet oder spezifischer ersetzt werden.
+
 ## 3. Quellen- und Inhaltseinschätzung (stichprobenartig)
 
 Für das konzeptuelle Grundgerüst wurden die folgenden Quellen-IDs anhand der veröffentlichten Artikel-/Abstractangaben abgeglichen:
