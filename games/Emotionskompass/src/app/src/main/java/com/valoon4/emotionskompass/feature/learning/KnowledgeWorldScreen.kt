@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,6 +26,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,15 +48,24 @@ fun KnowledgeWorldScreen(
     catalog: LessonCatalog,
     ui: LearningUiState,
     onBookmark: (String) -> Unit,
-    onRead: (String) -> Unit
+    onRead: (String) -> Unit,
+    requestedArticleId: String? = null,
+    onRequestConsumed: () -> Unit = {}
 ) {
-    var mode by rememberSaveable { mutableStateOf("Artikel") }
+    var mode by rememberSaveable { mutableStateOf("Start") }
     var query by rememberSaveable { mutableStateOf("") }
     var topic by rememberSaveable { mutableStateOf("Alle") }
     var seriesId by rememberSaveable { mutableStateOf<String?>(null) }
     var articleId by rememberSaveable { mutableStateOf<String?>(null) }
     val series = catalog.series.firstOrNull { it.id == seriesId }
     val article = articleId?.let(catalog::find)
+    LaunchedEffect(requestedArticleId) {
+        if (requestedArticleId != null && catalog.find(requestedArticleId) != null) {
+            articleId = requestedArticleId
+            seriesId = null
+            onRequestConsumed()
+        }
+    }
     val canSave = !ui.busy && ui.error == null
     val progress = ui.progress
 
@@ -65,7 +76,10 @@ fun KnowledgeWorldScreen(
         val position = series?.lessonIds?.indexOf(article.id) ?: -1
         val next = if (position >= 0) series?.lessonIds?.getOrNull(position + 1) else null
         val context = LocalContext.current
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(19.dp),
+        val articleScroll = remember(article.id) { ScrollState(0) }
+        var picked by remember(article.id) { mutableStateOf<Int?>(null) }
+        var externalError by remember(article.id) { mutableStateOf(false) }
+        Column(Modifier.fillMaxSize().verticalScroll(articleScroll).padding(19.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)) {
             TextButton(onClick = { articleId = null }) {
                 Text(if (series != null) "← Zur Lernreihe" else "← Zur Bibliothek")
@@ -78,6 +92,14 @@ fun KnowledgeWorldScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(article.lead, style = MaterialTheme.typography.bodyLarge)
+            Card {
+                Column(Modifier.fillMaxWidth().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text("DAS LERNST DU", style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary)
+                    Text(article.learningGoal)
+                }
+            }
             OutlinedButton(onClick = { onBookmark(article.id) }, enabled = canSave) {
                 Text(if (article.id in progress.articleBookmarks) "★ Gemerkt" else "☆ Artikel merken")
             }
@@ -97,6 +119,40 @@ fun KnowledgeWorldScreen(
             Text("Das Wichtigste", style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
             Text(article.takeaway)
+            Card {
+                Column(Modifier.fillMaxWidth().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Häufiges Missverständnis", style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold)
+                    Text(article.commonMistake)
+                    Text("Was daran zu kurz greift: " + article.takeaway,
+                        style = MaterialTheme.typography.bodySmall)
+                }
+            }
+            Card {
+                Column(Modifier.fillMaxWidth().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("Kurz verstanden?", style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold)
+                    Text("Eine freiwillige Verständnisfrage, keine Bewertung deiner eigenen Gefühle.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(article.check.prompt)
+                    article.check.choices.forEachIndexed { index, choice ->
+                        OutlinedButton(onClick = { picked = index },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = picked == null) { Text(choice) }
+                    }
+                    if (picked != null) {
+                        Text(if (picked == article.check.correctIndex)
+                            "Das passt zur Lektion." else "Die andere Einordnung passt hier besser.",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold)
+                        Text(article.check.explanation)
+                        TextButton(onClick = { picked = null }) { Text("Erneut ansehen") }
+                    }
+                }
+            }
             Card {
                 Column(Modifier.fillMaxWidth().padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -122,15 +178,18 @@ fun KnowledgeWorldScreen(
             Text("Redaktionelle Lerntexte, keine medizinische Diagnose oder Therapie. Die folgenden Quellen öffnen sich nur auf deinen Wunsch im externen Browser.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-            article.sources.forEachIndexed { index, url ->
+            article.sources.forEach { url ->
                 TextButton(onClick = {
                     try {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     } catch (_: Exception) {
-                        // No browser installed: the offline reading view remains usable.
+                        externalError = true
                     }
-                }) { Text("Quelle " + (index + 1) + " im Browser öffnen") }
+                }) { Text(sourceLabel(url)) }
             }
+            if (externalError) Text("Kein externer Browser verfügbar. Du kannst den Artikel weiterhin offline lesen.",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall)
         }
         return
     }
