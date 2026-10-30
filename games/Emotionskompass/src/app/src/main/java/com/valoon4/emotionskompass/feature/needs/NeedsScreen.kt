@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +62,7 @@ fun NeedsScreen(
     var detailId by rememberSaveable { mutableStateOf<String?>(null) }
     var pathId by rememberSaveable { mutableStateOf<String?>(null) }
     var comparison by remember { mutableStateOf<NeedComparison?>(null) }
+    val tabStates = rememberSaveableStateHolder()
     BackHandler(enabled = detailId != null || pathId != null || comparison != null) {
         when {
             detailId != null -> detailId = null
@@ -125,11 +127,13 @@ fun NeedsScreen(
                 }
             }
         }
-        when (tab) {
-            "Atlas" -> NeedAtlasPane(catalog, onNeed = { detailId = it })
-            "Kompass" -> NeedCompassScreen(catalog, onNeed = { detailId = it })
-            "Lernpfade" -> NeedPathsPane(catalog, onPath = { pathId = it })
-            else -> NeedComparisonsPane(catalog, onCompare = { comparison = it })
+        tabStates.SaveableStateProvider(tab) {
+            when (tab) {
+                "Atlas" -> NeedAtlasPane(catalog, onNeed = { detailId = it })
+                "Kompass" -> NeedCompassScreen(catalog, onNeed = { detailId = it })
+                "Lernpfade" -> NeedPathsPane(catalog, onPath = { pathId = it })
+                else -> NeedComparisonsPane(catalog, onCompare = { comparison = it })
+            }
         }
     }
 }
