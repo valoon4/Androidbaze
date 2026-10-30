@@ -4,6 +4,10 @@ import java.time.LocalDate
 import java.util.Locale
 import java.text.Normalizer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -92,6 +96,34 @@ class LessonCatalog private constructor(
                 .replace(Regex("\\p{M}+"), "")
 
         private val validId = Regex("^[a-z0-9-]{3,70}$")
+        /** Merge static, versioned offline learning supplements. The final combined
+         * catalog is validated by the original strict validator, including all series links. */
+        fun fromJsonParts(base: String, supplements: List<String>): LessonCatalog {
+            if (supplements.isEmpty()) return fromJson(base)
+            val root = Json.parseToJsonElement(base).jsonObject
+            val appendLessons = mutableListOf<kotlinx.serialization.json.JsonElement>()
+            val appendSeries = mutableListOf<kotlinx.serialization.json.JsonElement>()
+            supplements.forEach { raw ->
+                val part = Json.parseToJsonElement(raw).jsonObject
+                require(part.keys == setOf("schemaVersion", "locale", "lessons", "series"))
+                require(part.getValue("schemaVersion").jsonPrimitive.int == 1)
+                require(part.getValue("locale").jsonPrimitive.content == "de")
+                appendLessons += part.getValue("lessons").jsonArray
+                appendSeries += part.getValue("series").jsonArray
+            }
+            val merged = buildJsonObject {
+                root.forEach { (key, value) ->
+                    put(key, when (key) {
+                        "lessons" -> JsonArray(value.jsonArray + appendLessons)
+                        "series" -> JsonArray(value.jsonArray + appendSeries)
+                        "contentRevision" -> JsonPrimitive("2026-10-m6.3.2-knowledge-depth")
+                        else -> value
+                    })
+                }
+            }
+            return fromJson(merged.toString())
+        }
+
         fun fromJson(source: String): LessonCatalog {
             val obj = Json.parseToJsonElement(source).jsonObject
             require(obj.getValue("schemaVersion").jsonPrimitive.int == 1)
