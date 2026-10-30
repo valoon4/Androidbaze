@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -250,7 +251,9 @@ private fun NeedDetailScreen(
     onFavorite: () -> Unit,
     onSeen: () -> Unit
 ) {
-    LazyColumn(Modifier.fillMaxSize(),
+    // Related needs start at the top instead of inheriting the previous detail's position.
+    val detailScroll = rememberSaveable(need.id, saver = LazyListState.Saver) { LazyListState() }
+    LazyColumn(Modifier.fillMaxSize(), state = detailScroll,
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(13.dp)) {
         item {
