@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "contentRevision": "2026-10-m6.3.1-five-reference-cards",
+  "editorialStatus": "educational-draft-independent-expert-review-required",
+  "intro": "Es gibt keine Strategie, die in jeder Situation richtig ist. Du kannst Möglichkeiten erkunden und selbst entscheiden, ob etwas zu dir passt. Dies ist eine Lernhilfe, keine Therapie oder individuelle Empfehlung.",
+  "families": [
+    {
+      "id": "situation",
+      "title": "Probleme lösen & Situationen verändern",
+      "description": "Bei beeinflussbaren Schwierigkeiten konkrete Möglichkeiten erkunden."
+    },
+    {
+      "id": "regulation",
+      "title": "Gefühle regulieren & innere Ruhe finden",
+      "description": "Gefühle und körperliche Reaktionen wahrnehmen und behutsam begleiten."
+    },
+    {
+      "id": "cognition",
+      "title": "Gedanken & Perspektiven verändern",
+      "description": "Deutungen prüfen und andere Blickwinkel zulassen."
+    },
+    {
+      "id": "social",
+      "title": "Verbindung & Unterstützung suchen",
+      "description": "Kontakt, Austausch und praktische Hilfe selbstbestimmt gestalten."
+    },
+    {
+      "id": "values",
+      "title": "Akzeptanz, Werte & Orientierung",
+      "description": "Unveränderliches anerkennen und eigene Werte beachten."
+    },
+    {
+      "id": "recovery",
+      "title": "Erholung, Rückzug & Ablenkung",
+      "description": "Vorübergehende Entlastung und bewusste Pausen ermöglichen."
+    },
+    {
+      "id": "patterns",
+      "title": "Schwierige Bewältigungsmuster verstehen",
+      "description": "Wiederkehrende Muster ohne moralische Bewertung hinterfragen."
+    }
+  ],
+  "strategies": [
+    {
+      "id": "problem-solving",
+      "title": "Probleme Schritt für Schritt angehen",
+      "aliases": [
+        "Problemlösen",
+        "Problem lösen",
+        "Handlung planen"
+      ],
+      "familyIds": [
+        "situation",
+        "cognition"
+      ],
+      "tags": [
+        "coping",
+        "needs-action"
+      ],
+      "shortDefinition": "Ein beeinflussbares Problem möglichst konkret beschreiben, mehrere Optionen überlegen und einen kleinen, überprüfbaren Schritt wählen.",
+      "purpose": "Wenn sich an einer schwierigen Situation tatsächlich etwas verändern lässt, kann schrittweises Problemlösen Orientierung und Handlungsfähigkeit unterstützen.",
+      "whenUseful": "Wenn eine Aufgabe, ein Konflikt oder ein organisatorisches Hindernis grundsätzlich beeinflussbar ist und genügend Sicherheit sowie Zeit für einen nächsten Schritt bestehen.",
+      "benefits": [
+        "Aus vielen gleichzeitig kreisenden Gedanken kann eine einzelne bearbeitbare Frage werden.",
+        "Mehrere Optionen sichtbar zu machen kann vorschnelle Alles-oder-nichts-Entscheidungen verringern.",
+        "Ein kleiner Schritt kann zeigen, ob die gewählte Lösung wirklich zur Situation passt."
+      ],
+      "drawbacks": [
+        "Bei nicht beeinflussbaren Ereignissen kann ständiges Lösungsdenken zusätzliche Erschöpfung erzeugen.",
+        "Eine scheinbar einfache Lösung kann Zeit, Geld oder Unterstützung erfordern, die gerade fehlen.",
+        "Problemlösen ersetzt nicht das Wahrnehmen von Trauer, Angst oder berechtigten Grenzen."
+      ],
+      "limitations": "Nicht jede Belastung muss oder kann sofort gelöst werden. Bei Gewalt, Bedrohung oder akuter Gefährdung steht Schutz und gegebenenfalls externe Hilfe vor einem Lösungsplan.",
+      "example": "Drei Termine überschneiden sich. Statt alle zugleich zu bewältigen, notierst du die feste Frist, fragst nach einer Verschiebung und entscheidest, welcher erste Schritt heute möglich ist.",
+      "misconception": "Wenn ich ein Problem nicht sofort löse, habe ich mich nicht genug angestrengt.",
+      "clarification": "Manche Umstände liegen außerhalb deines Einflusses. Auch Abwarten, Unterstützung und bewusste Erholung können sinnvolle Entscheidungen sein.",
+      "reflection": "Welcher Teil dieser Situation ist tatsächlich beeinflussbar – und was liegt gerade nicht in meiner Hand?",
+      "optionalPractice": "Falls passend: Beschreibe eine kleine konkrete Schwierigkeit in einem Satz, notiere zwei Optionen und prüfe, ob du einen freiwilligen ersten Schritt wählen möchtest.",
+      "alternativeIds": [
+        "social-support",
+        "acceptance"
+      ],
+      "relatedNeedIds": [
+        "klarheit",
+        "orientierung",
+        "selbstbestimmung"
+      ],
+      "relatedLessonIds": [
+        "mehrere-wege",
+        "strategien-pruefen"
+      ],
+      "sources": [
+        {
+          "url": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/problem-solving/",
+          "description": "NHS: Schrittweises Problemlösen und Prüfen der Beeinflussbarkeit.",
+          "evidenceType": "PRACTICE_GUIDE"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+          "description": "Bonanno & Burton (2013): Strategieflexibilität; Situationsbezug, Repertoire und Rückmeldung.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    },
+    {
+      "id": "intentional-distraction",
+      "title": "Bewusste, zeitweise Ablenkung",
+      "aliases": [
+        "Ablenkung",
+        "Aufmerksamkeit umlenken",
+        "Abstand gewinnen"
+      ],
+      "familyIds": [
+        "recovery",
+        "regulation"
+      ],
+      "tags": [
+        "coping",
+        "emotion-regulation"
+      ],
+      "shortDefinition": "Die Aufmerksamkeit für eine begrenzte Zeit auf eine andere, möglichst sichere Aktivität richten, ohne das eigentliche Thema automatisch zu verwerfen.",
+      "purpose": "Eine vorübergehende Unterbrechung intensiver Anspannung kann Raum schaffen, um später in Ruhe zu entscheiden, was mit einer Situation geschehen soll.",
+      "whenUseful": "Wenn gerade keine unmittelbare Handlung nötig ist, Anspannung überwältigend wirkt oder eine kurze Pause die nächste Entscheidung erleichtern könnte.",
+      "benefits": [
+        "Kann kurzfristig Abstand von belastenden Gedanken oder starken Gefühlen ermöglichen.",
+        "Lässt sich oft flexibel an die eigene Umgebung anpassen, etwa mit Musik, Bewegung oder einem Gespräch.",
+        "Kann eine Brücke zu späterer Klärung sein, statt sofort alles bearbeiten zu müssen."
+      ],
+      "drawbacks": [
+        "Wenn Ablenkung dauerhaft jedes Angehen eines wichtigen Problems ersetzt, bleiben Schwierigkeiten möglicherweise bestehen.",
+        "Manche Ablenkungen kosten Energie oder schaffen neue Probleme, obwohl sie kurzfristig angenehm wirken.",
+        "Das ständige Kontrollieren, ob ein Gefühl endlich weg ist, kann zusätzlichen Druck machen."
+      ],
+      "limitations": "Ablenkung ist nicht dasselbe wie Verdrängung. Die Forschung zeigt Zusammenhänge mit unterschiedlichen Ergebnissen je nach Kontext; sie belegt keine pauschale Wirkung bei allen Personen.",
+      "example": "Nach einer angespannten Nachricht ist noch keine Antwort nötig. Du hörst bewusst für zehn Minuten Musik und entscheidest später, ob du antworten, Hilfe holen oder das Thema ruhen lassen möchtest.",
+      "misconception": "Wer sich ablenkt, verdrängt Gefühle immer und macht grundsätzlich etwas falsch.",
+      "clarification": "Eine bewusste Pause kann sinnvoll sein. Problematisch kann es werden, wenn wichtige Themen dauerhaft vermieden werden und der Handlungsspielraum immer kleiner wird.",
+      "reflection": "Hilft mir die Ablenkung gerade, später freier zu entscheiden – oder vermeide ich etwas, das meine Aufmerksamkeit braucht?",
+      "optionalPractice": "Wenn du möchtest, wähle eine kurze, sichere Pause. Danach kannst du ohne Bewertung prüfen, ob du dich einem Thema widmen möchtest oder noch Abstand brauchst.",
+      "alternativeIds": [
+        "problem-solving",
+        "acceptance"
+      ],
+      "relatedNeedIds": [
+        "ruhe",
+        "entspannung"
+      ],
+      "relatedLessonIds": [
+        "strategien-pruefen",
+        "achtsam-ohne-druck"
+      ],
+      "sources": [
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/28286372/",
+          "description": "Ablenkung zusammen mit Akzeptanz oder Vermeidung; querschnittliche Selbstberichtsdaten, keine Kausalaussage.",
+          "evidenceType": "OBSERVATIONAL_STUDY"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+          "description": "Bonanno & Burton (2013): Strategieflexibilität; Situationsbezug, Repertoire und Rückmeldung.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    },
+    {
+      "id": "reappraisal",
+      "title": "Eine Situation neu betrachten",
+      "aliases": [
+        "Kognitive Neubewertung",
+        "Reframing",
+        "Perspektivwechsel"
+      ],
+      "familyIds": [
+        "cognition",
+        "regulation"
+      ],
+      "tags": [
+        "emotion-regulation",
+        "coping"
+      ],
+      "shortDefinition": "Eine erste Deutung überprüfen und eine zusätzliche plausible Sichtweise erwägen, ohne Fakten, eigene Gefühle oder Grenzen zu leugnen.",
+      "purpose": "Wenn mehrere Deutungen möglich sind, kann ein anderer Blickwinkel beeinflussen, wie belastend oder bedrohlich eine Situation erlebt wird.",
+      "whenUseful": "Bei mehrdeutigen Alltagssituationen, in denen neue Informationen oder ein anderer Zusammenhang möglich sind, und wenn ein Perspektivwechsel freiwillig und sicher erscheint.",
+      "benefits": [
+        "Kann helfen, automatische Schlussfolgerungen als Vermutungen statt als Tatsachen zu erkennen.",
+        "Eröffnet neben der ersten Deutung manchmal weitere passende Reaktionsmöglichkeiten.",
+        "Gefühle dürfen dabei bestehen bleiben; Neubewertung muss nicht zu positivem Denken führen."
+      ],
+      "drawbacks": [
+        "Bei klarer Grenzverletzung oder realem Schaden kann eine beschönigende Deutung notwendiges Handeln verhindern.",
+        "Der Versuch, sich zu einer freundlichen Sichtweise zu zwingen, kann Gefühle entwerten.",
+        "Neubewertung ist nicht immer der passende Weg, besonders wenn die Situation konkret veränderbar ist."
+      ],
+      "limitations": "Die Forschung beschreibt einen Kontextzusammenhang zwischen Neubewertung und Beeinflussbarkeit; daraus folgt keine automatische Empfehlung für eine einzelne Person.",
+      "example": "Eine Kollegin antwortet nicht auf deine Nachricht. Statt sofort von Ablehnung auszugehen, lässt du mehrere Erklärungen offen. Wenn die Antwort wichtig ist, kannst du trotzdem freundlich nachfragen.",
+      "misconception": "Neubewertung bedeutet, etwas Schlechtes unbedingt positiv zu sehen.",
+      "clarification": "Eine Neubewertung sollte realistisch sein. Sie darf keine Gefahr herunterspielen, keinen Schaden rechtfertigen und keine notwendige Grenze aufheben.",
+      "reflection": "Was weiß ich sicher, welche Bedeutung habe ich ergänzt, und welche andere plausible Erklärung wäre möglich?",
+      "optionalPractice": "Wenn es sich sicher anfühlt, notiere eine Beobachtung und zwei mögliche Deutungen. Du musst dich für keine davon entscheiden.",
+      "alternativeIds": [
+        "problem-solving",
+        "social-support"
+      ],
+      "relatedNeedIds": [
+        "klarheit",
+        "sicherheit"
+      ],
+      "relatedLessonIds": [
+        "beobachtung-interpretation",
+        "gedanken-und-gefuehle"
+      ],
+      "sources": [
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/9457784/",
+          "description": "Gross (1998): Experimentelle Unterscheidung kognitiver Neubewertung und Unterdrückung.",
+          "evidenceType": "PRIMARY_STUDY"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24145331/",
+          "description": "Troy et al. (2013): Passung von Neubewertung und Beeinflussbarkeit der Situation.",
+          "evidenceType": "PRIMARY_STUDY"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+          "description": "Bonanno & Burton (2013): Strategieflexibilität; Situationsbezug, Repertoire und Rückmeldung.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    },
+    {
+      "id": "social-support",
+      "title": "Soziale Unterstützung suchen",
+      "aliases": [
+        "Hilfe suchen",
+        "Unterstützung erbitten",
+        "Mit jemandem sprechen"
+      ],
+      "familyIds": [
+        "social",
+        "situation"
+      ],
+      "tags": [
+        "coping",
+        "communication",
+        "needs-action"
+      ],
+      "shortDefinition": "Sich bewusst an eine vertrauenswürdige Person oder passende Stelle wenden, um zuzuhören, praktische Hilfe, Information oder Begleitung zu erhalten.",
+      "purpose": "Unterstützung kann Belastungen anders bewältigbar machen – etwa durch Zuhören, neue Informationen, geteilte Aufgaben oder das Gefühl, nicht allein zu sein.",
+      "whenUseful": "Wenn eine verlässliche, respektvolle oder professionelle Ansprechperson erreichbar ist und die eigene Situation durch Austausch oder konkrete Hilfe entlastet werden könnte.",
+      "benefits": [
+        "Ein Gespräch kann dabei helfen, Erlebtes zu sortieren und unterschiedliche Perspektiven zu hören.",
+        "Praktische Hilfe kann eine objektive Belastung reduzieren, statt nur die eigene Reaktion zu verändern.",
+        "Unterstützung kann Verbundenheit und Sicherheit fördern, wenn die Beziehung passend und respektvoll ist."
+      ],
+      "drawbacks": [
+        "Nicht jede Person hört gut zu, respektiert Grenzen oder behandelt persönliche Informationen vertraulich.",
+        "Ungefragte Ratschläge können Druck machen und das Gefühl eigener Handlungsfähigkeit beeinträchtigen.",
+        "Wiederholte Gespräche ohne gewünschte Veränderung können Kraft kosten; andere Formen von Hilfe können passender sein."
+      ],
+      "limitations": "In unsicheren Beziehungen ist Offenheit nicht automatisch sinnvoll. Bei Gefahr ist eine geeignete sichere Unterstützungsstelle wichtiger als eine Konfrontation mit der verursachenden Person.",
+      "example": "Eine Aufgabe wächst dir über den Kopf. Du sagst einer vertrauten Person: ‚Ich brauche heute entweder zehn Minuten Zuhören oder Hilfe beim Sortieren der nächsten Schritte. Hast du gerade Kapazität?‘",
+      "misconception": "Um Hilfe zu bitten bedeutet, schwach zu sein oder andere zu belasten.",
+      "clarification": "Hilfe kann eine selbstbestimmte Strategie sein. Du darfst zugleich die Grenzen des Gegenübers akzeptieren und dir andere Unterstützung suchen.",
+      "reflection": "Brauche ich gerade eher Zuhören, Informationen, Begleitung oder praktische Hilfe – und wer wäre dafür wirklich geeignet?",
+      "optionalPractice": "Überlege dir eine Person oder Anlaufstelle, die sich sicher anfühlt. Falls du möchtest, formuliere eine konkrete Bitte, die ein Nein zulässt.",
+      "alternativeIds": [
+        "problem-solving",
+        "acceptance"
+      ],
+      "relatedNeedIds": [
+        "unterstuetzung",
+        "sicherheit"
+      ],
+      "relatedLessonIds": [
+        "bitte-statt-forderung",
+        "mehrere-wege"
+      ],
+      "sources": [
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/3901065/",
+          "description": "Cohen & Wills (1985): Review zu sozialer Unterstützung und Stresspufferung.",
+          "evidenceType": "THEORY_REVIEW"
+        },
+        {
+          "url": "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/problem-solving/",
+          "description": "NHS: Schrittweises Problemlösen und Prüfen der Beeinflussbarkeit.",
+          "evidenceType": "PRACTICE_GUIDE"
+        }
+      ]
+    },
+    {
+      "id": "acceptance",
+      "title": "Annehmen, was gerade ist",
+      "aliases": [
+        "Akzeptanz",
+        "Annehmen",
+        "Unveränderliches anerkennen"
+      ],
+      "familyIds": [
+        "values",
+        "regulation"
+      ],
+      "tags": [
+        "coping",
+        "emotion-regulation"
+      ],
+      "shortDefinition": "Wahrnehmen, was im Moment tatsächlich da ist, ohne es gutheißen oder sofort ändern zu müssen; gleichzeitig den eigenen Handlungsspielraum behalten.",
+      "purpose": "Wenn sich bestimmte Tatsachen, Gefühle oder Unsicherheiten gerade nicht verändern lassen, kann Anerkennen des Gegenwärtigen helfen, mit ihnen umzugehen, ohne das eigene Leben darauf zu reduzieren.",
+      "whenUseful": "Bei vorübergehend oder dauerhaft nicht veränderbaren Umständen und Gefühlen, solange die Person geschützt bleibt und weiter wählen kann, welche Handlung ihr wichtig ist.",
+      "benefits": [
+        "Unnötiger innerer Streit gegen ein bereits vorhandenes Gefühl kann weniger Raum beanspruchen.",
+        "Kann helfen, zwischen Tatsachen, Bewertungen und eigenen Handlungsmöglichkeiten zu unterscheiden.",
+        "Akzeptanz lässt sich mit Grenzen, Unterstützung und späterer Veränderung verbinden."
+      ],
+      "drawbacks": [
+        "Der Begriff wird leicht als Aufforderung missverstanden, Unrecht oder Grenzverletzungen zu dulden.",
+        "Wenn eine Situation veränderbar ist, kann vorschnelles Hinnehmen sinnvolle Schutz- oder Handlungsmöglichkeiten verdecken.",
+        "Die Aufforderung, sofort etwas zu akzeptieren, kann zusätzlichen Druck und Selbstvorwürfe erzeugen."
+      ],
+      "limitations": "Akzeptanz bedeutet nicht Zustimmung zu Gewalt, Diskriminierung oder Übergriffen. Sicherheit, klare Grenzen und Hilfe sind weiterhin angemessen; Akzeptanz ist keine Pflicht.",
+      "example": "Ein lange geplanter Ausflug fällt wegen des Wetters aus. Du bemerkst deine Enttäuschung, ohne sie wegzudrücken. Gleichzeitig kannst du entscheiden, ob du einen neuen Termin suchst oder heute etwas anderes brauchst.",
+      "misconception": "Akzeptanz bedeutet, aufzugeben und alles hinzunehmen.",
+      "clarification": "Etwas als gegenwärtige Tatsache anzuerkennen und trotzdem für Veränderung oder Schutz einzutreten, kann gleichzeitig möglich sein.",
+      "reflection": "Was ist gerade tatsächlich so, wie es ist – und welche Entscheidung bleibt trotzdem bei mir?",
+      "optionalPractice": "Wenn du magst, benenne innerlich eine gegenwärtige Tatsache und ein dazugehöriges Gefühl. Du musst das Gefühl nicht mögen und kannst die Übung jederzeit beenden.",
+      "alternativeIds": [
+        "problem-solving",
+        "social-support"
+      ],
+      "relatedNeedIds": [
+        "akzeptanz",
+        "selbstbestimmung",
+        "sicherheit"
+      ],
+      "relatedLessonIds": [
+        "strategien-pruefen",
+        "achtsam-ohne-druck"
+      ],
+      "sources": [
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/38615492/",
+          "description": "Macri & Rogge (2024): Meta-Analyse zu psychologischer Flexibilität bei ACT; klinischer Kontext nicht direkt auf alle Alltagssituationen übertragbar.",
+          "evidenceType": "SYSTEMATIC_REVIEW"
+        },
+        {
+          "url": "https://www.who.int/europe/publications/i/item/9789240003910",
+          "description": "WHO (2020): Eigenständiger Stressbewältigungs-Leitfaden als redaktioneller Bezug; keine Übernahme der Übungen.",
+          "evidenceType": "PRACTICE_GUIDE"
+        },
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+          "description": "Bonanno & Burton (2013): Strategieflexibilität; Situationsbezug, Repertoire und Rückmeldung.",
+          "evidenceType": "THEORY_REVIEW"
+        }
+      ]
+    }
+  ]
+}

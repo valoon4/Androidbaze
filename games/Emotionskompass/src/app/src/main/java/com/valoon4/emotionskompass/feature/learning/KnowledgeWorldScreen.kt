@@ -49,6 +49,9 @@ fun KnowledgeWorldScreen(
     ui: LearningUiState,
     onBookmark: (String) -> Unit,
     onRead: (String) -> Unit,
+    onStrategies: () -> Unit = {},
+    onLearning: () -> Unit = {},
+    onReturnToSource: (() -> Unit)? = null,
     requestedArticleId: String? = null,
     onRequestConsumed: () -> Unit = {}
 ) {
@@ -70,7 +73,11 @@ fun KnowledgeWorldScreen(
     val progress = ui.progress
 
     BackHandler(enabled = article != null || series != null) {
-        if (article != null) articleId = null else seriesId = null
+        when {
+            article != null && onReturnToSource != null -> onReturnToSource()
+            article != null -> articleId = null
+            else -> seriesId = null
+        }
     }
     if (article != null) {
         val position = series?.lessonIds?.indexOf(article.id) ?: -1
@@ -81,8 +88,11 @@ fun KnowledgeWorldScreen(
         var externalError by remember(article.id) { mutableStateOf(false) }
         Column(Modifier.fillMaxSize().verticalScroll(articleScroll).padding(19.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            TextButton(onClick = { articleId = null }) {
-                Text(if (series != null) "← Zur Lernreihe" else "← Zur Bibliothek")
+            TextButton(onClick = {
+                if (onReturnToSource != null) onReturnToSource() else articleId = null
+            }) {
+                Text(if (onReturnToSource != null) "← Zur Strategie"
+                    else if (series != null) "← Zur Lernreihe" else "← Zur Bibliothek")
             }
             Text(article.topic.label.uppercase(), style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
@@ -284,6 +294,14 @@ fun KnowledgeWorldScreen(
                     }
                 }
                 item {
+                    OutlinedButton(onClick = onStrategies,
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Strategieatlas: Möglichkeiten und Grenzen entdecken")
+                    }
+                    OutlinedButton(onClick = onLearning,
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Übungen, Wortkarten und Wiederholen")
+                    }
                     OutlinedButton(onClick = { mode = "Artikel" },
                         modifier = Modifier.fillMaxWidth()) {
                         Text("Alle Artikel frei entdecken")

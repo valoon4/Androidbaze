@@ -14,6 +14,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,8 +22,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -59,6 +62,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -73,8 +78,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -92,6 +99,7 @@ import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
 import com.valoon4.emotionskompass.core.learning.LearningRepository
@@ -103,6 +111,7 @@ import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
 import com.valoon4.emotionskompass.core.navigation.Destination
+import com.valoon4.emotionskompass.core.navigation.DiscoveryAtlas
 import com.valoon4.emotionskompass.core.navigation.MainSection
 import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
@@ -110,6 +119,7 @@ import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
 import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
+import com.valoon4.emotionskompass.feature.strategies.StrategyAtlasScreen
 import java.time.LocalDate
 import kotlinx.coroutines.launch
 
@@ -151,8 +161,16 @@ class MainActivity : ComponentActivity() {
                         )
                     }.getOrNull()
                 }
+                val strategyCatalog = remember {
+                    runCatching {
+                        StrategyCatalog.fromJson(
+                            assets.open("catalog/strategies.de.v1.json")
+                                .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        )
+                    }.getOrNull()
+                }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -218,6 +236,7 @@ private fun EmotionskompassApp(
     lockPreferences: AppLockPreferences,
     learningRepository: LearningRepository,
     lessonCatalog: LessonCatalog?,
+    strategyCatalog: StrategyCatalog?,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -291,6 +310,11 @@ private fun EmotionskompassApp(
     val learning by learningVm.state.collectAsState()
     val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
+    var selectedStrategyId by rememberSaveable { mutableStateOf<String?>(null) }
+    var requestedKnowledgeArticleId by rememberSaveable { mutableStateOf<String?>(null) }
+    var discoveryAtlas by rememberSaveable { mutableStateOf(DiscoveryAtlas.GEFUEHLE) }
+    val mainScreenStates = rememberSaveableStateHolder()
+    val atlasStates = rememberSaveableStateHolder()
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
     val privateScreen = !unlocked || state.destination == Destination.CHECKIN ||
@@ -343,7 +367,31 @@ private fun EmotionskompassApp(
         return
     }
     BackHandler(enabled = state.destination != Destination.MAIN) { requestBack() }
+    val navItems = listOf(
+        Triple(MainSection.START, "Start", Icons.Outlined.Home),
+        Triple(MainSection.ENTDECKEN, "Entdecken", Icons.Outlined.Explore),
+        Triple(MainSection.WISSEN, "Wissen", Icons.Outlined.MenuBook),
+        Triple(MainSection.TAGEBUCH, "Tagebuch", Icons.Outlined.NoteAlt),
+        Triple(MainSection.RUECKBLICK, "Rückblick", Icons.Outlined.Insights)
+    )
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val useRail = maxWidth >= 600.dp && maxHeight >= 480.dp
+        Row(Modifier.fillMaxSize()) {
+            if (useRail && state.destination != Destination.CHECKIN) {
+                NavigationRail(modifier = Modifier.width(96.dp)) {
+                    navItems.forEach { (section, title, icon) ->
+                        NavigationRailItem(
+                            selected = state.section == section,
+                            onClick = { vm.selectSection(section) },
+                            icon = { Icon(icon, contentDescription = null) },
+                            label = { Text(title, maxLines = 2) },
+                            alwaysShowLabel = true
+                        )
+                    }
+                }
+            }
     Scaffold(
+        modifier = Modifier.weight(1f),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
@@ -367,60 +415,127 @@ private fun EmotionskompassApp(
             )
         },
         bottomBar = {
-            if (state.destination != Destination.CHECKIN) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                listOf(
-                    Triple(MainSection.START, "Start", Icons.Outlined.Home),
-                    Triple(MainSection.ENTDECKEN, "Gefühle", Icons.Outlined.FavoriteBorder),
-                    Triple(MainSection.BEDUERFNISSE, "Bedürfnisse", Icons.Outlined.Explore),
-                    Triple(MainSection.TAGEBUCH, "Tagebuch", Icons.Outlined.NoteAlt),
-                    Triple(MainSection.RUECKBLICK, "Rückblick", Icons.Outlined.Insights)
-                ).forEach { (section, title, icon) ->
-                    NavigationBarItem(
-                        selected = state.destination == Destination.MAIN && state.section == section,
-                        onClick = { vm.selectSection(section) },
-                        icon = { Icon(icon, contentDescription = null) },
-                        label = { Text(title, maxLines = 1) },
-                        alwaysShowLabel = true
-                    )
+            if (!useRail && state.destination != Destination.CHECKIN) {
+                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                    navItems.forEach { (section, title, icon) ->
+                        NavigationBarItem(
+                            selected = state.section == section,
+                            onClick = { vm.selectSection(section) },
+                            icon = { Icon(icon, contentDescription = null) },
+                            label = { Text(title, maxLines = 2, textAlign = TextAlign.Center) },
+                            alwaysShowLabel = true
+                        )
+                    }
                 }
             }
         }
     ) { inset ->
         Box(Modifier.fillMaxSize().padding(inset)) {
             when (state.destination) {
-                Destination.MAIN -> when (state.section) {
+                Destination.MAIN -> mainScreenStates.SaveableStateProvider(state.section.name) {
+                    when (state.section) {
                     MainSection.START -> HomeScreen(
                         termsCount = catalog.emotions.size,
                         needsCount = needCatalog.needs.size,
-                        onExplore = { vm.selectSection(MainSection.ENTDECKEN) },
-                        onNeeds = { vm.selectSection(MainSection.BEDUERFNISSE) },
-                        onCheckin = { vm.openCheckin() },
+                        strategyCount = strategyCatalog?.strategies?.size ?: 0,
+                        onExplore = { discoveryAtlas = DiscoveryAtlas.GEFUEHLE; vm.selectSection(MainSection.ENTDECKEN) },
+                        onNeeds = { discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE; vm.selectSection(MainSection.ENTDECKEN) },
+                        onStrategies = { discoveryAtlas = DiscoveryAtlas.STRATEGIEN; vm.selectSection(MainSection.ENTDECKEN) },
+                        onCheckin = vm::openCheckin,
                         onWord = vm::openLearning,
-                        onLearn = vm::openLearning,
-                        onKnowledge = vm::openKnowledgeWorld,
+                        onKnowledge = { vm.selectSection(MainSection.WISSEN) },
                         daily = LearningEngine.daily(catalog, needCatalog, LocalDate.now())
                     )
-                    MainSection.ENTDECKEN -> AtlasScreen(
-                        catalog = catalog,
-                        filters = filters,
-                        onEmotion = vm::openEmotion,
-                        onPath = vm::openPath,
-                        onCards = vm::openLearningCards,
-                        onComparisons = vm::openComparisons,
-                        onSearch = vm::setSearch,
-                        onFamily = vm::setFamily,
-                        onKind = vm::setKind,
-                        onLetter = vm::setLetter,
-                        onClear = vm::clearFilters
-                    )
-                    MainSection.BEDUERFNISSE -> NeedsScreen(
-                        needCatalog,
-                        favorites = learning.progress.favorites,
-                        seen = learning.progress.seen,
-                        canSave = !learning.busy && learning.error == null,
-                        onFavorite = learningVm::toggleFavorite,
-                        onSeen = learningVm::markSeen
-                    )
+                    MainSection.ENTDECKEN -> Column(Modifier.fillMaxSize()) {
+                        BoxWithConstraints(Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+                            val vertical = maxWidth < 320.dp || LocalDensity.current.fontScale > 1.3f
+                            if (vertical) {
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    DiscoveryAtlas.entries.forEach { atlas ->
+                                        FilterChip(
+                                            selected = discoveryAtlas == atlas,
+                                            onClick = { discoveryAtlas = atlas },
+                                            label = { Text(atlas.label) },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+                            } else {
+                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    modifier = Modifier.fillMaxWidth()) {
+                                    DiscoveryAtlas.entries.forEach { atlas ->
+                                        FilterChip(
+                                            selected = discoveryAtlas == atlas,
+                                            onClick = { discoveryAtlas = atlas },
+                                            label = {
+                                                Text(atlas.label, textAlign = TextAlign.Center,
+                                                    maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                            },
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        Box(Modifier.weight(1f)) {
+                            atlasStates.SaveableStateProvider(discoveryAtlas.name) {
+                                when (discoveryAtlas) {
+                                    DiscoveryAtlas.GEFUEHLE -> AtlasScreen(
+                                        catalog = catalog,
+                                        filters = filters,
+                                        onEmotion = vm::openEmotion,
+                                        onPath = vm::openPath,
+                                        onCards = vm::openLearningCards,
+                                        onComparisons = vm::openComparisons,
+                                        onSearch = vm::setSearch,
+                                        onFamily = vm::setFamily,
+                                        onKind = vm::setKind,
+                                        onLetter = vm::setLetter,
+                                        onClear = vm::clearFilters
+                                    )
+                                    DiscoveryAtlas.BEDUERFNISSE -> NeedsScreen(
+                                        needCatalog,
+                                        favorites = learning.progress.favorites,
+                                        seen = learning.progress.seen,
+                                        canSave = !learning.busy && learning.error == null,
+                                        onFavorite = learningVm::toggleFavorite,
+                                        onSeen = learningVm::markSeen
+                                    )
+                                    DiscoveryAtlas.STRATEGIEN -> if (strategyCatalog != null) {
+                                        StrategyAtlasScreen(
+                                            catalog = strategyCatalog,
+                                            selectedId = selectedStrategyId,
+                                            onSelect = { selectedStrategyId = it },
+                                            onBackToList = { selectedStrategyId = null },
+                                            onKnowledgeArticle = { id ->
+                                                requestedKnowledgeArticleId = id
+                                                vm.openKnowledgeWorld()
+                                            }
+                                        )
+                                    } else {
+                                        Text("Der Strategieatlas konnte nicht geladen werden. Die anderen Atlanten bleiben verfügbar.",
+                                            modifier = Modifier.padding(20.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    MainSection.WISSEN -> if (lessonCatalog != null) {
+                        KnowledgeWorldScreen(
+                            catalog = lessonCatalog,
+                            ui = learning,
+                            onBookmark = learningVm::toggleArticleBookmark,
+                            onRead = learningVm::markArticleRead,
+                            onLearning = vm::openLearning,
+                            onStrategies = {
+                                discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+                                vm.selectSection(MainSection.ENTDECKEN)
+                            }
+                        )
+                    } else {
+                        Text("Die Wissenswelt konnte nicht geladen werden. Deine übrigen Bereiche bleiben verfügbar.",
+                            modifier = Modifier.padding(20.dp))
+                    }
                     MainSection.TAGEBUCH -> JournalScreen(
                         state = diary,
                         emotions = catalog,
@@ -444,6 +559,7 @@ private fun EmotionskompassApp(
                         subtitle = "Hier werden später persönliche Muster sichtbar – ohne Noten, Diagnosen oder Leistungsdruck.",
                         milestone = "Geplant für M7"
                     )
+                    }
                 }
                 Destination.EMOTION -> {
                     val emotion = state.emotionId?.let(catalog::find)
@@ -469,7 +585,15 @@ private fun EmotionskompassApp(
                         catalog = lessonCatalog,
                         ui = learning,
                         onBookmark = learningVm::toggleArticleBookmark,
-                        onRead = learningVm::markArticleRead
+                        onRead = learningVm::markArticleRead,
+                        onStrategies = {
+                            discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+                            vm.selectSection(MainSection.ENTDECKEN)
+                        },
+                        onLearning = vm::openLearning,
+                        onReturnToSource = { vm.back() },
+                        requestedArticleId = requestedKnowledgeArticleId,
+                        onRequestConsumed = { requestedKnowledgeArticleId = null }
                     )
                 } else {
                     Text("Die Wissenswelt konnte nicht geladen werden. Dein Tagebuch und die anderen Bereiche bleiben verfügbar.",
@@ -524,6 +648,8 @@ private fun EmotionskompassApp(
             }
         }
     }
+        }
+    }
     if (confirmDiscard && state.destination == Destination.CHECKIN) {
         AlertDialog(
             onDismissRequest = { confirmDiscard = false },
@@ -561,56 +687,62 @@ private fun Mark(small: Boolean = false) {
 }
 
 @Composable
-private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
-    onNeeds: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit,
-    onLearn: () -> Unit, onKnowledge: () -> Unit, daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
+private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
+    onExplore: () -> Unit, onNeeds: () -> Unit, onStrategies: () -> Unit,
+    onCheckin: () -> Unit, onWord: () -> Unit, onKnowledge: () -> Unit,
+    daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp)
     ) {
         Spacer(Modifier.height(8.dp))
-        Text("DEIN RAUM FÜR GEFÜHLE", style = MaterialTheme.typography.labelSmall,
+        Text("DEIN EMOTIONSKOMPASS", style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary, letterSpacing = 1.2.sp)
-        Text("Wie geht es dir\ngerade?", style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, lineHeight = 38.sp)
-        Text("Du musst es noch nicht wissen. Finde in deinem Tempo die passenden Worte.",
+        Text("Gefühle verstehen. Eigene Wege finden.",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold)
+        Text("Entdecke Gefühle, Bedürfnisse und Strategien – in deinem Tempo.",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(3.dp))
         ActionCard(
             icon = Icons.Outlined.FavoriteBorder,
-            title = "Mein Gefühl erkunden",
-            description = "Wahrnehmen, benennen und reflektieren.",
-            footnote = "Geführter Check-in · ab M3",
+            title = "Wie geht es dir gerade?",
+            description = "Nimm dir einen Moment für dich. Alles darf, nichts muss.",
+            footnote = "Freiwilligen Check-in starten",
             emphasized = true,
             onClick = onCheckin
         )
-        ActionCard(
-            icon = Icons.Outlined.Explore,
-            title = "Emotionen entdecken",
-            description = "Begriffe und feine Unterschiede kennenlernen.",
-            footnote = "$termsCount Begriffe · Lernpfade",
-            onClick = onExplore
-        )
-        ActionCard(
-            icon = Icons.Outlined.Explore,
-            title = "Bedürfnisse verstehen",
-            description = "Erkennen, was dir wichtig ist und was dir guttut.",
-            footnote = "$needsCount Bedürfnisse · Kompass · Lernpfade",
-            onClick = onNeeds
-        )
-        ActionCard(
-            icon = Icons.Outlined.MenuBook,
-            title = "Lernen & Entdecken",
-            description = "Favoriten, kurze Übungen, Wiederholungen und Lernpfade.",
-            footnote = "Neu in M6 · alles offline",
-            onClick = onLearn
-        )
+        Text("Drei Atlanten entdecken",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold)
+        val largeText = LocalDensity.current.fontScale > 1.3f
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            if (maxWidth < 340.dp || largeText) {
+                Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                    AtlasShortcut(Icons.Outlined.FavoriteBorder, "Gefühle",
+                        "$termsCount Begriffe", onExplore, Modifier.fillMaxWidth())
+                    AtlasShortcut(Icons.Outlined.Explore, "Bedürfnisse",
+                        "$needsCount Begriffe", onNeeds, Modifier.fillMaxWidth())
+                    AtlasShortcut(Icons.Outlined.AutoAwesome, "Strategien",
+                        "$strategyCount Karten", onStrategies, Modifier.fillMaxWidth())
+                }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                    AtlasShortcut(Icons.Outlined.FavoriteBorder, "Gefühle",
+                        "$termsCount Begriffe", onExplore, Modifier.weight(1f))
+                    AtlasShortcut(Icons.Outlined.Explore, "Bedürfnisse",
+                        "$needsCount Begriffe", onNeeds, Modifier.weight(1f))
+                    AtlasShortcut(Icons.Outlined.AutoAwesome, "Strategien",
+                        "$strategyCount Karten", onStrategies, Modifier.weight(1f))
+                }
+            }
+        }
         ActionCard(
             icon = Icons.Outlined.MenuBook,
             title = "Wissenswelt",
-            description = "Artikel frei lesen oder in vier Lernreihen Schritt für Schritt lernen.",
-            footnote = "20 Artikel · Deine Lesemarke · komplett offline",
+            description = "Artikel, freie Lernreihen und Übungen – ohne Leistungsdruck.",
+            footnote = "Wissen entdecken · komplett offline",
             onClick = onKnowledge
         )
         Spacer(Modifier.height(10.dp))
@@ -635,7 +767,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Card(onClick = onLearn, modifier = Modifier.fillMaxWidth(),
+        Card(onClick = onNeeds, modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
             Column(Modifier.padding(17.dp)) {
                 Text("Bedürfnis des Tages: ${daily.need.name}",
@@ -644,8 +776,36 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Text("M6 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe, Lernen und dein geschütztes Tagebuch.",
+        Text("Alles offline · $termsCount Gefühle · $needsCount Bedürfnisse · $strategyCount Strategiekarten · geschütztes Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun AtlasShortcut(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 110.dp),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(Modifier.fillMaxWidth().padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(27.dp))
+            Text(title, style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
+            Text(subtitle, style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center)
+        }
     }
 }
 

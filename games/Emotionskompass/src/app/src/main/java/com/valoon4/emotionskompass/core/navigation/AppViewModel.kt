@@ -24,7 +24,12 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-enum class MainSection { START, ENTDECKEN, BEDUERFNISSE, TAGEBUCH, RUECKBLICK }
+enum class MainSection { START, ENTDECKEN, WISSEN, TAGEBUCH, RUECKBLICK }
+
+/** Equal-level sub-areas of Entdecken. Display order is intentionally stable. */
+enum class DiscoveryAtlas(val label: String) {
+    GEFUEHLE("Gefühle"), BEDUERFNISSE("Bedürfnisse"), STRATEGIEN("Strategien")
+}
 enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, LEARNING, WISSENSWELT, CHECKIN, SETTINGS }
 
 data class AtlasFilters(
@@ -317,8 +322,8 @@ class AppViewModel(
         push(_state.value.copy(destination = Destination.VERGLEICH, comparisonId = id))
     }
 
-    fun openLearning() = push(_state.value.copy(destination = Destination.LEARNING))
-    fun openKnowledgeWorld() = push(_state.value.copy(destination = Destination.WISSENSWELT))
+    fun openLearning() = push(_state.value.copy(destination = Destination.LEARNING, section = MainSection.WISSEN))
+    fun openKnowledgeWorld() = push(_state.value.copy(destination = Destination.WISSENSWELT, section = MainSection.WISSEN))
     fun openLearningCards() = push(_state.value.copy(destination = Destination.LEARN_CARDS))
     fun openComparisons() = push(_state.value.copy(destination = Destination.COMPARISONS))
 

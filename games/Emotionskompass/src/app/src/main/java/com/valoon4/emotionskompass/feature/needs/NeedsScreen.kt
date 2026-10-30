@@ -2,6 +2,7 @@ package com.valoon4.emotionskompass.feature.needs
 
 import android.app.Activity
 import android.view.WindowManager
+import androidx.activity.compose.BackHandler
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -55,10 +58,18 @@ fun NeedsScreen(
     onFavorite: (String) -> Unit = {},
     onSeen: (String) -> Unit = {}
 ) {
-    var tab by remember { mutableStateOf("Atlas") }
-    var detailId by remember { mutableStateOf<String?>(null) }
-    var pathId by remember { mutableStateOf<String?>(null) }
+    var tab by rememberSaveable { mutableStateOf("Atlas") }
+    var detailId by rememberSaveable { mutableStateOf<String?>(null) }
+    var pathId by rememberSaveable { mutableStateOf<String?>(null) }
     var comparison by remember { mutableStateOf<NeedComparison?>(null) }
+    val tabStates = rememberSaveableStateHolder()
+    BackHandler(enabled = detailId != null || pathId != null || comparison != null) {
+        when {
+            detailId != null -> detailId = null
+            comparison != null -> comparison = null
+            else -> pathId = null
+        }
+    }
 
     // A personal needs-compass selection should not be exposed in recents/screenshots.
     val activity = LocalContext.current as? Activity
@@ -116,20 +127,22 @@ fun NeedsScreen(
                 }
             }
         }
-        when (tab) {
-            "Atlas" -> NeedAtlasPane(catalog, onNeed = { detailId = it })
-            "Kompass" -> NeedCompassScreen(catalog, onNeed = { detailId = it })
-            "Lernpfade" -> NeedPathsPane(catalog, onPath = { pathId = it })
-            else -> NeedComparisonsPane(catalog, onCompare = { comparison = it })
+        tabStates.SaveableStateProvider(tab) {
+            when (tab) {
+                "Atlas" -> NeedAtlasPane(catalog, onNeed = { detailId = it })
+                "Kompass" -> NeedCompassScreen(catalog, onNeed = { detailId = it })
+                "Lernpfade" -> NeedPathsPane(catalog, onPath = { pathId = it })
+                else -> NeedComparisonsPane(catalog, onCompare = { comparison = it })
+            }
         }
     }
 }
 
 @Composable
 private fun NeedAtlasPane(catalog: NeedCatalog, onNeed: (String) -> Unit) {
-    var query by remember { mutableStateOf("") }
-    var family by remember { mutableStateOf("Alle") }
-    var letter by remember { mutableStateOf("Alle") }
+    var query by rememberSaveable { mutableStateOf("") }
+    var family by rememberSaveable { mutableStateOf("Alle") }
+    var letter by rememberSaveable { mutableStateOf("Alle") }
     val results = remember(catalog, query, family, letter) { catalog.browse(query, family, letter) }
 
     LazyColumn(Modifier.fillMaxSize(),
