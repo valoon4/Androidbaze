@@ -108,8 +108,8 @@ class LessonCatalog private constructor(
                 require(part.keys == setOf("schemaVersion", "locale", "lessons", "series"))
                 require(part.getValue("schemaVersion").jsonPrimitive.int == 1)
                 require(part.getValue("locale").jsonPrimitive.content == "de")
-                appendLessons += part.getValue("lessons").jsonArray
-                appendSeries += part.getValue("series").jsonArray
+                appendLessons.addAll(part.getValue("lessons").jsonArray)
+                appendSeries.addAll(part.getValue("series").jsonArray)
             }
             val merged = buildJsonObject {
                 root.forEach { (key, value) ->
