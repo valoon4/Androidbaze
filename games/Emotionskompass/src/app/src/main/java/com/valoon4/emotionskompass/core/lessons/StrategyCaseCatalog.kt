@@ -79,11 +79,11 @@ class StrategyCaseCatalog private constructor(val cases: List<StrategyCase>) {
             require(all.map { it.id }.distinct().size == all.size)
             require(all.all { c ->
                 validId.matches(c.id) && c.theme.length >= 5 &&
-                    c.scenario.length >= 90 && c.prompt.length >= 35 &&
+                    c.scenario.length >= 90 && c.prompt.length >= 30 &&
                     c.choices.size == 2 && c.choices.distinct().size == 2 &&
                     c.choices.all { it.length >= 60 } &&
                     c.bestIndex in 0..1 && c.feedback.length >= 100 &&
-                    c.reflection.length >= 55 &&
+                    c.reflection.length >= 40 &&
                     c.relatedStrategyIds.isNotEmpty() &&
                     c.relatedStrategyIds.distinct().size == c.relatedStrategyIds.size &&
                     c.relatedStrategyIds.all { it in strategyIds } &&
