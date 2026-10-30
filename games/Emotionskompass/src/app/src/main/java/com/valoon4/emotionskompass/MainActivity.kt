@@ -672,10 +672,14 @@ private fun EmotionskompassApp(
                             onRead = learningVm::markArticleRead,
                             onLearning = vm::openLearning,
                             caseCatalog = caseCatalog,
-                            onStrategies = {
-                                discoveryAtlas = DiscoveryAtlas.STRATEGIEN
-                                vm.selectSection(MainSection.ENTDECKEN)
-                            }
+                            strategyTitles = strategyTitles,
+                            onStrategyDetail = { id, caseId ->
+                                returnCaseId = caseId
+                                openStrategy(id, "case")
+                            },
+                            requestedCaseId = requestedCaseId,
+                            onCaseRequestConsumed = { requestedCaseId = null },
+                            onStrategies = openStrategyOverview
                         )
                     } else {
                         Text("Die Wissenswelt konnte nicht geladen werden. Deine übrigen Bereiche bleiben verfügbar.",
@@ -731,13 +735,18 @@ private fun EmotionskompassApp(
                         ui = learning,
                         onBookmark = learningVm::toggleArticleBookmark,
                         onRead = learningVm::markArticleRead,
-                        onStrategies = {
-                            discoveryAtlas = DiscoveryAtlas.STRATEGIEN
-                            vm.selectSection(MainSection.ENTDECKEN)
-                        },
+                        onStrategies = openStrategyOverview,
                         onLearning = vm::openLearning,
                         caseCatalog = caseCatalog,
+                        strategyTitles = strategyTitles,
+                        onStrategyDetail = { id, caseId ->
+                            returnCaseId = caseId
+                            openStrategy(id, "case")
+                        },
+                        requestedCaseId = requestedCaseId,
+                        onCaseRequestConsumed = { requestedCaseId = null },
                         onReturnToSource = { vm.back() },
+                        returnLabel = if (selectedStrategyId == null) "Zur Atlasübersicht" else "Zur Strategie",
                         requestedArticleId = requestedKnowledgeArticleId,
                         onRequestConsumed = { requestedKnowledgeArticleId = null }
                     )
