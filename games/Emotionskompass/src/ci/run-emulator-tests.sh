@@ -24,6 +24,26 @@ if [[ "$device_state" != "device" || "$device_api" != "35" ]]; then
   exit 1
 fi
 
+# adb 'device' and sys.boot_completed=1 do not imply the Android framework is
+# healthy. On a software-emulated CI VM these may appear long before package
+# and activity services exist. Never attempt installation until both respond.
+ready=false
+for attempt in {1..24}; do
+  if adb shell service check package 2>/dev/null | grep -q 'found' \
+      && adb shell service check activity 2>/dev/null | grep -q 'found'; then
+    ready=true
+    break
+  fi
+  echo "Waiting for Android package/activity system services (attempt $attempt/24)"
+  sleep 5
+done
+if [[ "$ready" != true ]]; then
+  echo "::error::Android framework did not start package and activity services."
+  adb shell service list | head -30 || true
+  exit 1
+fi
+echo "Android package and activity services are ready."
+
 APP_APK="$APP_ROOT/app/build/outputs/apk/debug/app-debug.apk"
 TEST_APK="$APP_ROOT/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
 test -s "$APP_APK" && test -s "$TEST_APK"
