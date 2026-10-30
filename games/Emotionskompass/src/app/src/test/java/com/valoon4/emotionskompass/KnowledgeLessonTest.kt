@@ -4,6 +4,9 @@ import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonTopic
 import com.valoon4.emotionskompass.core.learning.LearningState
 import com.valoon4.emotionskompass.core.learning.LearningProgressFormat
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 import java.time.LocalDate
 import org.junit.Assert.*
@@ -121,4 +124,92 @@ class KnowledgeLessonTest {
             LessonCatalog.fromJson(duplicates)
         }
     }
+
+    @Test fun everyLessonHasGoalMisconceptionAndExplainedQuestion() {
+        assertEquals(20, catalog.lessons.size)
+        catalog.lessons.forEach { lesson ->
+            assertTrue(lesson.learningGoal.length >= 25)
+            assertTrue(lesson.commonMistake.length >= 25)
+            assertEquals(2, lesson.check.choices.size)
+            assertTrue(lesson.check.correctIndex in 0..1)
+            assertTrue(lesson.check.explanation.length >= 40)
+            assertFalse(lesson.check.choices[0] == lesson.check.choices[1])
+        }
+    }
+
+    @Test fun comprehensionQuestionsUseBothPositionsAndHaveNoLeadingSolutionLabels() {
+        val correct = catalog.lessons.map { it.check.correctIndex }.toSet()
+        assertEquals(setOf(0, 1), correct)
+        assertTrue(catalog.lessons.all { lesson ->
+            lesson.check.choices.none { it.startsWith("Richtig", true) ||
+                it.startsWith("Falsch", true) }
+        })
+    }
+
+    @Test fun resumePrefersAnAlreadyStartedUnfinishedCourse() {
+        val path = catalog.series[1]
+        val firstId = path.lessonIds.first()
+        val resumedSeries = catalog.continueSeries(setOf(firstId))
+        assertEquals(path.id, resumedSeries?.id)
+        assertEquals(path.lessonIds[1], catalog.continueAt(path, setOf(firstId))?.id)
+    }
+
+    @Test fun finishedCourseDoesNotPreventReadingOtherCourses() {
+        val finished = catalog.series.first()
+        val selected = catalog.continueSeries(finished.lessonIds.toSet())
+        assertNotNull(selected)
+        assertNotEquals(finished.id, selected!!.id)
+        assertNull(catalog.continueAt(finished, finished.lessonIds.toSet()))
+        assertNull(catalog.continueSeries(catalog.lessons.map { it.id }.toSet()))
+    }
+
+    @Test fun searchWorksWithUmlautsAndAsciiAlternatives() {
+        val umlaut = catalog.browse("gefühle").map { it.id }.toSet()
+        val ascii = catalog.browse("gefuhle").map { it.id }.toSet()
+        assertTrue(umlaut.isNotEmpty())
+        assertEquals(umlaut, ascii)
+        assertEquals(catalog.browse("Bedürfnisse").map { it.id }.toSet(),
+            catalog.browse("bedurfnisse").map { it.id }.toSet())
+    }
+
+    @Test fun malformedNewQuestionNeverPassesCatalogValidation() {
+        val broken = raw.replace("\"correctIndex\": 0", "\"correctIndex\": 4")
+        assertThrows(IllegalArgumentException::class.java) {
+            LessonCatalog.fromJson(broken)
+        }
+    }
+
+    @Test fun contentLoaderAllowsAdditionalFutureLessonsAndCourseChapters() {
+        // The validator no longer hard-codes exactly twenty articles or five
+        // chapters per course. Removing one coherent article and its reference
+        // keeps the other learning sections available.
+        val id = catalog.series[0].lessonIds.last()
+        val root = kotlinx.serialization.json.Json.parseToJsonElement(raw).jsonObject
+        val updated = kotlinx.serialization.json.buildJsonObject {
+            root.forEach { (k, v) ->
+                put(k, when(k) {
+                    "lessons" -> kotlinx.serialization.json.JsonArray(v.jsonArray.filterNot {
+                        it.jsonObject.getValue("id").jsonPrimitive.content == id
+                    })
+                    "series" -> kotlinx.serialization.json.JsonArray(v.jsonArray.map { s ->
+                        val e = s.jsonObject
+                        kotlinx.serialization.json.buildJsonObject {
+                            e.forEach { (key, value) ->
+                                put(key, if (key == "lessonIds")
+                                    kotlinx.serialization.json.JsonArray(value.jsonArray.filterNot {
+                                        it.jsonPrimitive.content == id
+                                    })
+                                    else value)
+                            }
+                        }
+                    })
+                    else -> v
+                })
+            }
+        }
+        val reduced = LessonCatalog.fromJson(updated.toString())
+        assertEquals(19, reduced.lessons.size)
+        assertEquals(4, reduced.series.size)
+    }
+
 }
