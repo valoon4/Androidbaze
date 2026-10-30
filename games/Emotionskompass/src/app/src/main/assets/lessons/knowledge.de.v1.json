@@ -409,7 +409,18 @@
       "sources": [
         "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
         "https://www.cnvc.org/certification/cpp/preparation/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein Bedürfnis ist nicht auf eine einzige Handlung festgelegt.",
+      "commonMistake": "Ein Bedürfnis hat nur eine passende Handlungsstrategie.",
+      "check": {
+        "prompt": "Was ist bei Einsamkeit eher eine Strategie?",
+        "choices": [
+          "Das allgemeine Anliegen nach Verbindung.",
+          "Einen Freund anrufen, wenn das für beide passt."
+        ],
+        "correctIndex": 1,
+        "explanation": "Ein Anruf ist ein möglicher Weg zum Bedürfnis nach Verbindung."
+      }
     },
     {
       "id": "mehrere-wege",
@@ -436,7 +447,18 @@
       "sources": [
         "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
         "https://www.cnvc.org/certification/cpp/preparation/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Mehrere Strategien geben Wahlmöglichkeiten, aber keine Erfolgsgarantie.",
+      "commonMistake": "Wenn ein konkreter Plan scheitert, ist das Anliegen unmöglich zu erfüllen.",
+      "check": {
+        "prompt": "Ein Treffen fällt aus. Was erweitert den Handlungsspielraum?",
+        "choices": [
+          "Nach anderen möglichen Formen von Verbindung suchen.",
+          "Darauf bestehen, dass genau dieses Treffen stattfindet."
+        ],
+        "correctIndex": 0,
+        "explanation": "Mehrere Strategien sind möglich, ohne eine Wirkung garantieren zu können."
+      }
     },
     {
       "id": "bitte-statt-forderung",
@@ -463,7 +485,18 @@
       "sources": [
         "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
         "https://www.cnvc.org/certification/cpp/preparation/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Eine gute Bitte ist konkret und lässt Raum für eine echte Antwort.",
+      "commonMistake": "Eine gute Bitte muss grundsätzlich mit Ja beantwortet werden.",
+      "check": {
+        "prompt": "Welche Formulierung lässt eine freie Antwort zu?",
+        "choices": [
+          "Du musst heute Abend mit mir reden.",
+          "Hättest du morgen Zeit für ein kurzes Gespräch?"
+        ],
+        "correctIndex": 1,
+        "explanation": "Eine Bitte ist konkret und respektiert die Entscheidungsmöglichkeiten anderer."
+      }
     },
     {
       "id": "beobachtung-interpretation",
@@ -490,7 +523,18 @@
       "sources": [
         "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
         "https://www.cnvc.org/certification/cpp/preparation/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Beobachtung und Interpretation sind beides Erfahrungen, aber nicht dasselbe.",
+      "commonMistake": "Eine Interpretation ist automatisch eine überprüfte Beobachtung.",
+      "check": {
+        "prompt": "Welche Aussage beschreibt zuerst Beobachtbares?",
+        "choices": [
+          "Während des Gesprächs wurde auf das Handy geschaut.",
+          "Du interessierst dich überhaupt nicht für mich."
+        ],
+        "correctIndex": 0,
+        "explanation": "Beobachtbares Verhalten und eine vermutete Absicht sind nicht dasselbe."
+      }
     },
     {
       "id": "strategien-pruefen",
@@ -517,7 +561,18 @@
       "sources": [
         "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
         "https://www.cnvc.org/certification/cpp/preparation/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Die passende Strategie hängt vom Kontext ab und darf verändert werden.",
+      "commonMistake": "Eine gute Strategie muss für alle Menschen immer funktionieren.",
+      "check": {
+        "prompt": "Eine Pause im Freien hilft heute nicht. Was kannst du prüfen?",
+        "choices": [
+          "Die Handlung unabhängig vom Kontext immer wiederholen.",
+          "Ob ein anderer Weg oder ein anderes Bedürfnis passt."
+        ],
+        "correctIndex": 1,
+        "explanation": "Strategien dürfen flexibel an die eigene Situation angepasst werden."
+      }
     },
     {
       "id": "innere-wahrnehmung",
