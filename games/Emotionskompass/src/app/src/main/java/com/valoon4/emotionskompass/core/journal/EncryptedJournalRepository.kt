@@ -26,7 +26,19 @@ class EncryptedJournalRepository(context: Context) {
         val key = getKey(create = false)
             ?: throw IllegalStateException("Journal-Schlüssel fehlt. Die Einträge können nicht entschlüsselt werden.")
         return try {
-            JournalFormat.decode(JournalEncryption.open(atomicFile.openRead().use { it.readBytes() }, key))
+            val envelope = atomicFile.openRead().use { source ->
+                BoundedJournalInput.read(source, JournalFormat.MAX_PLAINTEXT_BYTES + 128)
+            }
+            try {
+                val plaintext = JournalEncryption.open(envelope, key)
+                try {
+                    JournalFormat.decode(plaintext)
+                } finally {
+                    plaintext.fill(0)
+                }
+            } finally {
+                envelope.fill(0)
+            }
         } catch (e: Exception) {
             throw JournalAccessException("Das Tagebuch konnte nicht sicher geöffnet werden. Deine Daten wurden nicht verändert.", e)
         }
