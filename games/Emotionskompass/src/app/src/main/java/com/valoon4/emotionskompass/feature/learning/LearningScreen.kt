@@ -46,6 +46,7 @@ import com.valoon4.emotionskompass.core.learning.LearningQuiz
 import com.valoon4.emotionskompass.core.learning.LearningRoute
 import com.valoon4.emotionskompass.core.learning.LearningUiState
 import com.valoon4.emotionskompass.core.learning.LearningWord
+import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import java.time.LocalDate
@@ -55,11 +56,14 @@ import java.time.LocalDate
 fun LearningScreen(
     emotions: EmotionCatalog,
     needs: NeedCatalog,
+    lessonCatalog: LessonCatalog,
     ui: LearningUiState,
     onFavorite: (String) -> Unit,
     onSeen: (String) -> Unit,
     onReview: (String) -> Unit,
     onStation: (String) -> Unit,
+    onArticleBookmark: (String) -> Unit,
+    onArticleRead: (String) -> Unit,
     onReset: () -> Unit,
     onReload: () -> Unit,
     onOpenEmotion: (String) -> Unit
@@ -78,7 +82,7 @@ fun LearningScreen(
         AlertDialog(
             onDismissRequest = { resetConfirm = false },
             title = { Text("Lernstand zurücksetzen?") },
-            text = { Text("Alle Lernfavoriten, entdeckten Begriffe, Wiederholungen und Lernpfad-Markierungen werden gelöscht. Dein Tagebuch und die Atlanten bleiben unverändert.") },
+            text = { Text("Alle Lernfavoriten, entdeckten Begriffe, Wiederholungen, Lernpfad-Markierungen, Artikel-Lesezeichen und Lesemarkierungen werden gelöscht. Dein Tagebuch und die Atlanten bleiben unverändert.") },
             confirmButton = {
                 TextButton(onClick = { resetConfirm = false; onReset() }) {
                     Text("Lernstand löschen")
@@ -127,7 +131,7 @@ fun LearningScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(listOf("Heute", "Favoriten", "Üben", "Wiederholen", "Lernpfade", "Übersicht")) { label ->
+                items(listOf("Heute", "Wissenswelt", "Favoriten", "Üben", "Wiederholen", "Lernpfade", "Übersicht")) { label ->
                     FilterChip(selected = tab == label, onClick = {
                         tab = label
                         selectedRoute = null
@@ -172,7 +176,30 @@ fun LearningScreen(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
+                    item {
+                        val article = lessonCatalog.daily(LocalDate.now())
+                        Card(onClick = { tab = "Wissenswelt" }) {
+                            Column(Modifier.fillMaxWidth().padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                                Text("WISSENSWELT · ARTIKEL DES TAGES",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary)
+                                Text(article.title, style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold)
+                                Text(article.lead, style = MaterialTheme.typography.bodySmall)
+                                Text("Zur Wissenswelt · 20 Artikel und 4 Lernreihen",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary)
+                            }
+                        }
+                    }
                 }
+            }
+            "Wissenswelt" -> {
+                KnowledgeWorldScreen(
+                    catalog = lessonCatalog, ui = ui,
+                    onBookmark = onArticleBookmark, onRead = onArticleRead
+                )
             }
             "Favoriten" -> {
                 FavoritesPane(words, progress.favorites, progress.seen, canChange,
@@ -190,7 +217,7 @@ fun LearningScreen(
                     onFavorite, onStation, { selectedWord = it })
             }
             "Übersicht" -> {
-                OverviewPane(words, routes, ui, { resetConfirm = true })
+                OverviewPane(words, routes, ui, { resetConfirm = true }, lessonCatalog)
             }
         }
     }
@@ -455,7 +482,8 @@ private fun PathsPane(
 @Composable
 private fun OverviewPane(
     words: List<LearningWord>, routes: List<LearningRoute>,
-    ui: LearningUiState, onReset: () -> Unit
+    ui: LearningUiState, onReset: () -> Unit,
+    lessonCatalog: LessonCatalog
 ) {
     val progress = ui.progress
     val valid = words.map { it.key }.toSet()
@@ -479,8 +507,10 @@ private fun OverviewPane(
         OverviewValue("Freiwillige Wiederholungen", "${progress.reviewTotal}")
         OverviewValue("Lernpfade vollständig markiert", "$markedRoutes von ${routes.size}")
         OverviewValue("Stationen markiert", "${progress.completedStations.size}")
+        OverviewValue("Wissensartikel gelesen", "${progress.readArticles.count { lessonCatalog.find(it) != null }} von ${lessonCatalog.lessons.size}")
+        OverviewValue("Wissensartikel gemerkt", "${progress.articleBookmarks.count { lessonCatalog.find(it) != null }}")
         HorizontalDivider()
-        Text("Deine Favoriten und Lernmarkierungen sind ausschließlich lokal und separat vom Tagebuch verschlüsselt gespeichert. Du kannst den gesamten Lernstand unabhängig vom Tagebuch löschen.",
+        Text("Deine Favoriten, Artikel-Lesezeichen und Lernmarkierungen sind ausschließlich lokal und separat vom Tagebuch verschlüsselt gespeichert. Du kannst den gesamten Lernstand unabhängig vom Tagebuch löschen.",
             style = MaterialTheme.typography.bodySmall)
         OutlinedButton(onClick = onReset,
             enabled = !ui.busy && ui.error == null) {
