@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -180,7 +181,10 @@ private fun StrategyDetail(
 ) {
     val context = LocalContext.current
     var externalError by remember(card.id) { mutableStateOf(false) }
+    // Each card starts at its beginning; saved position survives a temporary article detour.
+    val detailScroll = rememberSaveable(card.id, saver = LazyListState.Saver) { LazyListState() }
     LazyColumn(
+        state = detailScroll,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(18.dp),
         verticalArrangement = Arrangement.spacedBy(13.dp)
