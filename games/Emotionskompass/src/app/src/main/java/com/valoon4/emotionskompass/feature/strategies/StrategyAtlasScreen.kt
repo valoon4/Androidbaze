@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilterChip
@@ -295,7 +296,7 @@ private fun StrategyDetail(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        items(card.sources, key = { it.url }) { source ->
+        itemsIndexed(card.sources, key = { _, source -> source.url }) { index, source ->
             Text(source.description)
             Text("Quellentyp: ${when (source.evidenceType) {
                 "PRIMARY_STUDY" -> "Einzelstudie"
@@ -311,7 +312,7 @@ private fun StrategyDetail(
                 } catch (_: Exception) {
                     externalError = true
                 }
-            }) { Text("Quelle extern öffnen") }
+            }) { Text("Quelle ${index + 1} von ${card.sources.size} extern öffnen") }
         }
         if (externalError) item {
             Text("Kein Browser verfügbar. Der Strategieartikel bleibt offline lesbar.",
