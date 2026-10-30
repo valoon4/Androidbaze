@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -44,6 +45,7 @@ fun StrategyAtlasScreen(
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var familyId by rememberSaveable { mutableStateOf<String?>(null) }
+    val listState = rememberLazyListState()
     val selected = selectedId?.let(catalog::find)
     BackHandler(enabled = selected != null) { onBackToList() }
     if (selected != null) {
@@ -52,6 +54,7 @@ fun StrategyAtlasScreen(
     }
     val filtered = catalog.browse(query, familyId)
     LazyColumn(
+        state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(18.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
