@@ -1,5 +1,6 @@
 package com.valoon4.emotionskompass.feature.journal
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,7 +48,12 @@ fun JournalScreen(
     onEdit: (String) -> Unit,
     onDelete: (String) -> Unit,
     onDeleteAll: () -> Unit,
-    onReload: () -> Unit
+    onReload: () -> Unit,
+    lockEnabled: Boolean,
+    onToggleLock: () -> Unit,
+    onExport: (Uri, String) -> Unit,
+    onImport: (Uri, String) -> Unit,
+    onSystemPicker: (Boolean) -> Unit
 ) {
     var selectedId by remember { mutableStateOf<String?>(null) }
     var deleteId by remember { mutableStateOf<String?>(null) }
@@ -111,6 +117,14 @@ fun JournalScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        if (state.message != null) {
+            item {
+                Card(colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                    Text(state.message, Modifier.fillMaxWidth().padding(15.dp))
+                }
+            }
+        }
         if (state.error != null) {
             item {
                 Card(colors = CardDefaults.cardColors(
@@ -133,6 +147,16 @@ fun JournalScreen(
                 enabled = !state.busy && state.error == null) {
                 Text("Neuen Check-in beginnen")
             }
+        }
+        item {
+            JournalSecurityPanel(
+                isLockedByCredential = lockEnabled,
+                busy = state.busy,
+                onToggleLock = onToggleLock,
+                onExport = onExport,
+                onImport = onImport,
+                onSystemPicker = onSystemPicker
+            )
         }
         if (state.busy) {
             item { Text("Tagebuch wird verarbeitet …",
