@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "lessons": [
+    {
+      "id": "s-vertiefung-einfluss",
+      "topic": "STRATEGIEN",
+      "title": "Was kann ich beeinflussen – und was nicht?",
+      "lead": "Handlungsspielraum ist nicht dasselbe wie persönliche Schuld oder vollständige Kontrolle. Eine gute Entscheidung beginnt oft mit der Frage, was überhaupt veränderbar ist.",
+      "sections": [
+        {
+          "title": "Die Situation differenziert betrachten",
+          "text": "Manche Aspekte lassen sich heute ändern, andere nur langfristig oder gar nicht. Du kannst vielleicht einen Termin umlegen, aber nicht bestimmen, ob andere Menschen zustimmen. Auch fehlende Zeit, Geld, Gesundheit oder ein Machtgefälle beeinflussen den tatsächlichen Spielraum."
+        },
+        {
+          "title": "Handeln darf klein sein",
+          "text": "Eine hilfreiche Handlung muss keine perfekte Lösung sein. Eine Information einholen, eine Aufgabe aufteilen oder eine Grenze schützen kann bereits ein konkreter Schritt sein. Wo Einfluss fehlt, sind Erholung, Trauer, Unterstützung oder das Anerkennen der Lage ebenso legitime Möglichkeiten."
+        },
+        {
+          "title": "Sicherheit hat Vorrang",
+          "text": "Wenn eine Beziehung oder Umgebung unsicher ist, kann direkte Konfrontation riskant sein. Es ist nicht deine Pflicht, eine gefährliche Situation allein zu lösen. Die Frage nach Handlungsmöglichkeiten sollte dann mit Schutz, sicheren Ansprechpersonen und gegebenenfalls externer Hilfe beginnen."
+        }
+      ],
+      "example": "Ein Team ändert kurzfristig deine Arbeitszeit. Du kannst vielleicht um frühere Information bitten, den Termin selbst aber nicht entscheiden. Du prüfst, welche Unterstützung realistisch und sicher ist.",
+      "takeaway": "Was nicht kontrollierbar ist, ist nicht automatisch deine Verantwortung. Kleine sichere Veränderungen und Unterstützung können sinnvoller sein als erzwungene Kontrolle.",
+      "reflection": "Welcher Teil wäre in deiner Hand, und wofür brauchst du Unterstützung oder die Entscheidung anderer?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+        "https://www.paho.org/en/documents/doing-what-matters-times-stress-illustrated-guide"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Was nicht kontrollierbar ist, ist nicht automatisch deine Verantwortung. Kleine sichere Veränderungen und Unterstützung können sinnvoller sein als erzwungene Kontrolle.",
+      "commonMistake": "Wenn ich nur geschickt genug plane, lässt sich jede schwierige Situation selbst lösen.",
+      "check": {
+        "prompt": "Welche Haltung berücksichtigt begrenzten Handlungsspielraum?",
+        "choices": [
+          "Beeinflussbares prüfen, Grenzen respektieren und bei Bedarf Unterstützung suchen.",
+          "Jede schwierige Situation als allein durch eigene Anstrengung lösbar betrachten."
+        ],
+        "correctIndex": 0,
+        "explanation": "Planung braucht realistische Einflussmöglichkeiten; Grenzen und Sicherheit sind eigenständige Faktoren."
+      }
+    },
+    {
+      "id": "s-vertiefung-neubewertung",
+      "topic": "STRATEGIEN",
+      "title": "Gedanken prüfen, ohne Erfahrungen kleinzureden",
+      "lead": "Eine erste Deutung ist nicht immer die einzige plausible. Neubewertung kann helfen – solange Fakten, Gefühle und berechtigte Grenzen nicht relativiert werden.",
+      "sections": [
+        {
+          "title": "Beobachtung, Schluss und Gefühl",
+          "text": "Eine unbeantwortete Nachricht ist beobachtbar; ‚ich bin unerwünscht‘ ist eine mögliche Interpretation. Die Enttäuschung darüber bleibt real, auch wenn weitere Deutungen denkbar sind. Es geht nicht darum, Gefühle zu widerlegen, sondern den eigenen Schlussfolgerungen etwas Raum zu geben."
+        },
+        {
+          "title": "Keine erzwungene positive Deutung",
+          "text": "Wenn eine klare Kränkung oder Gefahr vorliegt, wäre beschönigendes Denken keine hilfreiche Neubewertung. Ein sicherer Perspektivwechsel darf Schutz und konkrete Veränderung nicht ersetzen. Auch sachliche Unsicherheit wie ‚Ich kenne den Grund noch nicht‘ kann ausreichend sein."
+        },
+        {
+          "title": "Passung hängt von der Lage ab",
+          "text": "Forschung unterscheidet die mögliche Wirkung von Neubewertung je nach Kontrollierbarkeit einer Situation; daraus folgt jedoch keine Einzelfallregel. Manchmal wäre Nachfragen passender als weiteres Nachdenken. Manchmal braucht es eher eine Grenze oder Pause."
+        }
+      ],
+      "example": "Ein Kollege wirkt abweisend. Du lässt offen, ob er gestresst ist, ohne dein Unwohlsein zu leugnen. Falls der Umgang wiederholt verletzend ist, kannst du trotzdem Grenzen ansprechen.",
+      "takeaway": "Neubewertung erweitert mögliche Erklärungen. Sie verpflichtet dich nicht, Schaden gutzuheißen oder eigene Grenzen zu übergehen.",
+      "reflection": "Was weißt du sicher, was vermutest du und welche weitere Erklärung wäre plausibel, ohne Risiken kleinzureden?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/24145331/",
+        "https://doi.org/10.1080/1047840X.2014.940781"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Neubewertung erweitert mögliche Erklärungen. Sie verpflichtet dich nicht, Schaden gutzuheißen oder eigene Grenzen zu übergehen.",
+      "commonMistake": "Eine neue Sichtweise ist nur richtig, wenn danach alle unangenehmen Gefühle verschwinden.",
+      "check": {
+        "prompt": "Worin besteht eine angemessene Neubewertung?",
+        "choices": [
+          "Eine gefährliche oder verletzende Lage grundsätzlich als harmlos bewerten.",
+          "Mehrere plausible Deutungen zulassen und erkennbare Grenzverletzungen weiterhin beachten."
+        ],
+        "correctIndex": 1,
+        "explanation": "Neubewertung ist nicht dasselbe wie positives Denken oder das Leugnen belastender Tatsachen."
+      }
+    },
+    {
+      "id": "s-vertiefung-koerper",
+      "topic": "STRATEGIEN",
+      "title": "Gefühle begleiten: Körper, Wahrnehmung und Pausen",
+      "lead": "Körperempfindungen können eine Rolle beim emotionalen Erleben spielen. Übungen mit Atem, Bewegung oder Aufmerksamkeit sind Angebote, keine Pflicht und kein Ersatz für Sicherheit.",
+      "sections": [
+        {
+          "title": "Körpersignale sind nicht eindeutig",
+          "text": "Ein schneller Puls oder verspannte Schultern können unterschiedliche Gründe haben. Daraus lässt sich weder ein bestimmtes Gefühl noch eine Diagnose sicher ablesen. Wenn du magst, kannst du wahrnehmen, was dein Körper braucht, ohne jede Empfindung ständig kontrollieren zu wollen."
+        },
+        {
+          "title": "Eine freiwillige Form wählen",
+          "text": "Ein neutraler Gegenstand, kurze Bewegung, Ausruhen oder sanfte Atembeobachtung können je nach Person und Situation unterschiedliche Erfahrungen ermöglichen. Bei manchen Menschen verstärkt Körperfokus jedoch Unruhe. Eine Übung darf immer beendet oder durch etwas anderes ersetzt werden."
+        },
+        {
+          "title": "Nicht auf Kosten der Gesundheit",
+          "text": "Atemübungen sollen keine Luftnot, Schmerzen oder Schwindel auslösen. Körperliche Beschwerden gehören ernst genommen und gegebenenfalls medizinisch abgeklärt. Bei drohender Gefahr gehen Schutz und passende Hilfe vor Selbstregulationsübungen."
+        }
+      ],
+      "example": "Nach einem schwierigen Telefonat bemerkst du körperliche Unruhe. Du entscheidest, ob Sitzen, ein Blick in den Raum, sanfte Bewegung oder gar keine Übung gerade gut wäre.",
+      "takeaway": "Du darfst Gefühle und körperliche Reaktionen wahrnehmen, ohne sie vollständig kontrollieren zu müssen. Sicherheit und Freiwilligkeit sind wichtiger als eine perfekte Übung.",
+      "reflection": "Welche äußere oder körperliche Wahrnehmung ist für dich angenehm – und wann wäre ein Abbruch sinnvoll?",
+      "sources": [
+        "https://www.paho.org/en/documents/doing-what-matters-times-stress-illustrated-guide",
+        "https://doi.org/10.1080/1047840X.2014.940781"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Du darfst Gefühle und körperliche Reaktionen wahrnehmen, ohne sie vollständig kontrollieren zu müssen. Sicherheit und Freiwilligkeit sind wichtiger als eine perfekte Übung.",
+      "commonMistake": "Eine körperliche Beruhigungstechnik muss bei jedem Menschen und in jeder Lage wirken.",
+      "check": {
+        "prompt": "Was ist bei freiwilligen Wahrnehmungsübungen besonders wichtig?",
+        "choices": [
+          "Eigene Grenzen beachten und bei Unwohlsein oder Beschwerden abbrechen.",
+          "Eine Übung auch bei Schmerzen fortführen, bis eine bestimmte Ruhe eintritt."
+        ],
+        "correctIndex": 0,
+        "explanation": "Körperfokus ist nicht für alle Personen geeignet; Übungen müssen abbrechbar bleiben."
+      }
+    },
+    {
+      "id": "s-vertiefung-sozial",
+      "topic": "STRATEGIEN",
+      "title": "Unterstützung suchen: hilfreich und sicher",
+      "lead": "Soziale Unterstützung kann viele Formen haben: Zuhören, Information, praktische Entlastung oder Begleitung. Entscheidend ist, ob die Beziehung und die Form wirklich passen.",
+      "sections": [
+        {
+          "title": "Unterschiedliche Unterstützung erkennen",
+          "text": "Ein guter Freund kann zuhören, aber nicht unbedingt eine praktische Aufgabe übernehmen. Eine andere Person hat vielleicht hilfreiche Informationen, ohne für intime Gespräche geeignet zu sein. Die Form der Unterstützung sollte zu deinem Anliegen und den Möglichkeiten beider Seiten passen."
+        },
+        {
+          "title": "Konkrete Bitten, offene Antworten",
+          "text": "Eine Bitte wie ‚Hättest du zehn Minuten zum Zuhören?‘ macht Erwartungen verständlicher als die Annahme, jemand müsse von selbst wissen, was du brauchst. Andere Menschen dürfen Grenzen setzen. Ein Nein ist nicht zwingend eine Ablehnung deiner Person."
+        },
+        {
+          "title": "Vertraulichkeit und Sicherheit prüfen",
+          "text": "Nicht jede Beziehung ist respektvoll oder sicher. Gerade bei Kontrolle, Drohungen oder Gewalt solltest du nicht zur Offenheit gegenüber der verursachenden Person gedrängt werden. Eine geeignete unabhängige Unterstützungsstelle kann dann wichtiger sein als ein klärendes Gespräch."
+        }
+      ],
+      "example": "Du fühlst dich überfordert. Von einer Freundin möchtest du zehn Minuten Zuhören; bei einer Fachstelle möchtest du eine konkrete Auskunft. Beide Bitten betreffen unterschiedliche Formen von Unterstützung.",
+      "takeaway": "Passende Unterstützung orientiert sich am tatsächlichen Bedarf, an beiderseitigen Grenzen und an Sicherheit – nicht allein an der Anzahl von Kontakten.",
+      "reflection": "Brauchst du eher Zuhören, eine praktische Hilfe, Informationen oder sicheren Abstand und wer käme dafür infrage?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/3901065/",
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Passende Unterstützung orientiert sich am tatsächlichen Bedarf, an beiderseitigen Grenzen und an Sicherheit – nicht allein an der Anzahl von Kontakten.",
+      "commonMistake": "Wer viele Kontakte hat, erhält automatisch die passende Unterstützung und sollte jederzeit alles erzählen.",
+      "check": {
+        "prompt": "Welche Bitte ist am ehesten situationsangemessen?",
+        "choices": [
+          "Persönliche Informationen auch in unsicheren Beziehungen immer offenlegen.",
+          "Ein konkretes freiwilliges Anliegen an eine vertrauenswürdige Person richten."
+        ],
+        "correctIndex": 1,
+        "explanation": "Ein sicherer Kontakt und die passende Form von Hilfe sind entscheidender als Offenheit um jeden Preis."
+      }
+    }
+  ],
+  "series": [
+    {
+      "id": "strategiewelt-belastungen",
+      "title": "Mit Belastung umgehen",
+      "description": "Vier frei lesbare Vertiefungen zu Handlungsspielraum, Gedanken, Körperwahrnehmung und sicherer Unterstützung.",
+      "lessonIds": [
+        "s-vertiefung-einfluss",
+        "s-vertiefung-neubewertung",
+        "s-vertiefung-koerper",
+        "s-vertiefung-sozial"
+      ]
+    }
+  ]
+}

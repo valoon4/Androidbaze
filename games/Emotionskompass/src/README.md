@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M6.3.1
+# Emotionskompass – native Android-App M6.3.2
 
-**Version:** 0.6.3.1-m6.3.1-complete · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.6.3.2-m6.3.2 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -42,6 +42,13 @@ Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch 
 - Alle Querverweise auf bestehende Wissensartikel sind freiwillig; die 82 bisherigen Bedürfnis-Strategiebeispiele bleiben unangetastet. Kein automatisches persönliches Strategie-Matching, kein Nachverfolgen von Strategieversuchen (erst M7).
 - Der Katalog ist ein **fachredaktioneller Entwurf**, kein unabhängig begutachtetes Behandlungsangebot. Die 25 Ergänzungskarten sind nun integriert; die unabhängige Fach- und Geräteprüfung folgt weiter in M6.3.3.
 - JSON-Schema, referenzielle Integrität und Suche werden per JVM-Test geprüft. Externe Quellen werden nur nach bewusstem Tippen im installierten Browser geöffnet; die App selbst benötigt kein Netzwerk.
+
+### M6.3.2 – Wissenswelt und Strategien vertiefen
+- 12 neue Artikel als drei vierteilige, vollständig offene Lernreihen (Grundlagen, Belastung, Flexibilität). Die 20 alten Artikel und vier Reihen bleiben erhalten: **32 Artikel und 7 Reihen** insgesamt.
+- 15 freiwillige Praxis-/Vergleichsfälle mit zwei nachvollziehbaren Kontextoptionen, neutralem „Ich bin unsicher“-Weg und erklärtem Feedback erst nach einer Wahl. Keine Bewertung der Person, kein Score und keine Speicherung der Antworten.
+- Direkt über Wissen → Praxisfälle verfügbar. Alle Quellen sind offline im Text verlinkt und öffnen sich nur auf Wunsch extern; keine neue Internetberechtigung.
+- Strikte Versionierung/Referenzprüfungen, vollständige JVM-Tests, behutsamer Fallback zu alten Artikeln bei einem defekten neuen Inhaltsasset.
+- Details und noch offene fachliche/manuelle Abnahme: `games/Emotionskompass/notes/M632_WISSENSWELT_VERTIEFUNG.md`.
 
 ## Build und Tests
 

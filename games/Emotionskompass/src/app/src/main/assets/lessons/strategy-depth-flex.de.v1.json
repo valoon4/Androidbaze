@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "lessons": [
+    {
+      "id": "s-vertiefung-abstand",
+      "topic": "STRATEGIEN",
+      "title": "Ablenkung, Rückzug und Vermeidung unterscheiden",
+      "lead": "Abstand kann entlasten oder schützen. Ob er langfristig hilfreich ist, lässt sich jedoch nicht allein aus der Handlung erkennen.",
+      "sections": [
+        {
+          "title": "Eine Pause ist nicht automatisch Vermeidung",
+          "text": "Nach einem schwierigen Gespräch Musik zu hören, kann zunächst entlasten. Sich von einer tatsächlich gefährlichen Person fernzuhalten, dient dagegen dem Schutz. Wiederholt wichtigen, sicheren Aufgaben auszuweichen, kann langfristig Handlungsmöglichkeiten einengen. Diese Fälle dürfen nicht vermischt werden."
+        },
+        {
+          "title": "Die Funktion und Folgen betrachten",
+          "text": "Frage nicht nur, was du gerade vermeidest, sondern warum: Brauchst du Ruhe, ist etwas gefährlich, fehlt Unterstützung oder wird ein lösbares Anliegen immer weiter verschoben? Die Antwort kann sich verändern. Kurzfristige Entlastung ist ein eigener Wert, aber keine Garantie für spätere Klärung."
+        },
+        {
+          "title": "Keine erzwungene Konfrontation",
+          "text": "Bei Unsicherheit, Gewalt oder überwältigenden Erfahrungen ist es nicht sinnvoll, sich aus Pflichtgefühl unmittelbar einer Belastung auszusetzen. Ein freiwilliger Blick auf Muster ersetzt keine professionelle Hilfe. Du darfst Abstand wählen und trotzdem Unterstützung für weitere Entscheidungen suchen."
+        }
+      ],
+      "example": "Du legst eine schwierige Nachricht für den Abend weg. Morgen entscheidest du, ob du antworten, eine Grenze setzen oder das Thema ruhen lassen möchtest. Eine Pause unterscheidet sich vom dauerhaften Abbrechen aller Kontakte.",
+      "takeaway": "Entscheidend sind Sicherheit, Absicht, Dauer und Folgen. Ablenkung oder Rückzug sind nicht automatisch falsch, und dauerhaftes Vermeiden ist kein moralischer Makel.",
+      "reflection": "Schützt dich dein Abstand gerade, gibt er eine Pause oder schränkt er dich langfristig ein?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+        "https://pubmed.ncbi.nlm.nih.gov/12696840/"
+      ],
+      "learningGoal": "Nach diesem Kapitel kannst du erklären: Entscheidend sind Sicherheit, Absicht, Dauer und Folgen. Ablenkung oder Rückzug sind nicht automatisch falsch, und dauerhaftes Vermeiden ist kein moralischer Makel.",
+      "commonMistake": "Jeder Rückzug ist schädliche Vermeidung und muss durch sofortige Konfrontation überwunden werden.",
+      "check": {
+        "prompt": "Welche Überlegung ist beim Rückzug am hilfreichsten?",
+        "choices": [
+          "Schutz, Dauer und mögliche langfristige Folgen getrennt betrachten.",
+          "Jeden Rückzug als Fehlverhalten einordnen und sofort beenden."
+        ],
+        "correctIndex": 0,
+        "explanation": "Sicherer Schutz und bewusste Pausen sind anders zu beurteilen als langfristig einschränkende Muster."
+      }
+    },
+    {
+      "id": "s-vertiefung-akzeptanz",
+      "topic": "STRATEGIEN",
+      "title": "Akzeptanz, Resignation und Grenzen",
+      "lead": "Etwas als momentan gegeben anzuerkennen heißt nicht, es gutzuheißen. Akzeptanz kann zusammen mit Grenzen und Veränderung bestehen.",
+      "sections": [
+        {
+          "title": "Anerkennen ist keine Zustimmung",
+          "text": "Du kannst bemerken, dass du heute traurig bist, ohne Traurigkeit zu mögen. Ebenso kannst du akzeptieren, dass ein Ereignis bereits geschehen ist, und trotzdem sein Unrecht benennen. Das Anerkennen einer Tatsache sagt nicht aus, welche Handlung du als Nächstes wählen solltest."
+        },
+        {
+          "title": "Resignation und passives Erdulden unterscheiden",
+          "text": "Wer keinen Handlungsspielraum sieht, kann sich hilflos fühlen. Akzeptanz als freiwillige Haltung sollte dagegen Möglichkeiten offenlassen, etwa Trost suchen, klare Grenzen setzen oder zu einem späteren Zeitpunkt handeln. Niemand muss Gewalt, Demütigung oder Diskriminierung akzeptieren."
+        },
+        {
+          "title": "Was sich ändern lässt, bleibt wichtig",
+          "text": "Nicht alles ist unveränderlich. Deshalb lohnt sich die Frage, welche Aspekte du anerkennen musst und welche du selbst oder gemeinsam beeinflussen kannst. Auch dass die eigene Akzeptanz noch nicht gelingt, darf sein. Es gibt keinen Zeitplan dafür."
+        }
+      ],
+      "example": "Ein lang geplanter Ausflug fällt wegen Regen aus. Du bist enttäuscht und erkennst an, dass das Wetter heute nicht verhandelbar ist. Du kannst den Ausflug neu planen und die Enttäuschung bestehen lassen.",
+      "takeaway": "Akzeptanz bedeutet kein Gutheißen von Schaden und keine Pflicht zum Stillhalten. Unveränderliches und mögliche Handlungen lassen sich gleichzeitig betrachten.",
+      "reflection": "Welche Tatsache ist gerade da, und welche Grenze oder Entscheidung steht dir trotzdem noch offen?",
+      "sources": [
+        "https://www.paho.org/en/documents/doing-what-matters-times-stress-illustrated-guide",
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ],
+      "learningGoal": "Nach diesem Kapitel kannst du erklären: Akzeptanz bedeutet kein Gutheißen von Schaden und keine Pflicht zum Stillhalten. Unveränderliches und mögliche Handlungen lassen sich gleichzeitig betrachten.",
+      "commonMistake": "Akzeptanz heißt, mit jedem Verhalten anderer einverstanden zu sein und auf Schutz zu verzichten.",
+      "check": {
+        "prompt": "Welche Aussage beschreibt Akzeptanz ohne Resignation?",
+        "choices": [
+          "Unrecht gutheißen, weil man etwas im Moment nicht verändern kann.",
+          "Eine Tatsache anerkennen und trotzdem passende Grenzen oder Änderungen erwägen."
+        ],
+        "correctIndex": 1,
+        "explanation": "Akzeptanz und selbstbestimmtes Handeln können nebeneinanderstehen; sie schließen sich nicht aus."
+      }
+    },
+    {
+      "id": "s-vertiefung-kombinieren",
+      "topic": "STRATEGIEN",
+      "title": "Strategien kombinieren, ohne sich zu überfordern",
+      "lead": "Manchmal passt eine Kombination aus Pause, Gespräch und praktischem Schritt. Mehr Strategien sind jedoch nicht automatisch besser.",
+      "sections": [
+        {
+          "title": "Unterschiedliche Ziele erkennen",
+          "text": "Eine Situation kann mehrere Aspekte haben: Du bist müde, brauchst Informationen und fühlst dich übergangen. Eine kurze Pause kann der Erholung dienen, eine Frage dem Verständnis und eine klare Grenze dem Schutz. Diese Funktionen können sich ergänzen, ohne dass alles zugleich erledigt werden muss."
+        },
+        {
+          "title": "Die Reihenfolge darf offenbleiben",
+          "text": "Vielleicht ist erst Ruhe sinnvoll, dann ein Gespräch. In anderen Situationen muss ein konkretes Sicherheitsproblem zuerst geklärt werden. Menschen haben unterschiedliche Prioritäten und Ressourcen. Wenn du mehrere Optionen kennst, darfst du dich auch für nur eine einzige entscheiden."
+        },
+        {
+          "title": "Nicht zu einem Selbstoptimierungsprogramm machen",
+          "text": "Ein umfangreicher Plan kann das Gefühl erzeugen, du müsstest jede Belastung perfekt bewältigen. Wenn dir das zu viel ist, kann ein kleiner Schritt oder bewusstes Nicht-Handeln der passendere Weg sein. Auch soziale und strukturelle Unterstützung zählt, nicht nur inneres Training."
+        }
+      ],
+      "example": "Ein Termin macht dir Sorgen. Du gönnst dir zunächst Ruhe, klärst danach eine offene Frage per Nachricht und überlegst, ob du um Unterstützung bitten möchtest. Vielleicht genügt aber auch schon die Klärung.",
+      "takeaway": "Strategien können sich ergänzen, müssen aber nicht gestapelt werden. Wähle nach Bedarf, Sicherheit und verfügbaren Kräften.",
+      "reflection": "Welche eine Möglichkeit hätte gerade den größten Nutzen, und welche könntest du ohne Nachteil weglassen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+        "https://pubmed.ncbi.nlm.nih.gov/12696840/"
+      ],
+      "learningGoal": "Nach diesem Kapitel kannst du erklären: Strategien können sich ergänzen, müssen aber nicht gestapelt werden. Wähle nach Bedarf, Sicherheit und verfügbaren Kräften.",
+      "commonMistake": "Je mehr Bewältigungstechniken ich gleichzeitig anwende, desto erfolgreicher reguliere ich Gefühle.",
+      "check": {
+        "prompt": "Was spricht für eine flexible Kombination?",
+        "choices": [
+          "Nur die Schritte wählen, die zu Ziel, Energie und Situation passen.",
+          "Möglichst viele Methoden gleichzeitig anwenden, unabhängig von ihren Folgen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Nicht die Anzahl der Methoden zählt, sondern ihre mögliche Passung und Verträglichkeit."
+      }
+    },
+    {
+      "id": "s-vertiefung-anpassen",
+      "topic": "STRATEGIEN",
+      "title": "Wenn eine Strategie nicht hilft: neu orientieren",
+      "lead": "Eine Methode kann kurzfristig helfen, später unpassend werden oder gar nicht zu dir passen. Daraus folgt keine schlechte Leistung.",
+      "sections": [
+        {
+          "title": "Beobachtungen statt Schulnoten",
+          "text": "Du kannst nach einem freiwilligen Versuch fragen, was sich tatsächlich verändert hat und was gleich blieb. Wurde eine Aufgabe leichter, entstand kurz Ruhe oder kam ein neues Problem hinzu? Du musst dafür weder ein Gefühl messen noch eine bestimmte Verbesserung nachweisen."
+        },
+        {
+          "title": "Mögliche Gründe unterscheiden",
+          "text": "Vielleicht war das Ziel zu groß, die Methode ungeeignet oder die Situation nicht beeinflussbar. Manchmal fehlten Ressourcen, Vertrauen oder Sicherheit. Das bedeutet nicht automatisch, dass du etwas falsch gemacht hast. Auch eine ursprünglich hilfreiche Methode kann ihre Funktion verlieren."
+        },
+        {
+          "title": "Anders weitergehen dürfen",
+          "text": "Du kannst einen Schritt verkleinern, eine andere Möglichkeit prüfen, pausieren, Grenzen schützen oder Unterstützung suchen. Wenn Beschwerden stark oder dauerhaft belasten, kann fachliche Hilfe wichtig sein. Es besteht keine Pflicht, eine Strategie erneut zu versuchen."
+        }
+      ],
+      "example": "Du hast eine schwierige Aufgabe geplant, aber es fehlen wichtige Unterlagen. Statt die Planung als gescheitert zu bewerten, organisierst du eine Rückfrage oder lässt die Aufgabe bis morgen liegen.",
+      "takeaway": "Rückmeldung ist Information, kein Urteil. Überprüfen, anpassen, pausieren und Hilfe suchen sind gleichwertige Möglichkeiten.",
+      "reflection": "Was hast du wirklich beobachtet, und welche Alternative würde deinen jetzigen Spielraum besser berücksichtigen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+        "https://www.paho.org/en/documents/doing-what-matters-times-stress-illustrated-guide"
+      ],
+      "learningGoal": "Nach diesem Kapitel kannst du erklären: Rückmeldung ist Information, kein Urteil. Überprüfen, anpassen, pausieren und Hilfe suchen sind gleichwertige Möglichkeiten.",
+      "commonMistake": "Wenn eine Methode nicht hilft, muss ich sie nur intensiver und länger anwenden.",
+      "check": {
+        "prompt": "Welche Reaktion passt zu einer unpassenden Strategie?",
+        "choices": [
+          "Ein unangenehmes Ergebnis als Aufforderung nehmen, dieselbe Methode zu erzwingen.",
+          "Wirkung und Rahmenbedingungen prüfen und gegebenenfalls wechseln oder stoppen."
+        ],
+        "correctIndex": 1,
+        "explanation": "Auch Abbrechen ist eine legitime Rückmeldung; Sicherheit und Ressourcen müssen berücksichtigt werden."
+      }
+    }
+  ],
+  "series": [
+    {
+      "id": "strategiewelt-flexibel",
+      "title": "Flexibel handeln – Möglichkeiten und Grenzen",
+      "description": "Vier frei zugängliche Kapitel über Abstand, Akzeptanz, Kombinationen und hilfreiche Rückmeldungen.",
+      "lessonIds": [
+        "s-vertiefung-abstand",
+        "s-vertiefung-akzeptanz",
+        "s-vertiefung-kombinieren",
+        "s-vertiefung-anpassen"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "lessons": [
+    {
+      "id": "s-vertiefung-begriffe",
+      "topic": "STRATEGIEN",
+      "title": "Strategie, Coping und Emotionsregulation unterscheiden",
+      "lead": "Dasselbe Verhalten kann ein Bedürfnis unterstützen, eine Belastung bewältigen oder Gefühle beeinflussen. Die Begriffe überlappen, meinen aber nicht genau dasselbe.",
+      "sections": [
+        {
+          "title": "Vier Fragen statt einer Schublade",
+          "text": "Ein Bedürfnis beschreibt, was für jemanden wichtig sein kann, etwa Ruhe oder Zugehörigkeit. Eine Strategie beschreibt eine mögliche Handlung: etwa einen Termin verschieben. Coping meint den Umgang mit als belastend erlebten Anforderungen. Emotionsregulation bezeichnet Versuche, Auftreten, Verlauf oder Ausdruck von Gefühlen zu beeinflussen."
+        },
+        {
+          "title": "Dasselbe Verhalten kann mehrere Funktionen haben",
+          "text": "Ein Spaziergang kann eine Pause, ein Weg zur Bewegung oder Abstand zu einer belastenden Situation sein. Er kann auch eine schwierige Aufgabe immer weiter hinauszögern. Was die Handlung bedeutet, ergibt sich nicht allein aus dem Namen, sondern aus Anlass, Absicht, Sicherheit und möglichen Folgen."
+        },
+        {
+          "title": "Keine automatische Kette",
+          "text": "Aus einem Gefühl lässt sich kein eindeutiges Bedürfnis ablesen, und aus einem Bedürfnis folgt keine zwingende Strategie. Menschen können ihre Situation unterschiedlich deuten und mehrere Ziele gleichzeitig verfolgen. Darum bietet die App Möglichkeiten zur Orientierung, keine Vorschrift für die richtige Reaktion."
+        }
+      ],
+      "example": "Eine Person ist nach einem Meeting gereizt. Sie denkt über eine Pause nach, weil sie müde ist, und über ein klärendes Gespräch, weil eine Aussage sie verletzt hat. Beide Wege können unabhängig voneinander überlegt werden.",
+      "takeaway": "Gefühl, Bedürfnis, Strategie, Coping und Emotionsregulation sind unterschiedliche Perspektiven. Keine davon bestimmt automatisch, was du tun musst.",
+      "reflection": "Welche Frage beschreibt dein Anliegen besser: Was ist mir wichtig, was ist belastend oder was möchte ich beeinflussen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/12696840/",
+        "https://doi.org/10.1080/1047840X.2014.940781"
+      ],
+      "learningGoal": "Nach dem Lesen kannst du erklären: Gefühl, Bedürfnis, Strategie, Coping und Emotionsregulation sind unterschiedliche Perspektiven. Keine davon bestimmt automatisch, was du tun musst.",
+      "commonMistake": "Eine bestimmte Emotion verrät mir immer genau, welches Bedürfnis und welche Strategie richtig sind.",
+      "check": {
+        "prompt": "Welche Einordnung vermeidet eine vorschnelle Gefühls-Strategie-Zuordnung?",
+        "choices": [
+          "Zuerst Situation und mögliche Funktionen betrachten, bevor man einen Weg wählt.",
+          "Aus der benannten Emotion direkt eine einzige passende Handlung ableiten."
+        ],
+        "correctIndex": 0,
+        "explanation": "Ein Gefühl ist eine wichtige Erfahrung, aber kein eindeutiger Algorithmus für das Verhalten."
+      }
+    },
+    {
+      "id": "s-vertiefung-belastung",
+      "topic": "STRATEGIEN",
+      "title": "Warum Belastungen unterschiedliche Antworten brauchen",
+      "lead": "Nicht alle Schwierigkeiten lassen sich auf dieselbe Weise angehen. Manchmal helfen konkrete Änderungen, manchmal Unterstützung, Abstand oder das Anerkennen des momentan Unveränderlichen.",
+      "sections": [
+        {
+          "title": "Was verlangt die Situation wirklich?",
+          "text": "Eine verpasste Frist, ein Abschied und ein unsicherer Konflikt unterscheiden sich in Beeinflussbarkeit, Bedeutung und Gefahrenlage. Deshalb wäre es irreführend, allen drei Situationen dieselbe Übung zuzuordnen. Die persönliche Wahrnehmung von Belastung und vorhandene Ressourcen sind ebenfalls wichtig."
+        },
+        {
+          "title": "Zeitpunkt und Dauer verändern die Funktion",
+          "text": "Ein kurzer Rückzug kann vor Überforderung schützen. Wenn er über Monate alle wichtigen Gespräche verhindert, entstehen möglicherweise neue Nachteile. Ebenso kann Problemlösen bei beeinflussbaren Schwierigkeiten nützlich, bei einem nicht rückgängig zu machenden Verlust jedoch erschöpfend sein."
+        },
+        {
+          "title": "Auch Nicht-Handeln kann eine Wahl sein",
+          "text": "Sicherheit, Erholung, Abwarten oder professionelle Unterstützung dürfen Vorrang haben. Du musst eine belastende Situation nicht allein meistern. Entscheidend ist nicht, möglichst viele Methoden auszuprobieren, sondern zu prüfen, ob ein Weg zur gegenwärtigen Lage passt."
+        }
+      ],
+      "example": "Die Technik eines wichtigen Geräts funktioniert nicht: Eine Reparaturanfrage kann sinnvoll sein. Gleichzeitig ärgert sich jemand über eine vergangene Entscheidung: Daran lässt sich möglicherweise nur der künftige Umgang ändern.",
+      "takeaway": "Die Frage lautet nicht nur, welche Strategie allgemein bekannt ist, sondern was in dieser konkreten Situation beeinflussbar, sicher und wichtig ist.",
+      "reflection": "Was unterscheidet diese Belastung von anderen Situationen, in denen du dich schon einmal ähnlich gefühlt hast?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+        "https://pubmed.ncbi.nlm.nih.gov/12696840/"
+      ],
+      "learningGoal": "Nach dem Lesen kannst du erklären: Die Frage lautet nicht nur, welche Strategie allgemein bekannt ist, sondern was in dieser konkreten Situation beeinflussbar, sicher und wichtig ist.",
+      "commonMistake": "Was einer anderen Person geholfen hat, muss bei derselben Gefühlsbezeichnung auch bei mir wirken.",
+      "check": {
+        "prompt": "Was spricht für unterschiedliche Bewältigungswege?",
+        "choices": [
+          "Jede als belastend erlebte Situation erfordert genau dieselbe Schrittfolge.",
+          "Die Umstände, Einflussmöglichkeiten und Ressourcen können sehr verschieden sein."
+        ],
+        "correctIndex": 1,
+        "explanation": "Der Kontext entscheidet mit. Menschen benötigen und wählen unterschiedliche Arten von Unterstützung."
+      }
+    },
+    {
+      "id": "s-vertiefung-modelle",
+      "topic": "STRATEGIEN",
+      "title": "Coping-Modelle verständlich einordnen",
+      "lead": "Fachliche Modelle helfen beim Sortieren von Möglichkeiten. Sie sind jedoch Landkarten und keine Messgeräte, die eine einzelne Handlung eindeutig als richtig oder falsch einstufen.",
+      "sections": [
+        {
+          "title": "Warum einfache Gegensätze nicht reichen",
+          "text": "Eine häufige Unterscheidung lautet problem- oder emotionsorientiertes Coping. Das kann beim ersten Überblick helfen, bleibt aber oft zu grob. Bei sozialer Unterstützung kannst du zum Beispiel Trost suchen und zugleich praktische Hilfe bekommen. Kategorien sind deshalb häufig überlappend."
+        },
+        {
+          "title": "Emotionsregulation als Prozess",
+          "text": "Modelle beschreiben mögliche Ansatzpunkte: eine Situation wählen oder verändern, Aufmerksamkeit lenken, Deutungen überprüfen oder den sichtbaren Ausdruck beeinflussen. Daraus folgt nicht, dass frühere Ansatzpunkte immer besser sind oder dass Gefühle vollständig kontrollierbar wären."
+        },
+        {
+          "title": "Die Grenzen der Fachsprache",
+          "text": "Studien verwenden nicht immer identische Definitionen und messen teilweise unterschiedliche Verhaltensweisen. Der Strategieatlas gruppiert Inhalte deshalb bewusst als Lernhilfe in sieben Familien, nicht als wissenschaftlich validierte Persönlichkeits- oder Gesundheitsdiagnostik."
+        }
+      ],
+      "example": "Jemand bittet eine Freundin um ein Gespräch. Es geht zunächst um Zuhören, später um Unterstützung bei einer Entscheidung. Dieselbe Handlung berührt soziale und problembezogene Bewältigung.",
+      "takeaway": "Modelle ordnen Fragen, nicht Menschen. Eine Strategiekarte kann zu mehreren Familien passen, ohne widersprüchlich zu sein.",
+      "reflection": "Welche zwei Funktionen könnte dieselbe Handlung in unterschiedlichen Situationen erfüllen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/12696840/",
+        "https://doi.org/10.1080/1047840X.2014.940781"
+      ],
+      "learningGoal": "Nach dem Lesen kannst du erklären: Modelle ordnen Fragen, nicht Menschen. Eine Strategiekarte kann zu mehreren Familien passen, ohne widersprüchlich zu sein.",
+      "commonMistake": "Wenn ich den richtigen Modellbegriff kenne, weiß ich automatisch, ob eine Strategie für mich sinnvoll ist.",
+      "check": {
+        "prompt": "Wofür eignet sich eine wissenschaftliche Klassifikation vor allem?",
+        "choices": [
+          "Sie kann unterschiedliche Funktionen beschreiben, ohne den Einzelfall zu entscheiden.",
+          "Sie beweist, dass jede Handlung nur eine unveränderliche Funktion besitzt."
+        ],
+        "correctIndex": 0,
+        "explanation": "Kategorien strukturieren Wissen; die konkrete Funktion hängt von Situation, Person und Ziel ab."
+      }
+    },
+    {
+      "id": "s-vertiefung-flexibilitaet",
+      "topic": "STRATEGIEN",
+      "title": "Bewältigungsflexibilität: prüfen statt festlegen",
+      "lead": "Flexibilität bedeutet nicht, ständig neue Übungen zu sammeln. Es geht darum, den Kontext wahrzunehmen, Möglichkeiten zu kennen und auf Rückmeldungen zu achten.",
+      "sections": [
+        {
+          "title": "Zuerst die Umstände beachten",
+          "text": "Eine konkrete, sichere und veränderbare Situation fordert möglicherweise anderes als ein unveränderliches Ereignis. Gefühle, Wünsche und Bedürfnisse können Hinweise geben, müssen aber nicht eindeutig sein. Dazu kommen Kräfte, Zeit, Beziehungssicherheit und andere Menschen."
+        },
+        {
+          "title": "Ein Repertoire statt einer Lieblingsregel",
+          "text": "Wer verschiedene Wege kennt, kann eher überlegen, ob gerade Problemlösen, Trost, Abstand oder eine andere Möglichkeit sinnvoll wäre. Ein großes Repertoire garantiert aber keine gute Entscheidung. Auch eine vertraute Methode kann weiterhin genau passen."
+        },
+        {
+          "title": "Rückmeldung ernst nehmen",
+          "text": "Du kannst überlegen, was die Methode kurzfristig ermöglicht hat und was danach offen blieb. Ein Versuch muss nicht als Erfolg oder Misserfolg bewertet werden. Manchmal ist die beste Rückmeldung, dass du Unterstützung brauchst oder das Thema ruhen lassen möchtest."
+        }
+      ],
+      "example": "Nach einem langen Konflikt hast du Ablenkung ausprobiert. Du merkst, dass sie dir eine Pause gegeben hat, die offene Abmachung aber noch belastet. Du überlegst, ob ein sicheres Gespräch jetzt möglich ist.",
+      "takeaway": "Kontext wahrnehmen, Optionen erwägen und Rückmeldung beachten: Das sind hilfreiche Reflexionsschritte, keine Verpflichtung zur ständigen Selbstoptimierung.",
+      "reflection": "Welche Rückmeldung würde dir zeigen, dass eine Pause passend war oder dass du lieber einen anderen Weg erkundest?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/",
+        "https://pubmed.ncbi.nlm.nih.gov/12696840/"
+      ],
+      "learningGoal": "Nach dem Lesen kannst du erklären: Kontext wahrnehmen, Optionen erwägen und Rückmeldung beachten: Das sind hilfreiche Reflexionsschritte, keine Verpflichtung zur ständigen Selbstoptimierung.",
+      "commonMistake": "Flexibilität bedeutet, nie zweimal dieselbe Strategie zu verwenden und jedes Gefühl aktiv zu verändern.",
+      "check": {
+        "prompt": "Welche Beschreibung passt zu Bewältigungsflexibilität?",
+        "choices": [
+          "Eine Methode unabhängig von Situation und Folgen unverändert beibehalten.",
+          "Situationen und Rückmeldungen berücksichtigen und Optionen anpassen können."
+        ],
+        "correctIndex": 1,
+        "explanation": "Flexibilität umfasst Sensibilität für den Kontext, ein Repertoire und Reaktion auf Rückmeldungen."
+      }
+    }
+  ],
+  "series": [
+    {
+      "id": "strategiewelt-grundlagen",
+      "title": "Strategien verstehen – Grundlagen",
+      "description": "Vier unabhängige Kapitel über Begriffe, Modelle und situationsbezogene Flexibilität. Freie Reihenfolge, keine Freischaltung.",
+      "lessonIds": [
+        "s-vertiefung-begriffe",
+        "s-vertiefung-belastung",
+        "s-vertiefung-modelle",
+        "s-vertiefung-flexibilitaet"
+      ]
+    }
+  ]
+}

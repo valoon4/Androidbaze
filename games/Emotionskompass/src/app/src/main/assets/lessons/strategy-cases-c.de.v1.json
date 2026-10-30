@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "cases": [
+    {
+      "id": "pause-oder-muster",
+      "theme": "Abstand und Vermeidung",
+      "scenario": "Nach einem anstrengenden Gespräch möchtest du heute Abend Abstand. Bisher hast du wichtige Gespräche nicht dauerhaft vermieden.",
+      "prompt": "Wie lässt sich die Pause einordnen?",
+      "choices": [
+        "Eine begrenzte Pause kann sinnvoll sein; später kannst du prüfen, ob etwas geklärt werden muss.",
+        "Vielleicht wäre ein zeitnahes ruhiges Gespräch sinnvoll, damit der offene Konflikt nicht länger belastet."
+      ],
+      "bestIndex": 0,
+      "feedback": "Ein kurzer, freiwilliger Rückzug ist nicht dasselbe wie langfristig einschränkende Vermeidung. Sicherheit, Dauer und persönliche Folgen sind entscheidend.",
+      "reflection": "Was würde eine begrenzte Pause von einem langfristigen Muster unterscheiden?",
+      "relatedStrategyIds": [
+        "protective-withdrawal",
+        "prolonged-avoidance"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "akzeptanz-unrecht",
+      "theme": "Akzeptanz",
+      "scenario": "Eine Person wird regelmäßig respektlos behandelt. Sie hört, dass sie die Situation einfach akzeptieren müsse, um ruhig zu bleiben.",
+      "prompt": "Welche Unterscheidung sollte sie kennen?",
+      "choices": [
+        "Vielleicht wäre es ein erster Schritt, den eigenen Ärger behutsam zu betrachten, bevor man konkrete Grenzen klärt.",
+        "Die Situation als Tatsache wahrnehmen und zugleich sicheren Schutz und Grenzen erwägen."
+      ],
+      "bestIndex": 1,
+      "feedback": "Akzeptanz bedeutet nicht Zustimmung. In unsicheren Beziehungen muss Selbstschutz Vorrang haben; freiwilliger Abstand oder unabhängige Hilfe können passend sein.",
+      "reflection": "Welche Handlungsmöglichkeiten bleiben auch bei unveränderlichem Verhalten anderer?",
+      "relatedStrategyIds": [
+        "acceptance",
+        "boundaries"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "strategie-nachpruefen",
+      "theme": "Wirkung prüfen",
+      "scenario": "Du hast einen komplexen Plan entworfen. Dann ändern sich die äußeren Bedingungen und ein Teil davon ist nicht mehr machbar.",
+      "prompt": "Wie könnte eine flexible Rückmeldung aussehen?",
+      "choices": [
+        "Den Plan anpassen oder pausieren und prüfen, was weiterhin möglich ist.",
+        "Ich könnte versuchen, einzelne unveränderte Schritte doch noch zu erledigen, bevor ich den Gesamtplan neu prüfe."
+      ],
+      "bestIndex": 0,
+      "feedback": "Eine veränderte Lage ist ein sachlicher Grund, einen Plan zu ändern. Die ursprüngliche Entscheidung kann zum damaligen Zeitpunkt passend gewesen sein.",
+      "reflection": "Was hat sich an Situation oder Ressourcen tatsächlich geändert?",
+      "relatedStrategyIds": [
+        "planning",
+        "problem-solving"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "werte-und-ruhe",
+      "theme": "Werte",
+      "scenario": "Dir ist Kontakt mit Freunden wichtig. Gleichzeitig bist du gerade erschöpft und brauchst Erholung. Du möchtest beides ernst nehmen.",
+      "prompt": "Welche Überlegung hält beide Anliegen offen?",
+      "choices": [
+        "Vielleicht könnte ich für den heutigen Abend eine kürzere Form des Treffens vorschlagen und dafür Unterstützung erfragen.",
+        "Du kannst Kontakt verschieben oder anders gestalten und trotzdem Verbundenheit wichtig finden."
+      ],
+      "bestIndex": 1,
+      "feedback": "Ein Wert ist kein täglicher Leistungsauftrag. Kleine Handlungen, Verschieben oder eine Pause können zu unterschiedlichen Bedürfnissen passen.",
+      "reflection": "Welche kleine Form von Kontakt wäre möglich, wenn du dich dafür entscheidest?",
+      "relatedStrategyIds": [
+        "values-clarification",
+        "restorative-rest"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "ausdruck-kontrollieren",
+      "theme": "Gefühle und Ausdruck",
+      "scenario": "In einem Gespräch bemerkst du Ärger, möchtest aber nicht sofort scharf reagieren. Du suchst nach einer ruhigen Möglichkeit, die Situation später anzusprechen.",
+      "prompt": "Welche Unterscheidung wäre hilfreich?",
+      "choices": [
+        "Gefühl wahrnehmen und den äußeren Ausdruck bewusst wählen, ohne es verleugnen zu müssen.",
+        "Ich könnte den Ärger gleich im Gespräch deutlich ansprechen, damit die andere Person meine Grenze sofort erkennt."
+      ],
+      "bestIndex": 0,
+      "feedback": "Gefühl und Ausdruck sind nicht dasselbe. Du darfst einen Impuls nicht ausagieren und trotzdem später eine Grenze oder ein Anliegen klar äußern.",
+      "reflection": "Wie könnten Gefühl, Impuls und gewählte Handlung in diesem Beispiel getrennt beschrieben werden?",
+      "relatedStrategyIds": [
+        "emotional-suppression",
+        "name-feelings"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    }
+  ]
+}
