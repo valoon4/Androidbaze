@@ -72,6 +72,7 @@ fun LearningScreen(
     val routes = remember(emotions, needs) { LearningEngine.routes(emotions, needs) }
     val quizzes = remember(emotions, needs) { LearningEngine.quizzes(emotions, needs) }
     var tab by rememberSaveable { mutableStateOf("Heute") }
+    var requestedArticleId by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedWord by remember { mutableStateOf<LearningWord?>(null) }
     var selectedRoute by remember { mutableStateOf<LearningRoute?>(null) }
     var resetConfirm by remember { mutableStateOf(false) }
@@ -178,7 +179,10 @@ fun LearningScreen(
                     }
                     item {
                         val article = lessonCatalog.daily(LocalDate.now())
-                        Card(onClick = { tab = "Wissenswelt" }) {
+                        Card(onClick = {
+                            requestedArticleId = article.id
+                            tab = "Wissenswelt"
+                        }) {
                             Column(Modifier.fillMaxWidth().padding(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(7.dp)) {
                                 Text("WISSENSWELT · ARTIKEL DES TAGES",
@@ -187,7 +191,7 @@ fun LearningScreen(
                                 Text(article.title, style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold)
                                 Text(article.lead, style = MaterialTheme.typography.bodySmall)
-                                Text("Zur Wissenswelt · 20 Artikel und 4 Lernreihen",
+                                Text("Artikel direkt lesen · Wissenswelt",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.primary)
                             }
@@ -198,7 +202,9 @@ fun LearningScreen(
             "Wissenswelt" -> {
                 KnowledgeWorldScreen(
                     catalog = lessonCatalog, ui = ui,
-                    onBookmark = onArticleBookmark, onRead = onArticleRead
+                    onBookmark = onArticleBookmark, onRead = onArticleRead,
+                    requestedArticleId = requestedArticleId,
+                    onRequestConsumed = { requestedArticleId = null }
                 )
             }
             "Favoriten" -> {
