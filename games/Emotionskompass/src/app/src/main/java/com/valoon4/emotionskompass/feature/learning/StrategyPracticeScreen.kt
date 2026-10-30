@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -75,7 +76,9 @@ fun StrategyPracticeScreen(
         var answer by remember(selected.id) { mutableStateOf<Int?>(null) }
         val context = LocalContext.current
         var sourceError by remember(selected.id) { mutableStateOf(false) }
+        val caseScroll = rememberSaveable(selected.id, saver = LazyListState.Saver) { LazyListState() }
         LazyColumn(
+            state = caseScroll,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
