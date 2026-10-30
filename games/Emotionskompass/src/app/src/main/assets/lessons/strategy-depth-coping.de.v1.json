@@ -71,10 +71,10 @@
       "check": {
         "prompt": "Worin besteht eine angemessene Neubewertung?",
         "choices": [
-          "Mehrere plausible Deutungen zulassen und erkennbare Grenzverletzungen weiterhin beachten.",
-          "Eine gefährliche oder verletzende Lage grundsätzlich als harmlos bewerten."
+          "Eine gefährliche oder verletzende Lage grundsätzlich als harmlos bewerten.",
+          "Mehrere plausible Deutungen zulassen und erkennbare Grenzverletzungen weiterhin beachten."
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "explanation": "Neubewertung ist nicht dasselbe wie positives Denken oder das Leugnen belastender Tatsachen."
       }
     },
@@ -147,10 +147,10 @@
       "check": {
         "prompt": "Welche Bitte ist am ehesten situationsangemessen?",
         "choices": [
-          "Ein konkretes freiwilliges Anliegen an eine vertrauenswürdige Person richten.",
-          "Persönliche Informationen auch in unsicheren Beziehungen immer offenlegen."
+          "Persönliche Informationen auch in unsicheren Beziehungen immer offenlegen.",
+          "Ein konkretes freiwilliges Anliegen an eine vertrauenswürdige Person richten."
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "explanation": "Ein sicherer Kontakt und die passende Form von Hilfe sind entscheidender als Offenheit um jeden Preis."
       }
     }
