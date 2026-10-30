@@ -60,7 +60,10 @@ class LearningViewModel(private val store: LearningRepository) : ViewModel() {
     fun toggleFavorite(key: String) = change { it.toggleFavorite(key) }
     fun markSeen(key: String) = change { it.markSeen(key) }
     fun review(key: String) = change { it.markReviewed(key) }
-    fun completeStation(station: String) = change { it.markStation(station) }
+    fun completeStation(station: String) = change { state ->
+        val wordKey = station.substringAfter('/')
+        state.markSeen(wordKey).markStation(station)
+    }
 
     fun reset() {
         if (_state.value.busy || _state.value.error != null) return
