@@ -1,6 +1,6 @@
 # Emotionskompass – native Android-App M6.3.1
 
-**Version:** 0.6.3.1-m6.3.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.6.3.1-m6.3.1-complete · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -37,10 +37,10 @@ Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch 
 - Details und manuelle Abnahmematrix: notes/M631_NAVIGATION_UX.md.
 
 ### M6.3.1 – Strategieatlas (Referenzpaket)
-- Fünf offline lesbare Strategiekarten: Problemlösen, bewusste Ablenkung, kognitive Neubewertung, soziale Unterstützung, Akzeptanz.
+- 30 offline lesbare Strategiekarten einschließlich Problemlösen, bewusster Ablenkung, Neubewertung, sozialer Unterstützung und Akzeptanz.
 - Direkt erreichbar über **Start → Strategien** und **Entdecken → Strategien**, gemeinsam und gleichberechtigt mit Gefühls- und Bedürfnisatlas; Suche mit Umlaut-/ASCII-Toleranz, sieben didaktische Familien mit Mehrfachzuordnung, Vorteile/Nachteile, Grenzen, Beispiele, Alternativen und Quellen.
 - Alle Querverweise auf bestehende Wissensartikel sind freiwillig; die 82 bisherigen Bedürfnis-Strategiebeispiele bleiben unangetastet. Kein automatisches persönliches Strategie-Matching, kein Nachverfolgen von Strategieversuchen (erst M7).
-- Der Katalog ist ein **fachredaktioneller Entwurf**, kein unabhängig begutachtetes Behandlungsangebot. Weitere 25 Karten und die Qualitätssicherung folgen in M6.3.1–M6.3.3.
+- Der Katalog ist ein **fachredaktioneller Entwurf**, kein unabhängig begutachtetes Behandlungsangebot. Die 25 Ergänzungskarten sind nun integriert; die unabhängige Fach- und Geräteprüfung folgt weiter in M6.3.3.
 - JSON-Schema, referenzielle Integrität und Suche werden per JVM-Test geprüft. Externe Quellen werden nur nach bewusstem Tippen im installierten Browser geöffnet; die App selbst benötigt kein Netzwerk.
 
 ## Build und Tests
@@ -56,7 +56,7 @@ Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-a
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
-Weitere Hinweise: `games/Emotionskompass/notes/M3_GEFUEHLSNAVIGATOR.md`.
+Weitere Hinweise: `games/Emotionskompass/notes/M3_GEFUEHLSNAVIGATOR.md` und `games/Emotionskompass/notes/M631_STRATEGIEATLAS_30_KARTEN.md`.
 
 
 ## M3.1 – Niedrigschwellige Gefühlswahl

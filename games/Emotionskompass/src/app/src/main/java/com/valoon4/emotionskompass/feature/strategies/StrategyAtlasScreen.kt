@@ -62,7 +62,7 @@ fun StrategyAtlasScreen(
         item {
             Text("Strategien entdecken", style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
-            Text("Fünf ausführliche Referenzkarten. Der Atlas wird schrittweise erweitert.",
+            Text("${catalog.strategies.size} ausführliche Strategiekarten zu Coping, Emotionsregulation und Bedürfnissen.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(catalog.intro, modifier = Modifier.padding(top = 8.dp))
