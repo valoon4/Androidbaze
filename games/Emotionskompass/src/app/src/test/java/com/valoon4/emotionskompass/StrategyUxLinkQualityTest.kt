@@ -130,6 +130,40 @@ class StrategyUxLinkQualityTest {
         assertEquals(82, needs.needs.size)
     }
 
+    @Test fun everyEditorialLinkHasContextAndNoPrescriptiveGuarantee() {
+        // A wording screen, not proof of psychological or clinical effectiveness.
+        val contextual = Regex("\\b(wenn|kann|könnte|bei|sofern|falls)\\b",
+            RegexOption.IGNORE_CASE)
+        val coercive = Regex(
+            "\\b(du musst|du sollst unbedingt|garantiert wirksam|heilt|ersetzt eine therapie)\\b",
+            RegexOption.IGNORE_CASE
+        )
+        needLinks.associations.forEach { link ->
+            assertTrue("Missing context: ${link.needId} -> ${link.strategyId}",
+                contextual.containsMatchIn(link.reason))
+            assertFalse("Prescriptive claim: ${link.needId} -> ${link.strategyId}",
+                coercive.containsMatchIn(link.reason))
+            assertTrue("Inadequate nuance: ${link.needId} -> ${link.strategyId}",
+                link.reason.length >= 55)
+        }
+        // Social acceptance and inner emotional acceptance are conceptually different.
+        val socialAcceptance = needLinks.optionsForNeed("akzeptanz", strategies)
+        assertTrue(socialAcceptance.none { it.strategy.id == "acceptance" })
+        val selfCompassion = socialAcceptance.single { it.strategy.id == "self-compassion" }
+        assertTrue(selfCompassion.reason.contains("ersetzt aber nicht"))
+        // Sleep, nutrition and health should not be replaced by generic coping techniques.
+        listOf("schlaf", "naehrung", "gesundheit").forEach {
+            assertTrue("Inappropriate direct care substitution: $it",
+                needLinks.optionsForNeed(it, strategies).isEmpty())
+        }
+        // No direct confrontation is required to seek dignity or protection.
+        listOf("schutz", "wuerde", "gleichbehandlung").forEach { id ->
+            val options = needLinks.optionsForNeed(id, strategies)
+            assertTrue(options.any { it.strategy.id == "social-support" })
+            assertTrue(options.none { "patterns" in it.strategy.familyIds })
+        }
+    }
+
     @Test fun allFifteenCasesOpenNamedStrategyDetails() {
         assertEquals(15, cases.cases.size)
         val foundIds = cases.cases.flatMap { it.relatedStrategyIds }.toSet()
