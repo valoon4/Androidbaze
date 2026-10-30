@@ -50,6 +50,13 @@ Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch 
 - Strikte Versionierung/Referenzprüfungen, vollständige JVM-Tests, behutsamer Fallback zu alten Artikeln bei einem defekten neuen Inhaltsasset.
 - Details und noch offene fachliche/manuelle Abnahme: `games/Emotionskompass/notes/M632_WISSENSWELT_VERTIEFUNG.md`.
 
+### Ergänzung: Bedürfnisse ↔ Strategien nachvollziehbar verbinden
+- Alle 82 Bedürfnisse einzeln gegen die 30 vorhandenen Strategien geprüft. **76 Bedürfnisse** erhalten insgesamt **143 bedingte, redaktionell begründete und direkt anklickbare Verknüpfungen**; **6** ohne fachlich genügend konkreten Bezug.
+- Je Bedürfnis maximal drei Optionen **mit einem eigenen „Wann könnte das passen?“-Grund** statt bloßen Titelchips oder automatischer Erkennung. Strategieartikel zeigen die verknüpften Bedürfnisse mit einer aufklappbaren Liste.
+- Keine pauschale Empfehlung für Schlaf, Gesundheit, Ernährung, Spiritualität, Humor oder Spontaneität; keine krankheitsbezogene Pseudoberatung und keine Musterkarten als Handlungsoption.
+- Acht zusätzliche strikt validierte Offline-Katalogteile; bei beschädigtem Zusatzasset sichere Rückkehr zu den früheren Links. Alle Tagebuch- und Lernstandsdaten bleiben unverändert.
+- Vollständige redaktionelle Beurteilung: `games/Emotionskompass/notes/M633_BEDUERFNIS_STRATEGIE_ABGLEICH.md`. **Kein unabhängiger psychologischer Einzelbeleg für die 143 Verknüpfungen.**
+
 ### M6.3.3 – Übersichtliche Verbindungen statt zusätzlicher Funktionen
 - Strategieatlas: kurzer Einstieg, freiwilliges Glossar, wichtige Grenzen direkt im Überblick und maximal drei wirklich benannte Vertiefungsartikel je Karte.
 - Alle 30 Karten mit den zwölf neuen Vertiefungen redaktionell verbunden; bisherige Artikel bleiben erreichbar.
