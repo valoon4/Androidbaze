@@ -91,6 +91,7 @@ import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
 import com.valoon4.emotionskompass.core.learning.LearningRepository
@@ -139,8 +140,14 @@ class MainActivity : ComponentActivity() {
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
                 val lockPreferences = remember { AppLockPreferences(applicationContext) }
                 val learningRepository = remember { LearningRepository(applicationContext) }
+                val lessonCatalog = remember {
+                    LessonCatalog.fromJson(
+                        assets.open("lessons/knowledge.de.v1.json")
+                            .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    )
+                }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -205,6 +212,7 @@ private fun EmotionskompassApp(
     journal: EncryptedJournalRepository,
     lockPreferences: AppLockPreferences,
     learningRepository: LearningRepository,
+    lessonCatalog: LessonCatalog,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -453,11 +461,14 @@ private fun EmotionskompassApp(
                 Destination.LEARNING -> LearningScreen(
                     emotions = catalog,
                     needs = needCatalog,
+                    lessonCatalog = lessonCatalog,
                     ui = learning,
                     onFavorite = learningVm::toggleFavorite,
                     onSeen = learningVm::markSeen,
                     onReview = learningVm::review,
                     onStation = learningVm::completeStation,
+                    onArticleBookmark = learningVm::toggleArticleBookmark,
+                    onArticleRead = learningVm::markArticleRead,
                     onReset = learningVm::reset,
                     onReload = learningVm::reload,
                     onOpenEmotion = vm::openEmotion
@@ -1277,7 +1288,7 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.6.0-m6", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.6.2-m6.2", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
