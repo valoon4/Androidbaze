@@ -41,7 +41,7 @@ jobs:
           test -n "$SDKMGR"
           yes | "$SDKMGR" --licenses > /dev/null || true
           "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
-      - name: Run actual Compose UI tests at 100% and 200% font sizes
+      - name: Run four actual Compose tests at 100% and 200% font sizes (adb install)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -49,18 +49,7 @@ jobs:
           profile: pixel_2
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          script: |
-            # The emulator action executes each line in a fresh shell; use -p
-            # rather than cd, otherwise a different root Gradle app is tested.
-            adb shell settings put system font_scale 1.0
-            gradle -p games/Emotionskompass/src :app:connectedDebugAndroidTest --no-daemon --stacktrace
-            adb shell wm size 720x1280
-            adb shell wm density 360
-            adb shell settings put system font_scale 2.0
-            gradle -p games/Emotionskompass/src :app:connectedDebugAndroidTest --no-daemon --stacktrace --rerun-tasks
-            # Fail the run if the target project did not execute actual tests.
-            test -n "$(find games/Emotionskompass/src/app/build/outputs/androidTest-results/connected -name '*.xml' -print -quit)"
-            grep -R -q "StrategyNavigationEmulatorTest" games/Emotionskompass/src/app/build/outputs/androidTest-results/connected
+          script: bash games/Emotionskompass/src/ci/run-emulator-tests.sh
       - name: Upload test report even on failure
         if: always()
         uses: actions/upload-artifact@v4
