@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "sinn",
+      "items": [
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn du nach einer persönlich bedeutsamen Richtung suchst, kann das Benennen eigener Werte eine Orientierung bieten."
+        },
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn dir ein Bereich wichtig ist, kann ein kleiner freiwilliger Schritt deine persönliche Bedeutung im Alltag ausdrücken."
+        }
+      ]
+    },
+    {
+      "needId": "werte",
+      "items": [
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn du zwischen Anforderungen und Überzeugungen abwägst, kann das Klären eigener Werte eine selbstbestimmte Richtung zeigen."
+        },
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du einem Wert Raum geben willst, kann eine kleine selbst gewählte Handlung dazu passen, ohne eine Pflicht zu werden."
+        }
+      ]
+    },
+    {
+      "needId": "beitrag",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du anderen freiwillig etwas beitragen möchtest, kann eine kleine selbst gewählte Hilfe einem wichtigen Wert entsprechen."
+        }
+      ]
+    },
+    {
+      "needId": "teilhabe",
+      "items": [
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn deine Beteiligung an einer sicheren Entscheidung möglich ist, kann eine klare Bitte um Mitsprache passend sein."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn Gesprächsbereitschaft besteht, kann ein Austausch über Zuständigkeiten und Vorschläge mehr Beteiligung ermöglichen."
+        }
+      ]
+    },
+    {
+      "needId": "hoffnung",
+      "items": [
+        {
+          "strategyId": "values-small-step",
+          "reason": "Wenn du eine realistische Möglichkeit siehst, kann ein kleiner freiwilliger Schritt eine offene Zukunftsperspektive unterstützen, ohne ein Ergebnis zu versprechen."
+        },
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn ein konkretes Hindernis beeinflussbar ist, kann das Erkennen mehrerer Wege Handlungsmöglichkeiten sichtbar machen."
+        }
+      ]
+    },
+    {
+      "needId": "perspektive",
+      "items": [
+        {
+          "strategyId": "planning",
+          "reason": "Wenn die Zukunft unübersichtlich erscheint, kann die Planung eines kleinen nächsten Schritts eine mögliche Richtung sichtbar machen."
+        },
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn du zwischen Wegen schwankst, kann der Blick auf eigene Werte eine Orientierung sein."
+        }
+      ]
+    },
+    {
+      "needId": "stimmigkeit",
+      "items": [
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn Erwartungen und eigene Überzeugungen in Spannung stehen, kann Werteklärung helfen, die Unterschiede wahrzunehmen."
+        },
+        {
+          "strategyId": "prioritizing",
+          "reason": "Wenn mehrere Lebensbereiche konkurrieren, kann ein bewusstes Abwägen wichtiger Aufgaben mehr Stimmigkeit ermöglichen."
+        }
+      ]
+    },
+    {
+      "needId": "verantwortung",
+      "items": [
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn eine Aufgabe wirklich in deinem Einflussbereich liegt, kann ein konkreter nächster Schritt Verantwortung praktisch machen."
+        },
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn du herausfinden möchtest, wofür du einstehen willst, kann eine freiwillige Klärung eigener Werte helfen."
+        }
+      ]
+    },
+    {
+      "needId": "einfluss",
+      "items": [
+        {
+          "strategyId": "changing-situation",
+          "reason": "Wenn eine Rahmenbedingung veränderbar ist, kann eine konkrete sichere Anpassung eigenen Einfluss ermöglichen."
+        },
+        {
+          "strategyId": "dialogue",
+          "reason": "Wenn andere beteiligt sind und ein Gespräch sicher erscheint, kann ein Vorschlag gemeinsame Entscheidungen erleichtern."
+        }
+      ]
+    }
+  ]
+}
