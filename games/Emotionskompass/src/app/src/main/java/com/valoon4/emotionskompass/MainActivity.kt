@@ -292,7 +292,9 @@ private fun EmotionskompassApp(
     if (!unlocked) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background) {
-            Column(Modifier.fillMaxSize().padding(28.dp),
+            // With 200%+ Android text scaling the unlock action must remain
+            // reachable on small screens, in landscape and with TalkBack.
+            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(28.dp),
                 verticalArrangement = Arrangement.Center) {
                 Text("Emotionskompass ist gesperrt",
                     style = MaterialTheme.typography.headlineSmall,
