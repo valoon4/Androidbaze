@@ -3,6 +3,8 @@ package com.valoon4.emotionskompass.core.learning
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import java.time.LocalDate
+import java.util.Locale
+import kotlin.random.Random
 
 /** Only learning metadata, never journal notes or check-in text. */
 data class LearningState(
@@ -51,6 +53,15 @@ data class LearningQuiz(
     init {
         require(choices.size >= 2 && correctIndex in choices.indices)
         require(choices.distinct().size == choices.size)
+    }
+
+    /** Shuffle rendered choices without changing which answer is correct. */
+    fun shuffled(random: Random = Random.Default): LearningQuiz {
+        val order = choices.indices.shuffled(random)
+        return copy(
+            choices = order.map { choices[it] },
+            correctIndex = order.indexOf(correctIndex)
+        )
     }
 }
 
@@ -108,51 +119,107 @@ object LearningEngine {
                 })
         }
 
+    /**
+     * Editorial comparisons currently start with the answer name, e.g.
+     * "Bei Frustration ..." or "Sicherheit betont ...". Replace only that
+     * leading subject in both options; keep the original in the explanation
+     * shown after answering. If text cannot be safely neutralized, omit it.
+     */
+    private fun neutralComparisonText(
+        original: String,
+        name: String,
+        aliases: List<String>,
+        isEmotion: Boolean
+    ): String? {
+        val subject = if (isEmotion) "Gefühl" else "Bedürfnis"
+        val names = (listOf(name) + aliases).distinct().sortedByDescending { it.length }
+        for (label in names) {
+            val pattern = Regex(
+                "^(Bei\\s+)?" + Regex.escape(label) + "(?:en|n|s|e|er)?(?=\\s|[,.;:!?]|$)",
+                RegexOption.IGNORE_CASE
+            )
+            val match = pattern.find(original) ?: continue
+            val neutral = if (match.groupValues[1].isNotBlank()) {
+                "Bei diesem $subject"
+            } else {
+                "Dieses $subject"
+            }
+            return neutral + original.substring(match.range.last + 1)
+        }
+        return null
+    }
+
+    private fun revealsName(text: String, name: String): Boolean =
+        Regex(
+            "(?<!\\p{L})" + Regex.escape(name) + "(?:en|n|s|e|er)?(?!\\p{L})",
+            RegexOption.IGNORE_CASE
+        ).containsMatchIn(text)
+
+    /** Catalog definitions begin with "Das Bedürfnis ..." (a giveaway). */
+    private fun unbiasedNeedDescription(definition: String): String =
+        definition.removePrefix("Das Bedürfnis, ")
+            .removePrefix("Das Bedürfnis nach ")
+            .replaceFirstChar { it.titlecase(Locale.GERMAN) }
+
     fun quizzes(emotions: EmotionCatalog, needs: NeedCatalog): List<LearningQuiz> {
-        val emotionQuizzes = emotions.comparisons.mapIndexed { index, pair ->
+        val emotionQuizzes = emotions.comparisons.mapIndexedNotNull { index, pair ->
             val first = requireNotNull(emotions.find(pair.first))
             val second = requireNotNull(emotions.find(pair.second))
-            val reversed = index % 2 != 0
+            val firstChoice = neutralComparisonText(
+                pair.firstDistinction, first.name, first.synonyms, true
+            ) ?: return@mapIndexedNotNull null
+            val secondChoice = neutralComparisonText(
+                pair.secondDistinction, second.name, second.synonyms, true
+            ) ?: return@mapIndexedNotNull null
+            if (firstChoice == secondChoice || listOf(firstChoice, secondChoice).any {
+                    revealsName(it, first.name) || revealsName(it, second.name)
+                }) return@mapIndexedNotNull null
             LearningQuiz(
                 id = "ec:$index",
                 prompt = "Welche Beschreibung ist im Atlas eher ${first.name} zugeordnet, nicht ${second.name}?",
-                choices = if (reversed) listOf(pair.secondDistinction, pair.firstDistinction)
-                    else listOf(pair.firstDistinction, pair.secondDistinction),
-                correctIndex = if (reversed) 1 else 0,
+                choices = listOf(firstChoice, secondChoice),
+                correctIndex = 0,
                 explanation = "${pair.overlap} ${pair.firstDistinction} ${pair.secondDistinction}",
                 wordKey = "e:${pair.first}"
             )
         }
-        val needQuizzes = needs.comparisons.mapIndexed { index, pair ->
+        val needQuizzes = needs.comparisons.mapIndexedNotNull { index, pair ->
             val first = requireNotNull(needs.find(pair.first))
             val second = requireNotNull(needs.find(pair.second))
-            val reversed = index % 2 != 0
+            val firstChoice = neutralComparisonText(
+                pair.firstDistinction, first.name, first.synonyms, false
+            ) ?: return@mapIndexedNotNull null
+            val secondChoice = neutralComparisonText(
+                pair.secondDistinction, second.name, second.synonyms, false
+            ) ?: return@mapIndexedNotNull null
+            if (firstChoice == secondChoice || listOf(firstChoice, secondChoice).any {
+                    revealsName(it, first.name) || revealsName(it, second.name)
+                }) return@mapIndexedNotNull null
             LearningQuiz(
                 id = "nc:$index",
                 prompt = "Was kennzeichnet laut Atlas eher das Bedürfnis ${first.name} als ${second.name}?",
-                choices = if (reversed) listOf(pair.secondDistinction, pair.firstDistinction)
-                    else listOf(pair.firstDistinction, pair.secondDistinction),
-                correctIndex = if (reversed) 1 else 0,
+                choices = listOf(firstChoice, secondChoice),
+                correctIndex = 0,
                 explanation = "${pair.overlap} ${pair.firstDistinction} ${pair.secondDistinction}",
                 wordKey = "n:${pair.first}"
             )
         }
-        val strategyQuizzes = needs.needs.take(32).mapIndexed { index, need ->
-            val options = if (index % 2 == 0)
-                listOf(need.name, need.strategyExample)
-            else listOf(need.strategyExample, need.name)
+        val strategyQuizzes = needs.needs.take(32).mapIndexedNotNull { index, need ->
+            val meaning = unbiasedNeedDescription(need.definition)
+            val strategy = need.strategyExample
+            if (meaning == strategy || meaning.startsWith("Das Bedürfnis", true) ||
+                revealsName(meaning, need.name) || revealsName(strategy, need.name)
+            ) return@mapIndexedNotNull null
             LearningQuiz(
                 id = "strategy:$index",
-                prompt = "Was davon bezeichnet ein Bedürfnis und nicht eine mögliche Handlung?",
-                choices = options,
-                correctIndex = if (index % 2 == 0) 0 else 1,
-                explanation = "${need.name} ist hier das Bedürfnis. „${need.strategyExample}“ ist ein mögliches Vorgehen, kein universelles Rezept.",
+                prompt = "Welche Formulierung beschreibt eher ein allgemeines Bedürfnis als eine einzelne mögliche Handlung?",
+                choices = listOf(meaning, strategy),
+                correctIndex = 0,
+                explanation = "${need.name}: ${need.definition} „${need.strategyExample}“ ist dagegen eine mögliche Handlung, nicht die einzige Lösung.",
                 wordKey = "n:${need.id}"
             )
         }
-        return (emotionQuizzes + needQuizzes + strategyQuizzes).filter {
-            it.choices[0] != it.choices[1]
-        }
+        return emotionQuizzes + needQuizzes + strategyQuizzes
     }
 
     /** A small, voluntary mix of known words and under-reviewed favorites. */
