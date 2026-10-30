@@ -2,7 +2,7 @@
 
 **Stand:** 30.10.2026 · **Status:** fachlich vorsichtige redaktionelle Erstzuordnung, **keine unabhängige psychologische/klinische Begutachtung**.
 **Aktuelle Inhaltsgrundlage:** 82 redaktionelle Bedürfnisse, 30 bestehende Offline-Strategien.
-**Ergebnis:** 76 Bedürfnisse mit **143 ausdrücklich begründeten, bidirektionalen Querverweisen**; sechs bewusst ohne direkte Verknüpfung.
+**Ergebnis:** 76 Bedürfnisse mit **143 ausdrücklich begründeten, bidirektionalen Querverweisen**; sechs bewusst ohne direkte Verknüpfung. Die Bezüge verwenden **20 der 30 Strategiekarten**. Die übrigen acht allgemeinen Emotionsregulations-/Reflexionsverfahren müssen kein Bedürfnis direkt erfüllen; die zwei Musterkarten zur Vermeidung und Unterdrückung sind ausdrücklich keine Bedürfnisempfehlungen.
 
 ## Wozu die Verknüpfungen dienen
 
@@ -106,6 +106,12 @@ Die tatsächlichen *jeweiligen* Gründe sind in den acht Offline-Dateien `catalo
 | Lebendigkeit | Sanfte Bewegung wählen · Einen kleinen wertebezogenen Schritt wählen |
 | Unterstützung | Praktische Hilfe erbitten · Soziale Unterstützung suchen |
 | Offenheit | Bedürfnisse verständlich äußern · Ein schwieriges Gespräch klären |
+
+## Wichtige begriffliche Unterscheidung
+
+**„Akzeptanz“ als Bedürfnis** bedeutet im Katalog, von anderen Menschen grundsätzlich angenommen zu werden. **„Annehmen, was gerade ist“ als Strategie** meint dagegen, eigenes Erleben oder eine Tatsache anzuerkennen, ohne ihr zustimmen zu müssen. Diese Wörter klingen ähnlich, sind aber **keine gleichwertigen Handlungen**. Die neue Zuordnung verbindet das soziale Bedürfnis daher mit passenden Gesprächs- und Beistandsmöglichkeiten, **nicht** automatisch mit innerer Akzeptanz. Das wird auch im Bedürfnisdetail erklärt und im Fehler-Fallback geschützt.
+
+Die acht allgemeinen Regulationsstrategien ohne direkten Bedürfnislink – etwa Atemfokus, Neubewertung oder das Beobachten von Grübelschleifen – bleiben im Strategieatlas frei lesbar. Sie können das eigene Erleben begleiten, ersetzen aber keine konkrete äußere Bedürfnisversorgung. Dies ist eine **bewusste inhaltliche Grenze**, keine fehlende technische Verknüpfung.
 
 ## Bewusst ohne spezifische Empfehlung (6)
 
