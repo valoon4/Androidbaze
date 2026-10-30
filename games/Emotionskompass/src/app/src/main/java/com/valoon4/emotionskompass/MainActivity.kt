@@ -92,6 +92,7 @@ import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
 import com.valoon4.emotionskompass.core.learning.LearningRepository
@@ -110,6 +111,7 @@ import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
 import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
+import com.valoon4.emotionskompass.feature.strategies.StrategyAtlasScreen
 import java.time.LocalDate
 import kotlinx.coroutines.launch
 
@@ -151,8 +153,16 @@ class MainActivity : ComponentActivity() {
                         )
                     }.getOrNull()
                 }
+                val strategyCatalog = remember {
+                    runCatching {
+                        StrategyCatalog.fromJson(
+                            assets.open("catalog/strategies.de.v1.json")
+                                .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        )
+                    }.getOrNull()
+                }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -218,6 +228,7 @@ private fun EmotionskompassApp(
     lockPreferences: AppLockPreferences,
     learningRepository: LearningRepository,
     lessonCatalog: LessonCatalog?,
+    strategyCatalog: StrategyCatalog?,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -291,6 +302,8 @@ private fun EmotionskompassApp(
     val learning by learningVm.state.collectAsState()
     val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
+    var selectedStrategyId by rememberSaveable { mutableStateOf<String?>(null) }
+    var requestedKnowledgeArticleId by rememberSaveable { mutableStateOf<String?>(null) }
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
     val privateScreen = !unlocked || state.destination == Destination.CHECKIN ||
@@ -311,7 +324,9 @@ private fun EmotionskompassApp(
         else vm.closeCheckIn()
     }
     val requestBack: () -> Unit = {
-        if (state.destination == Destination.CHECKIN && checkIn.isFirstStep) {
+        if (state.destination == Destination.STRATEGIES && selectedStrategyId != null) {
+            selectedStrategyId = null
+        } else if (state.destination == Destination.CHECKIN && checkIn.isFirstStep) {
             requestDiscard()
         } else {
             vm.back()
@@ -469,10 +484,28 @@ private fun EmotionskompassApp(
                         catalog = lessonCatalog,
                         ui = learning,
                         onBookmark = learningVm::toggleArticleBookmark,
-                        onRead = learningVm::markArticleRead
+                        onRead = learningVm::markArticleRead,
+                        onStrategies = vm::openStrategies,
+                        requestedArticleId = requestedKnowledgeArticleId,
+                        onRequestConsumed = { requestedKnowledgeArticleId = null }
                     )
                 } else {
                     Text("Die Wissenswelt konnte nicht geladen werden. Dein Tagebuch und die anderen Bereiche bleiben verfügbar.",
+                        modifier = Modifier.padding(20.dp))
+                }
+                Destination.STRATEGIES -> if (strategyCatalog != null) {
+                    StrategyAtlasScreen(
+                        catalog = strategyCatalog,
+                        selectedId = selectedStrategyId,
+                        onSelect = { selectedStrategyId = it },
+                        onBackToList = { selectedStrategyId = null },
+                        onKnowledgeArticle = { articleId ->
+                            requestedKnowledgeArticleId = articleId
+                            vm.openKnowledgeWorld()
+                        }
+                    )
+                } else {
+                    Text("Der Strategieatlas konnte nicht geladen werden. Die übrigen Bereiche bleiben nutzbar.",
                         modifier = Modifier.padding(20.dp))
                 }
                 Destination.LEARNING -> LearningScreen(
