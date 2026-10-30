@@ -50,13 +50,17 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           script: |
-            cd games/Emotionskompass/src
+            # The emulator action executes each line in a fresh shell; use -p
+            # rather than cd, otherwise a different root Gradle app is tested.
             adb shell settings put system font_scale 1.0
-            gradle :app:connectedDebugAndroidTest --no-daemon --stacktrace
+            gradle -p games/Emotionskompass/src :app:connectedDebugAndroidTest --no-daemon --stacktrace
             adb shell wm size 720x1280
             adb shell wm density 360
             adb shell settings put system font_scale 2.0
-            gradle :app:connectedDebugAndroidTest --no-daemon --stacktrace --rerun-tasks
+            gradle -p games/Emotionskompass/src :app:connectedDebugAndroidTest --no-daemon --stacktrace --rerun-tasks
+            # Fail the run if the target project did not execute actual tests.
+            test -n "$(find games/Emotionskompass/src/app/build/outputs/androidTest-results/connected -name '*.xml' -print -quit)"
+            grep -R -q "StrategyNavigationEmulatorTest" games/Emotionskompass/src/app/build/outputs/androidTest-results/connected
       - name: Upload test report even on failure
         if: always()
         uses: actions/upload-artifact@v4
