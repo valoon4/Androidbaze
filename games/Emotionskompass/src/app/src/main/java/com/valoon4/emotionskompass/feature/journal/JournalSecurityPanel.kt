@@ -45,6 +45,7 @@ fun JournalSecurityPanel(
     var importPassword by remember { mutableStateOf("") }
     var pendingExport by remember { mutableStateOf("") }
     var pendingImport by remember { mutableStateOf<Uri?>(null) }
+    var pickerError by remember { mutableStateOf<String?>(null) }
 
     val exportPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/octet-stream")
@@ -53,17 +54,22 @@ fun JournalSecurityPanel(
         val secret = pendingExport
         pendingExport = ""
         if (uri != null && secret.isNotBlank()) onExport(uri, secret)
+        // The unchosen path never stores anything and the secret is forgotten.
     }
     val importPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
         onSystemPicker(false)
         if (uri != null) pendingImport = uri
+        else importPassword = ""
     }
 
     if (pendingImport != null) {
         AlertDialog(
-            onDismissRequest = { pendingImport = null },
+            onDismissRequest = {
+                pendingImport = null
+                importPassword = ""
+            },
             title = { Text("Tagebuch wirklich ersetzen?") },
             text = { Text("Die Sicherung wird nach Eingabe der Passphrase geprüft. Bei Erfolg werden ALLE momentan gespeicherten Tagebucheinträge durch die Einträge aus der Sicherung ersetzt. Bitte sichere den aktuellen Bestand vorher separat. Dieser Schritt kann nicht rückgängig gemacht werden.") },
             confirmButton = {
@@ -76,7 +82,10 @@ fun JournalSecurityPanel(
                 }) { Text("Nach Prüfung ersetzen") }
             },
             dismissButton = {
-                TextButton(onClick = { pendingImport = null }) { Text("Abbrechen") }
+                TextButton(onClick = {
+                    pendingImport = null
+                    importPassword = ""
+                }) { Text("Abbrechen") }
             }
         )
     }
@@ -87,6 +96,11 @@ fun JournalSecurityPanel(
             Text("Sicherheit & Datenkontrolle",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
+            if (pickerError != null) {
+                Text(pickerError!!,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error)
+            }
             Text("Das Tagebuch ist weiterhin gerätegebunden mit Android Keystore verschlüsselt. Eine zusätzliche Gerätesperren-Abfrage lässt sich freiwillig aktivieren.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -113,8 +127,17 @@ fun JournalSecurityPanel(
                     pendingExport = exportPassword
                     exportPassword = ""
                     exportConfirmation = ""
+                    pickerError = null
                     onSystemPicker(true)
-                    exportPicker.launch("Emotionskompass-Tagebuch.ekbackup")
+                    try {
+                        exportPicker.launch("Emotionskompass-Tagebuch.ekbackup")
+                    } catch (e: Exception) {
+                        // A missing/disabled document picker must never leave the
+                        // background relock bypass enabled indefinitely.
+                        onSystemPicker(false)
+                        pendingExport = ""
+                        pickerError = "Android konnte die Dateiauswahl nicht öffnen."
+                    }
                 }
             ) { Text("Verschlüsselte Sicherungsdatei speichern") }
             HorizontalDivider()
@@ -128,8 +151,15 @@ fun JournalSecurityPanel(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !busy && importPassword.isNotBlank(),
                 onClick = {
+                    pickerError = null
                     onSystemPicker(true)
-                    importPicker.launch(arrayOf("application/octet-stream", "application/zip", "*/*"))
+                    try {
+                        importPicker.launch(arrayOf("application/octet-stream", "application/zip", "*/*"))
+                    } catch (e: Exception) {
+                        onSystemPicker(false)
+                        importPassword = ""
+                        pickerError = "Android konnte die Dateiauswahl nicht öffnen."
+                    }
                 }
             ) { Text("Verschlüsselte Sicherungsdatei auswählen") }
             Text("Wichtig: Die Passphrase wird nicht gespeichert. Nur selbst gewählte Sicherungsdateien verlassen die App; es findet kein automatischer Cloud-Upload statt.",
