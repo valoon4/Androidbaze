@@ -1,6 +1,7 @@
 package com.valoon4.emotionskompass
 
 import androidx.compose.ui.test.assertExists
+import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasScrollToIndexAction
