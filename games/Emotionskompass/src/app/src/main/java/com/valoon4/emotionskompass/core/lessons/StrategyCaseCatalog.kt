@@ -35,8 +35,8 @@ class StrategyCaseCatalog private constructor(val cases: List<StrategyCase>) {
         val q = normalize(query.trim())
         return cases.filter { item ->
             (theme == null || item.theme == theme) &&
-                (q.isEmpty() || normalize(listOf(item.theme, item.scenario, item.prompt,
-                    item.reflection).joinToString(" ")).contains(q))
+                (q.isEmpty() || normalize((listOf(item.theme, item.scenario, item.prompt,
+                    item.reflection, item.feedback) + item.choices).joinToString(" ")).contains(q))
         }
     }
 
