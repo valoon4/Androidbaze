@@ -5,6 +5,11 @@
 ## 1. Produktziel
 Den bestehenden Gefühls-/Bedürfnisatlas, Check-in, das verschlüsselte Tagebuch und die Wissenswelt sinnvoll verbinden: Erfahrungen überblicken, nachvollziehbare Zusammenhänge untersuchen, eigene Erkenntnisse formulieren, freiwillig Strategien ausprobieren und erneut reflektieren. Keine Diagnostik, keine Glücks-/Gesundheitsnote, keine KI-Interpretation, kein Gamification-Druck. Alles offline.
 
+
+## Vorbedingung: Strategiewelt M6.3
+
+Vor der Umsetzung von M7.4 wird gemäß [M6.3-Strategiewelt-Konzept](M63_STRATEGIEWELT_KONZEPT.md) ein redaktionell geprüfter, offline verfügbarer Strategieatlas vorbereitet. M7.0–M7.3 können grundsätzlich unabhängig davon entwickelt werden; M7.4 verwendet später ausschließlich stabile, geprüfte Strategie-IDs und Links, keine automatischen Gefühl-→Bedürfnis-→Strategie-Deutungen. Der bisherige M7-Funktionsumfang und seine Sicherheits-/Merge-Gates bleiben unverändert. Der M6.3-Konzeptschritt umfasst ausdrücklich keine Android-Codeänderungen.
+
 ## 2. Funktionsumfang
 | ID | Umfang | Priorität | Akzeptanz |
 |---|---|---|---|
