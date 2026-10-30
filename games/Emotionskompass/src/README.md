@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M6.3.3
+# Emotionskompass – native Android-App M6.3.4
 
-**Version:** 0.6.3.3-m6.3.3 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.6.3.4-m6.3.4-quality · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -64,6 +64,13 @@ Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch 
 - Bedürfnisdetails zeigen nur ausdrücklich erfasste, harmlose Beispielstrategien; für fehlende Verknüpfungen wird nichts geraten.
 - Volltextsuche findet auch Grenzen, Fehlannahmen und Reflexionsfragen; Quellenlinks für Screenreader unterscheidbar beschriftet. Die fünf Hauptnavigationseinträge bleiben unverändert.
 - Ausführliche kritische Gegenüberstellung, Testmatrix und noch **nicht** abgeschlossene Geräte-/Fachprüfungen in `games/Emotionskompass/notes/M633_UX_QUALITAETSRUNDE.md`.
+
+### M6.3.4 – Qualitätsgates vor M7
+- 143 Bedürfnis-Strategie-Begründungen auf bedingte und nicht-therapeutische Aussagen geprüft; Abgrenzung der sozialen Akzeptanz vom inneren Selbstmitgefühl geschärft.
+- Strategie-Links in Bedürfnisdetails als eine gemeinsame, vorlesbare Klickkarte mit Erklärung; große Schrift und Bedienbarkeit der Merken- und Suchaktionen verbessert; semantische Artikelüberschriften.
+- Zusätzlich zu JVM-Regressionstests Android-Instrumentierungstests und Emulator-Workflow für normale und 200-%-Systemschrift bei ca. 320dp schmalem Bildschirm.
+- **Keine** unabhängige psychologische Fachfreigabe und **kein** echter TalkBack-Menschentest. Offene externe/manuelle Abnahmen stehen in `games/Emotionskompass/notes/M634_QUALITAETSGATES_VOR_M7.md`.
+- Separater Draft-PR; vor ausdrücklicher Freigabe kein Merge und kein Start von M7.
 
 ## Build und Tests
 

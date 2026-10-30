@@ -43,6 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.model.HumanNeed
@@ -208,13 +210,15 @@ private fun NeedAtlasPane(catalog: NeedCatalog, onNeed: (String) -> Unit) {
             }
         }
         item {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            // The count and reset action must never compete for horizontal room.
+            Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Text("${results.size} von ${catalog.needs.size} Begriffen",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 if (query.isNotBlank() || family != "Alle" || letter != "Alle") {
-                    TextButton(onClick = { query = ""; family = "Alle"; letter = "Alle" }) {
-                        Text("Zurücksetzen")
+                    TextButton(onClick = { query = ""; family = "Alle"; letter = "Alle" },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Suche und Filter zurücksetzen")
                     }
                 }
             }
@@ -266,15 +270,19 @@ private fun NeedDetailScreen(
             Text(need.family.uppercase(), style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
             Text(need.name, style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.semantics { heading() })
             Text(need.definition, style = MaterialTheme.typography.bodyLarge)
         }
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = onFavorite, enabled = canSave) {
+            // Vertical actions stay readable at Android font scale 200% on narrow phones.
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                OutlinedButton(onClick = onFavorite, enabled = canSave,
+                    modifier = Modifier.fillMaxWidth()) {
                     Text(if (favorite) "★ Gespeichert" else "☆ Merken")
                 }
-                TextButton(onClick = onSeen, enabled = canSave && !seen) {
+                TextButton(onClick = onSeen, enabled = canSave && !seen,
+                    modifier = Modifier.fillMaxWidth()) {
                     Text(if (seen) "✓ Entdeckt" else "Als entdeckt markieren")
                 }
             }
@@ -302,6 +310,7 @@ private fun NeedDetailScreen(
         item {
             Text("Mögliche Wege für dieses Bedürfnis",
                 style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.semantics { heading() },
                 fontWeight = FontWeight.SemiBold)
             Text("Redaktionell ausgewählte Beispiele, keine Empfehlung für deine persönliche Situation. Entscheidend ist, ob der Weg für dich sicher und passend erscheint.",
                 style = MaterialTheme.typography.bodySmall,
@@ -314,16 +323,23 @@ private fun NeedDetailScreen(
         }
         if (relevantOptions.isNotEmpty()) {
             items(relevantOptions, key = { "strategy-${it.strategy.id}" }) { option ->
-                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    OutlinedButton(onClick = { onStrategy(option.strategy.id) },
-                        modifier = Modifier.fillMaxWidth()) {
-                        Text(option.strategy.title)
+                // One click target and one screen-reader focus for title + reason.
+                Card(onClick = { onStrategy(option.strategy.id) },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(option.strategy.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold)
+                        if (option.reason.isNotBlank()) Text(
+                            option.reason,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text("Strategie ansehen",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary)
                     }
-                    if (option.reason.isNotBlank()) Text(
-                        option.reason,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
             }
         } else if (strategyCatalog != null) {

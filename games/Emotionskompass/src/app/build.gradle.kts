@@ -12,8 +12,8 @@ android {
         applicationId = "com.valoon4.emotionskompass"
         minSdk = 26
         targetSdk = 35
-        versionCode = 18
-        versionName = "0.6.3.3-m6.3.3"
+        versionCode = 19
+        versionName = "0.6.3.4-m6.3.4-quality"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -53,4 +53,11 @@ dependencies {
 
     debugImplementation(libs.compose.tooling)
     testImplementation(libs.junit)
+
+    // Emulator-backed Compose navigation and accessibility smoke tests.
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
