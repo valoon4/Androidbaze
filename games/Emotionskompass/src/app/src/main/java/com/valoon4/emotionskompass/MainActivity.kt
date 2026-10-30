@@ -599,8 +599,14 @@ private fun EmotionskompassApp(
                                         onFavorite = learningVm::toggleFavorite,
                                         onSeen = learningVm::markSeen,
                                         strategyCatalog = strategyCatalog,
-                                        onStrategy = { openStrategy(it, "need") },
-                                        onOpenStrategyAtlas = openStrategyOverview,
+                                        onStrategy = {
+                                            needReturnToStrategy = false
+                                            openStrategy(it, "need")
+                                        },
+                                        onOpenStrategyAtlas = {
+                                            needReturnToStrategy = false
+                                            openStrategyOverview()
+                                        },
                                         requestedNeedId = requestedNeedId,
                                         onRequestConsumed = { requestedNeedId = null },
                                         onReturnToStrategy = if (needReturnToStrategy) {
