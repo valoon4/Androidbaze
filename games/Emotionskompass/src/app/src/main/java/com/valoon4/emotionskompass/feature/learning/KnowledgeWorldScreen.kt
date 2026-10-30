@@ -205,14 +205,14 @@ fun KnowledgeWorldScreen(
             Text("Redaktionelle Lerntexte, keine medizinische Diagnose oder Therapie. Die folgenden Quellen öffnen sich nur auf deinen Wunsch im externen Browser.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-            article.sources.forEach { url ->
+            article.sources.forEachIndexed { index, url ->
                 TextButton(onClick = {
                     try {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     } catch (_: Exception) {
                         externalError = true
                     }
-                }) { Text(sourceLabel(url)) }
+                }) { Text("${index + 1}. " + sourceLabel(url)) }
             }
             if (externalError) Text("Kein externer Browser verfügbar. Du kannst den Artikel weiterhin offline lesen.",
                 color = MaterialTheme.colorScheme.error,
@@ -282,8 +282,9 @@ fun KnowledgeWorldScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(listOf("Start", "Artikel", "Lernreihen", "Merkliste") +
-                    (if (caseCatalog != null) listOf("Praxisfälle") else emptyList())) { option ->
+                items(listOf("Start", "Artikel") +
+                    (if (caseCatalog != null) listOf("Praxisfälle") else emptyList()) +
+                    listOf("Lernreihen", "Merkliste")) { option ->
                     FilterChip(selected = mode == option, onClick = { mode = option },
                         label = { Text(option) })
                 }
@@ -463,5 +464,15 @@ private fun sourceLabel(url: String): String = when (url) {
         "Praxisansatz: GFK-Kurzübersicht – BayNVC"
     "https://www.cnvc.org/certification/cpp/preparation/" ->
         "Praxisansatz: GFK-Lernmaterial – CNVC"
-    else -> "Externe Vertiefungsquelle"
+    "https://pubmed.ncbi.nlm.nih.gov/26173226/" ->
+        "Wissenschaft: Bonanno & Burton – Regulationsflexibilität (2013)"
+    "https://pubmed.ncbi.nlm.nih.gov/12696840/" ->
+        "Wissenschaft: Skinner et al. – Coping-Klassifikationen (2003)"
+    "https://pubmed.ncbi.nlm.nih.gov/24145331/" ->
+        "Wissenschaft: Troy et al. – Neubewertung und Kontext (2013)"
+    "https://doi.org/10.1080/1047840X.2014.940781" ->
+        "Wissenschaft: Gross – Emotionsregulation (2015)"
+    "https://www.paho.org/en/documents/doing-what-matters-times-stress-illustrated-guide" ->
+        "Praxisleitfaden: WHO/PAHO – Umgang mit Stress"
+    else -> "Externe Quelle auf " + (Uri.parse(url).host ?: "unbekannter Website")
 }
