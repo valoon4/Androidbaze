@@ -76,7 +76,11 @@ fun CheckInScreen(
     onNext: () -> Unit,
     onPrevious: () -> Unit,
     onRestart: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onSave: () -> Unit,
+    saveBusy: Boolean,
+    saveError: String?,
+    isEditing: Boolean
 ) {
     // Search and family are UI-only, also intentionally not saveable into Android instance state.
     var query by remember { mutableStateOf("") }
@@ -193,7 +197,7 @@ fun CheckInScreen(
                     horizontalArrangement = Arrangement.spacedBy(9.dp)) {
                     Icon(Icons.Outlined.Lock, contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary)
-                    Text("Nur für diesen Check-in: Beim Beenden werden deine Angaben verworfen.",
+                    Text("Deine Angaben bleiben zunächst privat und ungespeichert. Nur wenn du am Ende ausdrücklich speicherst, kommen sie ins verschlüsselte Tagebuch.",
                         style = MaterialTheme.typography.bodySmall)
                 }
             }
@@ -465,7 +469,7 @@ fun CheckInScreen(
                         minLines = 3,
                         maxLines = 6,
                         supportingText = {
-                            Text("${draft.note.length} von ${CheckInDraft.MAX_NOTE_LENGTH} Zeichen · wird nicht gespeichert")
+                            Text("${draft.note.length} von ${CheckInDraft.MAX_NOTE_LENGTH} Zeichen · Speicherung nur nach Bestätigung")
                         }
                     )
                 }
@@ -580,7 +584,7 @@ fun CheckInScreen(
                 item {
                     Text("Mehrere Gefühle können zugleich wahr sein. Du musst daraus jetzt nichts ableiten oder verändern.",
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Deine selbst formulierten Erkenntnisse und Ideen werden nicht gespeichert oder automatisch ins Tagebuch übernommen.",
+                    Text("Nur wenn du unten ausdrücklich speicherst, wird diese Momentaufnahme verschlüsselt im lokalen Tagebuch abgelegt.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -591,6 +595,25 @@ fun CheckInScreen(
             HorizontalDivider()
             if (stage == CheckInStep.AUSKLANG) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (saveError != null) {
+                        Text(saveError,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                    Button(
+                        onClick = onSave,
+                        enabled = !saveBusy && draft.hasPersonalInput,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(when {
+                            saveBusy -> "Verschlüsselt speichern …"
+                            isEditing -> "Änderungen sicher speichern"
+                            else -> "Im geschützten Tagebuch speichern"
+                        })
+                    }
+                    Text("Speichern ist freiwillig. Du kannst stattdessen jederzeit verwerfen.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Button(onClick = {
                         query = ""
                         family = "Alle"
@@ -600,7 +623,8 @@ fun CheckInScreen(
                     }, modifier = Modifier.fillMaxWidth()) {
                         Text("Neuen Check-in beginnen")
                     }
-                    OutlinedButton(onClick = onClose, modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(onClick = onClose,
+                        enabled = !saveBusy, modifier = Modifier.fillMaxWidth()) {
                         Text("Beenden und Angaben verwerfen")
                     }
                 }

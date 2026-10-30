@@ -84,6 +84,7 @@ import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
@@ -92,11 +93,12 @@ import com.valoon4.emotionskompass.core.navigation.MainSection
 import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
+import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import kotlinx.coroutines.launch
 
 /**
- * M3: Native offline emotions atlas and ephemeral guided check-in.
- * No personal reflection is persisted; protected journaling follows in M4-M5.
+ * M4: Native offline emotions/needs atlas and explicitly saved AES-GCM journal.
+ * Data stays on device; security review and backup/export are separate release gates.
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,8 +121,9 @@ class MainActivity : ComponentActivity() {
                             .bufferedReader(Charsets.UTF_8).use { it.readText() }
                     )
                 }
+                val journal = remember { EncryptedJournalRepository(applicationContext) }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -146,7 +149,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
                 Spacer(Modifier.height(15.dp))
                 FeatureLine(Icons.Outlined.MenuBook, "Gefühle und Bedürfnisse kennenlernen", "Begriffe, Unterschiede und Beispiele entdecken.")
                 FeatureLine(Icons.Outlined.FavoriteBorder, "Dich selbst verstehen", "Gefühle und Erlebnisse achtsam reflektieren.")
-                FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Keine Tagebucheinträge. Nur die Einführung wird gespeichert.")
+                FeatureLine(Icons.Outlined.Lock, "Privat und ohne Konto", "Check-ins werden nur nach ausdrücklicher Zustimmung verschlüsselt gespeichert.")
             }
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Keine Diagnosen, keine Bewertungen. Du entscheidest, welche Worte zu dir passen.",
@@ -182,21 +185,26 @@ private fun FeatureLine(icon: ImageVector, title: String, subtitle: String) {
 private fun EmotionskompassApp(
     catalog: EmotionCatalog,
     needCatalog: NeedCatalog,
+    journal: EncryptedJournalRepository,
     hostActivity: ComponentActivity,
-    vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog, needCatalog))
+    vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog, needCatalog, journal))
 ) {
     val state by vm.state.collectAsState()
     val filters by vm.filters.collectAsState()
     val checkIn by vm.checkIn.collectAsState()
+    val diary by vm.journalState.collectAsState()
+    val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
-    DisposableEffect(hostActivity, state.destination) {
-        if (state.destination == Destination.CHECKIN) {
+    val privateScreen = state.destination == Destination.CHECKIN ||
+        (state.destination == Destination.MAIN && state.section == MainSection.TAGEBUCH)
+    DisposableEffect(hostActivity, privateScreen) {
+        if (privateScreen) {
             hostActivity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
         onDispose {
-            if (state.destination == Destination.CHECKIN) {
+            if (privateScreen) {
                 hostActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
             }
         }
@@ -282,11 +290,15 @@ private fun EmotionskompassApp(
                         onClear = vm::clearFilters
                     )
                     MainSection.BEDUERFNISSE -> NeedsScreen(needCatalog)
-                    MainSection.TAGEBUCH -> ComingSoonScreen(
-                        icon = Icons.Outlined.NoteAlt,
-                        title = "Dein Tagebuch",
-                        subtitle = "Hier kannst du später deine Erfahrungen und mehrere Gefühle je Eintrag sicher festhalten.",
-                        milestone = "Geplant für M4"
+                    MainSection.TAGEBUCH -> JournalScreen(
+                        state = diary,
+                        emotions = catalog,
+                        needs = needCatalog,
+                        onStart = { vm.openCheckin() },
+                        onEdit = vm::editJournalEntry,
+                        onDelete = vm::deleteJournalEntry,
+                        onDeleteAll = vm::deleteEntireJournal,
+                        onReload = vm::reloadJournal
                     )
                     MainSection.RUECKBLICK -> ComingSoonScreen(
                         icon = Icons.Outlined.Insights,
@@ -333,7 +345,11 @@ private fun EmotionskompassApp(
                     onNext = vm::nextCheckInStep,
                     onPrevious = vm::previousCheckInStep,
                     onRestart = vm::restartCheckIn,
-                    onClose = requestDiscard
+                    onClose = requestDiscard,
+                    onSave = vm::saveCheckIn,
+                    saveBusy = diary.busy,
+                    saveError = diary.error,
+                    isEditing = editingId != null
                 )
                 Destination.SETTINGS -> SettingsScreen(catalog, needCatalog)
             }
@@ -435,7 +451,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M3.3 · $termsCount Gefühlswörter und $needsCount Bedürfnisbegriffe offline entdecken.",
+        Text("M4 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe und dein geschütztes Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -1083,14 +1099,14 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M3.3 · Bedürfnisatlas, Bedürfniskompass und Gefühlsnavigator", style = MaterialTheme.typography.titleMedium,
+        Text("M4 · Verschlüsseltes Reflexionstagebuch", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
-        Text("Der offline verfügbare Gefühlsatlas umfasst ${catalog.emotions.size} Begriffe. Neu: ${needs.needs.size} Bedürfnisbegriffe, ${needs.comparisons.size} Vergleiche und ${needs.learningPaths.size} Lernpfade. Alle Inhalte sind redaktionelle Lernhilfen, keine wissenschaftlich abschließende Taxonomie. Check-in und Bedürfniskompass speichern keine persönlichen Angaben dauerhaft; weiterhin bleibt nur der Abschluss der Einführung gespeichert. Ein geschütztes Tagebuch folgt mit M4.",
+        Text("Der Gefühlsatlas enthält ${catalog.emotions.size} Begriffe, der Bedürfnisatlas ${needs.needs.size}. Der Check-in kann ab M4 nur auf ausdrücklichen Wunsch verschlüsselt im lokalen Tagebuch gespeichert, bearbeitet und gelöscht werden. Der Schlüssel liegt im Android Keystore. Kein Account und keine Cloud; App-Daten und Schlüssel sind nicht wiederherstellbar, wenn du das Gerät wechselst oder die App-Daten löschst. Der Bedürfniskompass bleibt flüchtig.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.3.3-m3.3", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.4.0-m4", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
