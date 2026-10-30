@@ -51,6 +51,8 @@ import com.valoon4.emotionskompass.core.model.NeedComparison
 import com.valoon4.emotionskompass.core.model.NeedLearningPath
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyOption
 
 /** Offline educational reference; all browsing state stays in memory. */
 @Composable
@@ -62,6 +64,7 @@ fun NeedsScreen(
     onFavorite: (String) -> Unit = {},
     onSeen: (String) -> Unit = {},
     strategyCatalog: StrategyCatalog? = null,
+    needStrategyLinks: NeedStrategyLinkIndex? = null,
     onStrategy: (String) -> Unit = {},
     onOpenStrategyAtlas: () -> Unit = {},
     requestedNeedId: String? = null,
@@ -113,6 +116,7 @@ fun NeedsScreen(
                 onRelated = { detailId = it },
                 backLabel = if (onReturnToStrategy != null) "Zur Strategie" else "Zum Bedürfnisatlas",
                 strategyCatalog = strategyCatalog,
+                needStrategyLinks = needStrategyLinks,
                 onStrategy = onStrategy,
                 onOpenStrategyAtlas = onOpenStrategyAtlas,
                 favorite = "n:${need.id}" in favorites,
@@ -243,6 +247,7 @@ private fun NeedDetailScreen(
     onRelated: (String) -> Unit,
     backLabel: String,
     strategyCatalog: StrategyCatalog?,
+    needStrategyLinks: NeedStrategyLinkIndex?,
     onStrategy: (String) -> Unit,
     onOpenStrategyAtlas: () -> Unit,
     favorite: Boolean,
@@ -279,33 +284,50 @@ private fun NeedDetailScreen(
         item {
             NeedInfoCard("Zum Nachdenken", need.reflectionQuestion)
             Spacer(Modifier.size(12.dp))
-            NeedInfoCard("Eine mögliche Strategie – nicht das Bedürfnis selbst",
+            NeedInfoCard("Ein Alltagsbeispiel – kein festes Rezept",
                 need.strategyExample)
             Text("Es gibt viele mögliche Wege, ein Bedürfnis zu berücksichtigen. Du entscheidest, welcher zu dir passt.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        val relevantStrategies = strategyCatalog?.let {
-            StrategyLearningIndex.strategiesForNeed(need.id, it)
+        // Prefer the reviewed manual index. If an optional asset is corrupted,
+        // keep the original 8-ID links rather than affecting the needs atlas.
+        val relevantOptions = strategyCatalog?.let { strategyBook ->
+            needStrategyLinks?.optionsForNeed(need.id, strategyBook)
+                ?: StrategyLearningIndex.strategiesForNeed(need.id, strategyBook)
+                    .map { NeedStrategyOption(it, "") }
         }.orEmpty()
         item {
-            Text("Mögliche Wege im Strategieatlas", style = MaterialTheme.typography.titleMedium,
+            Text("Mögliche Wege für dieses Bedürfnis",
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
-            Text("Diese redaktionell verknüpften Beispiele sind keine persönliche Empfehlung. Ein Bedürfnis kann auf ganz unterschiedliche Weise berücksichtigt werden.",
+            Text("Redaktionell ausgewählte Beispiele, keine Empfehlung für deine persönliche Situation. Entscheidend ist, ob der Weg für dich sicher und passend erscheint.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        if (relevantStrategies.isNotEmpty()) {
-            items(relevantStrategies, key = { "strategy-${it.id}" }) { strategy ->
-                OutlinedButton(onClick = { onStrategy(strategy.id) },
-                    modifier = Modifier.fillMaxWidth()) {
-                    Text(strategy.title)
+        if (relevantOptions.isNotEmpty()) {
+            items(relevantOptions, key = { "strategy-${it.strategy.id}" }) { option ->
+                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                    OutlinedButton(onClick = { onStrategy(option.strategy.id) },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text(option.strategy.title)
+                    }
+                    if (option.reason.isNotBlank()) Text(
+                        option.reason,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         } else if (strategyCatalog != null) {
             item {
-                Text("Es gibt keine feste Zuordnung: Auch dieses Bedürfnis kann auf unterschiedlichen Wegen berücksichtigt werden.",
-                    style = MaterialTheme.typography.bodySmall,
+                val emptyNote = when (need.id) {
+                    "schlaf", "gesundheit", "naehrung" ->
+                        "Dafür gibt es im aktuellen Strategieatlas keine ausreichend spezifische Karte. Ruhe- oder Gedankenübungen ersetzen keine körperliche Versorgung oder nötige medizinische Hilfe."
+                    else ->
+                        "Für dieses Bedürfnis ist im aktuellen Atlas noch kein ausreichend konkreter Bezug beschrieben. Du musst deshalb nichts aus den vorhandenen Strategien auswählen."
+                }
+                Text(emptyNote, style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
