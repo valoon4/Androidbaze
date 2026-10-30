@@ -126,6 +126,7 @@ object LearningProgressFormat {
     private const val MAX_KEYS = 5000
     private val allowedKey = Regex("^[en]:[a-z0-9_-]{1,100}$")
     private val allowedStation = Regex("^[en]:[a-z0-9_-]{1,100}/[en]:[a-z0-9_-]{1,100}$")
+    private val allowedArticle = Regex("^[a-z0-9-]{3,70}$")
 
     fun encode(state: LearningState): ByteArray {
         validate(state)
@@ -145,6 +146,12 @@ object LearningProgressFormat {
             put("stations", buildJsonArray {
                 state.completedStations.sorted().forEach { add(JsonPrimitive(it)) }
             })
+            put("articleBookmarks", buildJsonArray {
+                state.articleBookmarks.sorted().forEach { add(JsonPrimitive(it)) }
+            })
+            put("readArticles", buildJsonArray {
+                state.readArticles.sorted().forEach { add(JsonPrimitive(it)) }
+            })
         }
         return json.toString().toByteArray(Charsets.UTF_8).also {
             require(it.size <= LearningRepository.MAX_BYTES)
@@ -157,13 +164,18 @@ object LearningProgressFormat {
         require(obj.getValue("version").jsonPrimitive.int == VERSION) { "Unbekannte Lernstand-Version" }
         fun values(key: String) = obj.getValue(key).jsonArray
             .map { it.jsonPrimitive.content }.toSet()
+        // These fields are optional to preserve pre-M6.2 encrypted learning files.
+        fun optionalValues(key: String) = obj[key]?.jsonArray
+            ?.map { it.jsonPrimitive.content }?.toSet() ?: emptySet()
         val state = LearningState(
             favorites = values("favorites"),
             seen = values("seen"),
             reviewCounts = obj.getValue("reviews").jsonObject.mapValues {
                 it.value.jsonPrimitive.int
             },
-            completedStations = values("stations")
+            completedStations = values("stations"),
+            articleBookmarks = optionalValues("articleBookmarks"),
+            readArticles = optionalValues("readArticles")
         )
         validate(state)
         return state
@@ -171,11 +183,14 @@ object LearningProgressFormat {
 
     private fun validate(state: LearningState) {
         require(state.favorites.size <= MAX_KEYS && state.seen.size <= MAX_KEYS &&
-            state.reviewCounts.size <= MAX_KEYS && state.completedStations.size <= MAX_KEYS)
+            state.reviewCounts.size <= MAX_KEYS && state.completedStations.size <= MAX_KEYS &&
+            state.articleBookmarks.size <= MAX_KEYS && state.readArticles.size <= MAX_KEYS)
         require(state.favorites.all(allowedKey::matches))
         require(state.seen.all(allowedKey::matches))
         require(state.reviewCounts.keys.all(allowedKey::matches))
         require(state.reviewCounts.values.all { it in 1..10000 })
         require(state.completedStations.all(allowedStation::matches))
+        require(state.articleBookmarks.all(allowedArticle::matches))
+        require(state.readArticles.all(allowedArticle::matches))
     }
 }
