@@ -32,8 +32,7 @@ object BoundedJournalInput {
             return output.toByteArray()
         } finally {
             buffer.fill(0)
-            // Avoid retaining an extra copy of private ciphertext in a reusable stream.
-            output.reset()
+            // The output stream is local to this call and becomes unreachable.
         }
     }
 }
