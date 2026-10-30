@@ -1,9 +1,14 @@
 package com.valoon4.emotionskompass
 
+import android.app.Activity
+import android.app.KeyguardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
@@ -77,6 +82,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.valoon4.emotionskompass.core.designsystem.EmotionskompassTheme
 import com.valoon4.emotionskompass.core.model.Emotion
@@ -84,6 +91,7 @@ import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.core.journal.AppLockPreferences
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
@@ -122,8 +130,9 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
+                val lockPreferences = remember { AppLockPreferences(applicationContext) }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -186,9 +195,68 @@ private fun EmotionskompassApp(
     catalog: EmotionCatalog,
     needCatalog: NeedCatalog,
     journal: EncryptedJournalRepository,
+    lockPreferences: AppLockPreferences,
     hostActivity: ComponentActivity,
-    vm: AppViewModel = viewModel(factory = AppViewModel.factory(catalog, needCatalog, journal))
+    vm: AppViewModel = viewModel(
+        factory = AppViewModel.factory(
+            catalog, needCatalog, journal, hostActivity.contentResolver,
+            lockPreferences.enabled
+        )
+    )
 ) {
+    val unlocked by vm.unlocked.collectAsState()
+    val lockEnabled by vm.lockEnabled.collectAsState()
+    var credentialError by remember { mutableStateOf<String?>(null) }
+    var requestedAction by remember { mutableStateOf("unlock") }
+    val credentialLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            try {
+                when (requestedAction) {
+                    "enable" -> {
+                        lockPreferences.setEnabled(true)
+                        vm.setLockEnabled(true)
+                    }
+                    "disable" -> {
+                        lockPreferences.setEnabled(false)
+                        vm.setLockEnabled(false)
+                    }
+                }
+                vm.unlockJournal()
+                credentialError = null
+            } catch (e: Exception) {
+                credentialError = e.message ?: "Gerätesperre konnte nicht geändert werden."
+            }
+        } else {
+            credentialError = "Gerätebestätigung abgebrochen. Die bisherige Einstellung bleibt erhalten."
+        }
+        requestedAction = "unlock"
+    }
+    val requestCredential: (String) -> Unit = { action ->
+        val manager = hostActivity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (!manager.isDeviceSecure) {
+            credentialError = "Richte zuerst unter Android-Einstellungen eine Geräte-PIN, ein Muster oder ein Passwort ein."
+        } else {
+            val intent = manager.createConfirmDeviceCredentialIntent(
+                "Emotionskompass entsperren", "Bestätige die Geräteanmeldung zum Schutz deines Tagebuchs."
+            )
+            if (intent == null) {
+                credentialError = "Android konnte keine Gerätebestätigung öffnen."
+            } else {
+                requestedAction = action
+                credentialError = null
+                credentialLauncher.launch(intent)
+            }
+        }
+    }
+    DisposableEffect(hostActivity, vm) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) vm.onAppBackgrounded()
+        }
+        hostActivity.lifecycle.addObserver(observer)
+        onDispose { hostActivity.lifecycle.removeObserver(observer) }
+    }
     val state by vm.state.collectAsState()
     val filters by vm.filters.collectAsState()
     val checkIn by vm.checkIn.collectAsState()
@@ -197,7 +265,7 @@ private fun EmotionskompassApp(
     var confirmDiscard by remember { mutableStateOf(false) }
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
-    val privateScreen = state.destination == Destination.CHECKIN ||
+    val privateScreen = !unlocked || state.destination == Destination.CHECKIN ||
         (state.destination == Destination.MAIN && state.section == MainSection.TAGEBUCH)
     DisposableEffect(hostActivity, privateScreen) {
         if (privateScreen) {
@@ -220,6 +288,29 @@ private fun EmotionskompassApp(
         } else {
             vm.back()
         }
+    }
+    if (!unlocked) {
+        Surface(modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background) {
+            Column(Modifier.fillMaxSize().padding(28.dp),
+                verticalArrangement = Arrangement.Center) {
+                Text("Emotionskompass ist gesperrt",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(16.dp))
+                Text("Bestätige deine Geräte-PIN, dein Muster oder Passwort. Deine Tagebucheinträge werden erst danach aus der verschlüsselten Datei geladen.")
+                Spacer(Modifier.height(20.dp))
+                if (credentialError != null) {
+                    Text(credentialError!!, color = MaterialTheme.colorScheme.error)
+                    Spacer(Modifier.height(12.dp))
+                }
+                Button(onClick = { requestCredential("unlock") },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text("Mit Android-Gerätesperre entsperren")
+                }
+            }
+        }
+        return
     }
     BackHandler(enabled = state.destination != Destination.MAIN) { requestBack() }
     Scaffold(
@@ -298,7 +389,14 @@ private fun EmotionskompassApp(
                         onEdit = vm::editJournalEntry,
                         onDelete = vm::deleteJournalEntry,
                         onDeleteAll = vm::deleteEntireJournal,
-                        onReload = vm::reloadJournal
+                        onReload = vm::reloadJournal,
+                        lockEnabled = lockEnabled,
+                        onToggleLock = {
+                            requestCredential(if (lockEnabled) "disable" else "enable")
+                        },
+                        onExport = vm::exportJournal,
+                        onImport = vm::importJournal,
+                        onSystemPicker = vm::setSystemPickerInProgress
                     )
                     MainSection.RUECKBLICK -> ComingSoonScreen(
                         icon = Icons.Outlined.Insights,
