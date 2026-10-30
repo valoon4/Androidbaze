@@ -2,6 +2,7 @@ package com.valoon4.emotionskompass.core.lessons
 
 import java.time.LocalDate
 import java.util.Locale
+import java.text.Normalizer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -17,6 +18,19 @@ enum class LessonTopic(val label: String) {
 
 data class LessonSection(val title: String, val text: String)
 
+data class LessonCheck(
+    val prompt: String,
+    val choices: List<String>,
+    val correctIndex: Int,
+    val explanation: String
+) {
+    init {
+        require(prompt.length >= 20 && choices.size == 2)
+        require(choices.all { it.length >= 20 } && choices.distinct().size == 2)
+        require(correctIndex in choices.indices && explanation.length >= 40)
+    }
+}
+
 data class KnowledgeLesson(
     val id: String,
     val topic: LessonTopic,
@@ -26,9 +40,12 @@ data class KnowledgeLesson(
     val example: String,
     val takeaway: String,
     val reflection: String,
-    val sources: List<String>
+    val sources: List<String>,
+    val learningGoal: String,
+    val commonMistake: String,
+    val check: LessonCheck
 ) {
-    val allText: String get() = (listOf(title, lead, example, takeaway) +
+    val allText: String get() = (listOf(title, lead, example, takeaway, learningGoal, commonMistake) +
         sections.flatMap { listOf(it.title, it.text) }).joinToString(" ")
     val readingMinutes: Int get() = ((allText.split(Regex("\\s+")).size + 149) / 150).coerceAtLeast(2)
 }
@@ -48,18 +65,32 @@ class LessonCatalog private constructor(
 ) {
     private val byId = lessons.associateBy { it.id }
     fun find(id: String): KnowledgeLesson? = byId[id]
+
+    /** Suggest the next unread article, but never lock earlier or later chapters. */
+    fun continueAt(path: LessonSeries, read: Set<String>): KnowledgeLesson? =
+        path.lessonIds.firstOrNull { it !in read }?.let(byId::get)
+
+    fun continueSeries(read: Set<String>): LessonSeries? =
+        series.firstOrNull { path ->
+            path.lessonIds.any { it in read } && path.lessonIds.any { it !in read }
+        } ?: series.firstOrNull { path -> path.lessonIds.any { it !in read } }
     fun within(series: LessonSeries): List<KnowledgeLesson> = series.lessonIds.mapNotNull(byId::get)
 
     fun browse(query: String = "", topic: LessonTopic? = null): List<KnowledgeLesson> {
-        val q = query.trim().lowercase(Locale.GERMAN)
+        val q = normalized(query.trim())
         return lessons.filter { (topic == null || it.topic == topic) &&
-            (q.isBlank() || it.allText.lowercase(Locale.GERMAN).contains(q)) }
+            (q.isBlank() || normalized(it.allText).contains(q)) }
     }
 
     fun daily(day: LocalDate): KnowledgeLesson =
         lessons[Math.floorMod(day.toEpochDay(), lessons.size.toLong()).toInt()]
 
     companion object {
+        private fun normalized(value: String): String =
+            Normalizer.normalize(value.lowercase(Locale.GERMAN)
+                .replace("ß", "ss"), Normalizer.Form.NFD)
+                .replace(Regex("\\p{M}+"), "")
+
         private val validId = Regex("^[a-z0-9-]{3,70}$")
         fun fromJson(source: String): LessonCatalog {
             val obj = Json.parseToJsonElement(source).jsonObject
@@ -86,7 +117,7 @@ class LessonCatalog private constructor(
                     sources = e.getValue("sources").jsonArray.map { it.jsonPrimitive.content }
                 )
             }
-            require(lessons.size == 20) { "M6.2 requires 20 curated lessons" }
+            require(lessons.isNotEmpty() && lessons.size <= 200)
             require(lessons.map { it.id }.distinct().size == lessons.size)
             require(lessons.all { lesson ->
                 validId.matches(lesson.id) && lesson.title.isNotBlank() &&
@@ -94,10 +125,11 @@ class LessonCatalog private constructor(
                 lesson.sections.all { it.title.isNotBlank() && it.text.length >= 100 } &&
                 lesson.example.length >= 60 && lesson.takeaway.length >= 40 &&
                 lesson.reflection.length >= 20 &&
+                lesson.learningGoal.length >= 25 && lesson.commonMistake.length >= 25 &&
                 lesson.sources.isNotEmpty() && lesson.sources.all { it.startsWith("https://") }
             })
             require(LessonTopic.entries.all { topic ->
-                lessons.count { it.topic == topic } == 5
+                lessons.any { it.topic == topic }
             })
             val paths = obj.getValue("series").jsonArray.map { item ->
                 val e = item.jsonObject
@@ -109,10 +141,10 @@ class LessonCatalog private constructor(
                 )
             }
             val ids = lessons.map { it.id }.toSet()
-            require(paths.size == 4 && paths.map { it.id }.distinct().size == paths.size)
+            require(paths.isNotEmpty() && paths.map { it.id }.distinct().size == paths.size)
             require(paths.all { path ->
                 validId.matches(path.id) && path.title.isNotBlank() &&
-                path.description.isNotBlank() && path.lessonIds.size == 5 &&
+                path.description.isNotBlank() && path.lessonIds.isNotEmpty() &&
                 path.lessonIds.distinct().size == 5 && path.lessonIds.all { it in ids }
             })
             require(paths.flatMap { it.lessonIds }.toSet() == ids)
