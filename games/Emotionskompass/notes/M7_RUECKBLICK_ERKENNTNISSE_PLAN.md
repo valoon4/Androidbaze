@@ -1,6 +1,6 @@
 # M7 – Rückblick, Erkenntnisse und Strategien: Funktions- und Umsetzungsplan
 
-**Stand:** 30.10.2026 · **Status:** Dokumentationsplanung, keine Codefreigabe · **Basis:** M6.2.1 · **Ziel:** 0.7.0-m7
+**Stand:** 30.10.2026 · **Status:** M7.0 in Draft-PR #23 implementiert (nicht gemergt); M7.1–M7.6 weiterhin geplant · **Basis:** M6.3.4 · **Ziel:** 0.7.0-m7
 
 ## 1. Produktziel
 Den bestehenden Gefühls-/Bedürfnisatlas, Check-in, das verschlüsselte Tagebuch und die Wissenswelt sinnvoll verbinden: Erfahrungen überblicken, nachvollziehbare Zusammenhänge untersuchen, eigene Erkenntnisse formulieren, freiwillig Strategien ausprobieren und erneut reflektieren. Keine Diagnostik, keine Glücks-/Gesundheitsnote, keine KI-Interpretation, kein Gamification-Druck. Alles offline.
@@ -43,7 +43,7 @@ Erste Beobachtungstypen: Gefühl+Bedürfnis, Gefühls-Kombination, Gefühl+expli
 
 ## 6. Etappen und Exit-Gates
 ### M7.0 – Fundament
-Ist-Code/-Datenformate verifizieren, Snapshot-/Use-Case-/Evidenzverträge und separate Persistenz festlegen, Sicherheits- und Regressionstestbasis. **Exit:** deterministische Ergebnisse, Journal nicht verändert.
+Ist-Code/-Datenformate verifizieren, Snapshot-/Use-Case-/Evidenzverträge und separate Persistenz festlegen, Sicherheits- und Regressionstestbasis. **Exit:** deterministische Ergebnisse, Journal nicht verändert. **Implementierung:** [M7.0-Fundament & Datenschutz](M70_FUNDAMENT_UND_DATENSICHERHEIT.md) – flüchtiger strukturierter Snapshot, Zeitfenster, Nennungszählung, explizite Evidenz, nur nach erfolgreichem authentifizierten Journal-Laden. Die Rückblick-Oberfläche bleibt bis M7.1 unverändert.
 
 ### M7.1 – Rückblick
 7/30/90 Tage + eigener Filter, Journalanzahl, getrennte Gefühls-/Bedürfnisnennungen, Navigation zu Einträgen, sinnvolle Leerzustände. **Exit:** Testdaten exakt gezählt, Zeitzonen, 0–n Begriffe, Updates und Löschungen korrekt.
@@ -52,10 +52,10 @@ Ist-Code/-Datenformate verifizieren, Snapshot-/Use-Case-/Evidenzverträge und se
 Erklärbarer deterministischer Regelkatalog, Mindestmengen, Evidenz und Muster-Detail. **Exit:** Jeder Hinweis hat gültige Quell-IDs, unzureichende Daten ergeben keinen Hinweis; keine Kausalbehauptung.
 
 ### M7.3 – Eigene Erkenntnisse
-Explizit gespeicherte Erkenntnisse samt Bearbeiten/Suchen/Archivieren/Löschen, optionalen Links, redaktionelle kontextbezogene Fragen (jede überspringbar; Antworten nur ausdrücklich speichern). **Exit:** Verschlüsselter Roundtrip, kontrollierte Löschung, stabile Referenzen und kein Diagnosetext.
+Explizit gespeicherte Erkenntnisse samt Bearbeiten/Suchen/Archivieren/Löschen, optionalen Links, redaktionelle kontextbezogene Fragen (jede überspringbar; Antworten nur ausdrücklich speichern). **Zusätzliches Pflicht-Gate vor der ersten Speicherung:** Ein gesicherter, rückwärtskompatibler, passphraseverschlüsselter Export/Import inklusive neuer persönlicher Erkenntnisse ist in derselben Etappe verfügbar und geprüft – keine privaten Einträge ohne wiederherstellbare Sicherung. **Exit:** Verschlüsselter Roundtrip, kontrollierte Löschung, stabile Referenzen, Backup-Roundtrip und kein Diagnosetext.
 
-### M7.4 – Wissen, Strategie, Export
-Verweise auf bestehende Artikel/Atlasbegriffe über redaktionelle stabile IDs; Strategie selbst wählen oder eigene formulieren, erproben und freiwillig als hilfreich/teilweise/nicht passend/unklar reflektieren, schließen oder archivieren. **Backup-Gate:** Neue private Daten müssen exportierbar/wiederherstellbar sein; versionierte verschlüsselte Erweiterung mit sichtbarer Datenbereichsauswahl und Überschreibwarnung; EKB1-Altbackups weiterhin lesbar und dürfen neue Inhalte nicht still löschen. **Exit:** Roundtrip auf zweitem Testgerät und keine Klartextreste.
+### M7.4 – Wissen, Strategie, Backup-Erweiterung
+Verweise auf bestehende Artikel/Atlasbegriffe über redaktionelle stabile IDs; Strategie selbst wählen oder eigene formulieren, erproben und freiwillig als hilfreich/teilweise/nicht passend/unklar reflektieren, schließen oder archivieren. **Backup-Gate:** Der seit M7.3 verpflichtende, verschlüsselte Backup-Mechanismus wird vor Speichern neuer Strategieexperimente erweitert; Datenbereichsauswahl, Überschreibwarnung und EKB1-Altimport bleiben verpflichtend, alte Sicherungen dürfen neue Daten nicht still löschen. **Exit:** Roundtrip auf zweitem Testgerät und keine Klartextreste.
 
 ### M7.5 – Erweiterte Visualisierungen
 Wöchentliche Eintragszahlen, ausgewählte Gefühlszeitreihen, neutraler Kalendermodus; überall gleichwertige Text-/Tabellenansicht. Kein „guter/schlechter Tag“ und keine Scheingenauigkeit bei wenig Daten. **Exit:** Charts und Tabellen exakt gleich, TalkBack und 200 % Schrift zugänglich.
@@ -89,4 +89,4 @@ Offline, ohne Account/Analytics oder neue INTERNET-Permission; FLAG_SECURE für 
 Je Etappe isolierter Branch feature/emotionskompass-m7-*, zunächst Draft-PR mit Akzeptanztests, Risikoliste, Commit-SHA, CI-/APK-Prüfsumme bei Code-PRs. Andere Repo-Projekte nicht verändern. Kein Auto-Merge; Merge und Veröffentlichung erst nach ausdrücklicher Freigabe und bestandenen Release-Gates.
 
 ## 9. Änderungsprotokoll
-Dieser Plan ersetzt die knappe M7-Beschreibung im ursprünglichen Umsetzungsplan **inhaltlich**, ohne die Grundprinzipien (Vorsicht bei wenigen Daten, keine Diagnosen, verständlicher Leerzustand) aufzugeben. Der ursprüngliche Plan verlinkt dieses Dokument als aktuelle M7-Detailplanung. Hier erfolgt ausschließlich Dokumentationsarbeit, keine Codeänderung, keine APK und kein Merge.
+Dieser Plan ersetzt die knappe M7-Beschreibung im ursprünglichen Umsetzungsplan **inhaltlich**, ohne die Grundprinzipien (Vorsicht bei wenigen Daten, keine Diagnosen, verständlicher Leerzustand) aufzugeben. Der ursprüngliche Plan verlinkt dieses Dokument als aktuelle M7-Detailplanung. Der ursprüngliche M7-Plan war reine Dokumentationsarbeit. M7.0 hat nun eine eigenständige Implementierung in Draft-PR #23; sie wird erst nach separater Freigabe gemergt.
