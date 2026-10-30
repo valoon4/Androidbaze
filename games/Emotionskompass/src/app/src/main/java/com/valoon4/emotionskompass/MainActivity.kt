@@ -109,6 +109,7 @@ import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
+import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
 import java.time.LocalDate
 import kotlinx.coroutines.launch
 
@@ -392,6 +393,7 @@ private fun EmotionskompassApp(
                         onCheckin = { vm.openCheckin() },
                         onWord = vm::openLearning,
                         onLearn = vm::openLearning,
+                        onKnowledge = vm::openKnowledgeWorld,
                         daily = LearningEngine.daily(catalog, needCatalog, LocalDate.now())
                     )
                     MainSection.ENTDECKEN -> AtlasScreen(
@@ -458,6 +460,12 @@ private fun EmotionskompassApp(
                 }
                 Destination.VERGLEICH -> ComparisonScreen(state, catalog)
                 Destination.LEARN_CARDS -> LearningCardsScreen(catalog, vm::openEmotion)
+                Destination.WISSENSWELT -> KnowledgeWorldScreen(
+                    catalog = lessonCatalog,
+                    ui = learning,
+                    onBookmark = learningVm::toggleArticleBookmark,
+                    onRead = learningVm::markArticleRead
+                )
                 Destination.LEARNING -> LearningScreen(
                     emotions = catalog,
                     needs = needCatalog,
@@ -546,7 +554,7 @@ private fun Mark(small: Boolean = false) {
 @Composable
 private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
     onNeeds: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit,
-    onLearn: () -> Unit, daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
+    onLearn: () -> Unit, onKnowledge: () -> Unit, daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp)
@@ -588,6 +596,13 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
             description = "Favoriten, kurze Übungen, Wiederholungen und Lernpfade.",
             footnote = "Neu in M6 · alles offline",
             onClick = onLearn
+        )
+        ActionCard(
+            icon = Icons.Outlined.MenuBook,
+            title = "Wissenswelt",
+            description = "Artikel frei lesen oder in vier Lernreihen Schritt für Schritt lernen.",
+            footnote = "20 Artikel · Deine Lesemarke · komplett offline",
+            onClick = onKnowledge
         )
         Spacer(Modifier.height(10.dp))
         Text("Heute entdecken", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
