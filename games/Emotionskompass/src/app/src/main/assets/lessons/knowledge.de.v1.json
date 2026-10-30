@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "locale": "de",
-  "contentRevision": "2026-10-m6.2-v1",
+  "contentRevision": "2026-10-m6.2.1-quality",
   "editorialStatus": "educational-draft-review-required",
   "lessons": [
     {
@@ -29,7 +29,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/40816203/",
         "https://pubmed.ncbi.nlm.nih.gov/31961170/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Gefühle sind ernst zu nehmende Informationen, aber weder Befehle noch Beweise.",
+      "commonMistake": "Gefühle müssen sofort ausagiert werden.",
+      "check": {
+        "prompt": "Was kann zwischen Gefühl und Handlung liegen?",
+        "choices": [
+          "Den Impuls prüfen und dann eine passende Reaktion wählen.",
+          "Den allerersten Impuls immer direkt ausführen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Gefühle geben Hinweise, entscheiden aber nicht automatisch über unsere Handlungen."
+      }
     },
     {
       "id": "gefuehle-benennen",
@@ -56,7 +67,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/40816203/",
         "https://pubmed.ncbi.nlm.nih.gov/31961170/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein präziserer Wortschatz kann Selbstverständnis unterstützen, ohne Gefühle festzulegen.",
+      "commonMistake": "Ein einziges Wort muss das Erleben vollständig erklären.",
+      "check": {
+        "prompt": "Welche Aussage lässt mehrere Gefühlsnuancen zu?",
+        "choices": [
+          "Ich darf mich nur auf einen Begriff festlegen.",
+          "Ich bin erschöpft und gleichzeitig ein wenig stolz."
+        ],
+        "correctIndex": 1,
+        "explanation": "Zwei Begriffe können verschiedene Seiten eines Erlebens sichtbar machen."
+      }
     },
     {
       "id": "mehrere-gefuehle",
@@ -83,7 +105,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/40816203/",
         "https://pubmed.ncbi.nlm.nih.gov/31961170/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Mehrere Gefühle können nebeneinander bestehen; sie schließen sich nicht gegenseitig aus.",
+      "commonMistake": "Freude und Traurigkeit können nicht gleichzeitig vorkommen.",
+      "check": {
+        "prompt": "Was ist bei einem Abschied und Neuanfang möglich?",
+        "choices": [
+          "Vorfreude und Traurigkeit können gleichzeitig auftreten.",
+          "Nur ein einziges Gefühl kann in dieser Situation passen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Verschiedene Aspekte derselben Situation können unterschiedliche Gefühle auslösen."
+      }
     },
     {
       "id": "angst-und-wut",
@@ -110,7 +143,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/40816203/",
         "https://pubmed.ncbi.nlm.nih.gov/31961170/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Starke Gefühle verdienen Beachtung; sie legen keine einzige richtige Handlung fest.",
+      "commonMistake": "Intensiver Ärger macht eine aggressive Reaktion unvermeidlich.",
+      "check": {
+        "prompt": "Was hilft beim bewussten Umgang mit Ärger?",
+        "choices": [
+          "Den Ärger als Beweis für fremde Absichten ansehen.",
+          "Ärger wahrnehmen und die eigene Reaktion wählen."
+        ],
+        "correctIndex": 1,
+        "explanation": "Ein Gefühl ist keine sichere Aussage über die Absicht anderer Menschen."
+      }
     },
     {
       "id": "koerpersignale",
@@ -137,7 +181,18 @@
       "sources": [
         "https://pubmed.ncbi.nlm.nih.gov/40816203/",
         "https://pubmed.ncbi.nlm.nih.gov/31961170/"
-      ]
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Körperwahrnehmung kann zusätzliche Hinweise liefern, ersetzt aber keine medizinische Einordnung.",
+      "commonMistake": "Ein schneller Puls ist ein eindeutiger Beweis für Angst.",
+      "check": {
+        "prompt": "Was bedeutet ein schneller Puls vor einem Gespräch?",
+        "choices": [
+          "Er kann verschiedene Ursachen haben; der Kontext ist wichtig.",
+          "Er bedeutet immer, dass eine konkrete Gefahr vorliegt."
+        ],
+        "correctIndex": 0,
+        "explanation": "Körperzeichen sind Hinweise, ihre Ursache lässt sich nicht allein daraus ablesen."
+      }
     },
     {
       "id": "beduerfnisse-grundlagen",
