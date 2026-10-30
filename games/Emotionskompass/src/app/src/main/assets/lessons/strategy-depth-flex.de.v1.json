@@ -71,10 +71,10 @@
       "check": {
         "prompt": "Welche Aussage beschreibt Akzeptanz ohne Resignation?",
         "choices": [
-          "Eine Tatsache anerkennen und trotzdem passende Grenzen oder Änderungen erwägen.",
-          "Unrecht gutheißen, weil man etwas im Moment nicht verändern kann."
+          "Unrecht gutheißen, weil man etwas im Moment nicht verändern kann.",
+          "Eine Tatsache anerkennen und trotzdem passende Grenzen oder Änderungen erwägen."
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "explanation": "Akzeptanz und selbstbestimmtes Handeln können nebeneinanderstehen; sie schließen sich nicht aus."
       }
     },
@@ -147,10 +147,10 @@
       "check": {
         "prompt": "Welche Reaktion passt zu einer unpassenden Strategie?",
         "choices": [
-          "Wirkung und Rahmenbedingungen prüfen und gegebenenfalls wechseln oder stoppen.",
-          "Ein unangenehmes Ergebnis als Aufforderung nehmen, dieselbe Methode zu erzwingen."
+          "Ein unangenehmes Ergebnis als Aufforderung nehmen, dieselbe Methode zu erzwingen.",
+          "Wirkung und Rahmenbedingungen prüfen und gegebenenfalls wechseln oder stoppen."
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "explanation": "Auch Abbrechen ist eine legitime Rückmeldung; Sicherheit und Ressourcen müssen berücksichtigt werden."
       }
     }
