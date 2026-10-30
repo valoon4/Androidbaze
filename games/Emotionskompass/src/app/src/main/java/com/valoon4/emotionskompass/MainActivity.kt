@@ -91,6 +91,7 @@ import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
 import com.valoon4.emotionskompass.core.learning.LearningRepository
@@ -108,6 +109,7 @@ import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
+import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
 import java.time.LocalDate
 import kotlinx.coroutines.launch
 
@@ -139,8 +141,18 @@ class MainActivity : ComponentActivity() {
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
                 val lockPreferences = remember { AppLockPreferences(applicationContext) }
                 val learningRepository = remember { LearningRepository(applicationContext) }
+                // A corrupt or future-incompatible bundled catalog must never
+                // prevent access to the existing journal, check-in or atlas.
+                val lessonCatalog = remember {
+                    runCatching {
+                        LessonCatalog.fromJson(
+                            assets.open("lessons/knowledge.de.v1.json")
+                                .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        )
+                    }.getOrNull()
+                }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -205,6 +217,7 @@ private fun EmotionskompassApp(
     journal: EncryptedJournalRepository,
     lockPreferences: AppLockPreferences,
     learningRepository: LearningRepository,
+    lessonCatalog: LessonCatalog?,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -384,6 +397,7 @@ private fun EmotionskompassApp(
                         onCheckin = { vm.openCheckin() },
                         onWord = vm::openLearning,
                         onLearn = vm::openLearning,
+                        onKnowledge = vm::openKnowledgeWorld,
                         daily = LearningEngine.daily(catalog, needCatalog, LocalDate.now())
                     )
                     MainSection.ENTDECKEN -> AtlasScreen(
@@ -450,14 +464,28 @@ private fun EmotionskompassApp(
                 }
                 Destination.VERGLEICH -> ComparisonScreen(state, catalog)
                 Destination.LEARN_CARDS -> LearningCardsScreen(catalog, vm::openEmotion)
+                Destination.WISSENSWELT -> if (lessonCatalog != null) {
+                    KnowledgeWorldScreen(
+                        catalog = lessonCatalog,
+                        ui = learning,
+                        onBookmark = learningVm::toggleArticleBookmark,
+                        onRead = learningVm::markArticleRead
+                    )
+                } else {
+                    Text("Die Wissenswelt konnte nicht geladen werden. Dein Tagebuch und die anderen Bereiche bleiben verfügbar.",
+                        modifier = Modifier.padding(20.dp))
+                }
                 Destination.LEARNING -> LearningScreen(
                     emotions = catalog,
                     needs = needCatalog,
+                    lessonCatalog = lessonCatalog,
                     ui = learning,
                     onFavorite = learningVm::toggleFavorite,
                     onSeen = learningVm::markSeen,
                     onReview = learningVm::review,
                     onStation = learningVm::completeStation,
+                    onArticleBookmark = learningVm::toggleArticleBookmark,
+                    onArticleRead = learningVm::markArticleRead,
                     onReset = learningVm::reset,
                     onReload = learningVm::reload,
                     onOpenEmotion = vm::openEmotion
@@ -535,7 +563,7 @@ private fun Mark(small: Boolean = false) {
 @Composable
 private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
     onNeeds: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit,
-    onLearn: () -> Unit, daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
+    onLearn: () -> Unit, onKnowledge: () -> Unit, daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp)
@@ -577,6 +605,13 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
             description = "Favoriten, kurze Übungen, Wiederholungen und Lernpfade.",
             footnote = "Neu in M6 · alles offline",
             onClick = onLearn
+        )
+        ActionCard(
+            icon = Icons.Outlined.MenuBook,
+            title = "Wissenswelt",
+            description = "Artikel frei lesen oder in vier Lernreihen Schritt für Schritt lernen.",
+            footnote = "20 Artikel · Deine Lesemarke · komplett offline",
+            onClick = onKnowledge
         )
         Spacer(Modifier.height(10.dp))
         Text("Heute entdecken", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -1277,7 +1312,7 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.6.0-m6", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.6.2.1-m6.2.1", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

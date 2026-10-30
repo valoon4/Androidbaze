@@ -1,0 +1,818 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "contentRevision": "2026-10-m6.2.1-quality",
+  "editorialStatus": "educational-draft-review-required",
+  "lessons": [
+    {
+      "id": "gefuehle-als-signale",
+      "topic": "GEFUEHLE",
+      "title": "Was Gefühle uns mitteilen können",
+      "lead": "Gefühle können Hinweise auf unsere Situation geben. Sie sagen jedoch nicht immer eindeutig, was wahr ist oder was wir tun sollten.",
+      "sections": [
+        {
+          "title": "Ein Signal, keine Anweisung",
+          "text": "Wut kann auf eine verletzte Grenze hinweisen, Angst auf eine wahrgenommene Unsicherheit und Freude auf etwas Wertvolles. Das sind mögliche Zusammenhänge, keine festen Übersetzungen. Derselbe Auslöser kann von verschiedenen Menschen ganz unterschiedlich erlebt werden."
+        },
+        {
+          "title": "Gefühl und Handlung unterscheiden",
+          "text": "Es ist möglich, Ärger wahrzunehmen und trotzdem ruhig zu antworten. Ein Gefühl zuzulassen bedeutet nicht, jedem Impuls zu folgen. Zwischen Wahrnehmen und Handeln liegt oft ein kleiner Entscheidungsspielraum, den du bewusst nutzen kannst."
+        },
+        {
+          "title": "Neugierig statt bewertend",
+          "text": "Die Frage „Worauf könnte dieses Gefühl aufmerksam machen?“ öffnet mehr Möglichkeiten als „Warum bin ich schon wieder so?“. Du musst die Antwort nicht sofort finden. Manchmal verändert sich die Bedeutung, wenn du eine Situation später noch einmal anschaust."
+        }
+      ],
+      "example": "Nach einem unterbrochenen Gespräch spürst du Ärger. Vielleicht möchtest du gehört werden. Vielleicht bist du auch erschöpft. Beides lohnt sich, ohne vorschnelles Urteil zu prüfen.",
+      "takeaway": "Gefühle sind ernst zu nehmende Informationen, aber weder Befehle noch Beweise.",
+      "reflection": "Welches Gefühl könntest du heute zunächst nur wahrnehmen, ohne es gleich lösen zu müssen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/40816203/",
+        "https://pubmed.ncbi.nlm.nih.gov/31961170/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Gefühle sind ernst zu nehmende Informationen, aber weder Befehle noch Beweise.",
+      "commonMistake": "Gefühle müssen sofort ausagiert werden.",
+      "check": {
+        "prompt": "Was kann zwischen Gefühl und Handlung liegen?",
+        "choices": [
+          "Den Impuls prüfen und dann eine passende Reaktion wählen.",
+          "Den allerersten Impuls immer direkt ausführen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Gefühle geben Hinweise, entscheiden aber nicht automatisch über unsere Handlungen."
+      }
+    },
+    {
+      "id": "gefuehle-benennen",
+      "topic": "GEFUEHLE",
+      "title": "Warum passende Gefühlswörter helfen",
+      "lead": "Zwischen „mir geht es schlecht“ und „ich bin enttäuscht“ liegt manchmal ein wichtiger Unterschied im Verständnis.",
+      "sections": [
+        {
+          "title": "Genauer beschreiben",
+          "text": "Mit mehreren Wörtern lassen sich Nuancen wahrnehmen: enttäuscht, erschöpft, verunsichert oder einsam beschreiben unterschiedliche Erlebensweisen. Die Forschung beschäftigt sich mit dieser Fähigkeit als emotionaler Differenzierung. Sie ist keine Prüfung, die bestanden werden muss."
+        },
+        {
+          "title": "Wörter sind Werkzeuge",
+          "text": "Ein Begriff kann sich zunächst richtig anfühlen und später nicht mehr. Vielleicht passt eine Kombination besser als ein einziges Wort. Auch „ich weiß es noch nicht“ ist eine vollständige und erlaubte Antwort auf die Frage nach dem eigenen Erleben."
+        },
+        {
+          "title": "Kleine Übung",
+          "text": "Versuche, ein allgemeines Wort wie „gestresst“ durch zwei konkretere Beobachtungen zu ergänzen. Frage dich: Fühle ich Zeitdruck, Sorge, Gereiztheit oder etwas anderes? Die Auswahl soll dein Erleben beschreiben, nicht es in ein Schema pressen."
+        }
+      ],
+      "example": "Nach einem langen Tag sagst du zuerst „schlecht“. Beim Nachdenken merkst du: Du bist müde und zugleich stolz auf etwas, das dir gelungen ist.",
+      "takeaway": "Ein präziserer Wortschatz kann Selbstverständnis unterstützen, ohne Gefühle festzulegen.",
+      "reflection": "Welches Wort beschreibt gerade eine Nuance, die du bisher kaum benannt hast?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/40816203/",
+        "https://pubmed.ncbi.nlm.nih.gov/31961170/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein präziserer Wortschatz kann Selbstverständnis unterstützen, ohne Gefühle festzulegen.",
+      "commonMistake": "Ein einziges Wort muss das Erleben vollständig erklären.",
+      "check": {
+        "prompt": "Welche Aussage lässt mehrere Gefühlsnuancen zu?",
+        "choices": [
+          "Ich darf mich nur auf einen Begriff festlegen.",
+          "Ich bin erschöpft und gleichzeitig ein wenig stolz."
+        ],
+        "correctIndex": 1,
+        "explanation": "Zwei Begriffe können verschiedene Seiten eines Erlebens sichtbar machen."
+      }
+    },
+    {
+      "id": "mehrere-gefuehle",
+      "topic": "GEFUEHLE",
+      "title": "Wenn zwei Gefühle gleichzeitig da sind",
+      "lead": "Widersprüchliche Gefühle sind im Alltag möglich und müssen nicht aufgelöst werden, damit sie gelten dürfen.",
+      "sections": [
+        {
+          "title": "Mehr als eine Seite",
+          "text": "Ein Umzug kann Vorfreude auf Neues und Traurigkeit über den Abschied auslösen. Beide Reaktionen beziehen sich auf unterschiedliche Aspekte derselben Situation. Es ist nicht nötig, eine davon als die einzig richtige festzulegen."
+        },
+        {
+          "title": "Sowohl als auch",
+          "text": "Sätze mit „und gleichzeitig“ können entlastend sein: „Ich freue mich, und gleichzeitig bin ich unsicher.“ Diese Formulierung lässt Raum, statt dich zwischen zwei Erfahrungen entscheiden zu lassen. Nicht jedes Gefühl braucht eine sofortige Erklärung."
+        },
+        {
+          "title": "Bedürfnisse können sich unterscheiden",
+          "text": "Vielleicht spricht deine Freude das Bedürfnis nach Entwicklung an, während deine Traurigkeit von Verbundenheit erzählt. Solche Verbindungen sind Hypothesen. Du kannst ausprobieren, ob sie zu dir passen, oder sie wieder verwerfen."
+        }
+      ],
+      "example": "Du beginnst eine neue Arbeit und bist gespannt. Gleichzeitig vermisst du die Vertrautheit mit früheren Kolleginnen und Kollegen.",
+      "takeaway": "Mehrere Gefühle können nebeneinander bestehen; sie schließen sich nicht gegenseitig aus.",
+      "reflection": "Welche zwei Gefühle dürfen bei dir gerade nebeneinander stehen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/40816203/",
+        "https://pubmed.ncbi.nlm.nih.gov/31961170/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Mehrere Gefühle können nebeneinander bestehen; sie schließen sich nicht gegenseitig aus.",
+      "commonMistake": "Freude und Traurigkeit können nicht gleichzeitig vorkommen.",
+      "check": {
+        "prompt": "Was ist bei einem Abschied und Neuanfang möglich?",
+        "choices": [
+          "Vorfreude und Traurigkeit können gleichzeitig auftreten.",
+          "Nur ein einziges Gefühl kann in dieser Situation passen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Verschiedene Aspekte derselben Situation können unterschiedliche Gefühle auslösen."
+      }
+    },
+    {
+      "id": "angst-und-wut",
+      "topic": "GEFUEHLE",
+      "title": "Angst, Ärger und ihre Unterschiede",
+      "lead": "Manche Gefühle wirken besonders intensiv. Sie können Hinweise geben, ohne dass wir daraus sofort handeln müssen.",
+      "sections": [
+        {
+          "title": "Angst verstehen",
+          "text": "Angst kann auftreten, wenn etwas unsicher, neu oder bedrohlich erscheint. Eine körperliche Aktivierung bedeutet nicht automatisch, dass eine konkrete Gefahr besteht. Im Zweifel lohnt es sich, aktuelle Fakten und das eigene Sicherheitsgefühl getrennt zu betrachten."
+        },
+        {
+          "title": "Ärger verstehen",
+          "text": "Ärger kann entstehen, wenn Pläne gestört, Grenzen überschritten oder Erwartungen enttäuscht werden. Wie stark er ausfällt, hängt vom Kontext und von persönlichen Erfahrungen ab. Ein Gefühl von Ärger ist nicht dasselbe wie aggressives Verhalten."
+        },
+        {
+          "title": "Handlungsspielraum schaffen",
+          "text": "Es kann helfen, das Gefühl zu benennen, etwas Abstand zu gewinnen und dann zu fragen: Was wäre jetzt eine sichere, passende Reaktion? Bei akuter Gefahr ist Schutz wichtiger als Selbstanalyse. Im Alltag reichen manchmal kurze Pausen für einen klareren Blick."
+        }
+      ],
+      "example": "Eine kurzfristige Terminänderung löst Ärger aus. Vielleicht geht es dir um Verlässlichkeit; vielleicht bist du einfach unter großem Zeitdruck.",
+      "takeaway": "Starke Gefühle verdienen Beachtung; sie legen keine einzige richtige Handlung fest.",
+      "reflection": "Was könnte dir helfen, zwischen Gefühl und Reaktion einen Moment Platz zu lassen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/40816203/",
+        "https://pubmed.ncbi.nlm.nih.gov/31961170/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Starke Gefühle verdienen Beachtung; sie legen keine einzige richtige Handlung fest.",
+      "commonMistake": "Intensiver Ärger macht eine aggressive Reaktion unvermeidlich.",
+      "check": {
+        "prompt": "Was hilft beim bewussten Umgang mit Ärger?",
+        "choices": [
+          "Den Ärger als Beweis für fremde Absichten ansehen.",
+          "Ärger wahrnehmen und die eigene Reaktion wählen."
+        ],
+        "correctIndex": 1,
+        "explanation": "Ein Gefühl ist keine sichere Aussage über die Absicht anderer Menschen."
+      }
+    },
+    {
+      "id": "koerpersignale",
+      "topic": "GEFUEHLE",
+      "title": "Was der Körper mit Gefühlen zu tun hat",
+      "lead": "Herzklopfen, Wärme oder Druck können zu einem Gefühlserleben gehören, sind aber keine eindeutigen Etiketten.",
+      "sections": [
+        {
+          "title": "Innere Signale wahrnehmen",
+          "text": "Die Wahrnehmung körperlicher Prozesse wird als Interozeption bezeichnet. Sie kann Teil emotionalen Erlebens sein. Ein schneller Puls kann bei Aufregung, Freude, Angst oder körperlicher Anstrengung vorkommen. Der Zusammenhang hängt auch von Situation und Interpretation ab."
+        },
+        {
+          "title": "Nicht überinterpretieren",
+          "text": "Ein Körperzeichen allein erlaubt keine sichere Aussage über die Ursache. Du kannst beobachten, wo etwas spürbar ist, und dabei offenlassen, was es bedeutet. Ungewohnte, starke oder besorgniserregende körperliche Beschwerden sollten medizinisch abgeklärt werden."
+        },
+        {
+          "title": "Eine sanfte Beobachtung",
+          "text": "Du könntest kurz wahrnehmen, ob Schultern, Atem oder Hände angespannt sind. Du musst nichts verändern und darfst jederzeit aufhören. Wenn Körperwahrnehmung unangenehm wird, ist es völlig in Ordnung, deine Aufmerksamkeit auf die Umgebung zu richten."
+        }
+      ],
+      "example": "Vor einem wichtigen Gespräch bemerkst du warme Hände und einen schnelleren Puls. Ob das eher Sorge oder Vorfreude ist, zeigt erst der weitere Zusammenhang.",
+      "takeaway": "Körperwahrnehmung kann zusätzliche Hinweise liefern, ersetzt aber keine medizinische Einordnung.",
+      "reflection": "Welches körperliche Zeichen bemerkst du, ohne es sofort benennen zu müssen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/40816203/",
+        "https://pubmed.ncbi.nlm.nih.gov/31961170/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Körperwahrnehmung kann zusätzliche Hinweise liefern, ersetzt aber keine medizinische Einordnung.",
+      "commonMistake": "Ein schneller Puls ist ein eindeutiger Beweis für Angst.",
+      "check": {
+        "prompt": "Was bedeutet ein schneller Puls vor einem Gespräch?",
+        "choices": [
+          "Er kann verschiedene Ursachen haben; der Kontext ist wichtig.",
+          "Er bedeutet immer, dass eine konkrete Gefahr vorliegt."
+        ],
+        "correctIndex": 0,
+        "explanation": "Körperzeichen sind Hinweise, ihre Ursache lässt sich nicht allein daraus ablesen."
+      }
+    },
+    {
+      "id": "beduerfnisse-grundlagen",
+      "topic": "BEDUERFNISSE",
+      "title": "Was mit Bedürfnissen gemeint ist",
+      "lead": "Bedürfnisse beschreiben, was uns für ein gutes und tragfähiges Leben wichtig ist. Ihre Bedeutung ist persönlich und situationsabhängig.",
+      "sections": [
+        {
+          "title": "Hinter den Wünschen schauen",
+          "text": "Hinter dem Wunsch nach einem freien Abend könnte das Bedürfnis nach Erholung, Selbstbestimmung oder Verbindung stehen. Eine konkrete Bitte ist dabei noch nicht dasselbe wie ein allgemeineres Bedürfnis. Verschiedene Menschen gewichten diese Aspekte unterschiedlich."
+        },
+        {
+          "title": "Keine abschließende Liste",
+          "text": "Begriffe wie Sicherheit, Autonomie, Zugehörigkeit, Ruhe und Sinn können bei der Orientierung helfen. Eine Liste ist jedoch eine Lernhilfe, keine vollständige wissenschaftliche Vermessung einer Person. Nicht jedes Bedürfnis ist zu jeder Zeit gleich wichtig."
+        },
+        {
+          "title": "In eigenen Worten sprechen",
+          "text": "Du musst kein bestimmtes Vokabular übernehmen. „Ich brauche gerade einen ruhigen Ort“ kann dir mehr sagen als eine abstrakte Kategorie. Es kann hilfreich sein, beides zu kennen: das Erleben im Alltag und das Wort, das es ungefähr beschreibt."
+        }
+      ],
+      "example": "Nach vielen Terminen möchtest du allein sein. Hinter diesem Wunsch könnten Rückzug, Ruhe oder das Gefühl liegen, über deine Zeit selbst bestimmen zu können.",
+      "takeaway": "Bedürfniswörter sind Orientierungshilfen, keine Schubladen für Menschen.",
+      "reflection": "Welches Bedürfnis scheint dir heute besonders wichtig zu sein?",
+      "sources": [
+        "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Bedürfniswörter sind Orientierungshilfen, keine Schubladen für Menschen.",
+      "commonMistake": "Jeder konkrete Wunsch ist schon ein allgemeines menschliches Bedürfnis.",
+      "check": {
+        "prompt": "Was könnte hinter dem Wunsch nach einem freien Abend stehen?",
+        "choices": [
+          "Erholung oder mehr Selbstbestimmung.",
+          "Nur eine festgelegte Freizeitaktivität."
+        ],
+        "correctIndex": 0,
+        "explanation": "Hinter konkreten Wünschen können unterschiedliche allgemeine Bedürfnisse stehen."
+      }
+    },
+    {
+      "id": "gefuehle-und-beduerfnisse",
+      "topic": "BEDUERFNISSE",
+      "title": "Wie Gefühle und Bedürfnisse zusammenhängen",
+      "lead": "Ein Gefühl kann auf ein wichtiges Bedürfnis aufmerksam machen, aber dieser Zusammenhang lässt sich nicht automatisch berechnen.",
+      "sections": [
+        {
+          "title": "Mögliche Verbindung",
+          "text": "Wenn ein Vorhaben scheitert, können Enttäuschung und das Bedürfnis nach Wirksamkeit zusammentreffen. Bei fehlender Nähe kann Einsamkeit entstehen. Doch ähnliche Gefühle haben oft verschiedene Hintergründe. Eine App sollte daraus keine sichere Ursache ableiten."
+        },
+        {
+          "title": "Fragen statt diagnostizieren",
+          "text": "Versuche die Frage „Was könnte mir gerade wichtig sein?“ statt „Welches Bedürfnis steckt definitiv dahinter?“. Selbst bei derselben Person kann eine Antwort von Situation zu Situation wechseln. Du bist die beste Instanz dafür, was sich passend anfühlt."
+        },
+        {
+          "title": "Mehrere Gründe gelten",
+          "text": "Es ist möglich, gleichzeitig Ruhe und Zugehörigkeit zu suchen. Ein Bedürfnis muss ein anderes nicht auslöschen. Oft hilft es, erst beide wahrzunehmen und dann nach einem umsetzbaren nächsten Schritt zu suchen."
+        }
+      ],
+      "example": "Du ärgerst dich, weil jemand zu spät kommt. Vielleicht geht es um Verlässlichkeit, vielleicht um Zeitdruck oder eine noch ganz andere Erfahrung.",
+      "takeaway": "Ein Gefühl kann ein Hinweis auf Bedürfnisse sein, nicht ihr eindeutiger Beweis.",
+      "reflection": "Welche zwei möglichen Bedürfnisse könntest du in einer Situation vorsichtig prüfen?",
+      "sources": [
+        "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein Gefühl kann ein Hinweis auf Bedürfnisse sein, nicht ihr eindeutiger Beweis.",
+      "commonMistake": "Jedes Gefühl lässt sich eindeutig einem einzigen Bedürfnis zuordnen.",
+      "check": {
+        "prompt": "Wie lässt sich ein Gefühl hilfreicher erkunden?",
+        "choices": [
+          "Eine feststehende Ursache für jeden Menschen festlegen.",
+          "Offen fragen, welche Anliegen möglicherweise wichtig sind."
+        ],
+        "correctIndex": 1,
+        "explanation": "Der Zusammenhang zwischen Gefühlen und Bedürfnissen ist nicht eindeutig."
+      }
+    },
+    {
+      "id": "nahe-und-zugehoerigkeit",
+      "topic": "BEDUERFNISSE",
+      "title": "Nähe ist nicht dasselbe wie Zugehörigkeit",
+      "lead": "Ähnliche Bedürfniswörter lenken den Blick auf unterschiedliche Formen menschlicher Verbindung.",
+      "sections": [
+        {
+          "title": "Persönliche Nähe",
+          "text": "Nähe kann eine vertraute Begegnung, Zuwendung oder gemeinsames Erleben meinen. Die passende Form ist unterschiedlich: Für manche ist ein Gespräch wichtig, andere möchten eher zusammen etwas unternehmen. Nähe sollte die Grenzen aller Beteiligten achten."
+        },
+        {
+          "title": "Teil von etwas sein",
+          "text": "Zugehörigkeit beschreibt oft das Gefühl, in einer Gruppe willkommen zu sein. Das muss nicht dieselbe persönliche Vertrautheit bedeuten wie eine enge Freundschaft. Eine Gemeinschaft kann Halt geben, auch wenn nicht jeder Kontakt besonders nah ist."
+        },
+        {
+          "title": "Unterschiede erkunden",
+          "text": "Du kannst dich zu Menschen zugehörig fühlen und trotzdem mehr persönliche Nähe wünschen. Umgekehrt kann eine intensive einzelne Beziehung bedeutsam sein, während dir Gemeinschaft fehlt. Diese Unterscheidung kann helfen, konkretere Wünsche auszusprechen."
+        }
+      ],
+      "example": "Du bist in einem freundlichen Verein und fühlst dich dort zugehörig. Dennoch wünschst du dir vielleicht ein ruhiges Gespräch mit einer vertrauten Person.",
+      "takeaway": "Nähe und Zugehörigkeit können sich ergänzen, ohne dass sie austauschbar sind.",
+      "reflection": "Fehlt dir eher ein vertrauter Kontakt oder das Gefühl, Teil einer Gruppe zu sein?",
+      "sources": [
+        "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Nähe und Zugehörigkeit können sich ergänzen, ohne dass sie austauschbar sind.",
+      "commonMistake": "Zugehörigkeit zu einer Gruppe ersetzt jede Form persönlicher Nähe.",
+      "check": {
+        "prompt": "Was kennzeichnet Zugehörigkeit eher?",
+        "choices": [
+          "Das Gefühl, innerhalb einer Gruppe willkommen zu sein.",
+          "Ausschließlich ein vertrauliches Gespräch zu zweit zu führen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Nähe und Zugehörigkeit können beide wichtig sein, ohne dass sie identisch sind."
+      }
+    },
+    {
+      "id": "autonomie-und-grenzen",
+      "topic": "BEDUERFNISSE",
+      "title": "Eigene Grenzen und Selbstbestimmung",
+      "lead": "Autonomie bedeutet nicht, alles allein schaffen zu müssen. Grenzen können helfen, Beziehungen und eigene Möglichkeiten zu gestalten.",
+      "sections": [
+        {
+          "title": "Wählen dürfen",
+          "text": "Selbstbestimmung hat damit zu tun, Entscheidungen nach eigenen Werten und Möglichkeiten mitgestalten zu können. Im Alltag gibt es jedoch auch Abhängigkeiten und gemeinsame Verantwortung. Die Frage ist nicht immer „allein oder gemeinsam“, sondern „wie kann ich beteiligt sein?“."
+        },
+        {
+          "title": "Grenzen benennen",
+          "text": "Eine Grenze beschreibt, was du gerade leisten oder zulassen kannst. Sie kann freundlich und klar ausgedrückt werden, ohne dass jemand abgewertet wird. Andere Menschen dürfen ebenfalls Grenzen haben, selbst wenn das enttäuschend ist."
+        },
+        {
+          "title": "Eine Bitte formulieren",
+          "text": "Ein konkreter Satz kann lauten: „Ich brauche heute Abend Ruhe. Können wir morgen telefonieren?“ So benennst du deinen Wunsch und machst einen Vorschlag, ohne die Zustimmung der anderen Person als selbstverständlich vorauszusetzen."
+        }
+      ],
+      "example": "Eine Freundin möchte spontan vorbeikommen. Du magst sie sehr, brauchst aber Zeit für dich. Beides darf nebeneinander existieren.",
+      "takeaway": "Selbstbestimmung und Beziehung müssen nicht automatisch Gegensätze sein.",
+      "reflection": "Welche Grenze könntest du respektvoll ausdrücken, ohne dich rechtfertigen zu müssen?",
+      "sources": [
+        "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Selbstbestimmung und Beziehung müssen nicht automatisch Gegensätze sein.",
+      "commonMistake": "Eine persönliche Grenze lässt sich nur als Vorwurf ausdrücken.",
+      "check": {
+        "prompt": "Welche Formulierung wahrt Grenzen und Beziehung?",
+        "choices": [
+          "Du bist immer viel zu anstrengend.",
+          "Heute brauche ich Ruhe; können wir morgen sprechen?"
+        ],
+        "correctIndex": 1,
+        "explanation": "Eine freundliche konkrete Bitte kann eigene Grenzen deutlich machen."
+      }
+    },
+    {
+      "id": "unerfuellte-beduerfnisse",
+      "topic": "BEDUERFNISSE",
+      "title": "Wenn etwas Wichtiges zu kurz kommt",
+      "lead": "Ein unerfülltes Bedürfnis ist keine persönliche Schwäche. Es kann ein Anlass sein, behutsam nach Möglichkeiten zu suchen.",
+      "sections": [
+        {
+          "title": "Aufmerksam werden",
+          "text": "Vielleicht fühlst du dich wiederholt erschöpft und bemerkst, dass Pausen fehlen. Oder du sehnst dich nach Austausch, obwohl der Alltag voll ist. Solche Beobachtungen geben Hinweise, aber nicht jede Belastung lässt sich allein mit Bedürfnissen erklären."
+        },
+        {
+          "title": "Realistische Möglichkeiten",
+          "text": "Nicht jedes Bedürfnis kann sofort erfüllt werden. Es gibt äußere Umstände, begrenzte Zeit und die Grenzen anderer. Eine hilfreiche Frage ist deshalb: Welcher kleine Schritt wäre unter meinen aktuellen Bedingungen tatsächlich möglich?"
+        },
+        {
+          "title": "Hilfe ist erlaubt",
+          "text": "Manche Situationen lassen sich nicht durch individuelles Verhalten verändern. Unterstützung aus dem Umfeld oder professionelle Hilfe kann sinnvoll sein. Die Verantwortung für schwierige Lebensumstände sollte nicht allein der betroffenen Person zugeschoben werden."
+        }
+      ],
+      "example": "Du merkst, dass dir Erholung fehlt. Vielleicht ist eine kleine Pause möglich; vielleicht brauchst du auch Absprachen, damit deine Belastung nachhaltig kleiner wird.",
+      "takeaway": "Bedürfnisse wahrzunehmen ist ein Anfang, nicht die Pflicht, sofort eine Lösung zu finden.",
+      "reflection": "Was wäre ein realistischer, kleiner Schritt für ein wichtiges Bedürfnis?",
+      "sources": [
+        "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Bedürfnisse wahrzunehmen ist ein Anfang, nicht die Pflicht, sofort eine Lösung zu finden.",
+      "commonMistake": "Mit genug Willen lässt sich jedes Bedürfnis sofort erfüllen.",
+      "check": {
+        "prompt": "Was hilft bei langfristig fehlender Erholung?",
+        "choices": [
+          "Realistische Möglichkeiten und gegebenenfalls Unterstützung prüfen.",
+          "Sich selbst kritisieren, weil nicht sofort alles gelöst ist."
+        ],
+        "correctIndex": 0,
+        "explanation": "Bedürfnisse können durch äußere Bedingungen eingeschränkt sein; kleine Schritte sind erlaubt."
+      }
+    },
+    {
+      "id": "beduerfnis-und-strategie",
+      "topic": "STRATEGIEN",
+      "title": "Bedürfnis und Strategie unterscheiden",
+      "lead": "Das Bedürfnis beschreibt ein Anliegen; die Strategie beschreibt einen möglichen Weg, damit umzugehen.",
+      "sections": [
+        {
+          "title": "Das Warum und das Wie",
+          "text": "Verbindung ist ein mögliches Bedürfnis, jemanden anzurufen eine mögliche Strategie. Erholung kann ein Bedürfnis sein, spazieren zu gehen ein möglicher Weg. Aus einem einzigen Bedürfnis können viele verschiedene Handlungsoptionen entstehen."
+        },
+        {
+          "title": "Nicht auf eine Person festlegen",
+          "text": "Wenn eine bestimmte Person gerade keine Zeit hat, bleibt das Bedürfnis nach Verbindung bestehen. Vielleicht gibt es andere Wege, Kontakt oder Gemeinschaft zu erleben. Diese Perspektive kann Handlungsspielraum öffnen, ohne Enttäuschung kleinzureden."
+        },
+        {
+          "title": "Passung überprüfen",
+          "text": "Eine Strategie ist nicht automatisch hilfreich, nur weil sie einem Bedürfnis dienen soll. Sie sollte zu Sicherheit, Ressourcen und Grenzen aller Beteiligten passen. Frag dich nicht nur, ob etwas kurzfristig wirkt, sondern auch, was es längerfristig bedeutet."
+        }
+      ],
+      "example": "Du fühlst dich einsam und möchtest einen Freund anrufen. Nähe ist ein mögliches Bedürfnis; der Anruf ist nur eine von mehreren möglichen Strategien.",
+      "takeaway": "Ein Bedürfnis ist nicht auf eine einzige Handlung festgelegt.",
+      "reflection": "Welche drei Wege könnten einem dir wichtigen Bedürfnis dienen?",
+      "sources": [
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
+        "https://www.cnvc.org/certification/cpp/preparation/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein Bedürfnis ist nicht auf eine einzige Handlung festgelegt.",
+      "commonMistake": "Ein Bedürfnis hat nur eine passende Handlungsstrategie.",
+      "check": {
+        "prompt": "Was ist bei Einsamkeit eher eine Strategie?",
+        "choices": [
+          "Das allgemeine Anliegen nach Verbindung.",
+          "Einen Freund anrufen, wenn das für beide passt."
+        ],
+        "correctIndex": 1,
+        "explanation": "Ein Anruf ist ein möglicher Weg zum Bedürfnis nach Verbindung."
+      }
+    },
+    {
+      "id": "mehrere-wege",
+      "topic": "STRATEGIEN",
+      "title": "Mehr als einen Weg ausprobieren",
+      "lead": "Eine zusätzliche Option kann hilfreich sein, wenn ein ursprünglicher Plan nicht umsetzbar ist.",
+      "sections": [
+        {
+          "title": "Zuerst das Anliegen klären",
+          "text": "Statt sofort eine Lösung zu suchen, kannst du fragen, was dir eigentlich wichtig ist: Ruhe, Sicherheit, Bewegung, Austausch oder Anerkennung? Erst dann lohnt sich das Sammeln von Alternativen. Manche Bedürfnisse brauchen mehrere kleine Schritte."
+        },
+        {
+          "title": "Möglichkeiten sammeln",
+          "text": "Denke zunächst breit und bewerte die Ideen erst anschließend. Für Erholung könnten Schlaf, Pausen, weniger Verpflichtungen oder eine veränderte Arbeitsaufteilung hilfreich sein. Welche Wege möglich sind, hängt von deiner Lebenssituation ab."
+        },
+        {
+          "title": "Rücksicht und Grenzen",
+          "text": "Eine Alternative sollte nicht auf Kosten anderer erzwungen werden. Manche Wünsche lassen sich nur gemeinsam aushandeln. Wenn du keine passende Option findest, heißt das nicht, dass du versagt hast; vielleicht fehlen gerade wichtige Ressourcen."
+        }
+      ],
+      "example": "Ein Treffen fällt aus. Wenn du Gemeinschaft gesucht hast, könnten ein kurzer Anruf oder eine andere gemeinsame Aktivität ein möglicher Ersatz sein.",
+      "takeaway": "Mehrere Strategien geben Wahlmöglichkeiten, aber keine Erfolgsgarantie.",
+      "reflection": "Für welches Anliegen würdest du gern zwei andere Wege sammeln?",
+      "sources": [
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
+        "https://www.cnvc.org/certification/cpp/preparation/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Mehrere Strategien geben Wahlmöglichkeiten, aber keine Erfolgsgarantie.",
+      "commonMistake": "Wenn ein konkreter Plan scheitert, ist das Anliegen unmöglich zu erfüllen.",
+      "check": {
+        "prompt": "Ein Treffen fällt aus. Was erweitert den Handlungsspielraum?",
+        "choices": [
+          "Nach anderen möglichen Formen von Verbindung suchen.",
+          "Darauf bestehen, dass genau dieses Treffen stattfindet."
+        ],
+        "correctIndex": 0,
+        "explanation": "Mehrere Strategien sind möglich, ohne eine Wirkung garantieren zu können."
+      }
+    },
+    {
+      "id": "bitte-statt-forderung",
+      "topic": "STRATEGIEN",
+      "title": "Eine Bitte formulieren, die ein Nein zulässt",
+      "lead": "Eine konkrete Bitte kann Bedürfnisse sichtbarer machen, ohne die andere Person unter Druck zu setzen.",
+      "sections": [
+        {
+          "title": "Konkret bleiben",
+          "text": "„Sei rücksichtsvoller“ ist schwer zu beantworten. „Können wir heute zehn Minuten ohne Handy sprechen?“ beschreibt ein beobachtbares Verhalten. Je klarer der Vorschlag, desto leichter lässt sich gemeinsam herausfinden, was möglich ist."
+        },
+        {
+          "title": "Raum für Ablehnung",
+          "text": "Eine Bitte unterscheidet sich von einer Forderung auch dadurch, dass ein Nein möglich bleibt, ohne Bestrafung oder Schuldzuweisung. Ein Nein bedeutet nicht automatisch, dass dein Bedürfnis unwichtig ist. Es kann auf andere Grenzen oder Bedürfnisse hinweisen."
+        },
+        {
+          "title": "Neugierig verhandeln",
+          "text": "Wenn eine Bitte nicht passt, kannst du fragen, welche Alternative für beide realistisch wäre. Manchmal lässt sich ein Zeitpunkt ändern oder eine kleinere Form finden. Du musst dich dabei nicht endlos rechtfertigen oder deine Sicherheit gefährden."
+        }
+      ],
+      "example": "Du wünschst dir Austausch und fragst: „Hättest du morgen Abend eine Viertelstunde Zeit zum Reden?“ Die andere Person darf auch ablehnen.",
+      "takeaway": "Eine gute Bitte ist konkret und lässt Raum für eine echte Antwort.",
+      "reflection": "Wie könntest du einen vagen Wunsch in eine freundliche, konkrete Bitte übersetzen?",
+      "sources": [
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
+        "https://www.cnvc.org/certification/cpp/preparation/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Eine gute Bitte ist konkret und lässt Raum für eine echte Antwort.",
+      "commonMistake": "Eine gute Bitte muss grundsätzlich mit Ja beantwortet werden.",
+      "check": {
+        "prompt": "Welche Formulierung lässt eine freie Antwort zu?",
+        "choices": [
+          "Du musst heute Abend mit mir reden.",
+          "Hättest du morgen Zeit für ein kurzes Gespräch?"
+        ],
+        "correctIndex": 1,
+        "explanation": "Eine Bitte ist konkret und respektiert die Entscheidungsmöglichkeiten anderer."
+      }
+    },
+    {
+      "id": "beobachtung-interpretation",
+      "topic": "STRATEGIEN",
+      "title": "Beobachtung und Interpretation trennen",
+      "lead": "Was wir wahrnehmen und was wir daraus schließen, kann sich unterscheiden. Diese Trennung hilft besonders in angespannten Gesprächen.",
+      "sections": [
+        {
+          "title": "Was ist tatsächlich passiert?",
+          "text": "„Du hast während unseres Gesprächs dreimal auf das Handy geschaut“ beschreibt eher eine beobachtbare Handlung. „Du interessierst dich nicht für mich“ ist eine Deutung. Sie kann verständlich sein, muss aber nicht die Absicht der anderen Person treffen."
+        },
+        {
+          "title": "Die eigene Wirkung benennen",
+          "text": "Du kannst sowohl die Beobachtung als auch deine Erfahrung ausdrücken: „Als du auf dein Handy geschaut hast, war ich enttäuscht, weil mir Aufmerksamkeit wichtig ist.“ Das macht deine Sicht nachvollziehbar, ohne dem Gegenüber sichere Motive zuzuschreiben."
+        },
+        {
+          "title": "Offen bleiben",
+          "text": "Manche Interpretationen sind plausibel, manche nicht. Nachzufragen kann Missverständnisse verringern. Zugleich musst du offensichtliche Grenzverletzungen nicht kleinreden. Die Unterscheidung ist ein Werkzeug für Klarheit, kein Gebot, jede Situation zu entschuldigen."
+        }
+      ],
+      "example": "Jemand antwortet auf eine Nachricht erst spät. Die Verzögerung ist beobachtbar; die Annahme „ich bin unwichtig“ braucht mehr Kontext.",
+      "takeaway": "Beobachtung und Interpretation sind beides Erfahrungen, aber nicht dasselbe.",
+      "reflection": "Welchen Gedanken könntest du zunächst als Vermutung statt als Tatsache behandeln?",
+      "sources": [
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
+        "https://www.cnvc.org/certification/cpp/preparation/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Beobachtung und Interpretation sind beides Erfahrungen, aber nicht dasselbe.",
+      "commonMistake": "Eine Interpretation ist automatisch eine überprüfte Beobachtung.",
+      "check": {
+        "prompt": "Welche Aussage beschreibt zuerst Beobachtbares?",
+        "choices": [
+          "Während des Gesprächs wurde auf das Handy geschaut.",
+          "Du interessierst dich überhaupt nicht für mich."
+        ],
+        "correctIndex": 0,
+        "explanation": "Beobachtbares Verhalten und eine vermutete Absicht sind nicht dasselbe."
+      }
+    },
+    {
+      "id": "strategien-pruefen",
+      "topic": "STRATEGIEN",
+      "title": "Was tun, wenn eine Strategie nicht hilft?",
+      "lead": "Eine gut gemeinte Handlung kann an der aktuellen Situation vorbeigehen. Dann lohnt sich eine neue, freundliche Bestandsaufnahme.",
+      "sections": [
+        {
+          "title": "Nicht jedes Mittel passt",
+          "text": "Ein Spaziergang kann für manche Menschen erholsam sein, für andere in der konkreten Situation kaum möglich oder nicht hilfreich. Allgemeine Ratschläge ersetzen nicht die Frage, was du brauchst und was dir zugänglich ist."
+        },
+        {
+          "title": "Wirkung beobachten",
+          "text": "Frage dich nach einer Handlung: Hat sie etwas verändert? War sie sicher und zumutbar? Hat sie andere Bedürfnisse verletzt? Eine Wirkung kann gemischt sein. Manchmal hilft eine Lösung kurzfristig und erzeugt später neue Schwierigkeiten."
+        },
+        {
+          "title": "Flexibel bleiben",
+          "text": "Wenn etwas nicht wirkt, musst du es nicht als persönliches Scheitern bewerten. Vielleicht war das Bedürfnis ein anderes, die Umstände ungeeignet oder die Belastung zu groß. Du kannst eine Alternative suchen oder Unterstützung einbeziehen."
+        }
+      ],
+      "example": "Du versuchst nach einem Konflikt Ablenkung, bleibst aber innerlich unruhig. Vielleicht brauchst du zunächst Klarheit oder ein Gespräch, nicht mehr Beschäftigung.",
+      "takeaway": "Die passende Strategie hängt vom Kontext ab und darf verändert werden.",
+      "reflection": "Woran würdest du merken, dass ein Versuch dir wirklich geholfen hat?",
+      "sources": [
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/",
+        "https://www.cnvc.org/certification/cpp/preparation/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Die passende Strategie hängt vom Kontext ab und darf verändert werden.",
+      "commonMistake": "Eine gute Strategie muss für alle Menschen immer funktionieren.",
+      "check": {
+        "prompt": "Eine Pause im Freien hilft heute nicht. Was kannst du prüfen?",
+        "choices": [
+          "Die Handlung unabhängig vom Kontext immer wiederholen.",
+          "Ob ein anderer Weg oder ein anderes Bedürfnis passt."
+        ],
+        "correctIndex": 1,
+        "explanation": "Strategien dürfen flexibel an die eigene Situation angepasst werden."
+      }
+    },
+    {
+      "id": "innere-wahrnehmung",
+      "topic": "REFLEXION",
+      "title": "Wie du bei dir selbst anfangen kannst",
+      "lead": "Selbstwahrnehmung muss keine komplizierte Übung sein. Manchmal genügt eine neugierige Frage ohne Leistungsdruck.",
+      "sections": [
+        {
+          "title": "Kurz innehalten",
+          "text": "Du kannst dich fragen: Was ist gerade los? Was bemerke ich im Körper? Welches Gefühl könnte dazu passen? Du musst nicht alle Fragen beantworten. Besonders bei starker Belastung kann es sinnvoller sein, erst für Sicherheit und Unterstützung zu sorgen."
+        },
+        {
+          "title": "Nicht alles analysieren",
+          "text": "Zu viel Grübeln kann anstrengend werden. Ziel ist nicht, jede Regung vollständig zu erklären, sondern mehr Wahlmöglichkeiten zu gewinnen. Wenn du merkst, dass die Reflexion dich erschöpft, darfst du unterbrechen oder etwas anderes tun."
+        },
+        {
+          "title": "Kleine Schritte zählen",
+          "text": "Ein einziger Satz wie „Ich bin angespannt und brauche eine Pause“ kann schon hilfreich sein. Manchmal braucht es Tage, bis sich ein Gefühl benennen lässt. Ein leerer Check-in oder eine bewusst ausgelassene Frage ist genauso in Ordnung."
+        }
+      ],
+      "example": "Du kommst aus einer Besprechung und merkst erst beim Heimweg, dass du angespannt bist. Statt eine perfekte Erklärung zu suchen, gönnst du dir zunächst etwas Ruhe.",
+      "takeaway": "Selbstwahrnehmung ist eine Einladung, keine weitere Aufgabe, die du erfüllen musst.",
+      "reflection": "Welche einfache Frage würde dir heute gut tun?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/39423429/",
+        "https://pubmed.ncbi.nlm.nih.gov/33749936/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Selbstwahrnehmung ist eine Einladung, keine weitere Aufgabe, die du erfüllen musst.",
+      "commonMistake": "Selbstwahrnehmung verlangt jederzeit eine ausführliche Analyse.",
+      "check": {
+        "prompt": "Welche Frage ist ein unkomplizierter Einstieg?",
+        "choices": [
+          "Was bemerke ich gerade?",
+          "Warum kann ich mich nicht endlich perfekt erklären?"
+        ],
+        "correctIndex": 0,
+        "explanation": "Eine kurze offene Frage kann genügen; Unklarheit ist erlaubt."
+      }
+    },
+    {
+      "id": "gedanken-und-gefuehle",
+      "topic": "REFLEXION",
+      "title": "Gedanken sind nicht dasselbe wie Gefühle",
+      "lead": "Ein Gedanke beschreibt oft eine Bewertung oder Erzählung. Ein Gefühl beschreibt, wie du etwas erlebst.",
+      "sections": [
+        {
+          "title": "Zwei Ebenen",
+          "text": "„Niemand nimmt mich ernst“ ist zunächst eine Interpretation. „Ich bin verletzt und verunsichert“ benennt mögliche Gefühle. Beide Ebenen sind wichtig. Aber sie dürfen getrennt betrachtet werden, damit eine Schlussfolgerung nicht unbemerkt als gesicherte Tatsache erscheint."
+        },
+        {
+          "title": "Gedanken beeinflussen Erleben",
+          "text": "Wie wir eine Situation einordnen, kann Gefühle verändern. Das bedeutet nicht, dass du unangenehme Erfahrungen einfach positiv denken musst. Es heißt nur, dass manchmal mehr als eine plausible Deutung möglich ist, die du prüfen kannst."
+        },
+        {
+          "title": "Mit sich freundlich sprechen",
+          "text": "Statt „Ich reagiere übertrieben“ könntest du fragen: Was hat mich berührt? Welche Informationen fehlen mir? Wenn deine erste Deutung doch stimmt, bleibt dein Gefühl ebenfalls ernst zu nehmen. Selbstmitgefühl und realistisches Hinschauen gehören zusammen."
+        }
+      ],
+      "example": "Auf eine Bitte kommt keine Antwort. Du denkst „Ich störe“. Vielleicht fühlst du dich unsicher. Eine Nachfrage könnte helfen, ohne dir deine Unsicherheit auszureden.",
+      "takeaway": "Gedanken, Gefühle und beobachtete Ereignisse lassen sich unterscheiden.",
+      "reflection": "Welcher Gedanke könnte heute auch als vorsichtige Frage formuliert werden?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/39423429/",
+        "https://pubmed.ncbi.nlm.nih.gov/33749936/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Gedanken, Gefühle und beobachtete Ereignisse lassen sich unterscheiden.",
+      "commonMistake": "Ein belastender Gedanke muss eine gesicherte Tatsache sein.",
+      "check": {
+        "prompt": "Welche Aussage beschreibt eher ein Gefühl?",
+        "choices": [
+          "Niemand interessiert sich für mich.",
+          "Ich bin gerade verunsichert."
+        ],
+        "correctIndex": 1,
+        "explanation": "Gefühle beschreiben Erleben; Vermutungen über andere brauchen weitere Hinweise."
+      }
+    },
+    {
+      "id": "achtsam-ohne-druck",
+      "topic": "REFLEXION",
+      "title": "Achtsamkeit ohne Leistungsdruck",
+      "lead": "Achtsamkeit bedeutet hier, die Aufmerksamkeit bewusst auf etwas im gegenwärtigen Moment zu richten – ohne sich dafür zu benoten.",
+      "sections": [
+        {
+          "title": "Ein einfacher Anfang",
+          "text": "Du kannst für einen Moment Geräusche im Raum wahrnehmen, den Boden unter den Füßen spüren oder einen Gegenstand beschreiben. Der Atem ist nur eine von vielen Möglichkeiten. Es ist nicht nötig, vollkommen ruhig zu werden."
+        },
+        {
+          "title": "Keine Pflichtübung",
+          "text": "Manche Menschen empfinden stille Innenschau als hilfreich, andere als unangenehm oder belastend. Dann darfst du die Augen offenlassen, dich bewegen, die Umgebung beachten oder die Übung ganz auslassen. Deine Grenzen sind wichtiger als jede Methode."
+        },
+        {
+          "title": "Wirkung nicht erzwingen",
+          "text": "Ziel ist nicht, Ärger oder Angst sofort wegzumachen. Es kann genügen, das eigene Erleben ein wenig bewusster zu bemerken und den nächsten Schritt zu wählen. Wenn starke Belastungen auftreten, ist passende persönliche Unterstützung wichtiger als eine App-Übung."
+        }
+      ],
+      "example": "Während du auf den Bus wartest, bemerkst du für zehn Sekunden drei Geräusche in deiner Umgebung. Das ist bereits eine mögliche Form bewusster Aufmerksamkeit.",
+      "takeaway": "Achtsamkeit darf klein, alltagsnah und jederzeit abbrechbar sein.",
+      "reflection": "Welche kurze, angenehme Beobachtung würde dir heute liegen?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/39423429/",
+        "https://pubmed.ncbi.nlm.nih.gov/33749936/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Achtsamkeit darf klein, alltagsnah und jederzeit abbrechbar sein.",
+      "commonMistake": "Achtsamkeit muss sofort zu einem ruhigen Zustand führen.",
+      "check": {
+        "prompt": "Was ist eine freiwillige achtsame Beobachtung?",
+        "choices": [
+          "Ein paar Geräusche in der Umgebung wahrnehmen.",
+          "Alle Gedanken sofort unterdrücken müssen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Aufmerksamkeit darf kurz sein und muss keinen bestimmten Zustand erzeugen."
+      }
+    },
+    {
+      "id": "selbstmitgefuehl",
+      "topic": "REFLEXION",
+      "title": "Freundlicher mit dir selbst sprechen",
+      "lead": "Selbstmitgefühl bedeutet nicht, Fehler zu leugnen. Es heißt, sich auch in schwierigen Momenten mit Respekt zu begegnen.",
+      "sections": [
+        {
+          "title": "Fehler und Person trennen",
+          "text": "Du kannst bedauern, etwas falsch gemacht zu haben, ohne daraus abzuleiten, dass du als Mensch wertlos bist. Verantwortung bleibt möglich, auch wenn du nicht gegen dich selbst kämpfst. Ein freundlicher Ton kann den Blick auf sinnvolle Veränderungen erleichtern."
+        },
+        {
+          "title": "Wie mit einem Freund",
+          "text": "Manchmal hilft die Frage: Was würde ich einer Person sagen, die mir wichtig ist und in derselben Lage steckt? Du musst nichts beschönigen. Schon der Verzicht auf harte Selbstbeschimpfungen kann ein erster Schritt sein."
+        },
+        {
+          "title": "Grenzen der Methode",
+          "text": "Selbstmitgefühl ist kein Heilversprechen und ersetzt bei anhaltendem Leiden keine professionelle Unterstützung. Unterschiedliche Menschen brauchen unterschiedliche Formen der Begleitung. Du kannst ausprobieren, ob eine freundlichere Formulierung für dich stimmig ist."
+        }
+      ],
+      "example": "Nach einem Missverständnis denkst du zuerst „Ich bin unmöglich“. Eine alternative Formulierung wäre: „Das war schwierig. Ich kann daraus lernen und mich entschuldigen.“",
+      "takeaway": "Freundlichkeit sich selbst gegenüber und Verantwortungsübernahme können zusammengehen.",
+      "reflection": "Wie würdest du einen schwierigen Moment respektvoller beschreiben?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/39423429/",
+        "https://pubmed.ncbi.nlm.nih.gov/33749936/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Freundlichkeit sich selbst gegenüber und Verantwortungsübernahme können zusammengehen.",
+      "commonMistake": "Mitgefühl mit sich selbst bedeutet, Fehler vollständig zu ignorieren.",
+      "check": {
+        "prompt": "Welche Formulierung zeigt Verantwortung und Selbstmitgefühl?",
+        "choices": [
+          "Ein Fehler beweist, dass ich nichts wert bin.",
+          "Ich habe etwas falsch gemacht und kann daraus lernen."
+        ],
+        "correctIndex": 1,
+        "explanation": "Verantwortung und ein respektvoller Umgang mit sich selbst passen zusammen."
+      }
+    },
+    {
+      "id": "reflektieren-und-handeln",
+      "topic": "REFLEXION",
+      "title": "Vom Nachdenken zu einem nächsten Schritt",
+      "lead": "Reflexion wird oft besonders hilfreich, wenn sie nicht im Kreis läuft, sondern dir eine echte Entscheidungsmöglichkeit eröffnet.",
+      "sections": [
+        {
+          "title": "Die Situation sammeln",
+          "text": "Beginne mit einer einfachen Beobachtung: Was ist passiert? Welche Gefühle oder Bedürfnisse könnten beteiligt sein? Du kannst mehrere Antworten zulassen. Eine präzise Analyse ist nicht erforderlich, bevor du dich um dich selbst kümmern darfst."
+        },
+        {
+          "title": "Klein und umsetzbar",
+          "text": "Ein nächster Schritt kann sehr klein sein: ein Gespräch vereinbaren, eine Pause planen, etwas nachfragen oder eine Grenze formulieren. Er sollte zu deinen tatsächlichen Ressourcen passen. Nichts zu tun und erst abzuwarten kann ebenfalls eine bewusste Entscheidung sein."
+        },
+        {
+          "title": "Später erneut schauen",
+          "text": "Nach einem Versuch kannst du fragen, ob er hilfreich war und ob du etwas anderes brauchst. Es geht nicht um permanente Optimierung deiner Gefühle. Auch offene Fragen, Unklarheit und ein schwieriger Tag dürfen Teil des Lernens sein."
+        }
+      ],
+      "example": "Du merkst nach einer anstrengenden Woche, dass dir Erholung fehlt. Statt einen großen Plan zu entwerfen, reservierst du erst einmal eine kurze Pause.",
+      "takeaway": "Ein guter nächster Schritt ist freiwillig, konkret und zur eigenen Situation passend.",
+      "reflection": "Welcher kleine Schritt wäre heute realistisch und freundlich zu dir selbst?",
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/39423429/",
+        "https://pubmed.ncbi.nlm.nih.gov/33749936/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein guter nächster Schritt ist freiwillig, konkret und zur eigenen Situation passend.",
+      "commonMistake": "Reflexion ist nur sinnvoll, wenn daraus eine große Veränderung folgt.",
+      "check": {
+        "prompt": "Was wäre nach einer anstrengenden Woche ein realistischer Schritt?",
+        "choices": [
+          "Eine überschaubare Pause vereinbaren.",
+          "Sofort das gesamte Leben umstrukturieren."
+        ],
+        "correctIndex": 0,
+        "explanation": "Kleine machbare Schritte können ein guter freiwilliger Ausgangspunkt sein."
+      }
+    }
+  ],
+  "series": [
+    {
+      "id": "gefuehle-verstehen",
+      "title": "Gefühle verstehen",
+      "description": "Vom ersten Signal bis zur Unterscheidung ähnlicher Erfahrungen.",
+      "lessonIds": [
+        "gefuehle-als-signale",
+        "gefuehle-benennen",
+        "mehrere-gefuehle",
+        "angst-und-wut",
+        "koerpersignale"
+      ]
+    },
+    {
+      "id": "beduerfnisse-erkennen",
+      "title": "Bedürfnisse erkennen",
+      "description": "Grundlagen, Zusammenhänge, Verbindung und Grenzen erkunden.",
+      "lessonIds": [
+        "beduerfnisse-grundlagen",
+        "gefuehle-und-beduerfnisse",
+        "nahe-und-zugehoerigkeit",
+        "autonomie-und-grenzen",
+        "unerfuellte-beduerfnisse"
+      ]
+    },
+    {
+      "id": "strategien-und-dialog",
+      "title": "Strategien & Kommunikation",
+      "description": "Vom Bedürfnis zur Bitte und zu mehreren Handlungsmöglichkeiten.",
+      "lessonIds": [
+        "beduerfnis-und-strategie",
+        "mehrere-wege",
+        "bitte-statt-forderung",
+        "beobachtung-interpretation",
+        "strategien-pruefen"
+      ]
+    },
+    {
+      "id": "selbstreflexion-vertiefen",
+      "title": "Selbstreflexion vertiefen",
+      "description": "Wahrnehmen, einordnen und freiwillig nächste Schritte finden.",
+      "lessonIds": [
+        "innere-wahrnehmung",
+        "gedanken-und-gefuehle",
+        "achtsam-ohne-druck",
+        "selbstmitgefuehl",
+        "reflektieren-und-handeln"
+      ]
+    }
+  ]
+}
