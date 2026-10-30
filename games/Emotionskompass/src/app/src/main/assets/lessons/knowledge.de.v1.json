@@ -218,8 +218,19 @@
       "reflection": "Welches Bedürfnis scheint dir heute besonders wichtig zu sein?",
       "sources": [
         "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
-        "https://wp.nyu.edu/coaching/tools/needs-inventory/"
-      ]
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Bedürfniswörter sind Orientierungshilfen, keine Schubladen für Menschen.",
+      "commonMistake": "Jeder konkrete Wunsch ist schon ein allgemeines menschliches Bedürfnis.",
+      "check": {
+        "prompt": "Was könnte hinter dem Wunsch nach einem freien Abend stehen?",
+        "choices": [
+          "Erholung oder mehr Selbstbestimmung.",
+          "Nur eine festgelegte Freizeitaktivität."
+        ],
+        "correctIndex": 0,
+        "explanation": "Hinter konkreten Wünschen können unterschiedliche allgemeine Bedürfnisse stehen."
+      }
     },
     {
       "id": "gefuehle-und-beduerfnisse",
@@ -245,8 +256,19 @@
       "reflection": "Welche zwei möglichen Bedürfnisse könntest du in einer Situation vorsichtig prüfen?",
       "sources": [
         "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
-        "https://wp.nyu.edu/coaching/tools/needs-inventory/"
-      ]
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Ein Gefühl kann ein Hinweis auf Bedürfnisse sein, nicht ihr eindeutiger Beweis.",
+      "commonMistake": "Jedes Gefühl lässt sich eindeutig einem einzigen Bedürfnis zuordnen.",
+      "check": {
+        "prompt": "Wie lässt sich ein Gefühl hilfreicher erkunden?",
+        "choices": [
+          "Eine feststehende Ursache für jeden Menschen festlegen.",
+          "Offen fragen, welche Anliegen möglicherweise wichtig sind."
+        ],
+        "correctIndex": 1,
+        "explanation": "Der Zusammenhang zwischen Gefühlen und Bedürfnissen ist nicht eindeutig."
+      }
     },
     {
       "id": "nahe-und-zugehoerigkeit",
@@ -272,8 +294,19 @@
       "reflection": "Fehlt dir eher ein vertrauter Kontakt oder das Gefühl, Teil einer Gruppe zu sein?",
       "sources": [
         "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
-        "https://wp.nyu.edu/coaching/tools/needs-inventory/"
-      ]
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Nähe und Zugehörigkeit können sich ergänzen, ohne dass sie austauschbar sind.",
+      "commonMistake": "Zugehörigkeit zu einer Gruppe ersetzt jede Form persönlicher Nähe.",
+      "check": {
+        "prompt": "Was kennzeichnet Zugehörigkeit eher?",
+        "choices": [
+          "Das Gefühl, innerhalb einer Gruppe willkommen zu sein.",
+          "Ausschließlich ein vertrauliches Gespräch zu zweit zu führen."
+        ],
+        "correctIndex": 0,
+        "explanation": "Nähe und Zugehörigkeit können beide wichtig sein, ohne dass sie identisch sind."
+      }
     },
     {
       "id": "autonomie-und-grenzen",
@@ -299,8 +332,19 @@
       "reflection": "Welche Grenze könntest du respektvoll ausdrücken, ohne dich rechtfertigen zu müssen?",
       "sources": [
         "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
-        "https://wp.nyu.edu/coaching/tools/needs-inventory/"
-      ]
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Selbstbestimmung und Beziehung müssen nicht automatisch Gegensätze sein.",
+      "commonMistake": "Eine persönliche Grenze lässt sich nur als Vorwurf ausdrücken.",
+      "check": {
+        "prompt": "Welche Formulierung wahrt Grenzen und Beziehung?",
+        "choices": [
+          "Du bist immer viel zu anstrengend.",
+          "Heute brauche ich Ruhe; können wir morgen sprechen?"
+        ],
+        "correctIndex": 1,
+        "explanation": "Eine freundliche konkrete Bitte kann eigene Grenzen deutlich machen."
+      }
     },
     {
       "id": "unerfuellte-beduerfnisse",
@@ -326,8 +370,19 @@
       "reflection": "Was wäre ein realistischer, kleiner Schritt für ein wichtiges Bedürfnis?",
       "sources": [
         "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/",
-        "https://wp.nyu.edu/coaching/tools/needs-inventory/"
-      ]
+        "https://baynvc.org/nonviolent-communication-quick-reference-guide/"
+      ],
+      "learningGoal": "Nach dieser Lektion kannst du erklären: Bedürfnisse wahrzunehmen ist ein Anfang, nicht die Pflicht, sofort eine Lösung zu finden.",
+      "commonMistake": "Mit genug Willen lässt sich jedes Bedürfnis sofort erfüllen.",
+      "check": {
+        "prompt": "Was hilft bei langfristig fehlender Erholung?",
+        "choices": [
+          "Realistische Möglichkeiten und gegebenenfalls Unterstützung prüfen.",
+          "Sich selbst kritisieren, weil nicht sofort alles gelöst ist."
+        ],
+        "correctIndex": 0,
+        "explanation": "Bedürfnisse können durch äußere Bedingungen eingeschränkt sein; kleine Schritte sind erlaubt."
+      }
     },
     {
       "id": "beduerfnis-und-strategie",
