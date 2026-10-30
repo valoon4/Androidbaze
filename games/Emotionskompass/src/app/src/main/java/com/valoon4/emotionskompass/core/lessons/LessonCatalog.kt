@@ -114,7 +114,17 @@ class LessonCatalog private constructor(
                     example = value("example"),
                     takeaway = value("takeaway"),
                     reflection = value("reflection"),
-                    sources = e.getValue("sources").jsonArray.map { it.jsonPrimitive.content }
+                    sources = e.getValue("sources").jsonArray.map { it.jsonPrimitive.content },
+                    learningGoal = value("learningGoal"),
+                    commonMistake = value("commonMistake"),
+                    check = e.getValue("check").jsonObject.let { q ->
+                        LessonCheck(
+                            q.getValue("prompt").jsonPrimitive.content,
+                            q.getValue("choices").jsonArray.map { it.jsonPrimitive.content },
+                            q.getValue("correctIndex").jsonPrimitive.int,
+                            q.getValue("explanation").jsonPrimitive.content
+                        )
+                    }
                 )
             }
             require(lessons.isNotEmpty() && lessons.size <= 200)
