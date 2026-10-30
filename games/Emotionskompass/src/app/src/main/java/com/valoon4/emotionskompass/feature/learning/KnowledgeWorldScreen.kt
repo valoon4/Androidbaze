@@ -40,6 +40,7 @@ import com.valoon4.emotionskompass.core.learning.LearningUiState
 import com.valoon4.emotionskompass.core.lessons.KnowledgeLesson
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonTopic
+import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 import java.time.LocalDate
 
 /** Independently browsable articles and guided, non-gated learning sequences. */
@@ -51,6 +52,7 @@ fun KnowledgeWorldScreen(
     onRead: (String) -> Unit,
     onStrategies: () -> Unit = {},
     onLearning: () -> Unit = {},
+    caseCatalog: StrategyCaseCatalog? = null,
     onReturnToSource: (() -> Unit)? = null,
     requestedArticleId: String? = null,
     onRequestConsumed: () -> Unit = {}
@@ -240,6 +242,15 @@ fun KnowledgeWorldScreen(
         return
     }
 
+    if (mode == "Praxisfälle" && caseCatalog != null) {
+        StrategyPracticeScreen(
+            catalog = caseCatalog,
+            onBackToKnowledge = { mode = "Start" },
+            onStrategies = onStrategies
+        )
+        return
+    }
+
     val results = catalog.browse(query,
         LessonTopic.entries.firstOrNull { it.label == topic })
     val today = catalog.daily(LocalDate.now())
@@ -248,11 +259,12 @@ fun KnowledgeWorldScreen(
         item {
             Text("Wissenswelt", style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
-            Text("20 frei lesbare Artikel und vier geführte Lernreihen. Alles offline und ohne Pflichttermine.",
+            Text("${catalog.lessons.size} frei lesbare Artikel und ${catalog.series.size} geführte Lernreihen. Alles offline und ohne Pflichttermine.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(listOf("Start", "Artikel", "Lernreihen", "Merkliste")) { option ->
+                items(listOf("Start", "Artikel", "Lernreihen", "Merkliste") +
+                    (if (caseCatalog != null) listOf("Praxisfälle") else emptyList())) { option ->
                     FilterChip(selected = mode == option, onClick = { mode = option },
                         label = { Text(option) })
                 }
@@ -298,6 +310,10 @@ fun KnowledgeWorldScreen(
                         modifier = Modifier.fillMaxWidth()) {
                         Text("Strategieatlas: Möglichkeiten und Grenzen entdecken")
                     }
+                    if (caseCatalog != null) OutlinedButton(
+                        onClick = { mode = "Praxisfälle" },
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text("Praxisfälle vergleichen – ${caseCatalog.cases.size} Beispiele") }
                     OutlinedButton(onClick = onLearning,
                         modifier = Modifier.fillMaxWidth()) {
                         Text("Übungen, Wortkarten und Wiederholen")
@@ -346,7 +362,7 @@ fun KnowledgeWorldScreen(
                 item {
                     Text("Geführt lernen", style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold)
-                    Text("Je fünf aufeinander aufbauende Artikel. Du kannst jeden frei öffnen oder in Reihenfolge lesen.",
+                    Text("Alle Kapitel sind unabhängig lesbar. Du kannst die Reihenfolge selbst bestimmen oder überspringen.",
                         style = MaterialTheme.typography.bodySmall)
                 }
                 items(catalog.series, key = { it.id }) { path ->
