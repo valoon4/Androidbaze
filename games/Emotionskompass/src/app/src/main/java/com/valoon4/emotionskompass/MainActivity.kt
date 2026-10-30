@@ -334,9 +334,7 @@ private fun EmotionskompassApp(
         else vm.closeCheckIn()
     }
     val requestBack: () -> Unit = {
-        if (state.destination == Destination.STRATEGIES && selectedStrategyId != null) {
-            selectedStrategyId = null
-        } else if (state.destination == Destination.CHECKIN && checkIn.isFirstStep) {
+        if (state.destination == Destination.CHECKIN && checkIn.isFirstStep) {
             requestDiscard()
         } else {
             vm.back()
