@@ -141,11 +141,15 @@ class MainActivity : ComponentActivity() {
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
                 val lockPreferences = remember { AppLockPreferences(applicationContext) }
                 val learningRepository = remember { LearningRepository(applicationContext) }
+                // A corrupt or future-incompatible bundled catalog must never
+                // prevent access to the existing journal, check-in or atlas.
                 val lessonCatalog = remember {
-                    LessonCatalog.fromJson(
-                        assets.open("lessons/knowledge.de.v1.json")
-                            .bufferedReader(Charsets.UTF_8).use { it.readText() }
-                    )
+                    runCatching {
+                        LessonCatalog.fromJson(
+                            assets.open("lessons/knowledge.de.v1.json")
+                                .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        )
+                    }.getOrNull()
                 }
                 if (completed) {
                     EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, this@MainActivity)
@@ -213,7 +217,7 @@ private fun EmotionskompassApp(
     journal: EncryptedJournalRepository,
     lockPreferences: AppLockPreferences,
     learningRepository: LearningRepository,
-    lessonCatalog: LessonCatalog,
+    lessonCatalog: LessonCatalog?,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -460,12 +464,17 @@ private fun EmotionskompassApp(
                 }
                 Destination.VERGLEICH -> ComparisonScreen(state, catalog)
                 Destination.LEARN_CARDS -> LearningCardsScreen(catalog, vm::openEmotion)
-                Destination.WISSENSWELT -> KnowledgeWorldScreen(
-                    catalog = lessonCatalog,
-                    ui = learning,
-                    onBookmark = learningVm::toggleArticleBookmark,
-                    onRead = learningVm::markArticleRead
-                )
+                Destination.WISSENSWELT -> if (lessonCatalog != null) {
+                    KnowledgeWorldScreen(
+                        catalog = lessonCatalog,
+                        ui = learning,
+                        onBookmark = learningVm::toggleArticleBookmark,
+                        onRead = learningVm::markArticleRead
+                    )
+                } else {
+                    Text("Die Wissenswelt konnte nicht geladen werden. Dein Tagebuch und die anderen Bereiche bleiben verfügbar.",
+                        modifier = Modifier.padding(20.dp))
+                }
                 Destination.LEARNING -> LearningScreen(
                     emotions = catalog,
                     needs = needCatalog,
