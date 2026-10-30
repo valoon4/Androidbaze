@@ -14,6 +14,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -59,6 +60,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -73,8 +76,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -104,6 +109,7 @@ import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
 import com.valoon4.emotionskompass.core.navigation.Destination
+import com.valoon4.emotionskompass.core.navigation.DiscoveryAtlas
 import com.valoon4.emotionskompass.core.navigation.MainSection
 import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
@@ -304,6 +310,9 @@ private fun EmotionskompassApp(
     var confirmDiscard by remember { mutableStateOf(false) }
     var selectedStrategyId by rememberSaveable { mutableStateOf<String?>(null) }
     var requestedKnowledgeArticleId by rememberSaveable { mutableStateOf<String?>(null) }
+    var discoveryAtlas by rememberSaveable { mutableStateOf(DiscoveryAtlas.GEFUEHLE) }
+    val mainScreenStates = rememberSaveableStateHolder()
+    val atlasStates = rememberSaveableStateHolder()
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
     val privateScreen = !unlocked || state.destination == Destination.CHECKIN ||
@@ -358,7 +367,31 @@ private fun EmotionskompassApp(
         return
     }
     BackHandler(enabled = state.destination != Destination.MAIN) { requestBack() }
+    val navItems = listOf(
+        Triple(MainSection.START, "Start", Icons.Outlined.Home),
+        Triple(MainSection.ENTDECKEN, "Entdecken", Icons.Outlined.Explore),
+        Triple(MainSection.WISSEN, "Wissen", Icons.Outlined.MenuBook),
+        Triple(MainSection.TAGEBUCH, "Tagebuch", Icons.Outlined.NoteAlt),
+        Triple(MainSection.RUECKBLICK, "Rückblick", Icons.Outlined.Insights)
+    )
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val useRail = maxWidth >= 600.dp && maxHeight >= 480.dp
+        Row(Modifier.fillMaxSize()) {
+            if (useRail && state.destination != Destination.CHECKIN) {
+                NavigationRail(modifier = Modifier.width(96.dp)) {
+                    navItems.forEach { (section, title, icon) ->
+                        NavigationRailItem(
+                            selected = state.section == section,
+                            onClick = { vm.selectSection(section) },
+                            icon = { Icon(icon, contentDescription = null) },
+                            label = { Text(title, maxLines = 2) },
+                            alwaysShowLabel = true
+                        )
+                    }
+                }
+            }
     Scaffold(
+        modifier = Modifier.weight(1f),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
@@ -382,60 +415,109 @@ private fun EmotionskompassApp(
             )
         },
         bottomBar = {
-            if (state.destination != Destination.CHECKIN) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                listOf(
-                    Triple(MainSection.START, "Start", Icons.Outlined.Home),
-                    Triple(MainSection.ENTDECKEN, "Gefühle", Icons.Outlined.FavoriteBorder),
-                    Triple(MainSection.BEDUERFNISSE, "Bedürfnisse", Icons.Outlined.Explore),
-                    Triple(MainSection.TAGEBUCH, "Tagebuch", Icons.Outlined.NoteAlt),
-                    Triple(MainSection.RUECKBLICK, "Rückblick", Icons.Outlined.Insights)
-                ).forEach { (section, title, icon) ->
-                    NavigationBarItem(
-                        selected = state.destination == Destination.MAIN && state.section == section,
-                        onClick = { vm.selectSection(section) },
-                        icon = { Icon(icon, contentDescription = null) },
-                        label = { Text(title, maxLines = 1) },
-                        alwaysShowLabel = true
-                    )
+            if (!useRail && state.destination != Destination.CHECKIN) {
+                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                    navItems.forEach { (section, title, icon) ->
+                        NavigationBarItem(
+                            selected = state.section == section,
+                            onClick = { vm.selectSection(section) },
+                            icon = { Icon(icon, contentDescription = null) },
+                            label = { Text(title, maxLines = 1) },
+                            alwaysShowLabel = true
+                        )
+                    }
                 }
             }
         }
     ) { inset ->
         Box(Modifier.fillMaxSize().padding(inset)) {
             when (state.destination) {
-                Destination.MAIN -> when (state.section) {
+                Destination.MAIN -> mainScreenStates.SaveableStateProvider(state.section.name) {
+                    when (state.section) {
                     MainSection.START -> HomeScreen(
                         termsCount = catalog.emotions.size,
                         needsCount = needCatalog.needs.size,
-                        onExplore = { vm.selectSection(MainSection.ENTDECKEN) },
-                        onNeeds = { vm.selectSection(MainSection.BEDUERFNISSE) },
-                        onCheckin = { vm.openCheckin() },
+                        strategyCount = strategyCatalog?.strategies?.size ?: 0,
+                        onExplore = { discoveryAtlas = DiscoveryAtlas.GEFUEHLE; vm.selectSection(MainSection.ENTDECKEN) },
+                        onNeeds = { discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE; vm.selectSection(MainSection.ENTDECKEN) },
+                        onStrategies = { discoveryAtlas = DiscoveryAtlas.STRATEGIEN; vm.selectSection(MainSection.ENTDECKEN) },
+                        onCheckin = vm::openCheckin,
                         onWord = vm::openLearning,
-                        onLearn = vm::openLearning,
-                        onKnowledge = vm::openKnowledgeWorld,
+                        onKnowledge = { vm.selectSection(MainSection.WISSEN) },
                         daily = LearningEngine.daily(catalog, needCatalog, LocalDate.now())
                     )
-                    MainSection.ENTDECKEN -> AtlasScreen(
-                        catalog = catalog,
-                        filters = filters,
-                        onEmotion = vm::openEmotion,
-                        onPath = vm::openPath,
-                        onCards = vm::openLearningCards,
-                        onComparisons = vm::openComparisons,
-                        onSearch = vm::setSearch,
-                        onFamily = vm::setFamily,
-                        onKind = vm::setKind,
-                        onLetter = vm::setLetter,
-                        onClear = vm::clearFilters
-                    )
-                    MainSection.BEDUERFNISSE -> NeedsScreen(
-                        needCatalog,
-                        favorites = learning.progress.favorites,
-                        seen = learning.progress.seen,
-                        canSave = !learning.busy && learning.error == null,
-                        onFavorite = learningVm::toggleFavorite,
-                        onSeen = learningVm::markSeen
-                    )
+                    MainSection.ENTDECKEN -> Column(Modifier.fillMaxSize()) {
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(DiscoveryAtlas.entries, key = { it.name }) { atlas ->
+                                FilterChip(
+                                    selected = discoveryAtlas == atlas,
+                                    onClick = { discoveryAtlas = atlas },
+                                    label = { Text(atlas.label) }
+                                )
+                            }
+                        }
+                        Box(Modifier.weight(1f)) {
+                            atlasStates.SaveableStateProvider(discoveryAtlas.name) {
+                                when (discoveryAtlas) {
+                                    DiscoveryAtlas.GEFUEHLE -> AtlasScreen(
+                                        catalog = catalog,
+                                        filters = filters,
+                                        onEmotion = vm::openEmotion,
+                                        onPath = vm::openPath,
+                                        onCards = vm::openLearningCards,
+                                        onComparisons = vm::openComparisons,
+                                        onSearch = vm::setSearch,
+                                        onFamily = vm::setFamily,
+                                        onKind = vm::setKind,
+                                        onLetter = vm::setLetter,
+                                        onClear = vm::clearFilters
+                                    )
+                                    DiscoveryAtlas.BEDUERFNISSE -> NeedsScreen(
+                                        needCatalog,
+                                        favorites = learning.progress.favorites,
+                                        seen = learning.progress.seen,
+                                        canSave = !learning.busy && learning.error == null,
+                                        onFavorite = learningVm::toggleFavorite,
+                                        onSeen = learningVm::markSeen
+                                    )
+                                    DiscoveryAtlas.STRATEGIEN -> if (strategyCatalog != null) {
+                                        StrategyAtlasScreen(
+                                            catalog = strategyCatalog,
+                                            selectedId = selectedStrategyId,
+                                            onSelect = { selectedStrategyId = it },
+                                            onBackToList = { selectedStrategyId = null },
+                                            onKnowledgeArticle = { id ->
+                                                requestedKnowledgeArticleId = id
+                                                vm.openKnowledgeWorld()
+                                            }
+                                        )
+                                    } else {
+                                        Text("Der Strategieatlas konnte nicht geladen werden. Die anderen Atlanten bleiben verfügbar.",
+                                            modifier = Modifier.padding(20.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    MainSection.WISSEN -> if (lessonCatalog != null) {
+                        KnowledgeWorldScreen(
+                            catalog = lessonCatalog,
+                            ui = learning,
+                            onBookmark = learningVm::toggleArticleBookmark,
+                            onRead = learningVm::markArticleRead,
+                            onLearning = vm::openLearning,
+                            onStrategies = {
+                                discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+                                vm.selectSection(MainSection.ENTDECKEN)
+                            }
+                        )
+                    } else {
+                        Text("Die Wissenswelt konnte nicht geladen werden. Deine übrigen Bereiche bleiben verfügbar.",
+                            modifier = Modifier.padding(20.dp))
+                    }
                     MainSection.TAGEBUCH -> JournalScreen(
                         state = diary,
                         emotions = catalog,
@@ -459,6 +541,7 @@ private fun EmotionskompassApp(
                         subtitle = "Hier werden später persönliche Muster sichtbar – ohne Noten, Diagnosen oder Leistungsdruck.",
                         milestone = "Geplant für M7"
                     )
+                    }
                 }
                 Destination.EMOTION -> {
                     val emotion = state.emotionId?.let(catalog::find)
@@ -485,27 +568,17 @@ private fun EmotionskompassApp(
                         ui = learning,
                         onBookmark = learningVm::toggleArticleBookmark,
                         onRead = learningVm::markArticleRead,
-                        onStrategies = vm::openStrategies,
+                        onStrategies = {
+                            discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+                            vm.selectSection(MainSection.ENTDECKEN)
+                        },
+                        onLearning = vm::openLearning,
+                        onReturnToSource = { vm.back() },
                         requestedArticleId = requestedKnowledgeArticleId,
                         onRequestConsumed = { requestedKnowledgeArticleId = null }
                     )
                 } else {
                     Text("Die Wissenswelt konnte nicht geladen werden. Dein Tagebuch und die anderen Bereiche bleiben verfügbar.",
-                        modifier = Modifier.padding(20.dp))
-                }
-                Destination.STRATEGIES -> if (strategyCatalog != null) {
-                    StrategyAtlasScreen(
-                        catalog = strategyCatalog,
-                        selectedId = selectedStrategyId,
-                        onSelect = { selectedStrategyId = it },
-                        onBackToList = { selectedStrategyId = null },
-                        onKnowledgeArticle = { articleId ->
-                            requestedKnowledgeArticleId = articleId
-                            vm.openKnowledgeWorld()
-                        }
-                    )
-                } else {
-                    Text("Der Strategieatlas konnte nicht geladen werden. Die übrigen Bereiche bleiben nutzbar.",
                         modifier = Modifier.padding(20.dp))
                 }
                 Destination.LEARNING -> LearningScreen(
@@ -555,6 +628,8 @@ private fun EmotionskompassApp(
                 )
                 Destination.SETTINGS -> SettingsScreen(catalog, needCatalog)
             }
+        }
+    }
         }
     }
     if (confirmDiscard && state.destination == Destination.CHECKIN) {
