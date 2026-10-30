@@ -47,7 +47,14 @@ import com.valoon4.emotionskompass.core.model.NeedLearningPath
 
 /** Offline educational reference; all browsing state stays in memory. */
 @Composable
-fun NeedsScreen(catalog: NeedCatalog) {
+fun NeedsScreen(
+    catalog: NeedCatalog,
+    favorites: Set<String> = emptySet(),
+    seen: Set<String> = emptySet(),
+    canSave: Boolean = false,
+    onFavorite: (String) -> Unit = {},
+    onSeen: (String) -> Unit = {}
+) {
     var tab by remember { mutableStateOf("Atlas") }
     var detailId by remember { mutableStateOf<String?>(null) }
     var pathId by remember { mutableStateOf<String?>(null) }
@@ -71,7 +78,12 @@ fun NeedsScreen(catalog: NeedCatalog) {
         if (need != null) {
             NeedDetailScreen(need, catalog,
                 onBack = { detailId = null },
-                onRelated = { detailId = it })
+                onRelated = { detailId = it },
+                favorite = "n:${need.id}" in favorites,
+                seen = "n:${need.id}" in seen,
+                canSave = canSave,
+                onFavorite = { onFavorite("n:${need.id}") },
+                onSeen = { onSeen("n:${need.id}") })
             return
         }
     }
@@ -190,7 +202,12 @@ private fun NeedDetailScreen(
     need: HumanNeed,
     catalog: NeedCatalog,
     onBack: () -> Unit,
-    onRelated: (String) -> Unit
+    onRelated: (String) -> Unit,
+    favorite: Boolean,
+    seen: Boolean,
+    canSave: Boolean,
+    onFavorite: () -> Unit,
+    onSeen: () -> Unit
 ) {
     LazyColumn(Modifier.fillMaxSize(),
         contentPadding = PaddingValues(20.dp),
@@ -202,6 +219,16 @@ private fun NeedDetailScreen(
             Text(need.name, style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
             Text(need.definition, style = MaterialTheme.typography.bodyLarge)
+        }
+        item {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = onFavorite, enabled = canSave) {
+                    Text(if (favorite) "★ Gespeichert" else "☆ Merken")
+                }
+                TextButton(onClick = onSeen, enabled = canSave && !seen) {
+                    Text(if (seen) "✓ Entdeckt" else "Als entdeckt markieren")
+                }
+            }
         }
         item { NeedInfoCard("Wenn das Bedürfnis erfüllt erscheint", need.fulfilledExample) }
         item { NeedInfoCard("Wenn es zu kurz kommen könnte", need.unmetExample) }
