@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,8 @@ import com.valoon4.emotionskompass.core.model.HumanNeed
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.NeedComparison
 import com.valoon4.emotionskompass.core.model.NeedLearningPath
+import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
 
 /** Offline educational reference; all browsing state stays in memory. */
 @Composable
@@ -56,16 +59,33 @@ fun NeedsScreen(
     seen: Set<String> = emptySet(),
     canSave: Boolean = false,
     onFavorite: (String) -> Unit = {},
-    onSeen: (String) -> Unit = {}
+    onSeen: (String) -> Unit = {},
+    strategyCatalog: StrategyCatalog? = null,
+    onStrategy: (String) -> Unit = {},
+    onOpenStrategyAtlas: () -> Unit = {},
+    requestedNeedId: String? = null,
+    onRequestConsumed: () -> Unit = {},
+    onReturnToStrategy: (() -> Unit)? = null
 ) {
     var tab by rememberSaveable { mutableStateOf("Atlas") }
     var detailId by rememberSaveable { mutableStateOf<String?>(null) }
     var pathId by rememberSaveable { mutableStateOf<String?>(null) }
     var comparison by remember { mutableStateOf<NeedComparison?>(null) }
     val tabStates = rememberSaveableStateHolder()
+    LaunchedEffect(requestedNeedId) {
+        if (requestedNeedId != null && catalog.find(requestedNeedId) != null) {
+            tab = "Atlas"
+            detailId = requestedNeedId
+            onRequestConsumed()
+        }
+    }
+    val closeDetail: () -> Unit = {
+        detailId = null
+        if (onReturnToStrategy != null) onReturnToStrategy()
+    }
     BackHandler(enabled = detailId != null || pathId != null || comparison != null) {
         when {
-            detailId != null -> detailId = null
+            detailId != null -> closeDetail()
             comparison != null -> comparison = null
             else -> pathId = null
         }
@@ -88,8 +108,12 @@ fun NeedsScreen(
         val need = catalog.find(detailId!!)
         if (need != null) {
             NeedDetailScreen(need, catalog,
-                onBack = { detailId = null },
+                onBack = closeDetail,
                 onRelated = { detailId = it },
+                backLabel = if (onReturnToStrategy != null) "Zur Strategie" else "Zum Bedürfnisatlas",
+                strategyCatalog = strategyCatalog,
+                onStrategy = onStrategy,
+                onOpenStrategyAtlas = onOpenStrategyAtlas,
                 favorite = "n:${need.id}" in favorites,
                 seen = "n:${need.id}" in seen,
                 canSave = canSave,
@@ -216,6 +240,10 @@ private fun NeedDetailScreen(
     catalog: NeedCatalog,
     onBack: () -> Unit,
     onRelated: (String) -> Unit,
+    backLabel: String,
+    strategyCatalog: StrategyCatalog?,
+    onStrategy: (String) -> Unit,
+    onOpenStrategyAtlas: () -> Unit,
     favorite: Boolean,
     seen: Boolean,
     canSave: Boolean,
@@ -226,7 +254,7 @@ private fun NeedDetailScreen(
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(13.dp)) {
         item {
-            TextButton(onClick = onBack) { Text("Zurück zum Bedürfnisatlas") }
+            TextButton(onClick = onBack) { Text("← $backLabel") }
             Text(need.family.uppercase(), style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
             Text(need.name, style = MaterialTheme.typography.headlineSmall,
@@ -253,6 +281,33 @@ private fun NeedDetailScreen(
             Text("Es gibt viele mögliche Wege, ein Bedürfnis zu berücksichtigen. Du entscheidest, welcher zu dir passt.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        val relevantStrategies = strategyCatalog?.let {
+            StrategyLearningIndex.strategiesForNeed(need.id, it)
+        }.orEmpty()
+        item {
+            Text("Mögliche Wege im Strategieatlas", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text("Diese redaktionell verknüpften Beispiele sind keine persönliche Empfehlung. Ein Bedürfnis kann auf ganz unterschiedliche Weise berücksichtigt werden.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        if (relevantStrategies.isNotEmpty()) {
+            items(relevantStrategies, key = { "strategy-${it.id}" }) { strategy ->
+                OutlinedButton(onClick = { onStrategy(strategy.id) },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(strategy.title)
+                }
+            }
+        } else if (strategyCatalog != null) {
+            item {
+                Text("Für dieses Bedürfnis gibt es noch keine einzeln geprüfte Strategie-Verknüpfung.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                TextButton(onClick = onOpenStrategyAtlas) {
+                    Text("Strategien selbst entdecken")
+                }
+            }
         }
         item {
             Text("Verwandte Bedürfnisse", fontWeight = FontWeight.SemiBold)
