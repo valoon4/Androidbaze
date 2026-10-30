@@ -18,22 +18,40 @@ data class LearningUiState(
     val message: String? = null
 )
 
-class LearningViewModel(private val store: LearningRepository) : ViewModel() {
+class LearningViewModel(private val store: LearningRepository,
+    initiallyLocked: Boolean = false) : ViewModel() {
+    private var locked = initiallyLocked
+    private var session = 0L
     private val mutex = Mutex()
     private val _state = MutableStateFlow(LearningUiState())
     val state = _state.asStateFlow()
 
-    init { reload() }
+    init { if (!initiallyLocked) reload() }
+
+    fun lock() {
+        locked = true
+        session++
+        _state.value = LearningUiState()
+    }
+
+    fun unlock() {
+        locked = false
+        session++
+        reload()
+    }
 
     fun reload() {
+        if (locked) return
         viewModelScope.launch {
             mutex.withLock {
+                if (locked) return@withLock
+                val epoch = session
                 _state.value = _state.value.copy(busy = true, error = null, message = null)
                 try {
                     val loaded = withContext(Dispatchers.IO) { store.load() }
-                    _state.value = LearningUiState(progress = loaded, busy = false)
+                    if (!locked && epoch == session) _state.value = LearningUiState(progress = loaded, busy = false)
                 } catch (e: Exception) {
-                    _state.value = _state.value.copy(busy = false,
+                    if (!locked && epoch == session) _state.value = _state.value.copy(busy = false,
                         error = e.message ?: "Lernstand konnte nicht geladen werden.")
                 }
             }
@@ -41,16 +59,17 @@ class LearningViewModel(private val store: LearningRepository) : ViewModel() {
     }
 
     private fun change(transform: (LearningState) -> LearningState) {
-        if (_state.value.busy || _state.value.error != null) return
+        if (locked || _state.value.busy || _state.value.error != null) return
         viewModelScope.launch {
             mutex.withLock {
-                if (_state.value.error != null) return@withLock
+                if (locked || _state.value.error != null) return@withLock
+                val epoch = session
                 _state.value = _state.value.copy(busy = true, message = null)
                 try {
                     val saved = withContext(Dispatchers.IO) { store.change(transform) }
-                    _state.value = LearningUiState(progress = saved, busy = false)
+                    if (!locked && epoch == session) _state.value = LearningUiState(progress = saved, busy = false)
                 } catch (e: Exception) {
-                    _state.value = _state.value.copy(busy = false,
+                    if (!locked && epoch == session) _state.value = _state.value.copy(busy = false,
                         error = e.message ?: "Lernstand konnte nicht gespeichert werden.")
                 }
             }
@@ -66,16 +85,18 @@ class LearningViewModel(private val store: LearningRepository) : ViewModel() {
     }
 
     fun reset() {
-        if (_state.value.busy || _state.value.error != null) return
+        if (locked || _state.value.busy || _state.value.error != null) return
         viewModelScope.launch {
             mutex.withLock {
+                if (locked) return@withLock
+                val epoch = session
                 _state.value = _state.value.copy(busy = true)
                 try {
                     withContext(Dispatchers.IO) { store.reset() }
-                    _state.value = LearningUiState(busy = false,
+                    if (!locked && epoch == session) _state.value = LearningUiState(busy = false,
                         message = "Dein Lernstand wurde zurückgesetzt.")
                 } catch (e: Exception) {
-                    _state.value = _state.value.copy(busy = false,
+                    if (!locked && epoch == session) _state.value = _state.value.copy(busy = false,
                         error = e.message ?: "Zurücksetzen fehlgeschlagen.")
                 }
             }
@@ -83,12 +104,12 @@ class LearningViewModel(private val store: LearningRepository) : ViewModel() {
     }
 
     companion object {
-        fun factory(store: LearningRepository): ViewModelProvider.Factory =
+        fun factory(store: LearningRepository, initiallyLocked: Boolean = false): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     require(modelClass == LearningViewModel::class.java)
-                    return LearningViewModel(store) as T
+                    return LearningViewModel(store, initiallyLocked) as T
                 }
             }
     }
