@@ -210,13 +210,15 @@ private fun NeedAtlasPane(catalog: NeedCatalog, onNeed: (String) -> Unit) {
             }
         }
         item {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            // The count and reset action must never compete for horizontal room.
+            Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Text("${results.size} von ${catalog.needs.size} Begriffen",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 if (query.isNotBlank() || family != "Alle" || letter != "Alle") {
-                    TextButton(onClick = { query = ""; family = "Alle"; letter = "Alle" }) {
-                        Text("Zurücksetzen")
+                    TextButton(onClick = { query = ""; family = "Alle"; letter = "Alle" },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Suche und Filter zurücksetzen")
                     }
                 }
             }
