@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "links": [
+    {
+      "needId": "selbstbestimmung",
+      "items": [
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn mehrere Entscheidungen möglich sind, kann das Klären eigener Werte helfen, persönliche Wünsche von fremden Erwartungen zu unterscheiden."
+        },
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn Anforderungen deinen Entscheidungsspielraum einengen, kann eine sichere eigene Grenze eine Möglichkeit sein."
+        }
+      ]
+    },
+    {
+      "needId": "freiheit",
+      "items": [
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn eine Einschränkung deine eigenen Möglichkeiten betrifft, kannst du in einer sicheren Situation Handlungsspielraum respektvoll benennen."
+        },
+        {
+          "strategyId": "changing-situation",
+          "reason": "Wenn eine Rahmenbedingung verhandelbar ist, könnte eine konkrete Änderung zusätzliche Optionen eröffnen."
+        }
+      ]
+    },
+    {
+      "needId": "entscheidungsfreiheit",
+      "items": [
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn mehrere echte Optionen offenstehen, kann die Frage nach deinen Werten eine selbstbestimmte Wahl unterstützen."
+        },
+        {
+          "strategyId": "prioritizing",
+          "reason": "Wenn Zeit und Energie begrenzt sind, kann ein Überblick über wichtige und verschiebbare Schritte Klarheit geben."
+        }
+      ]
+    },
+    {
+      "needId": "unabhaengigkeit",
+      "items": [
+        {
+          "strategyId": "problem-solving",
+          "reason": "Wenn eine Aufgabe beeinflussbar ist, kann ein selbst gewählter nächster Schritt eigenständiges Handeln unterstützen."
+        },
+        {
+          "strategyId": "planning",
+          "reason": "Wenn du Fähigkeiten aufbauen möchtest, kann eine kleine realistische Planung helfen, dich nicht zu überfordern."
+        }
+      ]
+    },
+    {
+      "needId": "privatsphaere",
+      "items": [
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn jemand Informationen oder Zeit von dir beansprucht, kann eine klare sichere Grenze deine Privatsphäre schützen."
+        },
+        {
+          "strategyId": "protective-withdrawal",
+          "reason": "Wenn Abstand tatsächlich Privatsphäre und Schutz erhöht, kann ein geschützter Rückzug passend sein."
+        }
+      ]
+    },
+    {
+      "needId": "grenzen",
+      "items": [
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn eine Bitte deine Kräfte oder deinen Kontaktwunsch übergeht, kann ein verständliches Nein eine passende Möglichkeit sein."
+        },
+        {
+          "strategyId": "protective-withdrawal",
+          "reason": "Wenn ein Gespräch gerade zu viel ist, kann ein zeitlich begrenzter sicherer Abstand eigene Grenzen respektieren."
+        }
+      ]
+    },
+    {
+      "needId": "freiraum",
+      "items": [
+        {
+          "strategyId": "boundaries",
+          "reason": "Wenn du Zeit für eine eigene Tätigkeit brauchst, kann eine sachliche Grenze bei überzähligen Verpflichtungen helfen."
+        },
+        {
+          "strategyId": "prioritizing",
+          "reason": "Wenn mehrere Ansprüche konkurrieren, kann bewusstes Priorisieren einen selbst gewählten Freiraum sichern."
+        }
+      ]
+    },
+    {
+      "needId": "raum_fuer_mich",
+      "items": [
+        {
+          "strategyId": "protective-withdrawal",
+          "reason": "Wenn du allein sein möchtest und die Situation sicher ist, kann ein bewusst gewählter Rückzug persönliche Zeit ermöglichen."
+        },
+        {
+          "strategyId": "restorative-rest",
+          "reason": "Wenn du erschöpft bist, kann eine freiwillige Pause ohne Rechtfertigung Raum zum Ausruhen geben."
+        }
+      ]
+    },
+    {
+      "needId": "authentizitaet",
+      "items": [
+        {
+          "strategyId": "values-clarification",
+          "reason": "Wenn du dich zwischen eigenen Überzeugungen und äußeren Erwartungen hin- und hergerissen fühlst, kann Werteklärung Orientierung bieten."
+        },
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn ein Gespräch sicher ist, kann eine behutsame Ich-Aussage deine eigene Haltung verständlicher machen."
+        }
+      ]
+    },
+    {
+      "needId": "ausdruck",
+      "items": [
+        {
+          "strategyId": "name-feelings",
+          "reason": "Wenn dir Worte für eigene Gefühle fehlen, kann ein differenzierter Wortschatz das Ausdrücken erleichtern."
+        },
+        {
+          "strategyId": "communicate-needs",
+          "reason": "Wenn du etwas teilen möchtest und ein sicherer Kontakt besteht, kann eine klare eigene Aussage Raum für Ausdruck schaffen."
+        }
+      ]
+    }
+  ]
+}
