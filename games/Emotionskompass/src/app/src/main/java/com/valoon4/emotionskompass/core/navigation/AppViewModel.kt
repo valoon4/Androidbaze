@@ -167,8 +167,7 @@ class AppViewModel(
                     } finally { bytes.fill(0) }
                 }
                 if (allowed()) {
-                    // Set idle before reload: reloadJournal deliberately refuses concurrent
-                    // busy operations. Keeping busy=true here caused a stuck empty journal.
+                    // JournalUiState() resets busy=false before the fresh authenticated read.
                     _journalState.value = JournalUiState(
                         message = "Wiederherstellung erfolgreich: $count Einträge.")
                     reloadJournal()
