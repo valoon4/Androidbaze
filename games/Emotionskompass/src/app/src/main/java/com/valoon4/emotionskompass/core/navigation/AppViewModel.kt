@@ -15,6 +15,7 @@ import com.valoon4.emotionskompass.core.journal.BoundedJournalInput
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
@@ -51,7 +52,9 @@ data class JournalUiState(
     val entries: List<JournalEntry> = emptyList(),
     val busy: Boolean = false,
     val error: String? = null,
-    val message: String? = null
+    val message: String? = null,
+    // An empty list before successful decryption is NOT an empty journal.
+    val loaded: Boolean = false
 )
 
 class AppViewModel(
@@ -118,6 +121,21 @@ class AppViewModel(
     }
 
     private fun allowed(): Boolean = _unlocked.value
+
+    /**
+     * M7.0 boundary: an overview may only use fully authenticated, fresh
+     * in-memory journal data after the optional app-lock was opened.
+     * In particular, never present 0 entries while the read is pending or
+     * after a decryption error. Return no snapshot rather than partial data.
+     *
+     * Do not retain this projection across the lock boundary. M7.1 will
+     * request it when the Rückblick tab is visible and discard on relock.
+     */
+    fun insightsSnapshotIfAvailable(): JournalSnapshot? {
+        val state = _journalState.value
+        if (!allowed() || !state.loaded || state.busy || state.error != null) return null
+        return JournalSnapshot.fromEntries(state.entries)
+    }
 
     fun clearTransferMessage() {
         _journalState.value = _journalState.value.copy(error = null, message = null)
@@ -205,7 +223,8 @@ class AppViewModel(
             try {
                 val entries = withContext(Dispatchers.IO) { store.list() }
                 if (currentAccess(epoch)) _journalState.value = JournalUiState(
-                    entries.sortedByDescending { it.createdAt }, message = transferMessage
+                    entries.sortedByDescending { it.createdAt }, message = transferMessage,
+                    loaded = true
                 )
             } catch (e: Exception) {
                 if (currentAccess(epoch)) {
@@ -233,7 +252,8 @@ class AppViewModel(
                 if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     (_journalState.value.entries.filterNot { it.id == saved.id } + saved)
-                        .sortedByDescending { it.createdAt }
+                        .sortedByDescending { it.createdAt },
+                    loaded = true
                 )
                 _checkIn.value = CheckInDraft()
                 _editingEntryId.value = null
@@ -267,7 +287,8 @@ class AppViewModel(
                 withContext(Dispatchers.IO) { store.delete(id) }
                 if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
-                    _journalState.value.entries.filterNot { it.id == id }
+                    _journalState.value.entries.filterNot { it.id == id },
+                    loaded = true
                 )
             } catch (e: Exception) {
                 if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
@@ -284,7 +305,7 @@ class AppViewModel(
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) { store.deleteAll() }
-                if (currentAccess(epoch)) _journalState.value = JournalUiState()
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(loaded = true)
             } catch (e: Exception) {
                 if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
                     error = e.message ?: "Tagebuch konnte nicht gelöscht werden")
