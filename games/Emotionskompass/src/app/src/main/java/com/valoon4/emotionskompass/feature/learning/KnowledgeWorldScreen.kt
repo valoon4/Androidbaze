@@ -49,6 +49,7 @@ fun KnowledgeWorldScreen(
     ui: LearningUiState,
     onBookmark: (String) -> Unit,
     onRead: (String) -> Unit,
+    onStrategies: () -> Unit = {},
     requestedArticleId: String? = null,
     onRequestConsumed: () -> Unit = {}
 ) {
@@ -284,6 +285,10 @@ fun KnowledgeWorldScreen(
                     }
                 }
                 item {
+                    OutlinedButton(onClick = onStrategies,
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Strategieatlas: Möglichkeiten und Grenzen entdecken")
+                    }
                     OutlinedButton(onClick = { mode = "Artikel" },
                         modifier = Modifier.fillMaxWidth()) {
                         Text("Alle Artikel frei entdecken")
