@@ -41,7 +41,7 @@ import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 fun StrategyPracticeScreen(
     catalog: StrategyCaseCatalog,
     onBackToKnowledge: () -> Unit,
-    onStrategy: (String) -> Unit,
+    onStrategy: (String, String) -> Unit,
     strategyTitles: Map<String, String> = emptyMap(),
     requestedCaseId: String? = null,
     onRequestConsumed: () -> Unit = {},
@@ -146,7 +146,7 @@ fun StrategyPracticeScreen(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 selected.relatedStrategyIds.forEach { id ->
-                    OutlinedButton(onClick = { onStrategy(id) },
+                    OutlinedButton(onClick = { onStrategy(id, selected.id) },
                         modifier = Modifier.fillMaxWidth()) {
                         Text(strategyTitles[id] ?: "Strategie im Atlas ansehen")
                     }
