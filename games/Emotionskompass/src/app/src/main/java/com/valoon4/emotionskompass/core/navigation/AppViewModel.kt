@@ -11,6 +11,7 @@ import com.valoon4.emotionskompass.core.checkin.CheckInMode
 import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.checkin.NextStepIdea
+import com.valoon4.emotionskompass.core.journal.BoundedJournalInput
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalBackup
@@ -156,17 +157,7 @@ class AppViewModel(
                     val input = io.openInputStream(uri)
                         ?: throw IllegalStateException("Sicherungsdatei konnte nicht gelesen werden.")
                     val bytes = input.use { stream ->
-                        val buffer = java.io.ByteArrayOutputStream()
-                        val chunk = ByteArray(8192)
-                        while (true) {
-                            val n = stream.read(chunk)
-                            if (n < 0) break
-                            require(buffer.size() + n <= JournalBackup.MAX_BACKUP_BYTES) {
-                                "Sicherungsdatei ist zu groß."
-                            }
-                            buffer.write(chunk, 0, n)
-                        }
-                        buffer.toByteArray()
+                        BoundedJournalInput.read(stream, JournalBackup.MAX_BACKUP_BYTES)
                     }
                     try {
                         require(bytes.size <= JournalBackup.MAX_BACKUP_BYTES) {
@@ -176,6 +167,8 @@ class AppViewModel(
                     } finally { bytes.fill(0) }
                 }
                 if (allowed()) {
+                    // Set idle before reload: reloadJournal deliberately refuses concurrent
+                    // busy operations. Keeping busy=true here caused a stuck empty journal.
                     _journalState.value = JournalUiState(
                         message = "Wiederherstellung erfolgreich: $count Einträge.")
                     reloadJournal()
