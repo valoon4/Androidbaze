@@ -140,4 +140,99 @@ class LearningEngineTest {
         assertTrue(LearningEngine.quizQueue(LearningEngine.quizzes(emotions, needs),
             LearningState(), 0).isEmpty())
     }
+
+    /** All curated comparison questions must hide the compared labels from choices. */
+    @Test fun emotionComparisonsDoNotGiveAwayTheirTermNames() {
+        val questions = LearningEngine.quizzes(emotions, needs)
+            .filter { it.id.startsWith("ec:") }
+        assertEquals(emotions.comparisons.size, questions.size)
+        questions.forEach { quiz ->
+            val pair = emotions.comparisons[quiz.id.substringAfter(':').toInt()]
+            val names = listOf(
+                requireNotNull(emotions.find(pair.first)).name,
+                requireNotNull(emotions.find(pair.second)).name
+            )
+            quiz.choices.forEach { choice ->
+                assertTrue("Nicht neutralisiert: ${quiz.id}: $choice",
+                    choice.startsWith("Bei diesem Gefühl") || choice.startsWith("Dieses Gefühl"))
+                names.forEach { name ->
+                    val pattern = Regex(
+                        "(?<!\\p{L})" + Regex.escape(name) +
+                            "(?:en|n|s|e|er)?(?!\\p{L})",
+                        RegexOption.IGNORE_CASE
+                    )
+                    assertFalse("Begriff $name verrät die Lösung in ${quiz.id}: $choice",
+                        pattern.containsMatchIn(choice))
+                }
+            }
+            assertTrue(quiz.explanation.contains(names[0]))
+            assertTrue(quiz.explanation.contains(names[1]))
+        }
+    }
+
+    @Test fun needComparisonsDoNotGiveAwayTheirTermNames() {
+        val questions = LearningEngine.quizzes(emotions, needs)
+            .filter { it.id.startsWith("nc:") }
+        assertEquals(needs.comparisons.size, questions.size)
+        questions.forEach { quiz ->
+            val pair = needs.comparisons[quiz.id.substringAfter(':').toInt()]
+            val names = listOf(
+                requireNotNull(needs.find(pair.first)).name,
+                requireNotNull(needs.find(pair.second)).name
+            )
+            quiz.choices.forEach { choice ->
+                assertTrue("Nicht neutralisiert: ${quiz.id}: $choice",
+                    choice.startsWith("Bei diesem Bedürfnis") ||
+                        choice.startsWith("Dieses Bedürfnis"))
+                names.forEach { name ->
+                    val pattern = Regex(
+                        "(?<!\\p{L})" + Regex.escape(name) +
+                            "(?:en|n|s|e|er)?(?!\\p{L})",
+                        RegexOption.IGNORE_CASE
+                    )
+                    assertFalse("Bedürfnis $name verrät die Lösung in ${quiz.id}: $choice",
+                        pattern.containsMatchIn(choice))
+                }
+            }
+        }
+    }
+
+    @Test fun strategyQuestionsHaveNeitherTermNamesNorTheObviousNeedPrefix() {
+        val quizzes = LearningEngine.quizzes(emotions, needs)
+            .filter { it.id.startsWith("strategy:") }
+        assertEquals(32, quizzes.size)
+        quizzes.forEach { quiz ->
+            val need = needs.needs[quiz.id.substringAfter(':').toInt()]
+            assertTrue(quiz.choices.none { it.startsWith("Das Bedürfnis") })
+            assertTrue(quiz.choices.none { it.contains(need.name, ignoreCase = true) })
+            assertTrue(quiz.explanation.contains(need.name))
+        }
+    }
+
+    @Test fun shuffledAnswersKeepTheCorrectMeaningForEveryQuiz() {
+        val quizzes = LearningEngine.quizzes(emotions, needs)
+        for ((index, original) in quizzes.withIndex()) {
+            val answer = original.choices[original.correctIndex]
+            for (seed in listOf(1, 41, index + 2026)) {
+                val randomized = original.shuffled(kotlin.random.Random(seed))
+                assertEquals(original.id, randomized.id)
+                assertEquals(original.prompt, randomized.prompt)
+                assertEquals(original.explanation, randomized.explanation)
+                assertEquals(answer, randomized.choices[randomized.correctIndex])
+                assertEquals(original.choices.toSet(), randomized.choices.toSet())
+            }
+        }
+    }
+
+    @Test fun regressionFrustrationAndSafetyQuizzesOnlyShowNeutralDescriptions() {
+        val allQuizzes = LearningEngine.quizzes(emotions, needs)
+        val emotionsQuiz = allQuizzes.first { it.id == "ec:0" }
+        assertTrue(emotionsQuiz.choices[0].startsWith("Bei diesem Gefühl steht häufig"))
+        assertTrue(emotionsQuiz.choices[1].startsWith("Bei diesem Gefühl steht häufig"))
+        assertFalse(emotionsQuiz.choices.any { it.contains("Frustration") || it.contains("Enttäuschung") })
+        val needsQuiz = allQuizzes.first { it.id == "nc:0" }
+        assertEquals("Dieses Bedürfnis betont Schutz und Handlungsfähigkeit.", needsQuiz.choices[0])
+        assertEquals("Dieses Bedürfnis betont das Gefühl, gut aufgehoben zu sein.", needsQuiz.choices[1])
+    }
+
 }
