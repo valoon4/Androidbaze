@@ -92,6 +92,10 @@ class StrategyUxLinkQualityTest {
             .any { it.strategy.id == "boundaries" })
         assertTrue(needLinks.optionsForNeed("bewegung", strategies)
             .any { it.strategy.id == "movement" })
+        // The *need* for acceptance by others must not be equated with
+        // inner emotional acceptance as a regulation technique.
+        assertTrue(needLinks.optionsForNeed("akzeptanz", strategies)
+            .none { it.strategy.id == "acceptance" })
     }
 
     @Test fun brokenNeedLinksAndDuplicatedEditorialDefinitionsFailClosed() {
