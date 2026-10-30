@@ -208,6 +208,19 @@ fun KnowledgeWorldScreen(
                     color = MaterialTheme.colorScheme.primary)
                 Text("Alle Kapitel sind frei zugänglich und lassen sich überspringen.",
                     style = MaterialTheme.typography.bodySmall)
+                Text("Lernziel: " + entries.joinToString(" ") { it.learningGoal }.take(220) + "…",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                val next = catalog.continueAt(series, progress.readArticles)
+                if (next != null) {
+                    Button(onClick = { articleId = next.id },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Weiterlernen: " + next.title)
+                    }
+                } else {
+                    Text("✓ Alle Kapitel freiwillig als gelesen markiert.",
+                        color = MaterialTheme.colorScheme.primary)
+                }
             }
             items(entries, key = { it.id }) { item ->
                 ArticleTile(item, item.id in progress.articleBookmarks,
@@ -229,13 +242,58 @@ fun KnowledgeWorldScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(listOf("Artikel", "Lernreihen", "Merkliste")) { option ->
+                items(listOf("Start", "Artikel", "Lernreihen", "Merkliste")) { option ->
                     FilterChip(selected = mode == option, onClick = { mode = option },
                         label = { Text(option) })
                 }
             }
         }
         when (mode) {
+            "Start" -> {
+                item {
+                    Text("Dein Wissensimpuls heute", style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold)
+                    ArticleTile(today, today.id in progress.articleBookmarks,
+                        today.id in progress.readArticles) { articleId = today.id }
+                    Text("Heute nur ein kleiner Impuls. Es gibt keine Lese-Pflicht oder Streak.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                item {
+                    Text("Hier weiterlesen", style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold)
+                    val path = catalog.continueSeries(progress.readArticles)
+                    val chapter = path?.let { catalog.continueAt(it, progress.readArticles) }
+                    if (path != null && chapter != null) {
+                        Card(onClick = { seriesId = path.id; articleId = chapter.id }) {
+                            Column(Modifier.fillMaxWidth().padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                                Text(path.title, fontWeight = FontWeight.SemiBold)
+                                Text(chapter.title)
+                                Text(path.lessonIds.count { it in progress.readArticles }.toString() +
+                                    " von " + path.lessonIds.size + " Kapiteln gelesen",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary)
+                                Text("Nächstes Kapitel öffnen",
+                                    style = MaterialTheme.typography.labelMedium)
+                            }
+                        }
+                    } else {
+                        Text("Alle Lernreihen sind abgeschlossen. Du kannst jeden Artikel erneut lesen.",
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+                item {
+                    OutlinedButton(onClick = { mode = "Artikel" },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Alle Artikel frei entdecken")
+                    }
+                    OutlinedButton(onClick = { mode = "Lernreihen" },
+                        modifier = Modifier.fillMaxWidth()) {
+                        Text("Geführte Lernreihen ansehen")
+                    }
+                }
+            }
             "Artikel" -> {
                 item {
                     Text("Artikel des Tages", style = MaterialTheme.typography.titleMedium,
@@ -280,6 +338,10 @@ fun KnowledgeWorldScreen(
                             Text(path.title, style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold)
                             Text(path.description)
+                            val next = catalog.continueAt(path, progress.readArticles)
+                            Text(if (next != null) "Als Nächstes: " + next.title else "Alle Kapitel gelesen",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text(path.lessonIds.count { it in progress.readArticles }.toString() +
                                 " / " + path.lessonIds.size + " freiwillig gelesen",
                                 color = MaterialTheme.colorScheme.primary)
@@ -327,4 +389,26 @@ private fun ArticleTile(
                 color = MaterialTheme.colorScheme.primary)
         }
     }
+}
+
+/**
+ * Clearly names external sources and distinguishes scientific background from
+ * communication practice. URLs are fixed and bundled; nothing is fetched here.
+ */
+private fun sourceLabel(url: String): String = when (url) {
+    "https://pubmed.ncbi.nlm.nih.gov/40816203/" ->
+        "Wissenschaft: Emotional granularity – Scoping Review (PubMed)"
+    "https://pubmed.ncbi.nlm.nih.gov/31961170/" ->
+        "Wissenschaft: Emotion regulation – Übersicht (PubMed)"
+    "https://pubmed.ncbi.nlm.nih.gov/39423429/" ->
+        "Wissenschaft: Interozeption und Emotionen (PubMed)"
+    "https://pubmed.ncbi.nlm.nih.gov/33749936/" ->
+        "Wissenschaft: Selbstmitgefühl – Meta-Analyse (PubMed)"
+    "https://nonviolentcommunication.com/learn-nonviolent-communication/feelings/" ->
+        "Praxisansatz: Gefühle und Bedürfnisse – GFK-Material"
+    "https://baynvc.org/nonviolent-communication-quick-reference-guide/" ->
+        "Praxisansatz: GFK-Kurzübersicht – BayNVC"
+    "https://www.cnvc.org/certification/cpp/preparation/" ->
+        "Praxisansatz: GFK-Lernmaterial – CNVC"
+    else -> "Externe Vertiefungsquelle"
 }
