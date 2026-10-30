@@ -597,18 +597,64 @@ private fun EmotionskompassApp(
                                         seen = learning.progress.seen,
                                         canSave = !learning.busy && learning.error == null,
                                         onFavorite = learningVm::toggleFavorite,
-                                        onSeen = learningVm::markSeen
+                                        onSeen = learningVm::markSeen,
+                                        strategyCatalog = strategyCatalog,
+                                        onStrategy = { openStrategy(it, "need") },
+                                        onOpenStrategyAtlas = openStrategyOverview,
+                                        requestedNeedId = requestedNeedId,
+                                        onRequestConsumed = { requestedNeedId = null },
+                                        onReturnToStrategy = if (needReturnToStrategy) {
+                                            {
+                                                needReturnToStrategy = false
+                                                discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+                                                vm.selectSection(MainSection.ENTDECKEN)
+                                            }
+                                        } else null
                                     )
                                     DiscoveryAtlas.STRATEGIEN -> if (strategyCatalog != null) {
                                         StrategyAtlasScreen(
                                             catalog = strategyCatalog,
                                             selectedId = selectedStrategyId,
-                                            onSelect = { selectedStrategyId = it },
-                                            onBackToList = { selectedStrategyId = null },
+                                            onSelect = { id ->
+                                                val previous = selectedStrategyId
+                                                if (previous != null && previous != id) {
+                                                    strategyHistory = (strategyHistory + previous).takeLast(12)
+                                                }
+                                                selectedStrategyId = id
+                                            },
+                                            onBackToList = {
+                                                if (strategyHistory.isNotEmpty()) {
+                                                    selectedStrategyId = strategyHistory.last()
+                                                    strategyHistory = strategyHistory.dropLast(1)
+                                                } else {
+                                                    selectedStrategyId = null
+                                                    strategyReturnTarget = null
+                                                }
+                                            },
                                             onKnowledgeArticle = { id ->
                                                 requestedKnowledgeArticleId = id
                                                 vm.openKnowledgeWorld()
-                                            }
+                                            },
+                                            needCatalog = needCatalog,
+                                            lessonCatalog = lessonCatalog,
+                                            caseCatalog = caseCatalog,
+                                            onNeed = { id ->
+                                                requestedNeedId = id
+                                                needReturnToStrategy = true
+                                                discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
+                                                vm.selectSection(MainSection.ENTDECKEN)
+                                            },
+                                            onPracticeCase = { id ->
+                                                requestedCaseId = id
+                                                vm.openKnowledgeWorld()
+                                            },
+                                            onReturnToSource = if (strategyReturnTarget != null) returnFromStrategy else null,
+                                            sourceLabel = when (strategyReturnTarget) {
+                                                "need" -> "Zum Bedürfnis"
+                                                "case" -> "Zum Praxisfall"
+                                                else -> ""
+                                            },
+                                            hasPreviousStrategy = strategyHistory.isNotEmpty()
                                         )
                                     } else {
                                         Text("Der Strategieatlas konnte nicht geladen werden. Die anderen Atlanten bleiben verfügbar.",
