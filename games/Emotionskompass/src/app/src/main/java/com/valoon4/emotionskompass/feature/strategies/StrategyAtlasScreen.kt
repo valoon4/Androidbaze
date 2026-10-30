@@ -2,6 +2,7 @@ package com.valoon4.emotionskompass.feature.strategies
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,6 +45,7 @@ fun StrategyAtlasScreen(
     var query by rememberSaveable { mutableStateOf("") }
     var familyId by rememberSaveable { mutableStateOf<String?>(null) }
     val selected = selectedId?.let(catalog::find)
+    BackHandler(enabled = selected != null) { onBackToList() }
     if (selected != null) {
         StrategyDetail(selected, catalog, onBackToList, onSelect, onKnowledgeArticle)
         return
