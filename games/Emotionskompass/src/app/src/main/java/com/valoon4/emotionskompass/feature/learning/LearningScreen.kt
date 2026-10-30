@@ -56,7 +56,7 @@ import java.time.LocalDate
 fun LearningScreen(
     emotions: EmotionCatalog,
     needs: NeedCatalog,
-    lessonCatalog: LessonCatalog,
+    lessonCatalog: LessonCatalog?,
     ui: LearningUiState,
     onFavorite: (String) -> Unit,
     onSeen: (String) -> Unit,
@@ -177,7 +177,7 @@ fun LearningScreen(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    item {
+                    if (lessonCatalog != null) item {
                         val article = lessonCatalog.daily(LocalDate.now())
                         Card(onClick = {
                             requestedArticleId = article.id
@@ -200,12 +200,17 @@ fun LearningScreen(
                 }
             }
             "Wissenswelt" -> {
-                KnowledgeWorldScreen(
-                    catalog = lessonCatalog, ui = ui,
-                    onBookmark = onArticleBookmark, onRead = onArticleRead,
-                    requestedArticleId = requestedArticleId,
-                    onRequestConsumed = { requestedArticleId = null }
-                )
+                if (lessonCatalog == null) {
+                    Text("Die Wissenswelt konnte nicht geladen werden. Die übrigen Lernfunktionen bleiben verfügbar.",
+                        modifier = Modifier.padding(20.dp))
+                } else {
+                    KnowledgeWorldScreen(
+                        catalog = lessonCatalog, ui = ui,
+                        onBookmark = onArticleBookmark, onRead = onArticleRead,
+                        requestedArticleId = requestedArticleId,
+                        onRequestConsumed = { requestedArticleId = null }
+                    )
+                }
             }
             "Favoriten" -> {
                 FavoritesPane(words, progress.favorites, progress.seen, canChange,
@@ -489,7 +494,7 @@ private fun PathsPane(
 private fun OverviewPane(
     words: List<LearningWord>, routes: List<LearningRoute>,
     ui: LearningUiState, onReset: () -> Unit,
-    lessonCatalog: LessonCatalog
+    lessonCatalog: LessonCatalog?
 ) {
     val progress = ui.progress
     val valid = words.map { it.key }.toSet()
@@ -513,8 +518,8 @@ private fun OverviewPane(
         OverviewValue("Freiwillige Wiederholungen", "${progress.reviewTotal}")
         OverviewValue("Lernpfade vollständig markiert", "$markedRoutes von ${routes.size}")
         OverviewValue("Stationen markiert", "${progress.completedStations.size}")
-        OverviewValue("Wissensartikel gelesen", "${progress.readArticles.count { lessonCatalog.find(it) != null }} von ${lessonCatalog.lessons.size}")
-        OverviewValue("Wissensartikel gemerkt", "${progress.articleBookmarks.count { lessonCatalog.find(it) != null }}")
+        OverviewValue("Wissensartikel gelesen", "${progress.readArticles.count { lessonCatalog?.find(it) != null }} von ${lessonCatalog?.lessons?.size ?: 0}")
+        OverviewValue("Wissensartikel gemerkt", "${progress.articleBookmarks.count { lessonCatalog?.find(it) != null }}")
         HorizontalDivider()
         Text("Deine Favoriten, Artikel-Lesezeichen und Lernmarkierungen sind ausschließlich lokal und separat vom Tagebuch verschlüsselt gespeichert. Du kannst den gesamten Lernstand unabhängig vom Tagebuch löschen.",
             style = MaterialTheme.typography.bodySmall)
