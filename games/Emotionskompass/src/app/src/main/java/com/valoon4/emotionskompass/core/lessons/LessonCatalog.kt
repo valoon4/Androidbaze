@@ -155,7 +155,7 @@ class LessonCatalog private constructor(
             require(paths.all { path ->
                 validId.matches(path.id) && path.title.isNotBlank() &&
                 path.description.isNotBlank() && path.lessonIds.isNotEmpty() &&
-                path.lessonIds.distinct().size == 5 && path.lessonIds.all { it in ids }
+                path.lessonIds.distinct().size == path.lessonIds.size && path.lessonIds.all { it in ids }
             })
             require(paths.flatMap { it.lessonIds }.toSet() == ids)
             return LessonCatalog(revision, lessons, paths)
