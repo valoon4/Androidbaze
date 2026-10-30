@@ -421,7 +421,7 @@ private fun EmotionskompassApp(
                             selected = state.section == section,
                             onClick = { vm.selectSection(section) },
                             icon = { Icon(icon, contentDescription = null) },
-                            label = { Text(title, maxLines = 1) },
+                            label = { Text(title, maxLines = 2, textAlign = TextAlign.Center) },
                             alwaysShowLabel = true
                         )
                     }
@@ -446,16 +446,34 @@ private fun EmotionskompassApp(
                         daily = LearningEngine.daily(catalog, needCatalog, LocalDate.now())
                     )
                     MainSection.ENTDECKEN -> Column(Modifier.fillMaxSize()) {
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(DiscoveryAtlas.entries, key = { it.name }) { atlas ->
-                                FilterChip(
-                                    selected = discoveryAtlas == atlas,
-                                    onClick = { discoveryAtlas = atlas },
-                                    label = { Text(atlas.label) }
-                                )
+                        BoxWithConstraints(Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+                            val vertical = maxWidth < 320.dp || LocalDensity.current.fontScale > 1.3f
+                            if (vertical) {
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    DiscoveryAtlas.entries.forEach { atlas ->
+                                        FilterChip(
+                                            selected = discoveryAtlas == atlas,
+                                            onClick = { discoveryAtlas = atlas },
+                                            label = { Text(atlas.label) },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+                            } else {
+                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    modifier = Modifier.fillMaxWidth()) {
+                                    DiscoveryAtlas.entries.forEach { atlas ->
+                                        FilterChip(
+                                            selected = discoveryAtlas == atlas,
+                                            onClick = { discoveryAtlas = atlas },
+                                            label = {
+                                                Text(atlas.label, textAlign = TextAlign.Center,
+                                                    maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                            },
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+                                }
                             }
                         }
                         Box(Modifier.weight(1f)) {
