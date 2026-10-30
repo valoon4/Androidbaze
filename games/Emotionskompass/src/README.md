@@ -29,9 +29,16 @@ Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompa
 Es gibt **keine INTERNET-Berechtigung**, keinen Account, keine Analyse und noch kein verschlüsseltes Tagebuch. **M4** entwickelt die lokale, verantwortungsvoll geschützte Persistenz mit transparenter Löschung und Datenexport; **M5** überprüft Sicherheits- und Freigabegates.
 
 
+### M6.3.1a – Gemeinsame Navigation und neue Startseite
+- Fünf feste Hauptbereiche: **Start – Entdecken – Wissen – Tagebuch – Rückblick**. Innerhalb von Entdecken sind Gefühle, Bedürfnisse und Strategien drei gleichrangige Atlas-Tabs.
+- Neu strukturierte Startseite mit freiwilligem Check-in, drei gleichrangigen Atlas-Kacheln und direktem Wissenswelt-Einstieg. Übungen/Wortkarten/Wiederholungen bleiben über Wissen erreichbar.
+- Auf Tablets seitliche NavigationRail, auf Smartphones feste Bottom Navigation. Bei großer Schrift werden die Atlas-Tabs und Startkarten nicht abgeschnitten, sondern untereinander angeordnet.
+- Suche, Filter und Scrollzustand beim Wechsel weitgehend erhalten; System-Zurück schließt Detailseiten; Strategie → Wissensartikel → Zurück führt zur vorherigen Strategie.
+- Details und manuelle Abnahmematrix: notes/M631_NAVIGATION_UX.md.
+
 ### M6.3.1 – Strategieatlas (Referenzpaket)
 - Fünf offline lesbare Strategiekarten: Problemlösen, bewusste Ablenkung, kognitive Neubewertung, soziale Unterstützung, Akzeptanz.
-- Eigener Einstieg aus der Wissenswelt, Suche mit Umlaut-/ASCII-Toleranz, sieben didaktische Familien mit Mehrfachzuordnung, vertiefende Vorteile/Nachteile, Grenzen, Beispiel, Missverständnis, Reflexion, Alternativen und Quellen.
+- Direkt erreichbar über **Start → Strategien** und **Entdecken → Strategien**, gemeinsam und gleichberechtigt mit Gefühls- und Bedürfnisatlas; Suche mit Umlaut-/ASCII-Toleranz, sieben didaktische Familien mit Mehrfachzuordnung, Vorteile/Nachteile, Grenzen, Beispiele, Alternativen und Quellen.
 - Alle Querverweise auf bestehende Wissensartikel sind freiwillig; die 82 bisherigen Bedürfnis-Strategiebeispiele bleiben unangetastet. Kein automatisches persönliches Strategie-Matching, kein Nachverfolgen von Strategieversuchen (erst M7).
 - Der Katalog ist ein **fachredaktioneller Entwurf**, kein unabhängig begutachtetes Behandlungsangebot. Weitere 25 Karten und die Qualitätssicherung folgen in M6.3.1–M6.3.3.
 - JSON-Schema, referenzielle Integrität und Suche werden per JVM-Test geprüft. Externe Quellen werden nur nach bewusstem Tippen im installierten Browser geöffnet; die App selbst benötigt kein Netzwerk.
