@@ -1312,7 +1312,7 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.6.2-m6.2", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.6.2.1-m6.2.1", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
