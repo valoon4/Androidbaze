@@ -78,7 +78,7 @@ class StrategyEducationTest {
         }
         assertEquals(setOf(0, 1), cases.cases.map { it.bestIndex }.toSet())
         assertTrue(cases.browse("Akzeptanz").isNotEmpty())
-        assertTrue(cases.browse("grenzen").isNotEmpty())
+        assertTrue(cases.browse("grenze").isNotEmpty())
     }
 
     @Test fun malformedPartsAreRejectedWithoutCorruptingTheOriginalLibrary() {
