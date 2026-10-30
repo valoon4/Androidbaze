@@ -187,7 +187,7 @@ fun LearningScreen(
             }
             "Lernpfade" -> {
                 PathsPane(routes, selectedRoute, { selectedRoute = it }, ui,
-                    onFavorite, onSeen, onStation, { selectedWord = it })
+                    onFavorite, onStation, { selectedWord = it })
             }
             "Übersicht" -> {
                 OverviewPane(words, routes, ui, { resetConfirm = true })
@@ -359,7 +359,7 @@ private fun ReviewPane(
 private fun PathsPane(
     routes: List<LearningRoute>, selected: LearningRoute?,
     onSelect: (LearningRoute?) -> Unit, ui: LearningUiState,
-    onFavorite: (String) -> Unit, onSeen: (String) -> Unit,
+    onFavorite: (String) -> Unit,
     onStation: (String) -> Unit, onDetails: (LearningWord) -> Unit
 ) {
     val state = ui.progress
@@ -433,10 +433,8 @@ private fun PathsPane(
                             }
                         }
                         if (!complete) {
-                            Button(onClick = {
-                                onSeen(word.key)
-                                onStation(station)
-                            }, enabled = !ui.busy && ui.error == null) {
+                            Button(onClick = { onStation(station) },
+                                enabled = !ui.busy && ui.error == null) {
                                 Text("Station abschließen")
                             }
                         }
