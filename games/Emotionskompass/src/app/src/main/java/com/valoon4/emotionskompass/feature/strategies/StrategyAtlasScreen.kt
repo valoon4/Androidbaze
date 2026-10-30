@@ -33,6 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.strategies.StrategyCard
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
+import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.core.lessons.LessonCatalog
+import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 
 /** Read-only offline strategy atlas; user experiences are never inferred. */
 @Composable
@@ -41,15 +45,41 @@ fun StrategyAtlasScreen(
     selectedId: String?,
     onSelect: (String) -> Unit,
     onBackToList: () -> Unit,
-    onKnowledgeArticle: (String) -> Unit
+    onKnowledgeArticle: (String) -> Unit,
+    needCatalog: NeedCatalog? = null,
+    lessonCatalog: LessonCatalog? = null,
+    caseCatalog: StrategyCaseCatalog? = null,
+    onNeed: (String) -> Unit = {},
+    onPracticeCase: (String) -> Unit = {},
+    onReturnToSource: (() -> Unit)? = null,
+    sourceLabel: String = "",
+    hasPreviousStrategy: Boolean = false
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var familyId by rememberSaveable { mutableStateOf<String?>(null) }
+    var showExplanation by rememberSaveable { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val selected = selectedId?.let(catalog::find)
-    BackHandler(enabled = selected != null) { onBackToList() }
+    val returnFromDetail: () -> Unit = {
+        if (hasPreviousStrategy || onReturnToSource == null) onBackToList()
+        else onReturnToSource()
+    }
+    BackHandler(enabled = selected != null) { returnFromDetail() }
     if (selected != null) {
-        StrategyDetail(selected, catalog, onBackToList, onSelect, onKnowledgeArticle)
+        StrategyDetail(
+            card = selected,
+            catalog = catalog,
+            onBack = returnFromDetail,
+            onRelated = onSelect,
+            onKnowledgeArticle = onKnowledgeArticle,
+            lessonCatalog = lessonCatalog,
+            needCatalog = needCatalog,
+            caseCatalog = caseCatalog,
+            onNeed = onNeed,
+            onPracticeCase = onPracticeCase,
+            backLabel = if (hasPreviousStrategy) "Zur vorherigen Strategie"
+                else if (onReturnToSource != null) sourceLabel else "Zum Strategieatlas"
+        )
         return
     }
     val filtered = catalog.browse(query, familyId)
@@ -65,7 +95,17 @@ fun StrategyAtlasScreen(
             Text("${catalog.strategies.size} ausführliche Strategiekarten zu Coping, Emotionsregulation und Bedürfnissen.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(catalog.intro, modifier = Modifier.padding(top = 8.dp))
+            Text("Eine Strategie ist eine mögliche Vorgehensweise, kein Patentrezept. Was passt, hängt von der Situation, Sicherheit und deinen Möglichkeiten ab.",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 8.dp))
+            TextButton(onClick = { onKnowledgeArticle("s-vertiefung-begriffe") },
+                enabled = lessonCatalog?.find("s-vertiefung-begriffe") != null) {
+                Text("Strategie, Bedürfnis und Coping: kurz erklärt")
+            }
+            TextButton(onClick = { showExplanation = !showExplanation }) {
+                Text(if (showExplanation) "Einordnung einklappen" else "Mehr zur Einordnung")
+            }
+            if (showExplanation) Text(catalog.intro, style = MaterialTheme.typography.bodySmall)
             Text("Redaktionelle Entwürfe – unabhängige fachliche Prüfung steht noch aus.",
                 modifier = Modifier.padding(top = 6.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -129,7 +169,13 @@ private fun StrategyDetail(
     catalog: StrategyCatalog,
     onBack: () -> Unit,
     onRelated: (String) -> Unit,
-    onKnowledgeArticle: (String) -> Unit
+    onKnowledgeArticle: (String) -> Unit,
+    lessonCatalog: LessonCatalog?,
+    needCatalog: NeedCatalog?,
+    caseCatalog: StrategyCaseCatalog?,
+    onNeed: (String) -> Unit,
+    onPracticeCase: (String) -> Unit,
+    backLabel: String
 ) {
     val context = LocalContext.current
     var externalError by remember(card.id) { mutableStateOf(false) }
@@ -139,7 +185,7 @@ private fun StrategyDetail(
         verticalArrangement = Arrangement.spacedBy(13.dp)
     ) {
         item {
-            TextButton(onClick = onBack) { Text("← Zum Strategieatlas") }
+            TextButton(onClick = onBack) { Text("← $backLabel") }
             Text(card.familyIds.joinToString(" · ") { catalog.familyName(it) },
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
@@ -148,16 +194,26 @@ private fun StrategyDetail(
             Text(card.shortDefinition, style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 8.dp))
         }
+        item {
+            Card {
+                Column(Modifier.fillMaxWidth().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                    SectionHeading("Auf einen Blick")
+                    Text("Wann es passen könnte", fontWeight = FontWeight.SemiBold)
+                    Text(card.whenUseful)
+                    Text("Wichtige Grenze", fontWeight = FontWeight.SemiBold)
+                    Text(card.limitations)
+                }
+            }
+        }
         item { DetailSection("Wozu könnte das dienen?", card.purpose) }
-        item { DetailSection("Wann könnte es passen?", card.whenUseful) }
         item {
             SectionHeading("Mögliche Vorteile")
             card.benefits.forEach { Text("• $it", modifier = Modifier.padding(top = 6.dp)) }
         }
         item {
-            SectionHeading("Mögliche Nachteile und Grenzen")
+            SectionHeading("Mögliche Nachteile")
             card.drawbacks.forEach { Text("• $it", modifier = Modifier.padding(top = 6.dp)) }
-            Text(card.limitations, modifier = Modifier.padding(top = 8.dp))
         }
         item {
             Card {
@@ -195,20 +251,40 @@ private fun StrategyDetail(
             OutlinedButton(onClick = { onRelated(alternative.id) },
                 modifier = Modifier.fillMaxWidth()) { Text(alternative.title) }
         }
-        if (card.relatedLessonIds.isNotEmpty()) {
-            item { SectionHeading("Passende Artikel in der Wissenswelt") }
-            items(card.relatedLessonIds, key = { "lesson-$it" }) { lessonId ->
-                OutlinedButton(onClick = { onKnowledgeArticle(lessonId) },
+        // These links are explicit editorial associations, not inferred personal advice.
+        val needs = card.relatedNeedIds.mapNotNull { id -> needCatalog?.find(id) }
+        if (needs.isNotEmpty()) {
+            item {
+                SectionHeading("Verwandte Bedürfnisse")
+                Text("Was dir wichtig ist und wie du darauf reagierst, sind verschiedene Fragen. Diese Links sind keine automatische Zuordnung.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            items(needs, key = { "need-${it.id}" }) { need ->
+                OutlinedButton(onClick = { onNeed(need.id) },
+                    modifier = Modifier.fillMaxWidth()) { Text(need.name + " im Bedürfnisatlas ansehen") }
+            }
+        }
+        val articles = lessonCatalog?.let { StrategyLearningIndex.articlesFor(card, it) }.orEmpty()
+        if (articles.isNotEmpty()) {
+            item { SectionHeading("Passende Vertiefungen in der Wissenswelt") }
+            items(articles, key = { "lesson-${it.id}" }) { lesson ->
+                OutlinedButton(onClick = { onKnowledgeArticle(lesson.id) },
+                    modifier = Modifier.fillMaxWidth()) { Text(lesson.title) }
+            }
+        }
+        val examples = caseCatalog?.forStrategy(card.id)?.take(2).orEmpty()
+        if (examples.isNotEmpty()) {
+            item {
+                SectionHeading("An Alltagssituationen vergleichen")
+                Text("Die Fallbeispiele stellen Möglichkeiten gegenüber – sie messen nicht, ob eine Strategie für dich funktioniert.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            items(examples, key = { "case-${it.id}" }) { example ->
+                OutlinedButton(onClick = { onPracticeCase(example.id) },
                     modifier = Modifier.fillMaxWidth()) {
-                    Text(when (lessonId) {
-                        "strategien-pruefen" -> "Was tun, wenn eine Strategie nicht hilft?"
-                        "mehrere-wege" -> "Mehr als einen Weg ausprobieren"
-                        "beobachtung-interpretation" -> "Beobachtung und Interpretation trennen"
-                        "gedanken-und-gefuehle" -> "Gedanken sind nicht dasselbe wie Gefühle"
-                        "achtsam-ohne-druck" -> "Achtsamkeit ohne Leistungsdruck"
-                        "bitte-statt-forderung" -> "Eine Bitte formulieren, die ein Nein zulässt"
-                        else -> "Artikel ansehen"
-                    })
+                    Text(example.theme + ": " + example.prompt)
                 }
             }
         }
