@@ -431,7 +431,9 @@ private fun ArticleTile(
     Card(onClick = onOpen) {
         Column(Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            Text(article.topic.label, style = MaterialTheme.typography.labelSmall,
+            Text(if (article.id.startsWith("s-vertiefung-"))
+                "Vertiefung · " + article.topic.label else article.topic.label,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
             Text(article.title, style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
