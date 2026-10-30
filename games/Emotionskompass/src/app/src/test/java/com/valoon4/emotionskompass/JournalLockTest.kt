@@ -1,0 +1,72 @@
+package com.valoon4.emotionskompass
+
+import com.valoon4.emotionskompass.core.checkin.CheckInDraft
+import com.valoon4.emotionskompass.core.model.EmotionCatalog
+import com.valoon4.emotionskompass.core.navigation.AppViewModel
+import com.valoon4.emotionskompass.core.navigation.MainSection
+import com.valoon4.emotionskompass.core.navigation.Destination
+import org.junit.Assert.*
+import org.junit.Test
+import java.io.File
+
+class JournalLockTest {
+    private val atlas by lazy {
+        EmotionCatalog.fromJson(File("src/main/assets/catalog/emotions.de.v2.json").readText())
+    }
+
+    @Test fun enabledGateStartsLockedWithoutJournalDecryption() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        assertTrue(vm.lockEnabled.value)
+        assertFalse(vm.unlocked.value)
+        assertTrue(vm.journalState.value.entries.isEmpty())
+    }
+
+    @Test fun successfulCredentialTransitionOpensGate() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.unlockJournal()
+        assertTrue(vm.unlocked.value)
+        vm.lockJournal()
+        assertFalse(vm.unlocked.value)
+    }
+
+    @Test fun backgroundLockWipesPersonalDraftAndNavigation() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.unlockJournal()
+        vm.openCheckin("angst")
+        vm.setCheckInSituation("Ein vertraulicher Moment")
+        vm.setCheckInInsight("Mein eigener Gedanke")
+        assertTrue(vm.checkIn.value.hasPersonalInput)
+        vm.onAppBackgrounded()
+        assertFalse(vm.unlocked.value)
+        assertEquals(CheckInDraft(), vm.checkIn.value)
+        assertEquals(Destination.MAIN, vm.state.value.destination)
+        assertEquals(MainSection.START, vm.state.value.section)
+    }
+
+    @Test fun systemPickerDoesNotCancelAnExplicitDocumentTransfer() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.unlockJournal()
+        vm.setSystemPickerInProgress(true)
+        vm.onAppBackgrounded()
+        assertTrue(vm.unlocked.value)
+        vm.setSystemPickerInProgress(false)
+        vm.onAppBackgrounded()
+        assertFalse(vm.unlocked.value)
+    }
+
+    @Test fun optionalGateDoesNotLockWhenDisabled() {
+        val vm = AppViewModel(atlas)
+        assertFalse(vm.lockEnabled.value)
+        assertTrue(vm.unlocked.value)
+        vm.onAppBackgrounded()
+        assertTrue(vm.unlocked.value)
+    }
+
+    @Test fun disableGateKeepsUnlockedState() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.unlockJournal()
+        vm.setLockEnabled(false)
+        vm.onAppBackgrounded()
+        assertTrue(vm.unlocked.value)
+    }
+}
