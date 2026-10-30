@@ -91,6 +91,11 @@ import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.core.learning.LearningEngine
+import com.valoon4.emotionskompass.core.learning.LearningKind
+import com.valoon4.emotionskompass.core.learning.LearningRepository
+import com.valoon4.emotionskompass.core.learning.LearningViewModel
+import com.valoon4.emotionskompass.core.learning.LearningWord
 import com.valoon4.emotionskompass.core.journal.AppLockPreferences
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.navigation.AtlasFilters
@@ -102,6 +107,8 @@ import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
+import com.valoon4.emotionskompass.feature.learning.LearningScreen
+import java.time.LocalDate
 import kotlinx.coroutines.launch
 
 /**
@@ -131,8 +138,9 @@ class MainActivity : ComponentActivity() {
                 }
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
                 val lockPreferences = remember { AppLockPreferences(applicationContext) }
+                val learningRepository = remember { LearningRepository(applicationContext) }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -196,13 +204,15 @@ private fun EmotionskompassApp(
     needCatalog: NeedCatalog,
     journal: EncryptedJournalRepository,
     lockPreferences: AppLockPreferences,
+    learningRepository: LearningRepository,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
             catalog, needCatalog, journal, hostActivity.contentResolver,
             lockPreferences.enabled
         )
-    )
+    ),
+    learningVm: LearningViewModel = viewModel(factory = LearningViewModel.factory(learningRepository, lockPreferences.enabled))
 ) {
     val unlocked by vm.unlocked.collectAsState()
     val lockEnabled by vm.lockEnabled.collectAsState()
@@ -224,6 +234,7 @@ private fun EmotionskompassApp(
                     }
                 }
                 vm.unlockJournal()
+                learningVm.unlock()
                 credentialError = null
             } catch (e: Exception) {
                 credentialError = e.message ?: "Gerätesperre konnte nicht geändert werden."
@@ -252,7 +263,10 @@ private fun EmotionskompassApp(
     }
     DisposableEffect(hostActivity, vm) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_STOP) vm.onAppBackgrounded()
+            if (event == Lifecycle.Event.ON_STOP) {
+                vm.onAppBackgrounded()
+                if (!vm.unlocked.value) learningVm.lock()
+            }
         }
         hostActivity.lifecycle.addObserver(observer)
         onDispose { hostActivity.lifecycle.removeObserver(observer) }
@@ -261,6 +275,7 @@ private fun EmotionskompassApp(
     val filters by vm.filters.collectAsState()
     val checkIn by vm.checkIn.collectAsState()
     val diary by vm.journalState.collectAsState()
+    val learning by learningVm.state.collectAsState()
     val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
 
@@ -367,7 +382,9 @@ private fun EmotionskompassApp(
                         onExplore = { vm.selectSection(MainSection.ENTDECKEN) },
                         onNeeds = { vm.selectSection(MainSection.BEDUERFNISSE) },
                         onCheckin = { vm.openCheckin() },
-                        onWord = { vm.openEmotion("wehmut") }
+                        onWord = vm::openLearning,
+                        onLearn = vm::openLearning,
+                        daily = LearningEngine.daily(catalog, needCatalog, LocalDate.now())
                     )
                     MainSection.ENTDECKEN -> AtlasScreen(
                         catalog = catalog,
@@ -382,7 +399,14 @@ private fun EmotionskompassApp(
                         onLetter = vm::setLetter,
                         onClear = vm::clearFilters
                     )
-                    MainSection.BEDUERFNISSE -> NeedsScreen(needCatalog)
+                    MainSection.BEDUERFNISSE -> NeedsScreen(
+                        needCatalog,
+                        favorites = learning.progress.favorites,
+                        seen = learning.progress.seen,
+                        canSave = !learning.busy && learning.error == null,
+                        onFavorite = learningVm::toggleFavorite,
+                        onSeen = learningVm::markSeen
+                    )
                     MainSection.TAGEBUCH -> JournalScreen(
                         state = diary,
                         emotions = catalog,
@@ -415,12 +439,29 @@ private fun EmotionskompassApp(
                             catalog = catalog,
                             onRelated = vm::openEmotion,
                             onCompare = vm::compareWith,
-                            onReflect = { vm.openCheckin(emotion.id) }
+                            onReflect = { vm.openCheckin(emotion.id) },
+                            favorite = "e:${emotion.id}" in learning.progress.favorites,
+                            seen = "e:${emotion.id}" in learning.progress.seen,
+                            canSave = !learning.busy && learning.error == null,
+                            onFavorite = { learningVm.toggleFavorite("e:${emotion.id}") },
+                            onSeen = { learningVm.markSeen("e:${emotion.id}") }
                         )
                     }
                 }
                 Destination.VERGLEICH -> ComparisonScreen(state, catalog)
                 Destination.LEARN_CARDS -> LearningCardsScreen(catalog, vm::openEmotion)
+                Destination.LEARNING -> LearningScreen(
+                    emotions = catalog,
+                    needs = needCatalog,
+                    ui = learning,
+                    onFavorite = learningVm::toggleFavorite,
+                    onSeen = learningVm::markSeen,
+                    onReview = learningVm::review,
+                    onStation = learningVm::completeStation,
+                    onReset = learningVm::reset,
+                    onReload = learningVm::reload,
+                    onOpenEmotion = vm::openEmotion
+                )
                 Destination.COMPARISONS -> ComparisonDirectoryScreen(catalog, vm::openComparison)
                 Destination.PATH -> {
                     val path = state.pathId?.let(catalog::findPath)
@@ -493,7 +534,8 @@ private fun Mark(small: Boolean = false) {
 
 @Composable
 private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
-    onNeeds: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit) {
+    onNeeds: () -> Unit, onCheckin: () -> Unit, onWord: () -> Unit,
+    onLearn: () -> Unit, daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(21.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp)
@@ -529,6 +571,13 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
             footnote = "$needsCount Bedürfnisse · Kompass · Lernpfade",
             onClick = onNeeds
         )
+        ActionCard(
+            icon = Icons.Outlined.MenuBook,
+            title = "Lernen & Entdecken",
+            description = "Favoriten, kurze Übungen, Wiederholungen und Lernpfade.",
+            footnote = "Neu in M6 · alles offline",
+            onClick = onLearn
+        )
         Spacer(Modifier.height(10.dp))
         Text("Heute entdecken", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Card(onClick = onWord, modifier = Modifier.fillMaxWidth(),
@@ -543,15 +592,24 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, onExplore: () -> Unit,
                     }
                 }
                 Column(Modifier.weight(1f)) {
-                    Text("Wehmut", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleMedium)
-                    Text("Wenn eine Erinnerung gleichzeitig schön und traurig ist.",
+                    Text(daily.emotion.name, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleMedium)
+                    Text(daily.emotion.description,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall)
                 }
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Text("M5 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe und dein geschütztes Tagebuch.",
+        Card(onClick = onLearn, modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+            Column(Modifier.padding(17.dp)) {
+                Text("Bedürfnis des Tages: ${daily.need.name}",
+                    style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(daily.need.description, style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+        Text("M6 · $termsCount Gefühlswörter, $needsCount Bedürfnisbegriffe, Lernen und dein geschütztes Tagebuch.",
             style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -998,7 +1056,12 @@ private fun EmotionDetailScreen(
     catalog: EmotionCatalog,
     onRelated: (String) -> Unit,
     onCompare: (String) -> Unit,
-    onReflect: () -> Unit
+    onReflect: () -> Unit,
+    favorite: Boolean,
+    seen: Boolean,
+    canSave: Boolean,
+    onFavorite: () -> Unit,
+    onSeen: () -> Unit
 ) {
     val comparisons = catalog.comparisonOptions(emotion.id)
     Column(
@@ -1013,6 +1076,14 @@ private fun EmotionDetailScreen(
         }
         Text(emotion.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
         Text(emotion.explanation, style = MaterialTheme.typography.bodyLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = onFavorite, enabled = canSave) {
+                Text(if (favorite) "★ Gespeichert" else "☆ Merken")
+            }
+            TextButton(onClick = onSeen, enabled = canSave && !seen) {
+                Text(if (seen) "✓ Entdeckt" else "Als entdeckt markieren")
+            }
+        }
         if (emotion.families.size > 1) {
             Text("Kann auch in andere Themenbereiche passen: " + emotion.families.drop(1).joinToString(),
                 style = MaterialTheme.typography.bodySmall,
@@ -1199,14 +1270,14 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
             fontWeight = FontWeight.Bold)
         FeatureLine(Icons.Outlined.Lock, "Datenschutz", "Keine Anmeldung. Keine Internetberechtigung.")
         HorizontalDivider()
-        Text("M5 · Schutz & verschlüsselte Sicherung", style = MaterialTheme.typography.titleMedium,
+        Text("M6 · Lernen, Favoriten und sichere Daten", style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold)
         Text("Der Gefühlsatlas enthält ${catalog.emotions.size} Begriffe, der Bedürfnisatlas ${needs.needs.size}. Das Tagebuch bleibt mit Android Keystore verschlüsselt. Neu in M5 sind eine freiwillige App-Sperre mit Geräte-PIN/Muster/Passwort und ausdrücklich passphrasegeschützte Export-/Importdateien. Eine Sicherung kann nach Bestätigung auf einem anderen Gerät wiederhergestellt werden; ohne Sicherung können Deinstallation und Geräteverlust deine Einträge endgültig vernichten. Keine automatische Cloud-Synchronisation. Der Bedürfniskompass bleibt flüchtig.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.5.0-m5", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.6.0-m6", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

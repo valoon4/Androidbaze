@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M5.1
+# Emotionskompass – native Android-App M6
 
-**Version:** 0.5.1-m5.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.6.0-m6 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -37,7 +37,7 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M51-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M6-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
@@ -72,3 +72,8 @@ Im Tagebuch-Reiter kann optional eine zusätzliche **Android-Geräte-PIN-/Muster
 ## M5.1 – Qualitäts- und Sicherheitsnachbesserung
 
 M5.1 übernimmt den unveränderten lokalen AES-GCM-Datei- und Keystore-Schlüsselstand von M5. Beim Öffnen lokaler verschlüsselter Dateien und beim importierten Backup begrenzt nun ein gemeinsamer Streaming-Reader die Größe vor der vollständigen Allokation. Temporäre entschlüsselte Byte-Puffer werden genullt. Veraltete asynchrone Journal-Ladeergebnisse aus früheren Sperrsitzungen dürfen nicht in den aktuellen UI-Zustand zurückschreiben; im Fehlerfall wird der Journal-Cache verworfen. Wenn ein Android-Dateipicker nicht startet, wird die Ausnahme vom automatischen Wieder-Sperren zuverlässig aufgehoben; abgebrochene Importdialoge löschen die Passphrase aus dem UI-State. Die Unlock-Seite unterstützt Scrollen bei großer Schrift. Neue JVM-Tests überprüfen Streaming-Grenzen und ungewöhnliche Dateianbieter. **Kein unabhängiger Sicherheits-Audit, keine echten Smartphone-/TalkBack-Gerätetests durch CI.** Details: `games/Emotionskompass/notes/M51_QUALITY_SECURITY.md`.
+
+
+## M6 – Interaktives Lernen
+
+Über die Startseite steht jetzt **Lernen & Entdecken** mit sechs Bereichen zur Verfügung: Gefühl und Bedürfnis des Tages, gemeinsame Gefühls-/Bedürfnisfavoriten mit Suche, kleine redaktionell erklärte Unterscheidungsübungen, freiwillige Wiederholungen, **14+8** interaktive Lernpfade und eine lokale Lernübersicht mit bestätigtem Zurücksetzen. Die fünf Hauptreiter, die Gefühls- und Bedürfnisatlanten, Check-in, Tagebuch, Keystore-Schlüssel und passphrasegeschützte Backupformate bleiben erhalten. Der Lernstand liegt separat AES-256-GCM-verschlüsselt auf dem Gerät, wird nicht mit dem Tagebuchexport übertragen und bei aktiver optionaler App-Sperre aus dem UI-Cache entfernt. Alle Inhalte funktionieren offline; es gibt keine Streaks oder psychologischen Noten. Tests und manuelle Abnahme: `games/Emotionskompass/notes/M6_INTERAKTIVES_LERNEN.md`.
