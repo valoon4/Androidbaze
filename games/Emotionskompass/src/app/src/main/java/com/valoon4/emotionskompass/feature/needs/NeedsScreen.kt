@@ -295,6 +295,8 @@ private fun NeedDetailScreen(
         val relevantOptions = strategyCatalog?.let { strategyBook ->
             needStrategyLinks?.optionsForNeed(need.id, strategyBook)
                 ?: StrategyLearningIndex.strategiesForNeed(need.id, strategyBook)
+                    // Social acceptance (a need) is not inner acceptance (a coping tool).
+                    .filterNot { need.id == "akzeptanz" && it.id == "acceptance" }
                     .map { NeedStrategyOption(it, "") }
         }.orEmpty()
         item {
@@ -302,6 +304,11 @@ private fun NeedDetailScreen(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
             Text("Redaktionell ausgewählte Beispiele, keine Empfehlung für deine persönliche Situation. Entscheidend ist, ob der Weg für dich sicher und passend erscheint.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        if (need.id == "akzeptanz") item {
+            Text("Wichtig: Hier bedeutet Akzeptanz, von anderen angenommen zu werden. Die Strategie „Annehmen, was gerade ist“ beschreibt dagegen den Umgang mit dem eigenen Erleben – nicht dasselbe.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
