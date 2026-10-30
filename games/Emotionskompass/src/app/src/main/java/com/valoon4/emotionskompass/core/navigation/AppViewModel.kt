@@ -126,6 +126,7 @@ class AppViewModel(
         val store = journal ?: return
         val io = resolver ?: return
         if (!allowed() || _journalState.value.busy) return
+        val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
             val chars = password.toCharArray()
@@ -138,10 +139,10 @@ class AppViewModel(
                         output.use { it.write(backup); it.flush() }
                     } finally { backup.fill(0) }
                 }
-                _journalState.value = _journalState.value.copy(
+                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
                     busy = false, message = "Verschlüsselte Sicherung wurde erstellt.")
             } catch (e: Exception) {
-                _journalState.value = _journalState.value.copy(
+                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
                     busy = false, error = "Export fehlgeschlagen: ${e.message}. Eine unvollständige Zieldatei bitte löschen.")
             } finally { chars.fill(0.toChar()) }
         }
@@ -155,6 +156,7 @@ class AppViewModel(
         val store = journal ?: return
         val io = resolver ?: return
         if (!allowed() || _journalState.value.busy) return
+        val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
             val chars = password.toCharArray()
@@ -179,7 +181,7 @@ class AppViewModel(
                     reloadJournal()
                 }
             } catch (e: Exception) {
-                if (allowed()) _journalState.value = _journalState.value.copy(
+                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
                     busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Bestehende Daten wurden nicht absichtlich überschrieben.")
             } finally { chars.fill(0.toChar()) }
         }
@@ -216,13 +218,14 @@ class AppViewModel(
         val store = journal ?: return
         if (!allowed() || _journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
             _checkIn.value.step != CheckInStep.AUSKLANG || !_checkIn.value.hasPersonalInput) return
+        val epoch = accessEpoch
         val snapshot = _checkIn.value
         val existingId = _editingEntryId.value
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 val saved = withContext(Dispatchers.IO) { store.save(snapshot, existingId) }
-                if (!allowed()) return@launch
+                if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     (_journalState.value.entries.filterNot { it.id == saved.id } + saved)
                         .sortedByDescending { it.createdAt }
@@ -232,7 +235,7 @@ class AppViewModel(
                 history.clear()
                 _state.value = AppUiState(section = MainSection.TAGEBUCH)
             } catch (e: Exception) {
-                _journalState.value = _journalState.value.copy(busy = false,
+                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
                     error = e.message ?: "Eintrag konnte nicht gespeichert werden")
             }
         }
@@ -252,16 +255,17 @@ class AppViewModel(
     fun deleteJournalEntry(id: String) {
         val store = journal ?: return
         if (!allowed() || _journalState.value.busy) return
+        val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) { store.delete(id) }
-                if (!allowed()) return@launch
+                if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id }
                 )
             } catch (e: Exception) {
-                _journalState.value = _journalState.value.copy(busy = false,
+                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
                     error = e.message ?: "Eintrag konnte nicht gelöscht werden")
             }
         }
@@ -270,13 +274,14 @@ class AppViewModel(
     fun deleteEntireJournal() {
         val store = journal ?: return
         if (!allowed() || _journalState.value.busy) return
+        val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) { store.deleteAll() }
-                if (allowed()) _journalState.value = JournalUiState()
+                if (currentAccess(epoch)) _journalState.value = JournalUiState()
             } catch (e: Exception) {
-                _journalState.value = _journalState.value.copy(busy = false,
+                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
                     error = e.message ?: "Tagebuch konnte nicht gelöscht werden")
             }
         }
