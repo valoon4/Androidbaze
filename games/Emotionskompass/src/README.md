@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M5
+# Emotionskompass – native Android-App M5.1
 
-**Version:** 0.5.0-m5 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.5.1-m5.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -37,7 +37,7 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M5-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M51-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
@@ -67,3 +67,8 @@ Ein neuer aktiver **Tagebuch-Reiter** erlaubt Check-ins nur nach ausdrücklicher
 ## M5 – App-Sperre und portable verschlüsselte Sicherungen
 
 Im Tagebuch-Reiter kann optional eine zusätzliche **Android-Geräte-PIN-/Muster-/Passwort-Abfrage** eingeschaltet werden. Beim Hintergrundwechsel räumt die App entschlüsselte Einträge aus dem UI-State. Der lokale Keystore-Schlüssel wird dabei *nicht* an diese Prüfung gebunden. Außerdem kann das ganze Tagebuch nach Eingabe einer separaten mindestens zwölf Zeichen langen Passphrase als AES-256-GCM-verschlüsselte `.ekbackup`-Datei über Androids Dateiauswahl exportiert und nach ausdrücklicher Bestätigung als vollständiger Ersatz wiederhergestellt werden. Keine unverschlüsselten Exporte, keine automatische Cloud-Sicherung oder Passphrase-Speicherung. Bitte Exportpassphrase und Backupdatei sorgfältig schützen; eine unabhängige Sicherheitsprüfung steht aus. Details: `games/Emotionskompass/notes/M5_SECURITY_AND_BACKUPS.md`.
+
+
+## M5.1 – Qualitäts- und Sicherheitsnachbesserung
+
+M5.1 übernimmt den unveränderten lokalen AES-GCM-Datei- und Keystore-Schlüsselstand von M5. Beim Öffnen lokaler verschlüsselter Dateien und beim importierten Backup begrenzt nun ein gemeinsamer Streaming-Reader die Größe vor der vollständigen Allokation. Temporäre entschlüsselte Byte-Puffer werden genullt. Veraltete asynchrone Journal-Ladeergebnisse aus früheren Sperrsitzungen dürfen nicht in den aktuellen UI-Zustand zurückschreiben; im Fehlerfall wird der Journal-Cache verworfen. Wenn ein Android-Dateipicker nicht startet, wird die Ausnahme vom automatischen Wieder-Sperren zuverlässig aufgehoben; abgebrochene Importdialoge löschen die Passphrase aus dem UI-State. Die Unlock-Seite unterstützt Scrollen bei großer Schrift. Neue JVM-Tests überprüfen Streaming-Grenzen und ungewöhnliche Dateianbieter. **Kein unabhängiger Sicherheits-Audit, keine echten Smartphone-/TalkBack-Gerätetests durch CI.** Details: `games/Emotionskompass/notes/M51_QUALITY_SECURITY.md`.
