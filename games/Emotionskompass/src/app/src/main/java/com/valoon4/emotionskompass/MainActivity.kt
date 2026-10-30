@@ -99,6 +99,7 @@ import com.valoon4.emotionskompass.core.model.EmotionKind
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
+import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
@@ -155,10 +156,18 @@ class MainActivity : ComponentActivity() {
                 // prevent access to the existing journal, check-in or atlas.
                 val lessonCatalog = remember {
                     runCatching {
-                        LessonCatalog.fromJson(
-                            assets.open("lessons/knowledge.de.v1.json")
-                                .bufferedReader(Charsets.UTF_8).use { it.readText() }
-                        )
+                        val original = assets.open("lessons/knowledge.de.v1.json")
+                            .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        val supplements = listOf(
+                            "lessons/strategy-depth-basics.de.v1.json",
+                            "lessons/strategy-depth-coping.de.v1.json",
+                            "lessons/strategy-depth-flex.de.v1.json"
+                        ).map { filename ->
+                            assets.open(filename).bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        }
+                        // Preserve the original library if a supplemental asset is damaged.
+                        runCatching { LessonCatalog.fromJsonParts(original, supplements) }
+                            .getOrElse { LessonCatalog.fromJson(original) }
                     }.getOrNull()
                 }
                 val strategyCatalog = remember {
@@ -181,8 +190,23 @@ class MainActivity : ComponentActivity() {
                         })
                     }.getOrNull()
                 }
+                val caseCatalog = remember(strategyCatalog) {
+                    runCatching {
+                        StrategyCaseCatalog.fromJsonParts(
+                            listOf(
+                                "lessons/strategy-cases-a.de.v1.json",
+                                "lessons/strategy-cases-b.de.v1.json",
+                                "lessons/strategy-cases-c.de.v1.json"
+                            ).map { filename ->
+                                assets.open(filename).bufferedReader(Charsets.UTF_8)
+                                    .use { it.readText() }
+                            },
+                            strategyCatalog?.strategies?.map { it.id }?.toSet() ?: emptySet()
+                        )
+                    }.getOrNull()
+                }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -249,6 +273,7 @@ private fun EmotionskompassApp(
     learningRepository: LearningRepository,
     lessonCatalog: LessonCatalog?,
     strategyCatalog: StrategyCatalog?,
+    caseCatalog: StrategyCaseCatalog?,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -539,6 +564,7 @@ private fun EmotionskompassApp(
                             onBookmark = learningVm::toggleArticleBookmark,
                             onRead = learningVm::markArticleRead,
                             onLearning = vm::openLearning,
+                            caseCatalog = caseCatalog,
                             onStrategies = {
                                 discoveryAtlas = DiscoveryAtlas.STRATEGIEN
                                 vm.selectSection(MainSection.ENTDECKEN)
@@ -603,6 +629,7 @@ private fun EmotionskompassApp(
                             vm.selectSection(MainSection.ENTDECKEN)
                         },
                         onLearning = vm::openLearning,
+                        caseCatalog = caseCatalog,
                         onReturnToSource = { vm.back() },
                         requestedArticleId = requestedKnowledgeArticleId,
                         onRequestConsumed = { requestedKnowledgeArticleId = null }
