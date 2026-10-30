@@ -71,10 +71,10 @@
       "check": {
         "prompt": "Was spricht für unterschiedliche Bewältigungswege?",
         "choices": [
-          "Die Umstände, Einflussmöglichkeiten und Ressourcen können sehr verschieden sein.",
-          "Jede als belastend erlebte Situation erfordert genau dieselbe Schrittfolge."
+          "Jede als belastend erlebte Situation erfordert genau dieselbe Schrittfolge.",
+          "Die Umstände, Einflussmöglichkeiten und Ressourcen können sehr verschieden sein."
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "explanation": "Der Kontext entscheidet mit. Menschen benötigen und wählen unterschiedliche Arten von Unterstützung."
       }
     },
@@ -147,10 +147,10 @@
       "check": {
         "prompt": "Welche Beschreibung passt zu Bewältigungsflexibilität?",
         "choices": [
-          "Situationen und Rückmeldungen berücksichtigen und Optionen anpassen können.",
-          "Eine Methode unabhängig von Situation und Folgen unverändert beibehalten."
+          "Eine Methode unabhängig von Situation und Folgen unverändert beibehalten.",
+          "Situationen und Rückmeldungen berücksichtigen und Optionen anpassen können."
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "explanation": "Flexibilität umfasst Sensibilität für den Kontext, ein Repertoire und Reaktion auf Rückmeldungen."
       }
     }
