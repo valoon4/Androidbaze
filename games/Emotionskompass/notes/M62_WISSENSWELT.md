@@ -57,3 +57,20 @@ Manuell auf echten Geräten noch zu prüfen:
 10. Lernstand ausdrücklich zurücksetzen, danach kontrollieren, dass Tagebucheinträge unverändert sind.
 
 **Release-Gate:** Die CI belegt Codekompilierung und JVM-Testabdeckung, keinen echten Geräte-/Accessibility-Test und keinen unabhängigen Security Audit.
+
+
+## M6.2.1 – gezielte Qualitätsrunde in PR #15
+
+Diese Überarbeitung adressiert den im Code-Review gefundenen Nutzungs- und Lernmehrwert:
+
+- **Schnellerer Einstieg:** Eine direkte Wissenswelt-Karte auf der App-Startseite führt ohne Umweg zur Wissenswelt. „Artikel des Tages“ im M6-Lernbereich öffnet nun direkt den zugehörigen Artikel.
+- **Orientierung:** Neuer Wissenswelt-Start mit Tagesartikel, „Hier weiterlesen“ und separaten Aktionen „Alle Artikel frei entdecken“ / „Geführte Lernreihen ansehen“. Die weiterzuführende Reihe priorisiert eine bereits begonnene, nicht abgeschlossene Reihe und schlägt das erste noch nicht explizit gelesene Kapitel vor; alle Kapitel bleiben jederzeit offen.
+- **Lesefluss:** Jeder Artikel bekommt eine eigene Scrollposition, damit der Wechsel zur nächsten Lektion nicht am alten vertikalen Offset startet. Ein echter System-Zurück-Schritt führt aus dem Artikel in die Lernreihe oder Bibliothek.
+- **Didaktik:** Alle 20 Lektionen besitzen ein explizites Lernziel, ein häufiges Missverständnis samt Einordnung sowie eine kleine optionale, redaktionell formulierte Frage mit zwei plausiblen Antworten und einer Erklärung erst **nach** der Auswahl. Keine Punktzahl, kein diagnostisches Urteil, keine Pflicht zum Markieren als gelesen. Lesestatus wird weiterhin nur durch eine ausdrückliche Schaltfläche gesetzt.
+- **Quellen:** Externe Quellen sind mit überprüfbaren Titeln und als wissenschaftliche Hintergrundinformation oder GFK-Praxisansatz gekennzeichnet; statt „Quelle 1“ wird eine verständliche Bezeichnung angezeigt. Ein nicht erreichbarer alter Hochschul-Link wird durch einen zugänglichen Praxisleitfaden ersetzt. Externe Links öffnen sich ausschließlich nach Berührung; ohne Browser bleibt die offline lesbare Lektion erhalten, mit sichtbarer Fehlermeldung.
+- **Suche:** Suchbegriff und Index werden ohne Akzente verglichen (`Gefühle` / `gefuhle`, `Bedürfnisse` / `bedurfnisse`), einschließlich `ß` ↔ `ss`.
+- **Robustheit:** Ein fehlerhafter oder künftig inkompatibler Wissenskatalog darf den Zugang zu Tagebuch, Check-in, Atlanten oder übrigen Lernfunktionen nicht blockieren. Stattdessen erscheint ein verständlicher Hinweis in der Wissenswelt.
+- **Erweiterbarkeit:** Die Inhaltsvalidierung ist nicht mehr fest auf genau 20 Artikel und exakt fünf Kapitel pro Lernreihe beschränkt; eindeutige IDs, Datenqualität, vorhandene Kapitelreferenzen und vollständige Zuordnung bleiben Pflicht.
+- **Tests:** Sieben neue JVM-Regressionsprüfungen für Lernziele, die richtige Antwortposition, Fortsetzen/Abschließen, umlauttolerante Suche, fehlerhafte Aufgaben und künftige Erweiterungen.
+
+Das Ergebnis ist weiterhin ein **Offline-Lernangebot mit redaktionellen Entwürfen**; eine externe fachliche Prüfung und TalkBack-/Gerätetests bleiben Voraussetzungen vor einer öffentlichen Veröffentlichung. Persönliche Artikelfragen werden nicht gespeichert. Es gab keine Änderungen an Journal-/Backup-Dateiformat oder bestehenden Keystore-Aliassen.
