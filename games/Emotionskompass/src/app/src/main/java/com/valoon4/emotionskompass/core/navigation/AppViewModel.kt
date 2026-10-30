@@ -73,6 +73,10 @@ class AppViewModel(
     private val _unlocked = MutableStateFlow(!initialLockEnabled)
     val unlocked = _unlocked.asStateFlow()
 
+    /** Reject async reads/results that originated before the latest relock. */
+    private var accessEpoch = 0L
+    private fun currentAccess(epoch: Long): Boolean = allowed() && epoch == accessEpoch
+
     init { if (journal != null && _unlocked.value) reloadJournal() }
 
     fun setLockEnabled(enabled: Boolean) {
@@ -82,6 +86,7 @@ class AppViewModel(
 
     /** Called only after Android confirms the device credential. */
     fun unlockJournal() {
+        accessEpoch++
         _unlocked.value = true
         reloadJournal()
     }
@@ -89,6 +94,7 @@ class AppViewModel(
     /** Clear decrypted journal and private draft whenever the app backgrounds. */
     fun lockJournal() {
         if (!_lockEnabled.value) return
+        accessEpoch++
         _unlocked.value = false
         _journalState.value = JournalUiState()
         _editingEntryId.value = null
@@ -185,17 +191,23 @@ class AppViewModel(
     fun reloadJournal() {
         val store = journal ?: return
         if (!allowed() || _journalState.value.busy) return
+        val epoch = accessEpoch
         val transferMessage = _journalState.value.message
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 val entries = withContext(Dispatchers.IO) { store.list() }
-                if (allowed()) _journalState.value = JournalUiState(
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(
                     entries.sortedByDescending { it.createdAt }, message = transferMessage
                 )
             } catch (e: Exception) {
-                if (allowed()) _journalState.value = _journalState.value.copy(busy = false,
-                    error = e.message ?: "Tagebuch konnte nicht geöffnet werden")
+                if (currentAccess(epoch)) {
+                    // Fail closed: do not leave previously decrypted entries visible
+                    // when re-reading/authenticating the local encrypted file fails.
+                    _journalState.value = JournalUiState(
+                        error = e.message ?: "Tagebuch konnte nicht geöffnet werden"
+                    )
+                }
             }
         }
     }
