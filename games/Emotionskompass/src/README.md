@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M6.2
+# Emotionskompass – native Android-App M6.2.1
 
-**Version:** 0.6.2-m6.2 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.6.2.1-m6.2.1 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -37,7 +37,7 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M62-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M621-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
@@ -82,3 +82,8 @@ M5.1 übernimmt den unveränderten lokalen AES-GCM-Datei- und Keystore-Schlüsse
 ## M6.2 – Wissenswelt
 
 Die neue **Wissenswelt** in „Lernen & Entdecken“ enthält **20 lokal verfügbare Artikel** in vier Themenfeldern (Gefühle, Bedürfnisse, Strategien, Selbstwahrnehmung). Sie sind unabhängig voneinander suchbar und lesbar. Vier **geführte Lernreihen à fünf Lektionen** bieten eine freiwillige Reihenfolge, ohne Artikel zu sperren. Tägliche Leseempfehlung, Themenfilter, Merkliste, Quellen und ausdrücklich markierbarer Lesefortschritt sind integriert. Alle Inhalte liegen unter `app/src/main/assets/lessons/knowledge.de.v1.json`. Artikel-Lesezeichen und Lesemarkierungen erweitern rückwärtskompatibel die bereits verschlüsselten M6-Lernmetadaten; das persönliche Tagebuch bleibt unverändert. Redaktionelle Lernentwürfe, noch keine unabhängige fachliche Prüfung. Details: `games/Emotionskompass/notes/M62_WISSENSWELT.md`.
+
+
+### M6.2.1: Verbesserte Wissenswelt (PR #15)
+
+Der Wissenswelt-Einstieg ist jetzt direkt auf der App-Startseite verlinkt. In der Wissenswelt: Tagesartikel, „Hier weiterlesen“, explizite Bibliotheks- und Lernreihenaktionen. Alle 20 Lektionen sind um Lernziel, häufiges Missverständnis und freiwillige Verständnisfrage inklusive erklärtem Feedback ergänzt. Das nächste Kapitel startet am Anfang, die Reihen haben eine nicht verpflichtende Fortsetzen-Funktion. Suche versteht ASCII-/Umlautvarianten. Quellen erscheinen mit Titeln und Einordnung statt nackter Nummerierung. Ein fehlerhafter Wissensinhalt blockiert die übrigen App-Bereiche nicht. Zusätzlich wurden sieben JVM-Regressionstests ergänzt; Version 0.6.2.1-m6.2.1, versionCode 14. Weitere Details: `games/Emotionskompass/notes/M62_WISSENSWELT.md`.
