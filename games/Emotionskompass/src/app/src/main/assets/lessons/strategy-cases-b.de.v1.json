@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "cases": [
+    {
+      "id": "deutung-nachricht",
+      "theme": "Gedanken",
+      "scenario": "Du hast einer Kollegin geschrieben und keine Antwort erhalten. Du fragst dich, ob sie verärgert ist, weißt aber nicht, was passiert ist.",
+      "prompt": "Wie könntest du mehrere Möglichkeiten offenlassen?",
+      "choices": [
+        "Die ausbleibende Antwort als Beweis ansehen, dass sie dich nicht mag.",
+        "Beobachtung und Vermutung unterscheiden und gegebenenfalls freundlich nachfragen."
+      ],
+      "bestIndex": 1,
+      "feedback": "Eine unbeantwortete Nachricht ist beobachtbar; ihre Bedeutung bleibt zunächst offen. Nachfragen kann helfen, ohne deine Unsicherheit als falsch zu behandeln.",
+      "reflection": "Welche Informationen fehlen dir tatsächlich?",
+      "relatedStrategyIds": [
+        "assumptions",
+        "reappraisal"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "grenzen-termin",
+      "theme": "Soziale Grenzen",
+      "scenario": "Jemand bittet dich wiederholt um zusätzliche Aufgaben. Du fühlst dich überfordert, und die Zusammenarbeit ist grundsätzlich sicher.",
+      "prompt": "Welche Möglichkeit ist passend zu prüfen?",
+      "choices": [
+        "Eine konkrete Grenze zu deiner Verfügbarkeit nennen und über Alternativen sprechen.",
+        "Die Überforderung als Zeichen verstehen, jede Bitte ausnahmslos erfüllen zu müssen."
+      ],
+      "bestIndex": 0,
+      "feedback": "In einer sicheren Beziehung können Grenzen und Absprachen den Handlungsspielraum klären. Bei Bedrohung wäre dagegen Schutz vor direkter Konfrontation wichtiger.",
+      "reflection": "Welche Bitte oder Grenze ließe Raum für ein Nein?",
+      "relatedStrategyIds": [
+        "boundaries",
+        "communicate-needs"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "troest-oder-tat",
+      "theme": "Unterstützung",
+      "scenario": "Nach einem Streit fühlst du dich erschöpft. Eine vertraute Person bietet an, entweder zuzuhören oder bei einer praktischen Aufgabe zu helfen.",
+      "prompt": "Welche Frage klärt deinen Bedarf besser?",
+      "choices": [
+        "Ich sollte jede verfügbare Hilfe annehmen, unabhängig davon, was ich brauche.",
+        "Brauche ich gerade eher Zuhören, praktische Entlastung oder bewusst Zeit für mich?"
+      ],
+      "bestIndex": 1,
+      "feedback": "Unterstützung hat unterschiedliche Funktionen. Wähle die Art, die zur Lage und zu den Kapazitäten beider Menschen passt; keine Art ist immer die richtige.",
+      "reflection": "Wie könntest du eine konkrete Bitte formulieren?",
+      "relatedStrategyIds": [
+        "emotional-support",
+        "practical-support"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "reappraisal-grenze",
+      "theme": "Gedanken",
+      "scenario": "Ein Kollege macht wiederholt abwertende Bemerkungen. Du versuchst, eine harmlose Erklärung zu finden, fühlst dich aber weiter verletzt.",
+      "prompt": "Welche Einordnung berücksichtigt die Sicherheit?",
+      "choices": [
+        "Die Erfahrung ernst nehmen und eine sichere Grenze oder Unterstützung erwägen.",
+        "Die Bemerkungen grundsätzlich beschönigen, damit die Gefühle endlich verschwinden."
+      ],
+      "bestIndex": 0,
+      "feedback": "Ein anderer Blickwinkel darf konkrete Grenzverletzungen nicht relativieren. Sicherheit, Handlungsspielraum und Vertrauen sind hier wichtiger als erzwungene positive Deutungen.",
+      "reflection": "Welche Grenze oder sichere Unterstützung könnte in diesem Fall wichtig sein?",
+      "relatedStrategyIds": [
+        "reappraisal",
+        "boundaries"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    },
+    {
+      "id": "freundlicher-ton",
+      "theme": "Selbstmitgefühl",
+      "scenario": "Du hast einen kleinen Fehler gemacht und beschreibst dich daraufhin als grundsätzlich unfähig. Zugleich möchtest du aus der Situation lernen.",
+      "prompt": "Welche Haltung hält beides offen?",
+      "choices": [
+        "Den Fehler ganz vergessen und jede Verantwortung grundsätzlich vermeiden.",
+        "Den konkreten Fehler anerkennen und auf eine pauschale Abwertung deiner Person verzichten."
+      ],
+      "bestIndex": 1,
+      "feedback": "Selbstmitgefühl muss Verantwortung nicht ausschließen. Ein sachlicher Ton kann einen Fehler beschreiben, ohne daraus eine Aussage über den gesamten Selbstwert zu machen.",
+      "reflection": "Welche Formulierung wäre sachlich und nicht abwertend?",
+      "relatedStrategyIds": [
+        "self-compassion",
+        "compassionate-self-talk"
+      ],
+      "sources": [
+        "https://pubmed.ncbi.nlm.nih.gov/26173226/"
+      ]
+    }
+  ]
+}
