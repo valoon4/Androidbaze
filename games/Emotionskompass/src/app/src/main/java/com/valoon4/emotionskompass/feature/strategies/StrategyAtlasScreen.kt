@@ -32,6 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.strategies.StrategyCard
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
@@ -202,7 +204,8 @@ private fun StrategyDetail(
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary)
             Text(card.title, style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.semantics { heading() })
             Text(card.shortDefinition, style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 8.dp))
         }
@@ -354,7 +357,8 @@ private fun StrategyDetail(
 @Composable
 private fun SectionHeading(title: String) {
     Text(title, style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold)
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.semantics { heading() })
 }
 
 @Composable
