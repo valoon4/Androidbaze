@@ -11,28 +11,38 @@ class StrategyCatalogTest {
     private val raw by lazy {
         File("src/main/assets/catalog/strategies.de.v1.json").readText()
     }
-    private val catalog by lazy { StrategyCatalog.fromJson(raw) }
+    private val parts by lazy {
+        listOf(
+            "situation", "regulation-a", "regulation-b",
+            "cognition-a", "cognition-b", "social",
+            "values", "recovery", "patterns"
+        ).map { group ->
+            File("src/main/assets/catalog/strategies.${group}.de.v1.json").readText()
+        }
+    }
+    private val catalog by lazy { StrategyCatalog.fromJsonParts(raw, parts) }
 
-    @Test fun fiveCompleteIndependentReferenceCards() {
-        assertEquals(5, catalog.strategies.size)
+    @Test fun thirtyCompleteIndependentStrategyCards() {
+        assertEquals(30, catalog.strategies.size)
         assertEquals(7, catalog.families.size)
-        assertEquals(setOf(
+        assertTrue(catalog.strategies.map { it.id }.toSet().containsAll(setOf(
             "problem-solving", "intentional-distraction", "reappraisal",
             "social-support", "acceptance"
-        ), catalog.strategies.map { it.id }.toSet())
+        )))
+        assertEquals(30, catalog.strategies.map { it.id }.distinct().size)
         assertTrue(catalog.editorialStatus.contains("review-required"))
         assertTrue(catalog.strategies.all { it.benefits.size >= 2 && it.drawbacks.size >= 2 })
         assertTrue(catalog.strategies.all { it.example.length >= 100 &&
             it.misconception.isNotBlank() && it.reflection.isNotBlank() })
     }
 
-    @Test fun allSevenFamiliesStayBrowsableEvenWhenMoreCardsArePlanned() {
+    @Test fun allSevenFamiliesHaveBrowsableCards() {
         catalog.families.forEach { family ->
             assertEquals(catalog.strategies.count { family.id in it.familyIds },
                 catalog.browse(familyId = family.id).size)
         }
-        assertTrue(catalog.browse(familyId = "patterns").isEmpty())
-        assertEquals(5, catalog.browse().size)
+        assertEquals(2, catalog.browse(familyId = "patterns").size)
+        assertEquals(30, catalog.browse().size)
     }
 
     @Test fun searchHandlesUmlautsAndSynonymsAndCombinedFilter() {
@@ -89,6 +99,41 @@ class StrategyCatalogTest {
                 "\"alternativeIds\": [\n        \"social-support\"",
                 "\"alternativeIds\": [\n        \"broken-link\""
             ))
+        }
+    }
+
+    @Test fun fragmentLoadingIsStrictAndFailsClosedOnDuplicateOrWrongVersion() {
+        assertEquals(5, StrategyCatalog.fromJsonParts(raw, emptyList()).strategies.size)
+        assertThrows(IllegalArgumentException::class.java) {
+            StrategyCatalog.fromJsonParts(raw, parts + parts.first())
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            StrategyCatalog.fromJsonParts(
+                raw, parts.mapIndexed { index, value ->
+                    if (index == 0) value.replaceFirst(
+                        "\"schemaVersion\":1", "\"schemaVersion\":2"
+                    ) else value
+                }
+            )
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            StrategyCatalog.fromJsonParts(
+                raw, parts.mapIndexed { index, value ->
+                    if (index == 0) value.replaceFirst(
+                        "\"problem-solving\"", "\"broken-ref\""
+                    ) else value
+                }
+            )
+        }
+    }
+
+    @Test fun oldReferenceCardsRemainStableWithinExpandedCollection() {
+        val old = StrategyCatalog.fromJson(raw)
+        old.strategies.forEach { before ->
+            val now = catalog.find(before.id)
+            assertNotNull(now)
+            assertEquals(before.title, now!!.title)
+            assertEquals(before.alternativeIds, now.alternativeIds)
         }
     }
 
