@@ -57,6 +57,7 @@ class NeedStrategyLinkIndex private constructor(
         ): NeedStrategyLinkIndex {
             require(shards.isNotEmpty() && shards.size <= 12)
             val knownNeedIds = needs.needs.map { it.id }.toSet()
+            val seenNeedIds = mutableSetOf<String>()
             val links = shards.flatMap { raw ->
                 val root = Json.parseToJsonElement(raw).jsonObject
                 require(root.keys == setOf("schemaVersion", "locale", "links"))
@@ -66,7 +67,7 @@ class NeedStrategyLinkIndex private constructor(
                     val item = entry.jsonObject
                     require(item.keys == setOf("needId", "items"))
                     val needId = item.getValue("needId").jsonPrimitive.content
-                    require(needId in knownNeedIds)
+                    require(needId in knownNeedIds && seenNeedIds.add(needId))
                     val strategiesForNeed = item.getValue("items").jsonArray
                     require(strategiesForNeed.size in 1..3)
                     strategiesForNeed.map { link ->
