@@ -26,6 +26,10 @@ data class StrategyCase(
 class StrategyCaseCatalog private constructor(val cases: List<StrategyCase>) {
     fun find(id: String): StrategyCase? = cases.firstOrNull { it.id == id }
     val themes: List<String> get() = cases.map { it.theme }.distinct()
+    /** Explicit editor-provided strategy associations, never inferred from a user. */
+    fun forStrategy(id: String): List<StrategyCase> =
+        cases.filter { id in it.relatedStrategyIds }
+
 
     fun browse(query: String = "", theme: String? = null): List<StrategyCase> {
         val q = normalize(query.trim())
