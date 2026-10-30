@@ -96,6 +96,15 @@ class AppViewModel(
         _state.value = AppUiState(section = MainSection.START)
     }
 
+    /** A system document picker temporarily takes focus; re-authentication is
+     * still required after a normal background transition. */
+    private var systemPickerInProgress = false
+    fun setSystemPickerInProgress(value: Boolean) { systemPickerInProgress = value }
+
+    fun onAppBackgrounded() {
+        if (!systemPickerInProgress) lockJournal()
+    }
+
     private fun allowed(): Boolean = _unlocked.value
 
     fun clearTransferMessage() {
@@ -127,7 +136,7 @@ class AppViewModel(
             } catch (e: Exception) {
                 _journalState.value = _journalState.value.copy(
                     busy = false, error = "Export fehlgeschlagen: ${e.message}. Eine unvollständige Zieldatei bitte löschen.")
-            } finally { chars.fill('\\u0000') }
+            } finally { chars.fill(0.toChar()) }
         }
     }
 
@@ -146,7 +155,19 @@ class AppViewModel(
                 val count = withContext(Dispatchers.IO) {
                     val input = io.openInputStream(uri)
                         ?: throw IllegalStateException("Sicherungsdatei konnte nicht gelesen werden.")
-                    val bytes = input.use { it.readNBytes(JournalBackup.MAX_BACKUP_BYTES + 1) }
+                    val bytes = input.use { stream ->
+                        val buffer = java.io.ByteArrayOutputStream()
+                        val chunk = ByteArray(8192)
+                        while (true) {
+                            val n = stream.read(chunk)
+                            if (n < 0) break
+                            require(buffer.size() + n <= JournalBackup.MAX_BACKUP_BYTES) {
+                                "Sicherungsdatei ist zu groß."
+                            }
+                            buffer.write(chunk, 0, n)
+                        }
+                        buffer.toByteArray()
+                    }
                     try {
                         require(bytes.size <= JournalBackup.MAX_BACKUP_BYTES) {
                             "Sicherungsdatei ist zu groß."
@@ -162,7 +183,7 @@ class AppViewModel(
             } catch (e: Exception) {
                 if (allowed()) _journalState.value = _journalState.value.copy(
                     busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Bestehende Daten wurden nicht absichtlich überschrieben.")
-            } finally { chars.fill('\\u0000') }
+            } finally { chars.fill(0.toChar()) }
         }
     }
 
