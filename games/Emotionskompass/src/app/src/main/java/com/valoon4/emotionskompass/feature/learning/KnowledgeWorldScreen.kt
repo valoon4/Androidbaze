@@ -53,7 +53,12 @@ fun KnowledgeWorldScreen(
     onStrategies: () -> Unit = {},
     onLearning: () -> Unit = {},
     caseCatalog: StrategyCaseCatalog? = null,
+    onStrategyDetail: (String) -> Unit = {},
+    strategyTitles: Map<String, String> = emptyMap(),
+    requestedCaseId: String? = null,
+    onCaseRequestConsumed: () -> Unit = {},
     onReturnToSource: (() -> Unit)? = null,
+    returnLabel: String = "Zur Strategie",
     requestedArticleId: String? = null,
     onRequestConsumed: () -> Unit = {}
 ) {
@@ -62,6 +67,16 @@ fun KnowledgeWorldScreen(
     var topic by rememberSaveable { mutableStateOf("Alle") }
     var seriesId by rememberSaveable { mutableStateOf<String?>(null) }
     var articleId by rememberSaveable { mutableStateOf<String?>(null) }
+    var pendingCaseId by rememberSaveable { mutableStateOf<String?>(null) }
+    LaunchedEffect(requestedCaseId) {
+        if (requestedCaseId != null && caseCatalog?.find(requestedCaseId) != null) {
+            mode = "Praxisfälle"
+            articleId = null
+            seriesId = null
+            pendingCaseId = requestedCaseId
+            onCaseRequestConsumed()
+        }
+    }
     val series = catalog.series.firstOrNull { it.id == seriesId }
     val article = articleId?.let(catalog::find)
     LaunchedEffect(requestedArticleId) {
@@ -93,7 +108,7 @@ fun KnowledgeWorldScreen(
             TextButton(onClick = {
                 if (onReturnToSource != null) onReturnToSource() else articleId = null
             }) {
-                Text(if (onReturnToSource != null) "← Zur Strategie"
+                Text(if (onReturnToSource != null) "← $returnLabel"
                     else if (series != null) "← Zur Lernreihe" else "← Zur Bibliothek")
             }
             Text(article.topic.label.uppercase(), style = MaterialTheme.typography.labelSmall,
@@ -246,7 +261,11 @@ fun KnowledgeWorldScreen(
         StrategyPracticeScreen(
             catalog = caseCatalog,
             onBackToKnowledge = { mode = "Start" },
-            onStrategies = onStrategies
+            onStrategy = onStrategyDetail,
+            strategyTitles = strategyTitles,
+            requestedCaseId = pendingCaseId,
+            onRequestConsumed = { pendingCaseId = null },
+            onReturnToSource = onReturnToSource
         )
         return
     }
