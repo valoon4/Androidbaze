@@ -204,7 +204,13 @@ class LearningEngineTest {
         quizzes.forEach { quiz ->
             val need = needs.needs[quiz.id.substringAfter(':').toInt()]
             assertTrue(quiz.choices.none { it.startsWith("Das Bedürfnis") })
-            assertTrue(quiz.choices.none { it.contains(need.name, ignoreCase = true) })
+            val literalName = Regex(
+                "(?<!\\p{L})" + Regex.escape(need.name) +
+                    "(?:en|n|s|e|er)?(?!\\p{L})",
+                RegexOption.IGNORE_CASE
+            )
+            assertTrue("Der direkte Begriff darf nicht als Antwort erscheinen: ${quiz.id}",
+                quiz.choices.none { literalName.containsMatchIn(it) })
             assertTrue(quiz.explanation.contains(need.name))
         }
     }
