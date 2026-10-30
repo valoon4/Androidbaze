@@ -269,7 +269,10 @@ private fun QuizPane(
     onReview: (String) -> Unit
 ) {
     // The order is frozen for this visit; learning activity cannot reshuffle a live question.
-    val round = remember(quizzes) { LearningEngine.quizQueue(quizzes, ui.progress, 5) }
+    // Shuffle once per study round, never during answer selection/recomposition.
+    val round = remember(quizzes) {
+        LearningEngine.quizQueue(quizzes, ui.progress, 5).map { it.shuffled() }
+    }
     var index by remember { mutableIntStateOf(0) }
     var picked by remember { mutableIntStateOf(-1) }
     val current = round.getOrNull(index)
