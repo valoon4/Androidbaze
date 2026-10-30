@@ -1,6 +1,6 @@
-# Emotionskompass – native Android-App M4
+# Emotionskompass – native Android-App M5
 
-**Version:** 0.4.0-m4 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.5.0-m5 · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
@@ -37,7 +37,7 @@ cd games/Emotionskompass/src
 gradle :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M4-debug-apk` an.
+Der isolierte GitHub-Actions-Workflow `.github/workflows/emotionskompass-debug-apk.yml` führt JVM-Tests aus, baut eine signierte Debug-APK, prüft Signatur und Package-ID und bietet das Artefakt `Emotionskompass-M5-debug-apk` an.
 
 Testfälle: Offline-Katalog-Integrität, 289 Wörter, 41 Vergleiche, 14 Pfade sowie Check-in-State-Reducer (Mehrfachauswahl, freiwillige Eingaben, 0–10, Zurück, Verwerfen, Tabwechsel und ungültige IDs).
 
@@ -62,3 +62,8 @@ Ein eigenständiger **Bedürfnisse-Reiter** enthält jetzt **82** redaktionell v
 ## M4 – Geschütztes Tagebuch
 
 Ein neuer aktiver **Tagebuch-Reiter** erlaubt Check-ins nur nach ausdrücklicher Zustimmung zu speichern, wieder zu öffnen, vollständig zu bearbeiten und nach Bestätigung einzeln oder vollständig zu löschen. Die App speichert lokal ein **AES-GCM-verschlüsseltes, atomar geschriebenes JSON-Dokument**, mit nicht exportierbarem Android-Keystore-Schlüssel. Offline, ohne Cloud, Konto oder INTERNET-Berechtigung. Die persönlichen Inhalte einschließlich Zeitstempeln werden zusammen verschlüsselt. Bei Schlüssel-/Authentizitätsfehlern wird kein bestehender Bestand überschrieben. `FLAG_SECURE` schützt Tagebuch und Check-in vor normalen Screenshots. **Kein Export, keine Wiederherstellung und keine garantierte forensische Löschung**; Gerätewechsel und App-Datenverlust bedeuten Datenverlust. Vor produktiver Verwendung sind unabhängige Security-Tests und eine reale Geräteabnahme erforderlich. Details: `games/Emotionskompass/notes/M4_ENCRYPTED_JOURNAL.md`.
+
+
+## M5 – App-Sperre und portable verschlüsselte Sicherungen
+
+Im Tagebuch-Reiter kann optional eine zusätzliche **Android-Geräte-PIN-/Muster-/Passwort-Abfrage** eingeschaltet werden. Beim Hintergrundwechsel räumt die App entschlüsselte Einträge aus dem UI-State. Der lokale Keystore-Schlüssel wird dabei *nicht* an diese Prüfung gebunden. Außerdem kann das ganze Tagebuch nach Eingabe einer separaten mindestens zwölf Zeichen langen Passphrase als AES-256-GCM-verschlüsselte `.ekbackup`-Datei über Androids Dateiauswahl exportiert und nach ausdrücklicher Bestätigung als vollständiger Ersatz wiederhergestellt werden. Keine unverschlüsselten Exporte, keine automatische Cloud-Sicherung oder Passphrase-Speicherung. Bitte Exportpassphrase und Backupdatei sorgfältig schützen; eine unabhängige Sicherheitsprüfung steht aus. Details: `games/Emotionskompass/notes/M5_SECURITY_AND_BACKUPS.md`.

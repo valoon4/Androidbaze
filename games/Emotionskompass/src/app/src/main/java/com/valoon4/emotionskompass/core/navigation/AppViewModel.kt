@@ -1,5 +1,7 @@
 package com.valoon4.emotionskompass.core.navigation
 
+import android.content.ContentResolver
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -11,6 +13,7 @@ import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.checkin.NextStepIdea
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
+import com.valoon4.emotionskompass.core.journal.JournalBackup
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
@@ -41,13 +44,16 @@ data class AppUiState(
 data class JournalUiState(
     val entries: List<JournalEntry> = emptyList(),
     val busy: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val message: String? = null
 )
 
 class AppViewModel(
     private val catalog: EmotionCatalog,
     private val needCatalog: NeedCatalog? = null,
-    private val journal: EncryptedJournalRepository? = null
+    private val journal: EncryptedJournalRepository? = null,
+    private val resolver: ContentResolver? = null,
+    initialLockEnabled: Boolean = false
 ) : ViewModel() {
     private val _state = MutableStateFlow(AppUiState())
     val state = _state.asStateFlow()
@@ -61,21 +67,142 @@ class AppViewModel(
     private val _editingEntryId = MutableStateFlow<String?>(null)
     val editingEntryId = _editingEntryId.asStateFlow()
 
-    init { if (journal != null) reloadJournal() }
+    private val _lockEnabled = MutableStateFlow(initialLockEnabled)
+    val lockEnabled = _lockEnabled.asStateFlow()
+    private val _unlocked = MutableStateFlow(!initialLockEnabled)
+    val unlocked = _unlocked.asStateFlow()
+
+    init { if (journal != null && _unlocked.value) reloadJournal() }
+
+    fun setLockEnabled(enabled: Boolean) {
+        _lockEnabled.value = enabled
+        if (!enabled) _unlocked.value = true
+    }
+
+    /** Called only after Android confirms the device credential. */
+    fun unlockJournal() {
+        _unlocked.value = true
+        reloadJournal()
+    }
+
+    /** Clear decrypted journal and private draft whenever the app backgrounds. */
+    fun lockJournal() {
+        if (!_lockEnabled.value) return
+        _unlocked.value = false
+        _journalState.value = JournalUiState()
+        _editingEntryId.value = null
+        _checkIn.value = CheckInDraft()
+        history.clear()
+        _state.value = AppUiState(section = MainSection.START)
+    }
+
+    /** A system document picker temporarily takes focus; re-authentication is
+     * still required after a normal background transition. */
+    private var systemPickerInProgress = false
+    fun setSystemPickerInProgress(value: Boolean) { systemPickerInProgress = value }
+
+    fun onAppBackgrounded() {
+        if (!systemPickerInProgress) lockJournal()
+    }
+
+    private fun allowed(): Boolean = _unlocked.value
+
+    fun clearTransferMessage() {
+        _journalState.value = _journalState.value.copy(error = null, message = null)
+    }
+
+    /**
+     * SAF stream: only encrypted portable bytes ever leave this process.
+     * The user chooses the destination through Android's document picker.
+     */
+    fun exportJournal(uri: Uri, password: String) {
+        val store = journal ?: return
+        val io = resolver ?: return
+        if (!allowed() || _journalState.value.busy) return
+        _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            val chars = password.toCharArray()
+            try {
+                withContext(Dispatchers.IO) {
+                    val backup = store.encryptedBackup(chars)
+                    try {
+                        val output = io.openOutputStream(uri, "w")
+                            ?: throw IllegalStateException("Zieldatei nicht beschreibbar.")
+                        output.use { it.write(backup); it.flush() }
+                    } finally { backup.fill(0) }
+                }
+                _journalState.value = _journalState.value.copy(
+                    busy = false, message = "Verschlüsselte Sicherung wurde erstellt.")
+            } catch (e: Exception) {
+                _journalState.value = _journalState.value.copy(
+                    busy = false, error = "Export fehlgeschlagen: ${e.message}. Eine unvollständige Zieldatei bitte löschen.")
+            } finally { chars.fill(0.toChar()) }
+        }
+    }
+
+    /**
+     * Explicitly confirmed replacement, never an automatic merge. Refuse
+     * oversized data and do not alter existing entries for wrong passwords.
+     */
+    fun importJournal(uri: Uri, password: String) {
+        val store = journal ?: return
+        val io = resolver ?: return
+        if (!allowed() || _journalState.value.busy) return
+        _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            val chars = password.toCharArray()
+            try {
+                val count = withContext(Dispatchers.IO) {
+                    val input = io.openInputStream(uri)
+                        ?: throw IllegalStateException("Sicherungsdatei konnte nicht gelesen werden.")
+                    val bytes = input.use { stream ->
+                        val buffer = java.io.ByteArrayOutputStream()
+                        val chunk = ByteArray(8192)
+                        while (true) {
+                            val n = stream.read(chunk)
+                            if (n < 0) break
+                            require(buffer.size() + n <= JournalBackup.MAX_BACKUP_BYTES) {
+                                "Sicherungsdatei ist zu groß."
+                            }
+                            buffer.write(chunk, 0, n)
+                        }
+                        buffer.toByteArray()
+                    }
+                    try {
+                        require(bytes.size <= JournalBackup.MAX_BACKUP_BYTES) {
+                            "Sicherungsdatei ist zu groß."
+                        }
+                        store.restoreBackup(bytes, chars)
+                    } finally { bytes.fill(0) }
+                }
+                if (allowed()) {
+                    _journalState.value = JournalUiState(
+                        message = "Wiederherstellung erfolgreich: $count Einträge.")
+                    reloadJournal()
+                }
+            } catch (e: Exception) {
+                if (allowed()) _journalState.value = _journalState.value.copy(
+                    busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Bestehende Daten wurden nicht absichtlich überschrieben.")
+            } finally { chars.fill(0.toChar()) }
+        }
+    }
 
     fun clearJournalError() { _journalState.value = _journalState.value.copy(error = null) }
 
     /** A decryption or key failure never replaces the previous encrypted data. */
     fun reloadJournal() {
         val store = journal ?: return
-        if (_journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy) return
+        val transferMessage = _journalState.value.message
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 val entries = withContext(Dispatchers.IO) { store.list() }
-                _journalState.value = JournalUiState(entries.sortedByDescending { it.createdAt })
+                if (allowed()) _journalState.value = JournalUiState(
+                    entries.sortedByDescending { it.createdAt }, message = transferMessage
+                )
             } catch (e: Exception) {
-                _journalState.value = _journalState.value.copy(busy = false,
+                if (allowed()) _journalState.value = _journalState.value.copy(busy = false,
                     error = e.message ?: "Tagebuch konnte nicht geöffnet werden")
             }
         }
@@ -83,7 +210,7 @@ class AppViewModel(
 
     fun saveCheckIn() {
         val store = journal ?: return
-        if (_journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
+        if (!allowed() || _journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
             _checkIn.value.step != CheckInStep.AUSKLANG || !_checkIn.value.hasPersonalInput) return
         val snapshot = _checkIn.value
         val existingId = _editingEntryId.value
@@ -91,6 +218,7 @@ class AppViewModel(
         viewModelScope.launch {
             try {
                 val saved = withContext(Dispatchers.IO) { store.save(snapshot, existingId) }
+                if (!allowed()) return@launch
                 _journalState.value = JournalUiState(
                     (_journalState.value.entries.filterNot { it.id == saved.id } + saved)
                         .sortedByDescending { it.createdAt }
@@ -107,7 +235,7 @@ class AppViewModel(
     }
 
     fun editJournalEntry(id: String) {
-        if (_journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy) return
         val entry = _journalState.value.entries.firstOrNull { it.id == id } ?: return
         _editingEntryId.value = id
         _checkIn.value = entry.draft.copy(
@@ -119,11 +247,12 @@ class AppViewModel(
 
     fun deleteJournalEntry(id: String) {
         val store = journal ?: return
-        if (_journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy) return
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) { store.delete(id) }
+                if (!allowed()) return@launch
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id }
                 )
@@ -136,12 +265,12 @@ class AppViewModel(
 
     fun deleteEntireJournal() {
         val store = journal ?: return
-        if (_journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy) return
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) { store.deleteAll() }
-                _journalState.value = JournalUiState()
+                if (allowed()) _journalState.value = JournalUiState()
             } catch (e: Exception) {
                 _journalState.value = _journalState.value.copy(busy = false,
                     error = e.message ?: "Tagebuch konnte nicht gelöscht werden")
@@ -267,13 +396,15 @@ class AppViewModel(
         fun factory(
             catalog: EmotionCatalog,
             needCatalog: NeedCatalog? = null,
-            journal: EncryptedJournalRepository? = null
+            journal: EncryptedJournalRepository? = null,
+            resolver: ContentResolver? = null,
+            initialLockEnabled: Boolean = false
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     require(modelClass == AppViewModel::class.java)
-                    return AppViewModel(catalog, needCatalog, journal) as T
+                    return AppViewModel(catalog, needCatalog, journal, resolver, initialLockEnabled) as T
                 }
             }
     }

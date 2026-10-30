@@ -60,6 +60,32 @@ class EncryptedJournalRepository(context: Context) {
         write(emptyList())
     }
 
+    /**
+     * Export is never a raw copy of the device-keyed ciphertext. We decrypt in
+     * RAM then re-encrypt using a fresh salt and passphrase-derived portable key.
+     */
+    @Synchronized
+    fun encryptedBackup(passphrase: CharArray): ByteArray {
+        val content = JournalFormat.encode(list())
+        return try { JournalBackup.seal(content, passphrase) }
+        finally { content.fill(0) }
+    }
+
+    /**
+     * Destructive restore is an explicit, user-confirmed replacement.
+     * Authenticate the backup and validate its format *before* touching the
+     * existing encrypted journal; verify the current journal is readable too.
+     */
+    @Synchronized
+    fun restoreBackup(bytes: ByteArray, passphrase: CharArray): Int {
+        val clear = JournalBackup.open(bytes, passphrase)
+        val restored = try { JournalFormat.decode(clear) }
+        finally { clear.fill(0) }
+        list() // Fails closed if the original encrypted data are unreadable.
+        write(restored)
+        return restored.size
+    }
+
     private fun write(entries: List<JournalEntry>) {
         val plaintext = JournalFormat.encode(entries)
         val key = getKey(create = true)
