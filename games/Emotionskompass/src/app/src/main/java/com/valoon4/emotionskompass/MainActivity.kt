@@ -212,7 +212,7 @@ private fun EmotionskompassApp(
             lockPreferences.enabled
         )
     ),
-    learningVm: LearningViewModel = viewModel(factory = LearningViewModel.factory(learningRepository))
+    learningVm: LearningViewModel = viewModel(factory = LearningViewModel.factory(learningRepository, lockPreferences.enabled))
 ) {
     val unlocked by vm.unlocked.collectAsState()
     val lockEnabled by vm.lockEnabled.collectAsState()
@@ -234,6 +234,7 @@ private fun EmotionskompassApp(
                     }
                 }
                 vm.unlockJournal()
+                learningVm.unlock()
                 credentialError = null
             } catch (e: Exception) {
                 credentialError = e.message ?: "Gerätesperre konnte nicht geändert werden."
@@ -262,7 +263,10 @@ private fun EmotionskompassApp(
     }
     DisposableEffect(hostActivity, vm) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_STOP) vm.onAppBackgrounded()
+            if (event == Lifecycle.Event.ON_STOP) {
+                vm.onAppBackgrounded()
+                if (!vm.unlocked.value) learningVm.lock()
+            }
         }
         hostActivity.lifecycle.addObserver(observer)
         onDispose { hostActivity.lifecycle.removeObserver(observer) }
