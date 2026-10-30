@@ -30,7 +30,7 @@ enum class MainSection { START, ENTDECKEN, WISSEN, TAGEBUCH, RUECKBLICK }
 enum class DiscoveryAtlas(val label: String) {
     GEFUEHLE("Gefühle"), BEDUERFNISSE("Bedürfnisse"), STRATEGIEN("Strategien")
 }
-enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, LEARNING, WISSENSWELT, STRATEGIES, CHECKIN, SETTINGS }
+enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, LEARNING, WISSENSWELT, CHECKIN, SETTINGS }
 
 data class AtlasFilters(
     val query: String = "",
@@ -324,7 +324,6 @@ class AppViewModel(
 
     fun openLearning() = push(_state.value.copy(destination = Destination.LEARNING, section = MainSection.WISSEN))
     fun openKnowledgeWorld() = push(_state.value.copy(destination = Destination.WISSENSWELT, section = MainSection.WISSEN))
-    fun openStrategies() = push(_state.value.copy(destination = Destination.STRATEGIES, section = MainSection.ENTDECKEN))
     fun openLearningCards() = push(_state.value.copy(destination = Destination.LEARN_CARDS))
     fun openComparisons() = push(_state.value.copy(destination = Destination.COMPARISONS))
 
