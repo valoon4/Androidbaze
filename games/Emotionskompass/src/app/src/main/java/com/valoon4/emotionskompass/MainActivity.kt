@@ -101,6 +101,7 @@ import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
 import com.valoon4.emotionskompass.core.learning.LearningRepository
@@ -190,6 +191,24 @@ class MainActivity : ComponentActivity() {
                         })
                     }.getOrNull()
                 }
+                // Offline editorial links only; failure leaves the original atlases intact.
+                val needStrategyLinks = remember(needCatalog, strategyCatalog) {
+                    strategyCatalog?.let { strategies ->
+                        runCatching {
+                            NeedStrategyLinkIndex.fromJsonParts(
+                                listOf(
+                                    "security", "relationships", "autonomy", "respect",
+                                    "wellbeing", "growth", "purpose", "vitality"
+                                ).map { category ->
+                                    assets.open("catalog/need-strategy-$category.de.v1.json")
+                                        .bufferedReader(Charsets.UTF_8).use { it.readText() }
+                                },
+                                needs = needCatalog,
+                                strategies = strategies
+                            )
+                        }.getOrNull()
+                    }
+                }
                 val caseCatalog = remember(strategyCatalog) {
                     runCatching {
                         StrategyCaseCatalog.fromJsonParts(
@@ -206,7 +225,7 @@ class MainActivity : ComponentActivity() {
                     }.getOrNull()
                 }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, needStrategyLinks, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -274,6 +293,7 @@ private fun EmotionskompassApp(
     lessonCatalog: LessonCatalog?,
     strategyCatalog: StrategyCatalog?,
     caseCatalog: StrategyCaseCatalog?,
+    needStrategyLinks: NeedStrategyLinkIndex?,
     hostActivity: ComponentActivity,
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
@@ -599,6 +619,7 @@ private fun EmotionskompassApp(
                                         onFavorite = learningVm::toggleFavorite,
                                         onSeen = learningVm::markSeen,
                                         strategyCatalog = strategyCatalog,
+                                        needStrategyLinks = needStrategyLinks,
                                         onStrategy = {
                                             needReturnToStrategy = false
                                             openStrategy(it, "need")
@@ -642,6 +663,7 @@ private fun EmotionskompassApp(
                                                 vm.openKnowledgeWorld()
                                             },
                                             needCatalog = needCatalog,
+                                            needStrategyLinks = needStrategyLinks,
                                             lessonCatalog = lessonCatalog,
                                             caseCatalog = caseCatalog,
                                             onNeed = { id ->
