@@ -154,12 +154,12 @@ fun StrategyPracticeScreen(
                 Text("Wissenschaftliche Ausgangsquellen; die Fälle sind redaktionell erfundene Lernbeispiele und keine individuellen Handlungsanweisungen.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                selected.sources.forEach { source ->
+                selected.sources.forEachIndexed { index, source ->
                     TextButton(onClick = {
                         try {
                             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(source)))
                         } catch (_: Exception) { sourceError = true }
-                    }) { Text("Wissenschaftliche Quelle extern öffnen") }
+                    }) { Text("Quelle ${index + 1}: ${Uri.parse(source).host ?: "externe Website"} öffnen") }
                 }
                 if (sourceError) Text("Kein Browser verfügbar. Die Übung bleibt vollständig offline lesbar.",
                     color = MaterialTheme.colorScheme.error)
