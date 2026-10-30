@@ -11,7 +11,9 @@ data class LearningState(
     val favorites: Set<String> = emptySet(),
     val seen: Set<String> = emptySet(),
     val reviewCounts: Map<String, Int> = emptyMap(),
-    val completedStations: Set<String> = emptySet()
+    val completedStations: Set<String> = emptySet(),
+    val articleBookmarks: Set<String> = emptySet(),
+    val readArticles: Set<String> = emptySet()
 ) {
     fun toggleFavorite(id: String) = copy(
         favorites = if (id in favorites) favorites - id else favorites + id
@@ -24,6 +26,10 @@ data class LearningState(
     fun markStation(station: String) = copy(
         completedStations = completedStations + station
     )
+    fun toggleArticleBookmark(id: String) = copy(
+        articleBookmarks = if (id in articleBookmarks) articleBookmarks - id else articleBookmarks + id
+    )
+    fun markArticleRead(id: String) = copy(readArticles = readArticles + id)
     val reviewTotal: Int get() = reviewCounts.values.sum()
 }
 
