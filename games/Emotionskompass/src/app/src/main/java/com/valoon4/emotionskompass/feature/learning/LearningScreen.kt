@@ -323,7 +323,11 @@ private fun ReviewPane(
     onFavorite: (String) -> Unit,
     onReview: (String) -> Unit, onDetails: (LearningWord) -> Unit
 ) {
-    val queue = remember(words) { LearningEngine.reviewQueue(words, ui.progress, 5) }
+    // Recalculate after the encrypted progress finishes loading (the first
+    // frame may be empty); keep this selection stable across review-count writes.
+    val queue = remember(words, ui.progress.seen, ui.progress.favorites) {
+        LearningEngine.reviewQueue(words, ui.progress, 5)
+    }
     var index by remember { mutableIntStateOf(0) }
     val current = queue.getOrNull(index)
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp),
