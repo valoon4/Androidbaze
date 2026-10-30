@@ -4,6 +4,9 @@ import java.text.Normalizer
 import java.util.Locale
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -90,6 +93,31 @@ class StrategyCatalog private constructor(
 
         private fun JsonObject.values(key: String): List<String> =
             getValue(key).jsonArray.map { it.jsonPrimitive.content }
+
+        /** Assemble versioned editorial shards before applying the one strict catalog validator.
+         * All links, IDs and seven families are verified across the complete data set. */
+        fun fromJsonParts(base: String, parts: List<String>): StrategyCatalog {
+            if (parts.isEmpty()) return fromJson(base)
+            val root = Json.parseToJsonElement(base).jsonObject
+            val extra = parts.flatMap { part ->
+                val obj = Json.parseToJsonElement(part).jsonObject
+                require(obj.keys == setOf("schemaVersion", "locale", "strategies"))
+                require(obj.getValue("schemaVersion").jsonPrimitive.int == 1)
+                require(obj.value("locale") == "de")
+                obj.getValue("strategies").jsonArray.toList()
+            }
+            val all = root.getValue("strategies").jsonArray.toList() + extra
+            val joined = buildJsonObject {
+                root.forEach { (key, value) ->
+                    put(key, when(key) {
+                        "strategies" -> JsonArray(all)
+                        "contentRevision" -> kotlinx.serialization.json.JsonPrimitive("2026-10-m6.3.1-full-30")
+                        else -> value
+                    })
+                }
+            }
+            return fromJson(joined.toString())
+        }
 
         fun fromJson(raw: String): StrategyCatalog {
             val root = Json.parseToJsonElement(raw).jsonObject
