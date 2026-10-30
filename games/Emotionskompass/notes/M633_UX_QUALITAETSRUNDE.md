@@ -31,6 +31,16 @@
 - Die 15 erfundenen Praxisfälle verlinken ihre bereits vorhandenen, über IDs geprüften Strategien; Auswahl/Antworten bleiben flüchtig im Arbeitsspeicher.
 - Keine neue Netzwerkberechtigung, kein neues Nutzertracking, keine Änderungen an Journalverschlüsselung, Backup oder Lernstandsformat.
 
+### Nachtrag nach Einzelauswertung aller 82 Bedürfnisse (PR #21)
+
+Auf konkreten Wunsch wurden die 82 Bedürfnisdefinitionen und alle 30 Strategie-Einsatzkontexte nochmals einzeln verglichen. Ergebnis: **76 Bedürfnisse mit 143 kuratierten Kontextverknüpfungen, sechs absichtlich ohne spezifische Karte**. Jede Verknüpfung hat eine eigene situative Begründung. Die neue, eigenständig validierte Acht-Dateien-Sammlung ist die maßgebliche **Anzeigequelle** für Verknüpfungen in beide Richtungen. Die bisherigen 48 Metadatenverweise auf nur acht Bedürfnis-IDs bleiben in den Strategieartikeln **nur zur Bestandskompatibilität** erhalten und dienen bei beschädigten Ergänzungsdateien als Fallback.
+
+**Nicht zugeordnet:** Schlaf (Ruhe ist kein Schlafersatz), Gesundheit (keine medizinische Ersatzberatung), Nährung (kein Essen-/Trinkkatalog), Spiritualität, Humor und Spontaneität (keine ausreichend konkrete passende Karte). Für jedes Bedürfnis bleibt freie Atlas-Erkundung erhalten. Die erklärenden Musterkarten zu Vermeidung/Unterdrückung sind von den Vorschlägen ausgeschlossen.
+
+Vollständige Prüfliste mit allen 82 Namen, zugeordneten Strategien, individuellen Begründungen (in Offline-Assets), Sicherheitskriterien und sechs ausdrücklichen Ausnahmen: **[M633_BEDUERFNIS_STRATEGIE_ABGLEICH.md](M633_BEDUERFNIS_STRATEGIE_ABGLEICH.md)**.
+
+Die folgenden Zahlen 48/8 dokumentieren ausdrücklich **den Ausgangszustand vor dieser Ergänzung**, nicht die aktuellen UI-Verknüpfungen. Die fachliche Plausibilitätsbeurteilung ist redaktionell, kein unabhängiges Fachgutachten und kein empirischer Nachweis der 143 Einzelbeziehungen.
+
 ### Abdeckung und bewusste Nicht-Zuordnung
 
 Die 30 Strategiekarten enthalten **48 Bedürfnis-Referenzen, aber nur 8 verschiedene Bedürfnis-IDs**. Von den 82 Bedürfnisdetails erhalten daher viele bewusst **keine** direkte Strategiekartenliste. Die neue neutral formulierte Atlas-Verlinkung bleibt offen, statt 74 ungeprüfte Zuordnungen automatisch zu erzeugen. Eine größere, tatsächlich fachlich kuratierte Verknüpfungsabdeckung wäre ein **eigener redaktioneller Auftrag**, kein Nebenprodukt einer UI-Qualitätsrunde.
