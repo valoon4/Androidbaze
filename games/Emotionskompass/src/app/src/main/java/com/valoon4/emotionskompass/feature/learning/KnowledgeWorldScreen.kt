@@ -53,7 +53,7 @@ fun KnowledgeWorldScreen(
     onStrategies: () -> Unit = {},
     onLearning: () -> Unit = {},
     caseCatalog: StrategyCaseCatalog? = null,
-    onStrategyDetail: (String) -> Unit = {},
+    onStrategyDetail: (String, String) -> Unit = {},
     strategyTitles: Map<String, String> = emptyMap(),
     requestedCaseId: String? = null,
     onCaseRequestConsumed: () -> Unit = {},
