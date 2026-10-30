@@ -193,11 +193,14 @@ class AppViewModel(
     fun reloadJournal() {
         val store = journal ?: return
         if (!allowed() || _journalState.value.busy) return
+        val transferMessage = _journalState.value.message
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 val entries = withContext(Dispatchers.IO) { store.list() }
-                if (allowed()) _journalState.value = JournalUiState(entries.sortedByDescending { it.createdAt })
+                if (allowed()) _journalState.value = JournalUiState(
+                    entries.sortedByDescending { it.createdAt }, message = transferMessage
+                )
             } catch (e: Exception) {
                 if (allowed()) _journalState.value = _journalState.value.copy(busy = false,
                     error = e.message ?: "Tagebuch konnte nicht geöffnet werden")
