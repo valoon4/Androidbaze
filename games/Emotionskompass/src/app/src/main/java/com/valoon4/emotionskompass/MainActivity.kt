@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -119,6 +120,7 @@ import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
+import com.valoon4.emotionskompass.feature.insights.PersonalReviewScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
 import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
 import com.valoon4.emotionskompass.feature.strategies.StrategyAtlasScreen
@@ -305,6 +307,11 @@ private fun EmotionskompassApp(
 ) {
     val unlocked by vm.unlocked.collectAsState()
     val lockEnabled by vm.lockEnabled.collectAsState()
+    val reviewSelection by vm.reviewSelection.collectAsState()
+    // The list position lives at app-shell scope and survives journal deep links.
+    // It only contains a scroll index/offset, never private journal text.
+    val reviewListState = rememberLazyListState()
+    val reviewScope = rememberCoroutineScope()
     var credentialError by remember { mutableStateOf<String?>(null) }
     var requestedAction by remember { mutableStateOf("unlock") }
     val credentialLauncher = rememberLauncherForActivityResult(
@@ -418,7 +425,9 @@ private fun EmotionskompassApp(
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
     val privateScreen = !unlocked || state.destination == Destination.CHECKIN ||
-        (state.destination == Destination.MAIN && state.section == MainSection.TAGEBUCH)
+        state.destination == Destination.JOURNAL_ENTRY ||
+        (state.destination == Destination.MAIN &&
+            (state.section == MainSection.TAGEBUCH || state.section == MainSection.RUECKBLICK))
     DisposableEffect(hostActivity, privateScreen) {
         if (privateScreen) {
             hostActivity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -730,14 +739,46 @@ private fun EmotionskompassApp(
                         onImport = vm::importJournal,
                         onSystemPicker = vm::setSystemPickerInProgress
                     )
-                    MainSection.RUECKBLICK -> ComingSoonScreen(
-                        icon = Icons.Outlined.Insights,
-                        title = "Dein Rückblick",
-                        subtitle = "Hier werden später persönliche Muster sichtbar – ohne Noten, Diagnosen oder Leistungsdruck.",
-                        milestone = "Geplant für M7"
+                    MainSection.RUECKBLICK -> PersonalReviewScreen(
+                        snapshot = remember(diary.entries, diary.loaded, diary.busy, diary.error, unlocked) {
+                            if (unlocked && !diary.busy && diary.error == null && diary.loaded)
+                                vm.insightsSnapshotIfAvailable() else null
+                        },
+                        busy = diary.busy,
+                        error = diary.error,
+                        emotions = catalog,
+                        needs = needCatalog,
+                        onReload = vm::reloadJournal,
+                        onOpenJournalEntry = vm::openJournalEntryFromReview,
+                        onStartCheckIn = { vm.openCheckin() },
+                        selectedTerm = reviewSelection,
+                        onSelectTerm = { value ->
+                            vm.selectReviewEvidence(value)
+                            reviewScope.launch { reviewListState.scrollToItem(0) }
+                        },
+                        listState = reviewListState
                     )
                     }
                 }
+                Destination.JOURNAL_ENTRY -> JournalScreen(
+                    state = diary,
+                    emotions = catalog,
+                    needs = needCatalog,
+                    onStart = { vm.openCheckin() },
+                    onEdit = vm::editJournalEntry,
+                    onDelete = vm::deleteJournalEntry,
+                    onDeleteAll = vm::deleteEntireJournal,
+                    onReload = vm::reloadJournal,
+                    lockEnabled = lockEnabled,
+                    onToggleLock = {
+                        requestCredential(if (lockEnabled) "disable" else "enable")
+                    },
+                    onExport = vm::exportJournal,
+                    onImport = vm::importJournal,
+                    onSystemPicker = vm::setSystemPickerInProgress,
+                    requestedEntryId = state.journalEntryId,
+                    onReturnToReview = vm::back
+                )
                 Destination.EMOTION -> {
                     val emotion = state.emotionId?.let(catalog::find)
                     if (emotion != null) {

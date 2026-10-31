@@ -1,4 +1,4 @@
-name: Build Emotionskompass M7.0 Debug APK
+name: Build Emotionskompass M7.1 Debug APK
 
 on:
   push:
@@ -14,6 +14,12 @@ on:
 
 permissions:
   contents: read
+
+# Keep only the newest build of a PR: multiple obsolete APK builds otherwise
+# exhaust CI runners and delay the current user-facing validation.
+concurrency:
+  group: emotionskompass-apk-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   android:
@@ -51,16 +57,18 @@ jobs:
           test -s "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
           grep -q "package: name='com.valoon4.emotionskompass'" apk-badging.txt
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
-          cp "$APK" Emotionskompass-M70-v0.7.0-debug.apk
-          sha256sum Emotionskompass-M70-v0.7.0-debug.apk | tee Emotionskompass-M70-v0.7.0-debug.apk.sha256
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee apk-signing.txt
+          echo "DEBUG SIGNING NOTE: GitHub's default debug keystore is ephemeral; APK updates may have incompatible signer certificates."
+          cp "$APK" Emotionskompass-M71-v0.7.1-debug.apk
+          sha256sum Emotionskompass-M71-v0.7.1-debug.apk | tee Emotionskompass-M71-v0.7.1-debug.apk.sha256
       - name: Upload installable Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: Emotionskompass-M70-debug-apk
+          name: Emotionskompass-M71-debug-apk
           path: |
-            games/Emotionskompass/src/Emotionskompass-M70-v0.7.0-debug.apk
-            games/Emotionskompass/src/Emotionskompass-M70-v0.7.0-debug.apk.sha256
+            games/Emotionskompass/src/Emotionskompass-M71-v0.7.1-debug.apk
+            games/Emotionskompass/src/Emotionskompass-M71-v0.7.1-debug.apk.sha256
             games/Emotionskompass/src/apk-badging.txt
+            games/Emotionskompass/src/apk-signing.txt
           if-no-files-found: error
           retention-days: 30

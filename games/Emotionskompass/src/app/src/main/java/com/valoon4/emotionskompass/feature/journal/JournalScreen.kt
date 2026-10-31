@@ -53,9 +53,11 @@ fun JournalScreen(
     onToggleLock: () -> Unit,
     onExport: (Uri, String) -> Unit,
     onImport: (Uri, String) -> Unit,
-    onSystemPicker: (Boolean) -> Unit
+    onSystemPicker: (Boolean) -> Unit,
+    requestedEntryId: String? = null,
+    onReturnToReview: (() -> Unit)? = null
 ) {
-    var selectedId by remember { mutableStateOf<String?>(null) }
+    var selectedId by remember(requestedEntryId) { mutableStateOf(requestedEntryId) }
     var deleteId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteAll by remember { mutableStateOf(false) }
 
@@ -98,10 +100,28 @@ fun JournalScreen(
     if (selected != null) {
         JournalDetail(
             entry = selected, emotions = emotions, needs = needs,
-            onBack = { selectedId = null },
+            onBack = {
+                if (requestedEntryId != null && onReturnToReview != null) onReturnToReview()
+                else selectedId = null
+            },
             onEdit = { onEdit(selected.id) },
             onDelete = { deleteId = selected.id }
         )
+        return
+    }
+
+    if (requestedEntryId != null && selected == null) {
+        Column(Modifier.fillMaxSize().padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Text("Eintrag nicht mehr verfügbar",
+                style = MaterialTheme.typography.titleLarge)
+            Text("Dieser Tagebucheintrag wurde möglicherweise gelöscht oder konnte nicht sicher geladen werden.")
+            OutlinedButton(onClick = { onReturnToReview?.invoke() },
+                enabled = onReturnToReview != null,
+                modifier = Modifier.fillMaxWidth()) {
+                Text("Zurück zum Rückblick")
+            }
+        }
         return
     }
 

@@ -1,8 +1,19 @@
-# Emotionskompass – native Android-App M7.0
+# Emotionskompass – native Android-App M7.1
 
-**Version:** 0.7.0-m7.0-foundation · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.7.1-m7.1-review · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
+
+**Wichtiger Hinweis zur Debug-Installation:** GitHub-Actions-Debug-APKs können zwischen CI-Läufen mit **unterschiedlichen Signaturzertifikaten** erstellt werden. Deshalb ist ein normales Update über eine bereits installierte Emotionskompass-Debug-APK **nicht garantiert**. **Nicht deinstallieren**, bevor persönliche Daten sicher gesichert sind; EKB1-Export umfasst Tagebucheinträge, aber nicht zwingend Lernstand/Favoriten. Eine Deinstallation kann lokale Daten endgültig entfernen. Für M7.1 zunächst ein Testgerät mit fiktiven Daten verwenden. Details: `../notes/M71_RUECKBLICK_UX_ABNAHME.md`.
+
+### M7.1 – Dein persönlicher Rückblick
+- Bereits vorhandenen Hauptreiter **Rückblick** aktiviert: 7/30/90 lokale Kalendertage einschließlich heute oder frei wählbarer Zeitraum mit zwei Kalenderdatum-Schaltflächen.
+- Klar getrennte Zahlen für **gespeicherte Tagebucheinträge**, ausdrücklich **genannte Gefühle** und ausdrücklich **genannte Bedürfnisse**. Keine Deutung, keine Wertung und kein nicht erklärbarer Score.
+- Jede Gefühls-/Bedürfnisnennung führt zu einer Liste **konkreter Originaleinträge** und von dort ins geschützte Tagebuchdetail. Zurück führt zum bisherigen Rückblick; Zeitraum, Auswahl und Scrollposition bleiben in der laufenden Sitzung erhalten.
+- Bei fehlenden Einträgen freiwilliger, freundlicher Check-in statt Leistungsdruck. Bei noch ladenden oder beschädigten Journaldaten **keine fingierten Nullstatistiken**.
+- `FLAG_SECURE` für Rückblick und zugehörige Tagebuchdetails, nur auf authentifiziertem `JournalSnapshot` aus M7.0. Keine neue Persistenz, kein Netzwerkzugriff oder Änderung an EKJ1/EKB1.
+- 3 zusätzliche Android-UI-Emulatortests bei 100 % und 200 % Schrift plus vorhandene 4 Navigationstests; Sicherheits- und Zeitgrenzentests bleiben aktiv. Abnahmeprotokoll: `../notes/M71_RUECKBLICK_UX_ABNAHME.md`.
+- M7.2–M7.6 bleiben getrennte Meilensteine; keine automatische Mustererkennung in M7.1.
 
 ### M7.0 – Rückblick-Fundament (noch ohne neue Oberfläche)
 - Sichere, flüchtige **lesende** Projektion ausschließlich strukturierter Daten des bereits erfolgreich entschlüsselten EKJ1-Journals. Private Notizen, Freitexte, Interpretationen und sonstige Check-in-Details werden nicht für die Auswertung übernommen.

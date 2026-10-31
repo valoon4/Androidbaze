@@ -61,6 +61,28 @@ class JournalLockTest {
         assertFalse(vm.unlocked.value)
     }
 
+    @Test fun reviewEvidenceSelectionNeverSurvivesAppLock() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.selectReviewEvidence("emotion" to "angst")
+        assertNull(vm.reviewSelection.value)
+        vm.unlockJournal()
+        vm.selectReviewEvidence("emotion" to "angst")
+        assertEquals("emotion" to "angst", vm.reviewSelection.value)
+        vm.onAppBackgrounded()
+        assertFalse(vm.unlocked.value)
+        assertNull(vm.reviewSelection.value)
+        assertNull(vm.insightsSnapshotIfAvailable())
+    }
+
+    @Test fun reviewCannotOpenEntryWithoutLoadedAuthenticatedJournal() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.openJournalEntryFromReview("entry-id")
+        assertEquals(Destination.MAIN, vm.state.value.destination)
+        vm.unlockJournal()
+        vm.openJournalEntryFromReview("entry-id")
+        assertEquals(Destination.MAIN, vm.state.value.destination)
+    }
+
     @Test fun optionalGateDoesNotLockWhenDisabled() {
         val vm = AppViewModel(atlas)
         assertFalse(vm.lockEnabled.value)

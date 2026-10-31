@@ -31,7 +31,7 @@ enum class MainSection { START, ENTDECKEN, WISSEN, TAGEBUCH, RUECKBLICK }
 enum class DiscoveryAtlas(val label: String) {
     GEFUEHLE("Gefühle"), BEDUERFNISSE("Bedürfnisse"), STRATEGIEN("Strategien")
 }
-enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, LEARNING, WISSENSWELT, CHECKIN, SETTINGS }
+enum class Destination { MAIN, EMOTION, VERGLEICH, PATH, LEARN_CARDS, COMPARISONS, LEARNING, WISSENSWELT, CHECKIN, SETTINGS, JOURNAL_ENTRY }
 
 data class AtlasFilters(
     val query: String = "",
@@ -45,7 +45,8 @@ data class AppUiState(
     val destination: Destination = Destination.MAIN,
     val emotionId: String? = null,
     val comparisonId: String? = null,
-    val pathId: String? = null
+    val pathId: String? = null,
+    val journalEntryId: String? = null
 )
 
 data class JournalUiState(
@@ -73,6 +74,9 @@ class AppViewModel(
     val checkIn = _checkIn.asStateFlow()
     private val _journalState = MutableStateFlow(JournalUiState())
     val journalState = _journalState.asStateFlow()
+    // Private, strictly in-memory Rückblick evidence selection. Never SavedState.
+    private val _reviewSelection = MutableStateFlow<Pair<String, String>?>(null)
+    val reviewSelection = _reviewSelection.asStateFlow()
     private val _editingEntryId = MutableStateFlow<String?>(null)
     val editingEntryId = _editingEntryId.asStateFlow()
 
@@ -105,6 +109,7 @@ class AppViewModel(
         accessEpoch++
         _unlocked.value = false
         _journalState.value = JournalUiState()
+        _reviewSelection.value = null
         _editingEntryId.value = null
         _checkIn.value = CheckInDraft()
         history.clear()
@@ -322,6 +327,25 @@ class AppViewModel(
     fun openPath(id: String) {
         if (catalog.findPath(id) == null) return
         push(_state.value.copy(destination = Destination.PATH, pathId = id))
+    }
+
+    /**
+     * M7.1: only open IDs from the currently authenticated and loaded journal.
+     * Preserve the origin (Rückblick) in the existing navigation history so
+     * system Back returns to the same filter; refuse stale/deleted IDs.
+     */
+    fun selectReviewEvidence(value: Pair<String, String>?) {
+        if (!allowed()) return
+        require(value == null ||
+            (value.first in setOf("all", "emotion", "need") && value.second.isNotBlank()))
+        _reviewSelection.value = value
+    }
+
+    fun openJournalEntryFromReview(id: String) {
+        val current = _journalState.value
+        if (!allowed() || !current.loaded || current.busy || current.error != null) return
+        if (current.entries.none { it.id == id }) return
+        push(_state.value.copy(destination = Destination.JOURNAL_ENTRY, journalEntryId = id))
     }
 
     fun selectSection(section: MainSection) {
