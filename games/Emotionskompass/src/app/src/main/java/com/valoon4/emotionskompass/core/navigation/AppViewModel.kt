@@ -214,8 +214,9 @@ class AppViewModel(
                     reloadJournal()
                 }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Bestehende Daten wurden nicht absichtlich überschrieben.")
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(
+                    error = "Wiederherstellung nicht abgeschlossen: ${e.message}. Bitte Tagebuch erneut sicher laden. Ein begonnener Import wird vor dem Anzeigen deiner Einträge wiederhergestellt."
+                )
             } finally { chars.fill(0.toChar()) }
         }
     }
@@ -253,7 +254,8 @@ class AppViewModel(
 
     fun saveCheckIn() {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
+        if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
+            _journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
             _checkIn.value.step != CheckInStep.AUSKLANG || !_checkIn.value.hasPersonalInput) return
         val epoch = accessEpoch
         val snapshot = _checkIn.value
@@ -292,7 +294,8 @@ class AppViewModel(
 
     fun deleteJournalEntry(id: String) {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
+            _journalState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
@@ -312,7 +315,8 @@ class AppViewModel(
 
     fun deleteEntireJournal() {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
+            _journalState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
