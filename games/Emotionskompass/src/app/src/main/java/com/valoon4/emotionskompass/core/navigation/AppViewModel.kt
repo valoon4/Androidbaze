@@ -74,6 +74,9 @@ class AppViewModel(
     val checkIn = _checkIn.asStateFlow()
     private val _journalState = MutableStateFlow(JournalUiState())
     val journalState = _journalState.asStateFlow()
+    // Private, strictly in-memory Rückblick evidence selection. Never SavedState.
+    private val _reviewSelection = MutableStateFlow<Pair<String, String>?>(null)
+    val reviewSelection = _reviewSelection.asStateFlow()
     private val _editingEntryId = MutableStateFlow<String?>(null)
     val editingEntryId = _editingEntryId.asStateFlow()
 
@@ -106,6 +109,7 @@ class AppViewModel(
         accessEpoch++
         _unlocked.value = false
         _journalState.value = JournalUiState()
+        _reviewSelection.value = null
         _editingEntryId.value = null
         _checkIn.value = CheckInDraft()
         history.clear()
@@ -330,6 +334,13 @@ class AppViewModel(
      * Preserve the origin (Rückblick) in the existing navigation history so
      * system Back returns to the same filter; refuse stale/deleted IDs.
      */
+    fun selectReviewEvidence(value: Pair<String, String>?) {
+        if (!allowed()) return
+        require(value == null ||
+            (value.first in setOf("all", "emotion", "need") && value.second.isNotBlank()))
+        _reviewSelection.value = value
+    }
+
     fun openJournalEntryFromReview(id: String) {
         val current = _journalState.value
         if (!allowed() || !current.loaded || current.busy || current.error != null) return
