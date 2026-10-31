@@ -132,6 +132,11 @@ class PersonalReviewEmulatorTest {
             }
         }
         rule.onNodeWithText("0 gespeicherte Einträge").assertDoesNotExist()
+        // Error card can be below a four-row, 200%-scale date filter.
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("Dein Tagebuch konnte nicht sicher geöffnet werden."))
         rule.onNodeWithText("Dein Tagebuch konnte nicht sicher geöffnet werden.").assertExists()
         rule.onNodeWithText("Erneut versuchen").performScrollTo().performClick()
         rule.runOnIdle { assertTrue(reloaded) }
