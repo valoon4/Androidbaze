@@ -1,4 +1,4 @@
-name: Build Emotionskompass M7.1 Debug APK
+name: Build Emotionskompass M7.3 Debug APK
 
 on:
   push:
@@ -59,15 +59,15 @@ jobs:
           grep -q "package: name='com.valoon4.emotionskompass'" apk-badging.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee apk-signing.txt
           echo "DEBUG SIGNING NOTE: GitHub's default debug keystore is ephemeral; APK updates may have incompatible signer certificates."
-          cp "$APK" Emotionskompass-M71-v0.7.1-debug.apk
-          sha256sum Emotionskompass-M71-v0.7.1-debug.apk | tee Emotionskompass-M71-v0.7.1-debug.apk.sha256
+          cp "$APK" Emotionskompass-M73-v0.7.3-debug.apk
+          sha256sum Emotionskompass-M73-v0.7.3-debug.apk | tee Emotionskompass-M73-v0.7.3-debug.apk.sha256
       - name: Upload installable Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: Emotionskompass-M71-debug-apk
+          name: Emotionskompass-M73-debug-apk
           path: |
-            games/Emotionskompass/src/Emotionskompass-M71-v0.7.1-debug.apk
-            games/Emotionskompass/src/Emotionskompass-M71-v0.7.1-debug.apk.sha256
+            games/Emotionskompass/src/Emotionskompass-M73-v0.7.3-debug.apk
+            games/Emotionskompass/src/Emotionskompass-M73-v0.7.3-debug.apk.sha256
             games/Emotionskompass/src/apk-badging.txt
             games/Emotionskompass/src/apk-signing.txt
           if-no-files-found: error
