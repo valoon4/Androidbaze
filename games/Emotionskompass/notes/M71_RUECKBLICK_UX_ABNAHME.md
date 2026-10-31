@@ -28,7 +28,7 @@ Quellbezüge sind `JournalEntry.id`, keine Fundstellen in privaten Freitexten. I
 
 - Deutsche Formulierungen mit **Nennungen in Einträgen** statt „oft gefühlt“ und ohne Diagnose-/Kausalformulierungen.
 - Wichtige Überschriften für Screenreader als Überschrift markiert; jede Begriffskarte ist ein zusammenhängendes Klickziel mit beschreibender Aktion.
-- Zeiträume als horizontal scrollbare, beschriftete Filterchips; frei wählbarer Zeitraum über große, eigenständige Datumsschaltflächen.
+- Zeitraumfilter als beschriftete **mehrzeilig umbrechende** Chips: auch bei 200 % Schrift ist „Eigener Zeitraum“ ohne verstecktes horizontales Scrollen sichtbar. Frei wählbarer Zeitraum über große, eigenständige Datumsschaltflächen.
 - Mit 200%-Schrift und schmalem 320dp-Viewport auf Android-35-Emulator zu prüfen. **Echter TalkBack-Menschentest** bleibt gesonderte Release-Voraussetzung.
 
 ## Testmatrix und Grenzen
