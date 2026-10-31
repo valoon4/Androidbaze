@@ -70,8 +70,8 @@ fun JournalSecurityPanel(
                 pendingImport = null
                 importPassword = ""
             },
-            title = { Text("Tagebuch wirklich ersetzen?") },
-            text = { Text("Die Sicherung wird nach Eingabe der Passphrase geprüft. Bei Erfolg werden ALLE momentan gespeicherten Tagebucheinträge durch die Einträge aus der Sicherung ersetzt. Bitte sichere den aktuellen Bestand vorher separat. Dieser Schritt kann nicht rückgängig gemacht werden.") },
+            title = { Text("Persönliche Daten wirklich ersetzen?") },
+            text = { Text("Die Sicherung wird vor dem Import entschlüsselt und geprüft. EKB2 ersetzt das gesamte Tagebuch UND alle selbst gespeicherten Erkenntnisse. Alte EKB1-Dateien ersetzen NUR das Tagebuch; vorhandene Erkenntnisse bleiben erhalten, nicht mehr passende Eintragslinks werden entfernt. Sichere den aktuellen Datenbestand vorher separat. Dieser Schritt kann nicht rückgängig gemacht werden.") },
             confirmButton = {
                 TextButton(onClick = {
                     val uri = pendingImport!!
@@ -114,8 +114,8 @@ fun JournalSecurityPanel(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
-            Text("Verschlüsselte Sicherung erstellen", fontWeight = FontWeight.SemiBold)
-            Text("Wähle eine eigene Passphrase mit mindestens 12 Zeichen. Die Datei ist unabhängig vom Android-Keystore wiederherstellbar. Ohne Passphrase ist sie nicht wiederherstellbar.",
+            Text("Vollständige verschlüsselte Sicherung erstellen", fontWeight = FontWeight.SemiBold)
+            Text("Eine EKB2-Sicherung enthält sowohl das Tagebuch als auch selbst geschriebene Erkenntnisse. Wähle eine Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase für diese Sicherung", exportPassword) { exportPassword = it }
             SecretField("Passphrase wiederholen", exportConfirmation) { exportConfirmation = it }
@@ -130,7 +130,7 @@ fun JournalSecurityPanel(
                     pickerError = null
                     onSystemPicker(true)
                     try {
-                        exportPicker.launch("Emotionskompass-Tagebuch.ekbackup")
+                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB2.ekbackup")
                     } catch (e: Exception) {
                         // A missing/disabled document picker must never leave the
                         // background relock bypass enabled indefinitely.
@@ -142,7 +142,7 @@ fun JournalSecurityPanel(
             ) { Text("Verschlüsselte Sicherungsdatei speichern") }
             HorizontalDivider()
             Text("Sicherung wiederherstellen", fontWeight = FontWeight.SemiBold)
-            Text("Die Wiederherstellung ersetzt erst nach ausdrücklicher Bestätigung und erfolgreicher Entschlüsselung dein aktuelles Tagebuch. Bitte sichere es vorher.",
+            Text("EKB2 ersetzt Tagebuch und Erkenntnisse. Ältere EKB1-Sicherungen stellen nur Tagebucheinträge wieder her, vorhandene Erkenntnisse bleiben erhalten. Bitte erstelle vorher eine vollständige Sicherung.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase der bestehenden Sicherung", importPassword) {
                 importPassword = it
