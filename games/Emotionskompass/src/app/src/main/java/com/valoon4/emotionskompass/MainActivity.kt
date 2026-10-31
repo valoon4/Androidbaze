@@ -734,8 +734,10 @@ private fun EmotionskompassApp(
                         onSystemPicker = vm::setSystemPickerInProgress
                     )
                     MainSection.RUECKBLICK -> PersonalReviewScreen(
-                        snapshot = if (!diary.busy && diary.error == null && diary.loaded)
-                            vm.insightsSnapshotIfAvailable() else null,
+                        snapshot = remember(diary.entries, diary.loaded, diary.busy, diary.error, unlocked) {
+                            if (unlocked && !diary.busy && diary.error == null && diary.loaded)
+                                vm.insightsSnapshotIfAvailable() else null
+                        },
                         busy = diary.busy,
                         error = diary.error,
                         emotions = catalog,
