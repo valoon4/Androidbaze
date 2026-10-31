@@ -15,6 +15,11 @@ import com.valoon4.emotionskompass.core.journal.BoundedJournalInput
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.journal.JournalFormat
+import com.valoon4.emotionskompass.core.journal.PersonalBackup
+import com.valoon4.emotionskompass.core.journal.PersonalRestoreTransaction
+import com.valoon4.emotionskompass.core.insights.EncryptedInsightsRepository
+import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
@@ -58,12 +63,22 @@ data class JournalUiState(
     val loaded: Boolean = false
 )
 
+data class PersonalInsightUiState(
+    val items: List<PersonalInsight> = emptyList(),
+    val loaded: Boolean = false,
+    val busy: Boolean = false,
+    val error: String? = null,
+    val message: String? = null
+)
+
 class AppViewModel(
     private val catalog: EmotionCatalog,
     private val needCatalog: NeedCatalog? = null,
     private val journal: EncryptedJournalRepository? = null,
     private val resolver: ContentResolver? = null,
-    initialLockEnabled: Boolean = false
+    initialLockEnabled: Boolean = false,
+    private val insightsStore: EncryptedInsightsRepository? = null,
+    private val restoration: PersonalRestoreTransaction? = null
 ) : ViewModel() {
     private val _state = MutableStateFlow(AppUiState())
     val state = _state.asStateFlow()
@@ -74,6 +89,8 @@ class AppViewModel(
     val checkIn = _checkIn.asStateFlow()
     private val _journalState = MutableStateFlow(JournalUiState())
     val journalState = _journalState.asStateFlow()
+    private val _personalInsights = MutableStateFlow(PersonalInsightUiState())
+    val personalInsights = _personalInsights.asStateFlow()
     // Private, strictly in-memory Rückblick evidence selection. Never SavedState.
     private val _reviewSelection = MutableStateFlow<Pair<String, String>?>(null)
     val reviewSelection = _reviewSelection.asStateFlow()
@@ -89,7 +106,12 @@ class AppViewModel(
     private var accessEpoch = 0L
     private fun currentAccess(epoch: Long): Boolean = allowed() && epoch == accessEpoch
 
-    init { if (journal != null && _unlocked.value) reloadJournal() }
+    init {
+        if (_unlocked.value) {
+            if (journal != null) reloadJournal()
+            if (insightsStore != null) reloadPersonalInsights()
+        }
+    }
 
     fun setLockEnabled(enabled: Boolean) {
         _lockEnabled.value = enabled
@@ -101,6 +123,7 @@ class AppViewModel(
         accessEpoch++
         _unlocked.value = true
         reloadJournal()
+        reloadPersonalInsights()
     }
 
     /** Clear decrypted journal and private draft whenever the app backgrounds. */
@@ -109,6 +132,7 @@ class AppViewModel(
         accessEpoch++
         _unlocked.value = false
         _journalState.value = JournalUiState()
+        _personalInsights.value = PersonalInsightUiState()
         _reviewSelection.value = null
         _editingEntryId.value = null
         _checkIn.value = CheckInDraft()
@@ -142,75 +166,178 @@ class AppViewModel(
         return JournalSnapshot.fromEntries(state.entries)
     }
 
+    fun reloadPersonalInsights() {
+        val store = insightsStore ?: return
+        if (!allowed() || _personalInsights.value.busy) return
+        val epoch = accessEpoch
+        _personalInsights.value = PersonalInsightUiState(busy = true)
+        viewModelScope.launch {
+            try {
+                val loaded = withContext(Dispatchers.IO) { store.list() }
+                if (currentAccess(epoch)) _personalInsights.value = PersonalInsightUiState(
+                    items = loaded.sortedByDescending { it.updatedAt }, loaded = true
+                )
+            } catch (e: Exception) {
+                if (currentAccess(epoch)) _personalInsights.value = PersonalInsightUiState(
+                    error = e.message ?: "Erkenntnisse konnten nicht geöffnet werden."
+                )
+            }
+        }
+    }
+
+    private fun changePersonalInsight(action: (EncryptedInsightsRepository) -> Unit) {
+        val store = insightsStore ?: return
+        val state = _personalInsights.value
+        if (!allowed() || state.busy || !state.loaded || state.error != null) return
+        val epoch = accessEpoch
+        _personalInsights.value = state.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            try {
+                val updated = withContext(Dispatchers.IO) {
+                    action(store)
+                    store.list()
+                }
+                if (currentAccess(epoch)) _personalInsights.value = PersonalInsightUiState(
+                    items = updated.sortedByDescending { it.updatedAt },
+                    loaded = true, message = "Erkenntnisse aktualisiert."
+                )
+            } catch (e: Exception) {
+                if (currentAccess(epoch)) _personalInsights.value = state.copy(
+                    error = e.message ?: "Erkenntnis konnte nicht gespeichert werden."
+                )
+            }
+        }
+    }
+
+    fun savePersonalInsight(text: String, existingId: String? = null, journalId: String? = null) {
+        if (text.isBlank() || text.length > 1200) return
+        if (journalId != null && (!_journalState.value.loaded ||
+                _journalState.value.entries.none { it.id == journalId })) return
+        changePersonalInsight { it.save(text, existingId, journalId) }
+    }
+
+    fun archivePersonalInsight(id: String, archived: Boolean) =
+        changePersonalInsight { it.archive(id, archived) }
+
+    fun deletePersonalInsight(id: String) = changePersonalInsight { it.delete(id) }
+
     fun clearTransferMessage() {
         _journalState.value = _journalState.value.copy(error = null, message = null)
+        _personalInsights.value = _personalInsights.value.copy(message = null)
     }
 
     /**
      * SAF stream: only encrypted portable bytes ever leave this process.
      * The user chooses the destination through Android's document picker.
      */
+    /** Always exports a complete EKB2 backup when the insights store is enabled. */
     fun exportJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _personalInsights.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
+        _personalInsights.value = _personalInsights.value.copy(busy = true)
         viewModelScope.launch {
             val chars = password.toCharArray()
             try {
                 withContext(Dispatchers.IO) {
-                    val backup = store.encryptedBackup(chars)
+                    val backup = if (insightsStore != null) {
+                        PersonalBackup.seal(store.list(), insightsStore.list(), chars)
+                    } else store.encryptedBackup(chars)
                     try {
                         val output = io.openOutputStream(uri, "w")
                             ?: throw IllegalStateException("Zieldatei nicht beschreibbar.")
                         output.use { it.write(backup); it.flush() }
                     } finally { backup.fill(0) }
                 }
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, message = "Verschlüsselte Sicherung wurde erstellt.")
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(
+                        busy = false, message = "Verschlüsselte Sicherung erstellt (Tagebuch und Erkenntnisse).")
+                    _personalInsights.value = _personalInsights.value.copy(busy = false)
+                }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, error = "Export fehlgeschlagen: ${e.message}. Eine unvollständige Zieldatei bitte löschen.")
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(
+                        busy = false, error = "Export fehlgeschlagen: ${e.message}. Eine unvollständige Zieldatei bitte löschen.")
+                    _personalInsights.value = _personalInsights.value.copy(busy = false)
+                }
             } finally { chars.fill(0.toChar()) }
         }
     }
 
     /**
-     * Explicitly confirmed replacement, never an automatic merge. Refuse
-     * oversized data and do not alter existing entries for wrong passwords.
+     * EKB2: all-or-nothing recoverable journal+insights replacement.
+     * EKB1: legacy journal replacement; existing self-authored insights survive.
+     * References to deleted journal IDs are unlinked, never erase insight text.
      */
     fun importJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _personalInsights.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
+        _personalInsights.value = _personalInsights.value.copy(busy = true)
         viewModelScope.launch {
             val chars = password.toCharArray()
             try {
-                val count = withContext(Dispatchers.IO) {
+                val message = withContext(Dispatchers.IO) {
                     val input = io.openInputStream(uri)
                         ?: throw IllegalStateException("Sicherungsdatei konnte nicht gelesen werden.")
                     val bytes = input.use { stream ->
-                        BoundedJournalInput.read(stream, JournalBackup.MAX_BACKUP_BYTES)
+                        BoundedJournalInput.read(stream, maxOf(
+                            JournalBackup.MAX_BACKUP_BYTES, PersonalBackup.MAX_BACKUP_BYTES))
                     }
                     try {
-                        require(bytes.size <= JournalBackup.MAX_BACKUP_BYTES) {
-                            "Sicherungsdatei ist zu groß."
+                        if (PersonalBackup.isV2(bytes)) {
+                            val insights = insightsStore ?: error("Erkenntnisspeicher nicht verfügbar.")
+                            val coordinator = restoration ?: error("Sicherer Restore nicht verfügbar.")
+                            val incoming = PersonalBackup.open(bytes, chars)
+                            store.list()
+                            insights.list()
+                            val validJournalIds = incoming.journal.map { it.id }.toSet()
+                            val reconciled = incoming.insights.map {
+                                if (it.journalId != null && it.journalId !in validJournalIds)
+                                    it.copy(journalId = null) else it
+                            }
+                            coordinator.replaceTogether {
+                                store.replaceAll(incoming.journal)
+                                insights.replaceAll(reconciled)
+                            }
+                            "Gesamtsicherung wiederhergestellt: ${incoming.journal.size} Tagebucheinträge und ${reconciled.size} Erkenntnisse."
+                        } else {
+                            val raw = JournalBackup.open(bytes, chars)
+                            val incoming = try { JournalFormat.decode(raw) }
+                                finally { raw.fill(0) }
+                            // Keep previously authored insights rather than silently wiping them.
+                            if (insightsStore != null) {
+                                val coordinator = restoration ?: error("Sicherer Restore nicht verfügbar.")
+                                store.list()
+                                insightsStore.list()
+                                coordinator.replaceTogether {
+                                    store.replaceAll(incoming)
+                                    insightsStore.retainJournalReferences(incoming.map { it.id }.toSet())
+                                }
+                            } else {
+                                store.replaceAll(incoming)
+                            }
+                            "Alte EKB1-Sicherung importiert: ${incoming.size} Tagebucheinträge. Eigene Erkenntnisse bleiben erhalten."
                         }
-                        store.restoreBackup(bytes, chars)
                     } finally { bytes.fill(0) }
                 }
-                if (allowed()) {
-                    // JournalUiState() resets busy=false before the fresh authenticated read.
-                    _journalState.value = JournalUiState(
-                        message = "Wiederherstellung erfolgreich: $count Einträge.")
+                if (currentAccess(epoch)) {
+                    _reviewSelection.value = null
+                    _journalState.value = JournalUiState(message = message)
+                    _personalInsights.value = PersonalInsightUiState()
                     reloadJournal()
+                    reloadPersonalInsights()
                 }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Bestehende Daten wurden nicht absichtlich überschrieben.")
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(
+                        busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Daten nicht absichtlich überschrieben; bitte Bestand prüfen.")
+                    _personalInsights.value = _personalInsights.value.copy(busy = false)
+                }
             } finally { chars.fill(0.toChar()) }
         }
     }
@@ -289,7 +416,18 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.delete(id) }
+                withContext(Dispatchers.IO) {
+                    if (insightsStore != null && restoration != null) {
+                        store.list()
+                        insightsStore.list()
+                        restoration.replaceTogether {
+                            store.delete(id)
+                            insightsStore.retainJournalReferences(
+                                store.list().map { it.id }.toSet()
+                            )
+                        }
+                    } else store.delete(id)
+                }
                 if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id },
@@ -309,7 +447,16 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.deleteAll() }
+                withContext(Dispatchers.IO) {
+                    if (insightsStore != null && restoration != null) {
+                        store.list()
+                        insightsStore.list()
+                        restoration.replaceTogether {
+                            store.deleteAll()
+                            insightsStore.retainJournalReferences(emptySet())
+                        }
+                    } else store.deleteAll()
+                }
                 if (currentAccess(epoch)) _journalState.value = JournalUiState(loaded = true)
             } catch (e: Exception) {
                 if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
@@ -337,7 +484,7 @@ class AppViewModel(
     fun selectReviewEvidence(value: Pair<String, String>?) {
         if (!allowed()) return
         require(value == null ||
-            (value.first in setOf("all", "emotion", "need") && value.second.isNotBlank()))
+            (value.first in setOf("all", "emotion", "need", "pattern") && value.second.isNotBlank()))
         _reviewSelection.value = value
     }
 
@@ -459,13 +606,16 @@ class AppViewModel(
             needCatalog: NeedCatalog? = null,
             journal: EncryptedJournalRepository? = null,
             resolver: ContentResolver? = null,
-            initialLockEnabled: Boolean = false
+            initialLockEnabled: Boolean = false,
+            insightsStore: EncryptedInsightsRepository? = null,
+            restoration: PersonalRestoreTransaction? = null
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     require(modelClass == AppViewModel::class.java)
-                    return AppViewModel(catalog, needCatalog, journal, resolver, initialLockEnabled) as T
+                    return AppViewModel(catalog, needCatalog, journal, resolver,
+                        initialLockEnabled, insightsStore, restoration) as T
                 }
             }
     }
