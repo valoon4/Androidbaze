@@ -84,6 +84,7 @@ fun PersonalReviewScreen(
     var startText by rememberSaveable { mutableStateOf(today.minusDays(29).toString()) }
     var endText by rememberSaveable { mutableStateOf(today.toString()) }
     var pickingStart by remember { mutableStateOf<Boolean?>(null) }
+    var patternsVisible by rememberSaveable { mutableStateOf(true) }
     // Selection is held only in the locked ViewModel's in-memory Flow, never Bundle.
     val zone = ZoneId.systemDefault()
     val window = remember(preset, startText, endText, today, zone) {
@@ -314,8 +315,13 @@ fun PersonalReviewScreen(
                         Text("Nur gemeinsame Auswahlen aus deinem Tagebuch – keine Erklärung, Diagnose oder Aussage über Ursachen. Die Regeln benötigen mindestens zehn vergleichbare Einträge und Belege von mehreren Tagen.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = { patternsVisible = !patternsVisible }) {
+                            Text(if (patternsVisible) "Beobachtungen ausblenden" else "Beobachtungen anzeigen")
+                        }
                     }
-                    if (patterns.isEmpty()) {
+                    if (!patternsVisible) {
+                        // Hidden by choice; never persist or modify the source entries.
+                    } else if (patterns.isEmpty()) {
                         item {
                             Text("Für vorsichtige Beobachtungen gibt es im gewählten Zeitraum noch nicht genug geeignete Belege. Das ist keine Bewertung deiner Erfahrungen.")
                         }
