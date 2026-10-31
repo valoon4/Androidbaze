@@ -129,7 +129,7 @@ fun PersonalInsightsScreen(
         )
     }
 
-    if (editorOpen) {
+    if (editorOpen && !choosingLink) {
         AlertDialog(
             onDismissRequest = ::closeEditor,
             title = { Text(if (editing == null) "Eigene Erkenntnis festhalten" else "Erkenntnis bearbeiten") },
