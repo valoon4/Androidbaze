@@ -31,6 +31,16 @@ Quellbezüge sind `JournalEntry.id`, keine Fundstellen in privaten Freitexten. I
 - Zeitraumfilter als beschriftete **mehrzeilig umbrechende** Chips: auch bei 200 % Schrift ist „Eigener Zeitraum“ ohne verstecktes horizontales Scrollen sichtbar. Frei wählbarer Zeitraum über große, eigenständige Datumsschaltflächen.
 - Mit 200%-Schrift und schmalem 320dp-Viewport auf Android-35-Emulator zu prüfen. **Echter TalkBack-Menschentest** bleibt gesonderte Release-Voraussetzung.
 
+## Installations-/Update-Gate – aktuelle Debugsignatur
+
+**Zusätzlicher Befund aus Artefaktvergleich:** Die APKs M7.0 und M7.1 wurden in getrennten GitHub-Actions-Jobs mit **unterschiedlichen Android-Debug-Signaturzertifikaten** erstellt. Der Android-Paketmanager kann bei gleichem Paketnamen `com.valoon4.emotionskompass` kein normales Update über ein anders signiertes Paket installieren. `versionCode`-Erhöhung allein genügt nicht. Diese Einschränkung ist **nicht durch bestandene Build-, Emulator- oder Kryptotests behoben**.
+
+**Schutz persönlicher Daten:** Alte APK/App nicht unbedacht deinstallieren. Die Deinstallation löscht Android-App-Daten und den gerätegebundenen Journal-Schlüssel; ein Journal ohne eine **zuvor exportierte und überprüfte EKB1-Backup-Datei mit bekannter Passphrase** ist anschließend nicht wiederherstellbar. Die vorhandene EKB1-Exportfunktion sichert **das Journal**, nicht automatisch alle Lernfortschritte/Favoriten aus der separaten verschlüsselten EKL1-Datei. Auch mit Journalbackup können bei Deinstallation Lernstände verloren gehen. Android-Backup ist deaktiviert.
+
+**Testempfehlung:** Für M7.1 zuerst eine **separate Testinstallation auf einem Ersatz-/Testgerät oder Emulator mit ausschließlich fiktiven Daten**. Wer bewusst mit echten Daten wechseln will, muss zuvor EKB1-Datei und Passwort außerhalb der App sichern und die möglichen Verluste anderer lokaler Daten verstehen; ein normaler direkter Upgradepfad ist derzeit nicht garantiert. Die Benutzerin oder der Benutzer entscheidet selbst über die riskante Deinstallation. Nicht in CI automatisiert deinstallieren.
+
+**Release-Blocker:** Einen **dauerhaft verwalteten Android-Signing-Key** für alle folgenden installierbaren Builds bereitstellen, sicher außerhalb des öffentlichen Repositories und nur via CI-Secrets zugänglich; Signatur-Identität über mindestens zwei aufeinanderfolgende Releases im Test nachweisen. Für bereits existierende APKs mit abweichendem Zertifikat ist ein kryptografisch kompatibler In-Place-Upgradepfad ohne alten privaten Schlüssel nicht möglich. Signierte Release- und Debug-Keys getrennt verwalten und niemals private Schlüssel committen.
+
 ## Testmatrix und Grenzen
 
 - M7.0 JVM-Regression: 0 / mehrere Begriffe / `null` vs `0` / `__unklar__` / DST 23-/25-Stunden-Tag / Änderungen und Löschungen / ID-/Zeitstempelvalidierung.
