@@ -15,6 +15,11 @@ import com.valoon4.emotionskompass.core.journal.BoundedJournalInput
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.journal.JournalFormat
+import com.valoon4.emotionskompass.core.journal.PersonalBackup
+import com.valoon4.emotionskompass.core.journal.PersonalRestoreTransaction
+import com.valoon4.emotionskompass.core.insights.EncryptedInsightsRepository
+import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
@@ -58,12 +63,22 @@ data class JournalUiState(
     val loaded: Boolean = false
 )
 
+data class PersonalInsightUiState(
+    val items: List<PersonalInsight> = emptyList(),
+    val loaded: Boolean = false,
+    val busy: Boolean = false,
+    val error: String? = null,
+    val message: String? = null
+)
+
 class AppViewModel(
     private val catalog: EmotionCatalog,
     private val needCatalog: NeedCatalog? = null,
     private val journal: EncryptedJournalRepository? = null,
     private val resolver: ContentResolver? = null,
-    initialLockEnabled: Boolean = false
+    initialLockEnabled: Boolean = false,
+    private val insightsStore: EncryptedInsightsRepository? = null,
+    private val restoration: PersonalRestoreTransaction? = null
 ) : ViewModel() {
     private val _state = MutableStateFlow(AppUiState())
     val state = _state.asStateFlow()
@@ -74,6 +89,8 @@ class AppViewModel(
     val checkIn = _checkIn.asStateFlow()
     private val _journalState = MutableStateFlow(JournalUiState())
     val journalState = _journalState.asStateFlow()
+    private val _personalInsights = MutableStateFlow(PersonalInsightUiState())
+    val personalInsights = _personalInsights.asStateFlow()
     // Private, strictly in-memory Rückblick evidence selection. Never SavedState.
     private val _reviewSelection = MutableStateFlow<Pair<String, String>?>(null)
     val reviewSelection = _reviewSelection.asStateFlow()
@@ -89,7 +106,12 @@ class AppViewModel(
     private var accessEpoch = 0L
     private fun currentAccess(epoch: Long): Boolean = allowed() && epoch == accessEpoch
 
-    init { if (journal != null && _unlocked.value) reloadJournal() }
+    init {
+        if (_unlocked.value) {
+            if (journal != null) reloadJournal()
+            if (insightsStore != null) reloadPersonalInsights()
+        }
+    }
 
     fun setLockEnabled(enabled: Boolean) {
         _lockEnabled.value = enabled
@@ -101,6 +123,7 @@ class AppViewModel(
         accessEpoch++
         _unlocked.value = true
         reloadJournal()
+        reloadPersonalInsights()
     }
 
     /** Clear decrypted journal and private draft whenever the app backgrounds. */
@@ -109,6 +132,7 @@ class AppViewModel(
         accessEpoch++
         _unlocked.value = false
         _journalState.value = JournalUiState()
+        _personalInsights.value = PersonalInsightUiState()
         _reviewSelection.value = null
         _editingEntryId.value = null
         _checkIn.value = CheckInDraft()
@@ -142,8 +166,64 @@ class AppViewModel(
         return JournalSnapshot.fromEntries(state.entries)
     }
 
+    fun reloadPersonalInsights() {
+        val store = insightsStore ?: return
+        if (!allowed() || _personalInsights.value.busy) return
+        val epoch = accessEpoch
+        _personalInsights.value = PersonalInsightUiState(busy = true)
+        viewModelScope.launch {
+            try {
+                val loaded = withContext(Dispatchers.IO) { store.list() }
+                if (currentAccess(epoch)) _personalInsights.value = PersonalInsightUiState(
+                    items = loaded.sortedByDescending { it.updatedAt }, loaded = true
+                )
+            } catch (e: Exception) {
+                if (currentAccess(epoch)) _personalInsights.value = PersonalInsightUiState(
+                    error = e.message ?: "Erkenntnisse konnten nicht geöffnet werden."
+                )
+            }
+        }
+    }
+
+    private fun changePersonalInsight(action: (EncryptedInsightsRepository) -> Unit) {
+        val store = insightsStore ?: return
+        val state = _personalInsights.value
+        if (!allowed() || state.busy || !state.loaded || state.error != null) return
+        val epoch = accessEpoch
+        _personalInsights.value = state.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            try {
+                val updated = withContext(Dispatchers.IO) {
+                    action(store)
+                    store.list()
+                }
+                if (currentAccess(epoch)) _personalInsights.value = PersonalInsightUiState(
+                    items = updated.sortedByDescending { it.updatedAt },
+                    loaded = true, message = "Erkenntnisse aktualisiert."
+                )
+            } catch (e: Exception) {
+                if (currentAccess(epoch)) _personalInsights.value = state.copy(
+                    error = e.message ?: "Erkenntnis konnte nicht gespeichert werden."
+                )
+            }
+        }
+    }
+
+    fun savePersonalInsight(text: String, existingId: String? = null, journalId: String? = null) {
+        if (text.isBlank() || text.length > 1200) return
+        if (journalId != null && (!_journalState.value.loaded ||
+                _journalState.value.entries.none { it.id == journalId })) return
+        changePersonalInsight { it.save(text, existingId, journalId) }
+    }
+
+    fun archivePersonalInsight(id: String, archived: Boolean) =
+        changePersonalInsight { it.archive(id, archived) }
+
+    fun deletePersonalInsight(id: String) = changePersonalInsight { it.delete(id) }
+
     fun clearTransferMessage() {
         _journalState.value = _journalState.value.copy(error = null, message = null)
+        _personalInsights.value = _personalInsights.value.copy(message = null)
     }
 
     /**
@@ -337,7 +417,7 @@ class AppViewModel(
     fun selectReviewEvidence(value: Pair<String, String>?) {
         if (!allowed()) return
         require(value == null ||
-            (value.first in setOf("all", "emotion", "need") && value.second.isNotBlank()))
+            (value.first in setOf("all", "emotion", "need", "pattern") && value.second.isNotBlank()))
         _reviewSelection.value = value
     }
 
@@ -459,13 +539,16 @@ class AppViewModel(
             needCatalog: NeedCatalog? = null,
             journal: EncryptedJournalRepository? = null,
             resolver: ContentResolver? = null,
-            initialLockEnabled: Boolean = false
+            initialLockEnabled: Boolean = false,
+            insightsStore: EncryptedInsightsRepository? = null,
+            restoration: PersonalRestoreTransaction? = null
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     require(modelClass == AppViewModel::class.java)
-                    return AppViewModel(catalog, needCatalog, journal, resolver, initialLockEnabled) as T
+                    return AppViewModel(catalog, needCatalog, journal, resolver,
+                        initialLockEnabled, insightsStore, restoration) as T
                 }
             }
     }
