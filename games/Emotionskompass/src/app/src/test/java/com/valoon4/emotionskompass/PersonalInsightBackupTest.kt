@@ -5,6 +5,7 @@ import com.valoon4.emotionskompass.core.insights.InsightBundleBackup
 import com.valoon4.emotionskompass.core.insights.InsightBundleFormat
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.insights.PersonalInsightChanges
+import com.valoon4.emotionskompass.core.insights.PersonalInsightFormat
 import com.valoon4.emotionskompass.core.journal.JournalBackup
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalFormat
@@ -63,6 +64,17 @@ class PersonalInsightBackupTest {
         val bytes = InsightBundleFormat.encode(journal, listOf(dangling))
         assertThrows(IllegalArgumentException::class.java) {
             InsightBundleFormat.decode(bytes)
+        }
+    }
+
+    @Test fun encryptedStorePayloadRoundtripAndMalformedListRejected() {
+        val encoded = PersonalInsightFormat.encode(listOf(personal))
+        assertEquals(listOf(personal), PersonalInsightFormat.decode(encoded))
+        assertThrows(IllegalArgumentException::class.java) {
+            PersonalInsightFormat.decode("not json".toByteArray())
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            PersonalInsightFormat.encode(listOf(personal, personal))
         }
     }
 
