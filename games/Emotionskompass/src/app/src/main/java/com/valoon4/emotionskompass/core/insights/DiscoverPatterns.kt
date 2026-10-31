@@ -80,6 +80,15 @@ object DiscoverPatterns {
             }
         }
 
+        // Context is only a user-selected structured life area, never mined from notes.
+        collect("emotion-area", entries.filter {
+            it.emotionIntensities.isNotEmpty() && it.area != null
+        }) { entry ->
+            entry.emotionIntensities.keys.map { emotion ->
+                emotion to checkNotNull(entry.area).name
+            }
+        }
+
         collect("emotion-pair", entries.filter { it.emotionIntensities.size >= 2 }) { entry ->
             val ids = entry.emotionIntensities.keys.sorted()
             ids.flatMapIndexed { i, first ->
