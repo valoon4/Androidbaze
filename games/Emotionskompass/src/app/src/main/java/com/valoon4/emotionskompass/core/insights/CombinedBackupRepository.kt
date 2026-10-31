@@ -105,6 +105,38 @@ class CombinedBackupRepository(
         return parsed.journal.size
     }
 
+    /** Deletes one journal entry and unlinks its evidence from insights atomically by replay. */
+    @Synchronized
+    fun deleteJournalEntry(id: String): Boolean {
+        recoverPending()
+        val current = journal.list()
+        if (current.none { it.id == id }) return false
+        val updated = PersonalInsightChanges.removeJournalReference(
+            insights.list(), id, System.currentTimeMillis()
+        )
+        RestoreTransactionRunner.commit(
+            transaction, InsightBackupContents(current.filterNot { it.id == id }, updated)
+        )
+        return true
+    }
+
+    /** Preserves all self-authored insight text while removing orphaned journal links. */
+    @Synchronized
+    fun deleteEntireJournal() {
+        recoverPending()
+        journal.list() // refuse to rewrite corrupted data
+        val current = insights.list()
+        val now = System.currentTimeMillis()
+        val withoutLinks = current.map { item ->
+            if (item.journalIds.isEmpty()) item
+            else item.copy(journalIds = emptySet(),
+                updatedAtUtcMillis = maxOf(now, item.updatedAtUtcMillis))
+        }
+        RestoreTransactionRunner.commit(
+            transaction, InsightBackupContents(emptyList(), withoutLinks)
+        )
+    }
+
     private fun readPending(): ByteArray? {
         if (!marker.exists() && !File(marker.path + ".bak").exists()) return null
         val key = getKey(create = false)
