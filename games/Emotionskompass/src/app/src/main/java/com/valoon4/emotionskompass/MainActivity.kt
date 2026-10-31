@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -306,6 +307,11 @@ private fun EmotionskompassApp(
 ) {
     val unlocked by vm.unlocked.collectAsState()
     val lockEnabled by vm.lockEnabled.collectAsState()
+    val reviewSelection by vm.reviewSelection.collectAsState()
+    // The list position lives at app-shell scope and survives journal deep links.
+    // It only contains a scroll index/offset, never private journal text.
+    val reviewListState = rememberLazyListState()
+    val reviewScope = rememberCoroutineScope()
     var credentialError by remember { mutableStateOf<String?>(null) }
     var requestedAction by remember { mutableStateOf("unlock") }
     val credentialLauncher = rememberLauncherForActivityResult(
@@ -744,7 +750,13 @@ private fun EmotionskompassApp(
                         needs = needCatalog,
                         onReload = vm::reloadJournal,
                         onOpenJournalEntry = vm::openJournalEntryFromReview,
-                        onStartCheckIn = { vm.openCheckin() }
+                        onStartCheckIn = { vm.openCheckin() },
+                        selectedTerm = reviewSelection,
+                        onSelectTerm = { value ->
+                            vm.selectReviewEvidence(value)
+                            reviewScope.launch { reviewListState.scrollToItem(0) }
+                        },
+                        listState = reviewListState
                     )
                     }
                 }
