@@ -215,7 +215,7 @@ class AppViewModel(
                 }
             } catch (e: Exception) {
                 if (currentAccess(epoch)) _journalState.value = JournalUiState(
-                    error = "Wiederherstellung nicht abgeschlossen: ${e.message}. Bitte Tagebuch erneut sicher laden. Ein begonnener Import wird vor dem Anzeigen deiner Einträge wiederhergestellt."
+                    error = "Wiederherstellung nicht abgeschlossen. Bitte Tagebuch erneut sicher laden. Ein begonnener Import wird vor dem Anzeigen deiner Einträge wiederhergestellt."
                 )
             } finally { chars.fill(0.toChar()) }
         }
@@ -300,15 +300,16 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.delete(id) }
+                withContext(Dispatchers.IO) { combinedBackup?.deleteJournalEntry(id) ?: store.delete(id) }
                 if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id },
                     loaded = true
                 )
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
-                    error = e.message ?: "Eintrag konnte nicht gelöscht werden")
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(
+                    error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
+                )
             }
         }
     }
@@ -321,11 +322,12 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.deleteAll() }
+                withContext(Dispatchers.IO) { combinedBackup?.deleteEntireJournal() ?: store.deleteAll() }
                 if (currentAccess(epoch)) _journalState.value = JournalUiState(loaded = true)
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
-                    error = e.message ?: "Tagebuch konnte nicht gelöscht werden")
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(
+                    error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
+                )
             }
         }
     }
