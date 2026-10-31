@@ -25,7 +25,7 @@ class DiscoverPatternsTest {
                     emotions = if (i in selected) mapOf("freude" to null, "angst" to 0)
                         else mapOf("ruhe" to 2),
                     needs = if (i in selected) setOf("klarheit")
-                        else setOf(CheckInDraft.UNKNOWN_NEED_ID)
+                        else setOf("autonomie")
                 )
             )
         }
@@ -44,11 +44,11 @@ class DiscoverPatternsTest {
             it.firstId == "freude" && it.secondId == "klarheit" }
         assertEquals(4, paired.evidence.numerator)
         // Only entries with BOTH a named need and an emotion are eligible.
-        assertEquals(4, paired.evidence.denominator)
+        assertEquals(12, paired.evidence.denominator)
         assertEquals(setOf("record-0", "record-1", "record-2", "record-3"),
             paired.evidence.matchingJournalIds.toSet())
         assertEquals(4, paired.distinctDays)
-        assertEquals(4, paired.evidence.eligibleJournalIds.distinct().size)
+        assertEquals(12, paired.evidence.eligibleJournalIds.distinct().size)
     }
 
     @Test fun noRepeatedDayPatternOrInventedUnknownNeed() {
