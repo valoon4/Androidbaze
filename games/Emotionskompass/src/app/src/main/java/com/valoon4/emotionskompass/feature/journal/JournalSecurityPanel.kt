@@ -114,8 +114,8 @@ fun JournalSecurityPanel(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
-            Text("Vollständige verschlüsselte Sicherung erstellen", fontWeight = FontWeight.SemiBold)
-            Text("Eine EKB2-Sicherung enthält sowohl das Tagebuch als auch selbst geschriebene Erkenntnisse. Wähle eine Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar.",
+            Text("Tagebuch und Erkenntnisse verschlüsselt sichern", fontWeight = FontWeight.SemiBold)
+            Text("Eine EKB2-Sicherung enthält das Tagebuch und selbst geschriebene Erkenntnisse. Lernfortschritt und Favoriten sind derzeit NICHT enthalten. Wähle eine Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase für diese Sicherung", exportPassword) { exportPassword = it }
             SecretField("Passphrase wiederholen", exportConfirmation) { exportConfirmation = it }
@@ -130,7 +130,7 @@ fun JournalSecurityPanel(
                     pickerError = null
                     onSystemPicker(true)
                     try {
-                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB2.ekbackup")
+                        exportPicker.launch("Emotionskompass-Tagebuch-Erkenntnisse-EKB2.ekbackup")
                     } catch (e: Exception) {
                         // A missing/disabled document picker must never leave the
                         // background relock bypass enabled indefinitely.
