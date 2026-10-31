@@ -23,9 +23,9 @@ class DiscoverPatternsTest {
                 updatedAt = time,
                 draft = CheckInDraft(
                     emotions = if (i in selected) mapOf("freude" to null, "angst" to 0)
-                        else mapOf("ruhe" to 2),
+                        else mapOf("other-$i" to 2),
                     needs = if (i in selected) setOf("klarheit")
-                        else setOf("autonomie")
+                        else setOf("other-need-$i")
                 )
             )
         }
