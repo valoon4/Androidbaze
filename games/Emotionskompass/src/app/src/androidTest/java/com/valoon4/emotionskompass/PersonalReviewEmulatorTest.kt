@@ -3,6 +3,10 @@ package com.valoon4.emotionskompass
 import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasScrollToIndexAction
+import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNode
 import androidx.compose.ui.test.onNodeWithText
@@ -64,11 +68,19 @@ class PersonalReviewEmulatorTest {
                 )
             }
         }
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("2 gespeicherte Einträge"))
         rule.onNodeWithText("2 gespeicherte Einträge").assertExists()
         rule.onNodeWithText("3 Gefühlsnennungen").assertExists()
         rule.onNodeWithText("1 Bedürfnisnennungen").assertExists()
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("Freude", substring = true))
         rule.onNode(hasClickAction() and hasText("Freude", substring = true))
-            .performScrollTo().performClick()
+            .performClick()
         rule.onNodeWithText("Einträge mit „Freude“").assertExists()
         rule.onNode(hasClickAction() and hasText("Tagebucheintrag ansehen", substring = true))
             .performScrollTo().performClick()
@@ -86,6 +98,10 @@ class PersonalReviewEmulatorTest {
                 )
             }
         }
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("0 gespeicherte Einträge"))
         rule.onNodeWithText("0 gespeicherte Einträge").assertExists()
         rule.onNodeWithText("In diesem Zeitraum gibt es noch keine Einträge.").assertExists()
         rule.onNodeWithText("Freiwilligen Check-in beginnen")
@@ -109,6 +125,10 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithText("Dein Tagebuch konnte nicht sicher geöffnet werden.").assertExists()
         rule.onNodeWithText("Erneut versuchen").performScrollTo().performClick()
         rule.runOnIdle { assertTrue(reloaded) }
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.HorizontalScrollAxisRange)
+        ).performScrollToNode(hasText("Eigener Zeitraum"))
         rule.onNodeWithText("Eigener Zeitraum").performClick()
         rule.onNodeWithText("Von:", substring = true).assertExists()
         rule.onNodeWithText("Bis:", substring = true).assertExists()
