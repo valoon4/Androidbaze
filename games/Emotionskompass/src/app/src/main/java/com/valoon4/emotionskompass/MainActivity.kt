@@ -119,6 +119,7 @@ import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
+import com.valoon4.emotionskompass.feature.insights.PersonalReviewScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
 import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
 import com.valoon4.emotionskompass.feature.strategies.StrategyAtlasScreen
@@ -418,7 +419,9 @@ private fun EmotionskompassApp(
 
     // Check-in content must not appear in Android screenshots or recent-app previews.
     val privateScreen = !unlocked || state.destination == Destination.CHECKIN ||
-        (state.destination == Destination.MAIN && state.section == MainSection.TAGEBUCH)
+        state.destination == Destination.JOURNAL_ENTRY ||
+        (state.destination == Destination.MAIN &&
+            (state.section == MainSection.TAGEBUCH || state.section == MainSection.RUECKBLICK))
     DisposableEffect(hostActivity, privateScreen) {
         if (privateScreen) {
             hostActivity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -730,14 +733,38 @@ private fun EmotionskompassApp(
                         onImport = vm::importJournal,
                         onSystemPicker = vm::setSystemPickerInProgress
                     )
-                    MainSection.RUECKBLICK -> ComingSoonScreen(
-                        icon = Icons.Outlined.Insights,
-                        title = "Dein Rückblick",
-                        subtitle = "Hier werden später persönliche Muster sichtbar – ohne Noten, Diagnosen oder Leistungsdruck.",
-                        milestone = "Geplant für M7"
+                    MainSection.RUECKBLICK -> PersonalReviewScreen(
+                        snapshot = if (!diary.busy && diary.error == null && diary.loaded)
+                            vm.insightsSnapshotIfAvailable() else null,
+                        busy = diary.busy,
+                        error = diary.error,
+                        emotions = catalog,
+                        needs = needCatalog,
+                        onReload = vm::reloadJournal,
+                        onOpenJournalEntry = vm::openJournalEntryFromReview,
+                        onStartCheckIn = { vm.openCheckin() }
                     )
                     }
                 }
+                Destination.JOURNAL_ENTRY -> JournalScreen(
+                    state = diary,
+                    emotions = catalog,
+                    needs = needCatalog,
+                    onStart = { vm.openCheckin() },
+                    onEdit = vm::editJournalEntry,
+                    onDelete = vm::deleteJournalEntry,
+                    onDeleteAll = vm::deleteEntireJournal,
+                    onReload = vm::reloadJournal,
+                    lockEnabled = lockEnabled,
+                    onToggleLock = {
+                        requestCredential(if (lockEnabled) "disable" else "enable")
+                    },
+                    onExport = vm::exportJournal,
+                    onImport = vm::importJournal,
+                    onSystemPicker = vm::setSystemPickerInProgress,
+                    requestedEntryId = state.journalEntryId,
+                    onReturnToReview = vm::back
+                )
                 Destination.EMOTION -> {
                     val emotion = state.emotionId?.let(catalog::find)
                     if (emotion != null) {
