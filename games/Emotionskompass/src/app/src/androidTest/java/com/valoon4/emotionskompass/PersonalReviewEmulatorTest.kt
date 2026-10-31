@@ -1,6 +1,11 @@
 package com.valoon4.emotionskompass
 
 import androidx.compose.ui.test.assertExists
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasScrollToIndexAction
@@ -61,10 +66,13 @@ class PersonalReviewEmulatorTest {
         val source = snapshot()
         rule.setContent {
             EmotionskompassTheme {
+                var selectedTerm by remember { mutableStateOf<Pair<String, String>?>(null) }
                 PersonalReviewScreen(
                     snapshot = source, busy = false, error = null,
                     emotions = emotions, needs = needs, onReload = {},
-                    onOpenJournalEntry = { opened = it }, onStartCheckIn = {}
+                    onOpenJournalEntry = { opened = it }, onStartCheckIn = {},
+                    selectedTerm = selectedTerm, onSelectTerm = { selectedTerm = it },
+                    listState = rememberLazyListState()
                 )
             }
         }
@@ -74,7 +82,7 @@ class PersonalReviewEmulatorTest {
         ).performScrollToNode(hasText("2 gespeicherte Einträge"))
         rule.onNodeWithText("2 gespeicherte Einträge").assertExists()
         rule.onNodeWithText("3 Gefühlsnennungen").assertExists()
-        rule.onNodeWithText("1 Bedürfnisnennungen").assertExists()
+        rule.onNodeWithText("1 Bedürfnisnennung").assertExists()
         rule.onNode(
             hasScrollToIndexAction() and
                 SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
@@ -94,7 +102,8 @@ class PersonalReviewEmulatorTest {
                 PersonalReviewScreen(
                     snapshot = JournalSnapshot.fromEntries(emptyList()),
                     busy = false, error = null, emotions = emotions, needs = needs,
-                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = { started = true }
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = { started = true },
+                    selectedTerm = null, onSelectTerm = {}, listState = rememberLazyListState()
                 )
             }
         }
@@ -117,7 +126,8 @@ class PersonalReviewEmulatorTest {
                     snapshot = null, busy = false, error = "Beispiel: Schlüssel fehlt",
                     emotions = emotions, needs = needs,
                     onReload = { reloaded = true },
-                    onOpenJournalEntry = {}, onStartCheckIn = {}
+                    onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {}, listState = rememberLazyListState()
                 )
             }
         }
