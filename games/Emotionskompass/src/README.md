@@ -4,6 +4,8 @@
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
 
+**Wichtiger Hinweis zur Debug-Installation:** GitHub-Actions-Debug-APKs können zwischen CI-Läufen mit **unterschiedlichen Signaturzertifikaten** erstellt werden. Deshalb ist ein normales Update über eine bereits installierte Emotionskompass-Debug-APK **nicht garantiert**. **Nicht deinstallieren**, bevor persönliche Daten sicher gesichert sind; EKB1-Export umfasst Tagebucheinträge, aber nicht zwingend Lernstand/Favoriten. Eine Deinstallation kann lokale Daten endgültig entfernen. Für M7.1 zunächst ein Testgerät mit fiktiven Daten verwenden. Details: `../notes/M71_RUECKBLICK_UX_ABNAHME.md`.
+
 ### M7.1 – Dein persönlicher Rückblick
 - Bereits vorhandenen Hauptreiter **Rückblick** aktiviert: 7/30/90 lokale Kalendertage einschließlich heute oder frei wählbarer Zeitraum mit zwei Kalenderdatum-Schaltflächen.
 - Klar getrennte Zahlen für **gespeicherte Tagebucheinträge**, ausdrücklich **genannte Gefühle** und ausdrücklich **genannte Bedürfnisse**. Keine Deutung, keine Wertung und kein nicht erklärbarer Score.
