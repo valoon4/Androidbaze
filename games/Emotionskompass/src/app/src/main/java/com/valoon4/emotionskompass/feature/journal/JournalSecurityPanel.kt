@@ -29,7 +29,8 @@ import com.valoon4.emotionskompass.core.journal.JournalBackup
 
 /**
  * Both SAF file choices are explicitly initiated by the user. Plain journal JSON
- * never goes to a document provider: the ViewModel writes only EKB1 ciphertext.
+ * never goes to a document provider: the ViewModel exports EKB2 ciphertext
+ * containing the journal and insight data, while importing legacy EKB1 too.
  */
 @Composable
 fun JournalSecurityPanel(
@@ -70,8 +71,8 @@ fun JournalSecurityPanel(
                 pendingImport = null
                 importPassword = ""
             },
-            title = { Text("Tagebuch wirklich ersetzen?") },
-            text = { Text("Die Sicherung wird nach Eingabe der Passphrase geprüft. Bei Erfolg werden ALLE momentan gespeicherten Tagebucheinträge durch die Einträge aus der Sicherung ersetzt. Bitte sichere den aktuellen Bestand vorher separat. Dieser Schritt kann nicht rückgängig gemacht werden.") },
+            title = { Text("Gespeicherte Daten wirklich ersetzen?") },
+            text = { Text("Die Sicherung wird vor dem Ersetzen entschlüsselt und geprüft. Alle aktuellen Tagebucheinträge werden ersetzt. Bei einer EKB2-Sicherung werden auch deine eigenen Erkenntnisse ersetzt. Bei einer älteren EKB1-Sicherung bleiben Erkenntnisse erhalten; Verweise auf nicht mehr vorhandene Tagebucheinträge werden entfernt. Bitte sichere vorher deinen aktuellen Bestand. Das Ersetzen kann nicht rückgängig gemacht werden.") },
             confirmButton = {
                 TextButton(onClick = {
                     val uri = pendingImport!!
@@ -114,8 +115,8 @@ fun JournalSecurityPanel(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
-            Text("Verschlüsselte Sicherung erstellen", fontWeight = FontWeight.SemiBold)
-            Text("Wähle eine eigene Passphrase mit mindestens 12 Zeichen. Die Datei ist unabhängig vom Android-Keystore wiederherstellbar. Ohne Passphrase ist sie nicht wiederherstellbar.",
+            Text("Verschlüsselte Gesamtsicherung erstellen (EKB2)", fontWeight = FontWeight.SemiBold)
+            Text("Das neue EKB2-Format sichert Tagebuch und persönliche Erkenntnisse gemeinsam. Verwende eine eigene Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase für diese Sicherung", exportPassword) { exportPassword = it }
             SecretField("Passphrase wiederholen", exportConfirmation) { exportConfirmation = it }
@@ -130,7 +131,7 @@ fun JournalSecurityPanel(
                     pickerError = null
                     onSystemPicker(true)
                     try {
-                        exportPicker.launch("Emotionskompass-Tagebuch.ekbackup")
+                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB2.ekbackup")
                     } catch (e: Exception) {
                         // A missing/disabled document picker must never leave the
                         // background relock bypass enabled indefinitely.
@@ -142,7 +143,7 @@ fun JournalSecurityPanel(
             ) { Text("Verschlüsselte Sicherungsdatei speichern") }
             HorizontalDivider()
             Text("Sicherung wiederherstellen", fontWeight = FontWeight.SemiBold)
-            Text("Die Wiederherstellung ersetzt erst nach ausdrücklicher Bestätigung und erfolgreicher Entschlüsselung dein aktuelles Tagebuch. Bitte sichere es vorher.",
+            Text("EKB2 ersetzt Tagebuch und Erkenntnisse gemeinsam. Bei einer älteren EKB1-Datei bleiben Erkenntnisse erhalten, aber ungültige Tagebuch-Verweise werden entfernt. Der Import erfordert deine ausdrückliche Bestätigung. Sichere den aktuellen Stand zuerst.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase der bestehenden Sicherung", importPassword) {
                 importPassword = it
