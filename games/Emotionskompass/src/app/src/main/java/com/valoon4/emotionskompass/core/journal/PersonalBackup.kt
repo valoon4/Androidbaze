@@ -33,6 +33,10 @@ object PersonalBackup {
     fun seal(journal: List<JournalEntry>, insights: List<PersonalInsight>,
              passphrase: CharArray): ByteArray {
         require(passphrase.size >= JournalBackup.MIN_PASSPHRASE_LENGTH)
+        val validIds = journal.map { it.id }.toSet()
+        require(insights.all { it.journalId == null || it.journalId in validIds }) {
+            "Erkenntnisverweis zeigt nicht auf einen Tagebucheintrag."
+        }
         val j = JournalFormat.encode(journal)
         val i = PersonalInsightFormat.encode(insights)
         val payload = ByteBuffer.allocate(4 + 4 + j.size + 4 + i.size)
@@ -75,7 +79,13 @@ object PersonalBackup {
             require(iSize in 0..PersonalInsightFormat.MAX_PLAINTEXT_BYTES && iSize == reader.remaining())
             val i = ByteArray(iSize).also(reader::get)
             return try {
-                PersonalBackupContents(JournalFormat.decode(j), PersonalInsightFormat.decode(i))
+                val journal = JournalFormat.decode(j)
+                val insights = PersonalInsightFormat.decode(i)
+                val validIds = journal.map { it.id }.toSet()
+                require(insights.all { it.journalId == null || it.journalId in validIds }) {
+                    "Ungültiger Tagebuchbezug im Backup."
+                }
+                PersonalBackupContents(journal, insights)
             } finally { j.fill(0); i.fill(0) }
         } finally { payload.fill(0) }
     }
