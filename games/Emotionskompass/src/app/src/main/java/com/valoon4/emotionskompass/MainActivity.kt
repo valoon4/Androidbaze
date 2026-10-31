@@ -110,6 +110,8 @@ import com.valoon4.emotionskompass.core.learning.LearningViewModel
 import com.valoon4.emotionskompass.core.learning.LearningWord
 import com.valoon4.emotionskompass.core.journal.AppLockPreferences
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
+import com.valoon4.emotionskompass.core.insights.CombinedBackupRepository
+import com.valoon4.emotionskompass.core.insights.EncryptedPersonalInsightRepository
 import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
@@ -153,6 +155,8 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
+                val insightRepository = remember { EncryptedPersonalInsightRepository(applicationContext) }
+                val combinedBackup = remember { CombinedBackupRepository(applicationContext, journal, insightRepository) }
                 val lockPreferences = remember { AppLockPreferences(applicationContext) }
                 val learningRepository = remember { LearningRepository(applicationContext) }
                 // A corrupt or future-incompatible bundled catalog must never
@@ -227,7 +231,7 @@ class MainActivity : ComponentActivity() {
                     }.getOrNull()
                 }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, needStrategyLinks, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, combinedBackup, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, needStrategyLinks, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -290,6 +294,7 @@ private fun EmotionskompassApp(
     catalog: EmotionCatalog,
     needCatalog: NeedCatalog,
     journal: EncryptedJournalRepository,
+    combinedBackup: CombinedBackupRepository,
     lockPreferences: AppLockPreferences,
     learningRepository: LearningRepository,
     lessonCatalog: LessonCatalog?,
@@ -300,7 +305,7 @@ private fun EmotionskompassApp(
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
             catalog, needCatalog, journal, hostActivity.contentResolver,
-            lockPreferences.enabled
+            lockPreferences.enabled, combinedBackup
         )
     ),
     learningVm: LearningViewModel = viewModel(factory = LearningViewModel.factory(learningRepository, lockPreferences.enabled))
