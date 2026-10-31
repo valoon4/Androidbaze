@@ -121,11 +121,6 @@ fun PersonalInsightsScreen(
                             }
                         }
                     }
-                    if (linkId != null) {
-                        TextButton(onClick = { linkId = null }) {
-                            Text("Verknüpfung entfernen")
-                        }
-                    }
                 }
             },
             confirmButton = {
@@ -159,6 +154,11 @@ fun PersonalInsightsScreen(
                     if (journalLoaded && journal.isNotEmpty()) {
                         TextButton(onClick = { choosingLink = true }) {
                             Text("Optional Tagebucheintrag wählen")
+                        }
+                    }
+                    if (linkId != null) {
+                        TextButton(onClick = { linkId = null }) {
+                            Text("Verknüpfung entfernen")
                         }
                     }
                 }
