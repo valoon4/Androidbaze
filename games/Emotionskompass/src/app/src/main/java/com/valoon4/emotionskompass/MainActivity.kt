@@ -110,6 +110,8 @@ import com.valoon4.emotionskompass.core.learning.LearningViewModel
 import com.valoon4.emotionskompass.core.learning.LearningWord
 import com.valoon4.emotionskompass.core.journal.AppLockPreferences
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
+import com.valoon4.emotionskompass.core.journal.PersonalRestoreTransaction
+import com.valoon4.emotionskompass.core.insights.EncryptedInsightsRepository
 import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
@@ -121,6 +123,7 @@ import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import com.valoon4.emotionskompass.feature.insights.PersonalReviewScreen
+import com.valoon4.emotionskompass.feature.insights.PersonalInsightsScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
 import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
 import com.valoon4.emotionskompass.feature.strategies.StrategyAtlasScreen
@@ -152,7 +155,12 @@ class MainActivity : ComponentActivity() {
                             .bufferedReader(Charsets.UTF_8).use { it.readText() }
                     )
                 }
+                // Recover a previously interrupted two-file restore BEFORE any reads.
+                val restoration = remember {
+                    PersonalRestoreTransaction(applicationContext).also { it.recoverIfNeeded() }
+                }
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
+                val insightsRepository = remember { EncryptedInsightsRepository(applicationContext) }
                 val lockPreferences = remember { AppLockPreferences(applicationContext) }
                 val learningRepository = remember { LearningRepository(applicationContext) }
                 // A corrupt or future-incompatible bundled catalog must never
@@ -227,7 +235,9 @@ class MainActivity : ComponentActivity() {
                     }.getOrNull()
                 }
                 if (completed) {
-                    EmotionskompassApp(catalog, needCatalog, journal, lockPreferences, learningRepository, lessonCatalog, strategyCatalog, caseCatalog, needStrategyLinks, this@MainActivity)
+                    EmotionskompassApp(catalog, needCatalog, journal, insightsRepository,
+                        restoration, lockPreferences, learningRepository, lessonCatalog,
+                        strategyCatalog, caseCatalog, needStrategyLinks, this@MainActivity)
                 } else {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
@@ -290,6 +300,8 @@ private fun EmotionskompassApp(
     catalog: EmotionCatalog,
     needCatalog: NeedCatalog,
     journal: EncryptedJournalRepository,
+    insightsRepository: EncryptedInsightsRepository,
+    restoration: PersonalRestoreTransaction,
     lockPreferences: AppLockPreferences,
     learningRepository: LearningRepository,
     lessonCatalog: LessonCatalog?,
@@ -300,7 +312,7 @@ private fun EmotionskompassApp(
     vm: AppViewModel = viewModel(
         factory = AppViewModel.factory(
             catalog, needCatalog, journal, hostActivity.contentResolver,
-            lockPreferences.enabled
+            lockPreferences.enabled, insightsRepository, restoration
         )
     ),
     learningVm: LearningViewModel = viewModel(factory = LearningViewModel.factory(learningRepository, lockPreferences.enabled))
@@ -308,6 +320,8 @@ private fun EmotionskompassApp(
     val unlocked by vm.unlocked.collectAsState()
     val lockEnabled by vm.lockEnabled.collectAsState()
     val reviewSelection by vm.reviewSelection.collectAsState()
+    val personalInsights by vm.personalInsights.collectAsState()
+    var reviewPage by rememberSaveable { mutableStateOf("overview") }
     // The list position lives at app-shell scope and survives journal deep links.
     // It only contains a scroll index/offset, never private journal text.
     val reviewListState = rememberLazyListState()
@@ -739,25 +753,57 @@ private fun EmotionskompassApp(
                         onImport = vm::importJournal,
                         onSystemPicker = vm::setSystemPickerInProgress
                     )
-                    MainSection.RUECKBLICK -> PersonalReviewScreen(
-                        snapshot = remember(diary.entries, diary.loaded, diary.busy, diary.error, unlocked) {
-                            if (unlocked && !diary.busy && diary.error == null && diary.loaded)
-                                vm.insightsSnapshotIfAvailable() else null
-                        },
-                        busy = diary.busy,
-                        error = diary.error,
-                        emotions = catalog,
-                        needs = needCatalog,
-                        onReload = vm::reloadJournal,
-                        onOpenJournalEntry = vm::openJournalEntryFromReview,
-                        onStartCheckIn = { vm.openCheckin() },
-                        selectedTerm = reviewSelection,
-                        onSelectTerm = { value ->
-                            vm.selectReviewEvidence(value)
-                            reviewScope.launch { reviewListState.scrollToItem(0) }
-                        },
-                        listState = reviewListState
-                    )
+                    MainSection.RUECKBLICK -> Column(Modifier.fillMaxSize()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            FilterChip(
+                                selected = reviewPage == "overview",
+                                onClick = { reviewPage = "overview" },
+                                label = { Text("Überblick") }
+                            )
+                            FilterChip(
+                                selected = reviewPage == "insights",
+                                onClick = { reviewPage = "insights" },
+                                label = { Text("Meine Erkenntnisse") }
+                            )
+                        }
+                        Box(Modifier.weight(1f)) {
+                            if (reviewPage == "overview") {
+                                PersonalReviewScreen(
+                                    snapshot = remember(diary.entries, diary.loaded, diary.busy, diary.error, unlocked) {
+                                        if (unlocked && !diary.busy && diary.error == null && diary.loaded)
+                                            vm.insightsSnapshotIfAvailable() else null
+                                    },
+                                    busy = diary.busy,
+                                    error = diary.error,
+                                    emotions = catalog,
+                                    needs = needCatalog,
+                                    onReload = vm::reloadJournal,
+                                    onOpenJournalEntry = vm::openJournalEntryFromReview,
+                                    onStartCheckIn = { vm.openCheckin() },
+                                    selectedTerm = reviewSelection,
+                                    onSelectTerm = { value ->
+                                        vm.selectReviewEvidence(value)
+                                        reviewScope.launch { reviewListState.scrollToItem(0) }
+                                    },
+                                    listState = reviewListState
+                                )
+                            } else {
+                                PersonalInsightsScreen(
+                                    state = personalInsights,
+                                    journal = if (diary.loaded && diary.error == null) diary.entries else emptyList(),
+                                    journalLoaded = diary.loaded && diary.error == null && !diary.busy,
+                                    onReload = vm::reloadPersonalInsights,
+                                    onSave = vm::savePersonalInsight,
+                                    onArchive = vm::archivePersonalInsight,
+                                    onDelete = vm::deletePersonalInsight,
+                                    onOpenJournalEntry = vm::openJournalEntryFromReview
+                                )
+                            }
+                        }
+                    }
                     }
                 }
                 Destination.JOURNAL_ENTRY -> JournalScreen(
