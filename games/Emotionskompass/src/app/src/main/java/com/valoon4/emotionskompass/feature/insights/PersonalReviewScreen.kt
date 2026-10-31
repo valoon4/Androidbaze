@@ -2,13 +2,13 @@ package com.valoon4.emotionskompass.feature.insights
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -117,6 +117,7 @@ fun PersonalReviewScreen(
                         else endText = chosen.toString()
                     }
                     pickingStart = null
+                    onSelectTerm(null)
                 }) { Text("Übernehmen") }
             },
             dismissButton = {
@@ -144,15 +145,22 @@ fun PersonalReviewScreen(
         item {
             Text("Zeitraum", style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.semantics { heading() })
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(listOf("7" to "7 Tage", "30" to "30 Tage",
-                    "90" to "90 Tage", "custom" to "Eigener Zeitraum")) { (key, label) ->
-                    FilterChip(
-                        selected = key == preset,
-                        onClick = { preset = key; onSelectTerm(null) },
-                        label = { Text(label) }
-                    )
-                }
+            // Wrap chips instead of hiding the custom period behind horizontal
+            // scrolling. At 200% font scale, every option remains discoverable.
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                listOf("7" to "7 Tage", "30" to "30 Tage",
+                    "90" to "90 Tage", "custom" to "Eigener Zeitraum")
+                    .forEach { (key, label) ->
+                        FilterChip(
+                            selected = key == preset,
+                            onClick = { preset = key; onSelectTerm(null) },
+                            label = { Text(label) }
+                        )
+                    }
             }
             if (preset == "custom") {
                 Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
