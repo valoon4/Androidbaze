@@ -15,6 +15,12 @@ on:
 permissions:
   contents: read
 
+# Keep only the newest build of a PR: multiple obsolete APK builds otherwise
+# exhaust CI runners and delay the current user-facing validation.
+concurrency:
+  group: emotionskompass-apk-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   android:
     runs-on: ubuntu-latest
