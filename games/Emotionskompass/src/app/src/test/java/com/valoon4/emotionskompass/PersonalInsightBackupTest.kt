@@ -72,6 +72,13 @@ class PersonalInsightBackupTest {
         }
     }
 
+    @Test fun mismatchedJournalLinksCannotBeSilentlyDroppedFromEkb2() {
+        assertThrows(IllegalArgumentException::class.java) {
+            PersonalBackup.seal(journal, listOf(insights.first().copy(journalId = "deleted")),
+                passphrase())
+        }
+    }
+
     @Test fun ekb1StillDecryptsWithoutClaimingAnyInsightContent() {
         val old = JournalBackup.seal(JournalFormat.encode(journal), passphrase())
         assertFalse(PersonalBackup.isV2(old))
