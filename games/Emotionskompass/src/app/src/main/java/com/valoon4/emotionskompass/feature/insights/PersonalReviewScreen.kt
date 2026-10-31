@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.insights.CalculateOverview
 import com.valoon4.emotionskompass.core.insights.DiscoverPatterns
 import com.valoon4.emotionskompass.core.insights.PatternObservation
@@ -111,6 +112,9 @@ fun PersonalReviewScreen(
         val first = emotions.find(pattern.firstId)?.name ?: "Unbekannter Gefühlsbegriff"
         val second = when (pattern.kind) {
             "emotion-need" -> needs.find(pattern.secondId)?.name ?: "Unbekanntes Bedürfnis"
+            "emotion-area" -> LifeArea.entries.firstOrNull {
+                it.name == pattern.secondId
+            }?.label ?: "Unbekannter Lebensbereich"
             else -> emotions.find(pattern.secondId)?.name ?: "Unbekannter Gefühlsbegriff"
         }
         return "„$first“ und „$second“"
