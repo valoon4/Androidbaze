@@ -88,8 +88,8 @@ class PersonalReviewEmulatorTest {
         rule.onNode(hasClickAction() and hasText("Freude", substring = true))
             .performClick()
         rule.onNodeWithText("Einträge mit „Freude“").assertExists()
-        rule.onNode(hasClickAction() and hasText("Tagebucheintrag ansehen", substring = true))
-            .performScrollTo().performClick()
+        rule.onAllNodes(hasClickAction() and hasText("Tagebucheintrag ansehen", substring = true))
+            .onFirst().performScrollTo().performClick()
         rule.runOnIdle { assertTrue(opened == "beleg-a" || opened == "beleg-b") }
     }
 
