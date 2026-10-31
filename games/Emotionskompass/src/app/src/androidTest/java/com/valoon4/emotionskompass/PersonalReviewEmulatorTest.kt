@@ -112,8 +112,9 @@ class PersonalReviewEmulatorTest {
         ).performScrollToNode(hasText("0 gespeicherte Einträge"))
         rule.onNodeWithText("0 gespeicherte Einträge").assertExists()
         rule.onNodeWithText("In diesem Zeitraum gibt es noch keine Einträge.").assertExists()
-        rule.onNodeWithText("Freiwilligen Check-in beginnen")
-            .performScrollTo().performClick()
+        rule.onNode(
+            hasClickAction() and hasText("Freiwilligen Check-in beginnen", substring = true)
+        ).performScrollTo().performClick()
         rule.runOnIdle { assertTrue(started) }
     }
 
@@ -136,7 +137,7 @@ class PersonalReviewEmulatorTest {
         rule.runOnIdle { assertTrue(reloaded) }
         rule.onNode(
             hasScrollToIndexAction() and
-                SemanticsMatcher.keyIsDefined(SemanticsProperties.HorizontalScrollAxisRange)
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
         ).performScrollToNode(hasText("Eigener Zeitraum"))
         rule.onNodeWithText("Eigener Zeitraum").performClick()
         rule.onNodeWithText("Von:", substring = true).assertExists()
