@@ -87,6 +87,20 @@ class RestoreTransactionRunnerTest {
         assertTrue(store.journal.isEmpty())
     }
 
+    @Test fun missingDurableIntentNeverReportsSuccess() {
+        val brokenStorage = object : RestoreTransactionIo {
+            override fun pending(): ByteArray? = null
+            override fun stage(plaintext: ByteArray) { /* simulate lost fsync */ }
+            override fun replaceBoth(contents: InsightBackupContents) {
+                fail("No destination may be written without a durable intent")
+            }
+            override fun clear() = Unit
+        }
+        assertThrows(IllegalStateException::class.java) {
+            RestoreTransactionRunner.commit(brokenStorage, target)
+        }
+    }
+
     @Test fun impossibleRestoreWithoutBothAreasIsRejected() {
         val store = FakeStorage()
         assertThrows(IllegalArgumentException::class.java) {
