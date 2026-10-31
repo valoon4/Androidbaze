@@ -57,6 +57,9 @@ class EncryptedPersonalInsightRepository(context: Context) {
     /** Only call after an authenticated EKB2 import and explicit confirmation. */
     @Synchronized
     fun replaceVerified(items: List<PersonalInsight>) {
+        if ((file.exists() || File(file.path + ".bak").exists()) && getKey(false) == null) {
+            throw IllegalStateException("Erkenntnisschlüssel fehlt; Wiederherstellung angehalten.")
+        }
         write(items)
     }
 
