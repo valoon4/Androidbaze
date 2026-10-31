@@ -50,7 +50,7 @@ class EncryptedInsightsRepository(context: Context) {
         val saved = if (existing == null) {
             PersonalInsightFormat.newInsight(cleaned, journalId, now)
         } else {
-            existing.copy(text = cleaned, updatedAt = maxOf(now, existing.updatedAt))
+            existing.copy(text = cleaned, journalId = journalId, updatedAt = maxOf(now, existing.updatedAt))
         }
         write(if (existing == null) original + saved
             else original.map { if (it.id == existingId) saved else it })
