@@ -7,12 +7,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -113,8 +115,10 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithText("0 gespeicherte Einträge").assertExists()
         rule.onNodeWithText("In diesem Zeitraum gibt es noch keine Einträge.").assertExists()
         rule.onNode(
-            hasClickAction() and hasText("Freiwilligen Check-in beginnen", substring = true)
-        ).performScrollTo().performClick()
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasTestTag("review-start-checkin"))
+        rule.onNodeWithTag("review-start-checkin").performClick()
         rule.runOnIdle { assertTrue(started) }
     }
 
@@ -138,7 +142,11 @@ class PersonalReviewEmulatorTest {
                 SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
         ).performScrollToNode(hasText("Dein Tagebuch konnte nicht sicher geöffnet werden."))
         rule.onNodeWithText("Dein Tagebuch konnte nicht sicher geöffnet werden.").assertExists()
-        rule.onNodeWithText("Erneut versuchen").performScrollTo().performClick()
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasTestTag("review-retry"))
+        rule.onNodeWithTag("review-retry").performClick()
         rule.runOnIdle { assertTrue(reloaded) }
         rule.onNode(
             hasScrollToIndexAction() and
