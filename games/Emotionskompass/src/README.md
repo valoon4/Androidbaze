@@ -1,8 +1,16 @@
-# Emotionskompass – native Android-App M6.3.4
+# Emotionskompass – native Android-App M7.0
 
-**Version:** 0.6.3.4-m6.3.4-quality · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
+**Version:** 0.7.0-m7.0-foundation · **Paket:** `com.valoon4.emotionskompass` · **minSdk 26 (Android 8+)**
 
 Dieses Android-Unterprojekt ist vollständig isoliert unter `games/Emotionskompass/src`. Keine anderen Apps im Repository sind von der Entwicklung betroffen.
+
+### M7.0 – Rückblick-Fundament (noch ohne neue Oberfläche)
+- Sichere, flüchtige **lesende** Projektion ausschließlich strukturierter Daten des bereits erfolgreich entschlüsselten EKJ1-Journals. Private Notizen, Freitexte, Interpretationen und sonstige Check-in-Details werden nicht für die Auswertung übernommen.
+- Zugriff nur bei geöffnetem App-Gate und nach erfolgreichem Journal-Laden. Eine noch ausstehende oder beschädigte Entschlüsselung ist **kein** leeres Tagebuch.
+- Reine, deterministische Berechnung von Eintragszahl und ausdrücklich ausgewählten Gefühls-/Bedürfnisnennungen mit klickbaren Quell-IDs als Grundlage von M7.1. Mehrfachauswahl, null/0, "noch unklar", Änderungen/Löschungen und Zeitzonengrenzen einschließlich DST werden in JVM-Tests abgesichert.
+- Keinerlei neue Diagnosen, Scores, automatisch aufgedeckte Muster, neue Persistenz, Datenübertragung oder Internetberechtigung.
+- Bestehende EKJ1-/EKB1-Dateien, Keystore, persönliche Daten und Navigation bleiben unverändert. Der Rückblick-Tab bleibt bis M7.1 bewusst noch ein Platzhalter.
+- Fachliches Architektur-/Backup-Gate und Testmatrix: `../notes/M70_FUNDAMENT_UND_DATENSICHERHEIT.md`. M7.3 bekommt eine persönliche Speicherung **erst gleichzeitig mit** gesichertem Export-/Importweg.
 
 ## Funktionen
 

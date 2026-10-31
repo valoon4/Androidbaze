@@ -1,4 +1,4 @@
-name: Build Emotionskompass M6.3.4 Debug APK
+name: Build Emotionskompass M7.0 Debug APK
 
 on:
   push:
@@ -52,15 +52,15 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
           grep -q "package: name='com.valoon4.emotionskompass'" apk-badging.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
-          cp "$APK" Emotionskompass-M634-v0.6.3.4-debug.apk
-          sha256sum Emotionskompass-M634-v0.6.3.4-debug.apk | tee Emotionskompass-M634-v0.6.3.4-debug.apk.sha256
+          cp "$APK" Emotionskompass-M70-v0.7.0-debug.apk
+          sha256sum Emotionskompass-M70-v0.7.0-debug.apk | tee Emotionskompass-M70-v0.7.0-debug.apk.sha256
       - name: Upload installable Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: Emotionskompass-M634-debug-apk
+          name: Emotionskompass-M70-debug-apk
           path: |
-            games/Emotionskompass/src/Emotionskompass-M634-v0.6.3.4-debug.apk
-            games/Emotionskompass/src/Emotionskompass-M634-v0.6.3.4-debug.apk.sha256
+            games/Emotionskompass/src/Emotionskompass-M70-v0.7.0-debug.apk
+            games/Emotionskompass/src/Emotionskompass-M70-v0.7.0-debug.apk.sha256
             games/Emotionskompass/src/apk-badging.txt
           if-no-files-found: error
           retention-days: 30

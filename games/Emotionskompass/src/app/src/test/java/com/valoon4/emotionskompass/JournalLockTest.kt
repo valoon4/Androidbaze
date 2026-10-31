@@ -19,14 +19,20 @@ class JournalLockTest {
         assertTrue(vm.lockEnabled.value)
         assertFalse(vm.unlocked.value)
         assertTrue(vm.journalState.value.entries.isEmpty())
+        assertFalse(vm.journalState.value.loaded)
+        assertNull(vm.insightsSnapshotIfAvailable())
     }
 
     @Test fun successfulCredentialTransitionOpensGate() {
         val vm = AppViewModel(atlas, initialLockEnabled = true)
         vm.unlockJournal()
         assertTrue(vm.unlocked.value)
+        // Unlocking without an authenticated journal read is NOT an empty snapshot.
+        assertNull(vm.insightsSnapshotIfAvailable())
         vm.lockJournal()
         assertFalse(vm.unlocked.value)
+        assertFalse(vm.journalState.value.loaded)
+        assertNull(vm.insightsSnapshotIfAvailable())
     }
 
     @Test fun backgroundLockWipesPersonalDraftAndNavigation() {
@@ -38,6 +44,7 @@ class JournalLockTest {
         assertTrue(vm.checkIn.value.hasPersonalInput)
         vm.onAppBackgrounded()
         assertFalse(vm.unlocked.value)
+        assertNull(vm.insightsSnapshotIfAvailable())
         assertEquals(CheckInDraft(), vm.checkIn.value)
         assertEquals(Destination.MAIN, vm.state.value.destination)
         assertEquals(MainSection.START, vm.state.value.section)
