@@ -230,67 +230,114 @@ class AppViewModel(
      * SAF stream: only encrypted portable bytes ever leave this process.
      * The user chooses the destination through Android's document picker.
      */
+    /** Always exports a complete EKB2 backup when the insights store is enabled. */
     fun exportJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _personalInsights.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
+        _personalInsights.value = _personalInsights.value.copy(busy = true)
         viewModelScope.launch {
             val chars = password.toCharArray()
             try {
                 withContext(Dispatchers.IO) {
-                    val backup = store.encryptedBackup(chars)
+                    val backup = if (insightsStore != null) {
+                        PersonalBackup.seal(store.list(), insightsStore.list(), chars)
+                    } else store.encryptedBackup(chars)
                     try {
                         val output = io.openOutputStream(uri, "w")
                             ?: throw IllegalStateException("Zieldatei nicht beschreibbar.")
                         output.use { it.write(backup); it.flush() }
                     } finally { backup.fill(0) }
                 }
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, message = "Verschlüsselte Sicherung wurde erstellt.")
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(
+                        busy = false, message = "Verschlüsselte Sicherung erstellt (Tagebuch und Erkenntnisse).")
+                    _personalInsights.value = _personalInsights.value.copy(busy = false)
+                }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, error = "Export fehlgeschlagen: ${e.message}. Eine unvollständige Zieldatei bitte löschen.")
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(
+                        busy = false, error = "Export fehlgeschlagen: ${e.message}. Eine unvollständige Zieldatei bitte löschen.")
+                    _personalInsights.value = _personalInsights.value.copy(busy = false)
+                }
             } finally { chars.fill(0.toChar()) }
         }
     }
 
     /**
-     * Explicitly confirmed replacement, never an automatic merge. Refuse
-     * oversized data and do not alter existing entries for wrong passwords.
+     * EKB2: all-or-nothing recoverable journal+insights replacement.
+     * EKB1: legacy journal replacement; existing self-authored insights survive.
+     * References to deleted journal IDs are unlinked, never erase insight text.
      */
     fun importJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _personalInsights.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
+        _personalInsights.value = _personalInsights.value.copy(busy = true)
         viewModelScope.launch {
             val chars = password.toCharArray()
             try {
-                val count = withContext(Dispatchers.IO) {
+                val message = withContext(Dispatchers.IO) {
                     val input = io.openInputStream(uri)
                         ?: throw IllegalStateException("Sicherungsdatei konnte nicht gelesen werden.")
                     val bytes = input.use { stream ->
-                        BoundedJournalInput.read(stream, JournalBackup.MAX_BACKUP_BYTES)
+                        BoundedJournalInput.read(stream, maxOf(
+                            JournalBackup.MAX_BACKUP_BYTES, PersonalBackup.MAX_BACKUP_BYTES))
                     }
                     try {
-                        require(bytes.size <= JournalBackup.MAX_BACKUP_BYTES) {
-                            "Sicherungsdatei ist zu groß."
+                        if (PersonalBackup.isV2(bytes)) {
+                            val insights = insightsStore ?: error("Erkenntnisspeicher nicht verfügbar.")
+                            val coordinator = restoration ?: error("Sicherer Restore nicht verfügbar.")
+                            val incoming = PersonalBackup.open(bytes, chars)
+                            store.list()
+                            insights.list()
+                            val validJournalIds = incoming.journal.map { it.id }.toSet()
+                            val reconciled = incoming.insights.map {
+                                if (it.journalId != null && it.journalId !in validJournalIds)
+                                    it.copy(journalId = null) else it
+                            }
+                            coordinator.replaceTogether {
+                                store.replaceAll(incoming.journal)
+                                insights.replaceAll(reconciled)
+                            }
+                            "Gesamtsicherung wiederhergestellt: ${incoming.journal.size} Tagebucheinträge und ${reconciled.size} Erkenntnisse."
+                        } else {
+                            val raw = JournalBackup.open(bytes, chars)
+                            val incoming = try { JournalFormat.decode(raw) }
+                                finally { raw.fill(0) }
+                            // Keep previously authored insights rather than silently wiping them.
+                            if (insightsStore != null) {
+                                val coordinator = restoration ?: error("Sicherer Restore nicht verfügbar.")
+                                store.list()
+                                insightsStore.list()
+                                coordinator.replaceTogether {
+                                    store.replaceAll(incoming)
+                                    insightsStore.retainJournalReferences(incoming.map { it.id }.toSet())
+                                }
+                            } else {
+                                store.replaceAll(incoming)
+                            }
+                            "Alte EKB1-Sicherung importiert: ${incoming.size} Tagebucheinträge. Eigene Erkenntnisse bleiben erhalten."
                         }
-                        store.restoreBackup(bytes, chars)
                     } finally { bytes.fill(0) }
                 }
-                if (allowed()) {
-                    // JournalUiState() resets busy=false before the fresh authenticated read.
-                    _journalState.value = JournalUiState(
-                        message = "Wiederherstellung erfolgreich: $count Einträge.")
+                if (currentAccess(epoch)) {
+                    _reviewSelection.value = null
+                    _journalState.value = JournalUiState(message = message)
+                    _personalInsights.value = PersonalInsightUiState()
                     reloadJournal()
+                    reloadPersonalInsights()
                 }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Bestehende Daten wurden nicht absichtlich überschrieben.")
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(
+                        busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Daten nicht absichtlich überschrieben; bitte Bestand prüfen.")
+                    _personalInsights.value = _personalInsights.value.copy(busy = false)
+                }
             } finally { chars.fill(0.toChar()) }
         }
     }
