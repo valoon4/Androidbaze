@@ -73,6 +73,32 @@ class CombinedBackupEmulatorTest {
         }
     }
 
+    @Test fun journalDeletionPreservesUserWordsAndClearsOnlyBrokenLinks() {
+        val (context, dir) = isolatedContext()
+        try {
+            val journal = EncryptedJournalRepository(context)
+            val insights = EncryptedPersonalInsightRepository(context)
+            val first = journal.save(CheckInDraft(note = "Fiktiver Eintrag A"))
+            val second = journal.save(CheckInDraft(note = "Fiktiver Eintrag B"))
+            val personal = PersonalInsight.create(
+                "Mein selbst formulierter, fiktiver Gedanke soll bestehen bleiben.",
+                System.currentTimeMillis(), setOf(first.id, second.id)
+            )
+            insights.save(personal)
+            val combined = CombinedBackupRepository(context, journal, insights)
+            assertTrue(combined.deleteJournalEntry(first.id))
+            assertEquals(listOf(second.id), journal.list().map { it.id })
+            assertEquals(setOf(second.id), insights.list().single().journalIds)
+            assertEquals(personal.text, insights.list().single().text)
+            combined.deleteEntireJournal()
+            assertTrue(journal.list().isEmpty())
+            assertTrue(insights.list().single().journalIds.isEmpty())
+            assertEquals(personal.text, insights.list().single().text)
+        } finally {
+            dir.deleteRecursively()
+        }
+    }
+
     @Test fun incorrectPasswordCannotReplaceEitherEncryptedStore() {
         val (context, dir) = isolatedContext()
         val passphrase = "Nur-fuer-fiktive-Tests-2026!".toCharArray()
