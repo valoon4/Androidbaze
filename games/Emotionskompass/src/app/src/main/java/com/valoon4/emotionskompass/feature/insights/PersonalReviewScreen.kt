@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -68,7 +69,10 @@ fun PersonalReviewScreen(
     needs: NeedCatalog,
     onReload: () -> Unit,
     onOpenJournalEntry: (String) -> Unit,
-    onStartCheckIn: () -> Unit
+    onStartCheckIn: () -> Unit,
+    selectedTerm: Pair<String, String>?,
+    onSelectTerm: (Pair<String, String>?) -> Unit,
+    listState: LazyListState
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
@@ -76,8 +80,7 @@ fun PersonalReviewScreen(
     var startText by rememberSaveable { mutableStateOf(today.minusDays(29).toString()) }
     var endText by rememberSaveable { mutableStateOf(today.toString()) }
     var pickingStart by remember { mutableStateOf<Boolean?>(null) }
-    // Do not save a user's chosen term or a set of evidence IDs in Bundle state.
-    var selectedTerm by remember { mutableStateOf<Pair<String, String>?>(null) }
+    // Selection is held only in the locked ViewModel's in-memory Flow, never Bundle.
     val zone = ZoneId.systemDefault()
     val window = remember(preset, startText, endText, today, zone) {
         runCatching {
@@ -125,6 +128,7 @@ fun PersonalReviewScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
+        state = listState,
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
@@ -145,7 +149,7 @@ fun PersonalReviewScreen(
                     "90" to "90 Tage", "custom" to "Eigener Zeitraum")) { (key, label) ->
                     FilterChip(
                         selected = key == preset,
-                        onClick = { preset = key; selectedTerm = null },
+                        onClick = { preset = key; onSelectTerm(null) },
                         label = { Text(label) }
                     )
                 }
@@ -210,13 +214,15 @@ fun PersonalReviewScreen(
                     else -> "Alle Einträge im Zeitraum"
                 }
                 item {
-                    TextButton(onClick = { selectedTerm = null },
+                    TextButton(onClick = { onSelectTerm(null) },
                         modifier = Modifier.fillMaxWidth()) { Text("Zurück zum Überblick") }
                     Text(heading,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.semantics { heading() })
                     Text(
-                        "In ${matching?.mentions ?: 0} gespeicherten Einträgen ausdrücklich ausgewählt. Tippe auf einen Eintrag, um ihn anzusehen.",
+                        if (chosen.first == "all")
+                            "${overview.entryCount} gespeicherte Einträge im ausgewählten Zeitraum. Tippe auf einen Eintrag, um ihn anzusehen."
+                        else "In ${matching?.mentions ?: 0} gespeicherten Einträgen ausdrücklich ausgewählt. Tippe auf einen Eintrag, um ihn anzusehen.",
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -249,8 +255,10 @@ fun PersonalReviewScreen(
                             Text("${overview.entryCount} gespeicherte Einträge",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold)
-                            Text("${overview.emotionMentionCount} Gefühlsnennungen")
-                            Text("${overview.needMentionCount} Bedürfnisnennungen")
+                            Text(if (overview.emotionMentionCount == 1) "1 Gefühlsnennung"
+                                else "${overview.emotionMentionCount} Gefühlsnennungen")
+                            Text(if (overview.needMentionCount == 1) "1 Bedürfnisnennung"
+                                else "${overview.needMentionCount} Bedürfnisnennungen")
                             Text("Ein Eintrag kann mehrere Wörter enthalten. Gezählt wird nur, was du selbst ausgewählt hast – nicht, wie oft du etwas erlebt hast.",
                                 style = MaterialTheme.typography.bodySmall)
                         }
@@ -274,7 +282,7 @@ fun PersonalReviewScreen(
                 } else {
                     item {
                         OutlinedButton(
-                            onClick = { selectedTerm = "all" to "all" },
+                            onClick = { onSelectTerm("all" to "all") },
                             modifier = Modifier.fillMaxWidth()
                         ) { Text("Alle ${overview.entryCount} Einträge ansehen") }
                     }
@@ -290,7 +298,7 @@ fun PersonalReviewScreen(
                     }
                     items(overview.emotionCounts, key = { "emotion-${it.termId}" }) { term ->
                         MentionCard(term, emotions.find(term.termId)?.name ?: "Unbekannter Gefühlsbegriff",
-                            onClick = { selectedTerm = "emotion" to term.termId })
+                            onClick = { onSelectTerm("emotion" to term.termId) })
                     }
                     item {
                         HorizontalDivider()
@@ -305,7 +313,7 @@ fun PersonalReviewScreen(
                     }
                     items(overview.needCounts, key = { "need-${it.termId}" }) { term ->
                         MentionCard(term, needs.find(term.termId)?.name ?: "Unbekannter Bedürfnisbegriff",
-                            onClick = { selectedTerm = "need" to term.termId })
+                            onClick = { onSelectTerm("need" to term.termId) })
                     }
                     if (overview.entriesWithUnknownNeedChoice > 0) {
                         item {
