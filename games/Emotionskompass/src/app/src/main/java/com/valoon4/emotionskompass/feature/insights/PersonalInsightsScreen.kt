@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
@@ -146,7 +147,7 @@ fun PersonalInsightsScreen(
                         supportingText = {
                             Text("${draft.length} / ${PersonalInsightFormat.MAX_TEXT_LENGTH}")
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().testTag("personal-insight-editor")
                     )
                     Text(if (linkId == null) "Kein Tagebucheintrag verknüpft"
                         else "Verknüpft: ${journal.firstOrNull { it.id == linkId }?.let { formatInsightDate(it.createdAt) } ?: "Eintrag nicht verfügbar"}",
