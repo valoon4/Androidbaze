@@ -1,11 +1,11 @@
 package com.valoon4.emotionskompass
 
 import androidx.compose.ui.test.hasScrollToIndexAction
-import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNode
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
@@ -40,7 +40,7 @@ class PersonalInsightsEmulatorTest {
         rule.onNode(hasScrollToIndexAction()).performScrollToNode(
             hasText("Eigene Erkenntnis schreiben"))
         rule.onNodeWithText("Eigene Erkenntnis schreiben").performClick()
-        rule.onNode(hasSetTextAction()).performTextInput("Eine bewusst formulierte Test-Erkenntnis.")
+        rule.onNodeWithTag("personal-insight-editor").performTextInput("Eine bewusst formulierte Test-Erkenntnis.")
         rule.runOnIdle { assertNull(written) }
         rule.onNodeWithText("Ausdrücklich speichern").performClick()
         rule.runOnIdle { assertEquals("Eine bewusst formulierte Test-Erkenntnis.", written) }
@@ -63,7 +63,7 @@ class PersonalInsightsEmulatorTest {
         rule.onNode(hasScrollToIndexAction()).performScrollToNode(
             hasText("Eigene Erkenntnis schreiben"))
         rule.onNodeWithText("Eigene Erkenntnis schreiben").performClick()
-        rule.onNode(hasSetTextAction()).performTextInput("Nur ein Entwurf.")
+        rule.onNodeWithTag("personal-insight-editor").performTextInput("Nur ein Entwurf.")
         rule.onNodeWithText("Abbrechen").performClick()
         rule.runOnIdle { assertEquals(0, calls) }
     }
