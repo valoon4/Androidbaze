@@ -35,7 +35,7 @@ internal object RestoreTransactionRunner {
         val pending = InsightBundleFormat.encode(target.journal, insights)
         try {
             io.stage(pending)       // durable and encrypted before the first write
-            recover(io)             // replayable if crash occurs between writes
+            check(recover(io)) { "Verschlüsselter Wiederherstellungsauftrag fehlt" }
         } finally {
             pending.fill(0)
         }
