@@ -121,6 +121,11 @@ fun PersonalInsightsScreen(
                             }
                         }
                     }
+                    if (linkId != null) {
+                        TextButton(onClick = { linkId = null }) {
+                            Text("Verknüpfung entfernen")
+                        }
+                    }
                 }
             },
             confirmButton = {
@@ -151,7 +156,7 @@ fun PersonalInsightsScreen(
                     Text(if (linkId == null) "Kein Tagebucheintrag verknüpft"
                         else "Verknüpft: ${journal.firstOrNull { it.id == linkId }?.let { formatInsightDate(it.createdAt) } ?: "Eintrag nicht verfügbar"}",
                         style = MaterialTheme.typography.bodySmall)
-                    if (editing == null && journalLoaded && journal.isNotEmpty()) {
+                    if (journalLoaded && journal.isNotEmpty()) {
                         TextButton(onClick = { choosingLink = true }) {
                             Text("Optional Tagebucheintrag wählen")
                         }
