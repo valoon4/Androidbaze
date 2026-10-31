@@ -416,7 +416,18 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.delete(id) }
+                withContext(Dispatchers.IO) {
+                    if (insightsStore != null && restoration != null) {
+                        store.list()
+                        insightsStore.list()
+                        restoration.replaceTogether {
+                            store.delete(id)
+                            insightsStore.retainJournalReferences(
+                                store.list().map { it.id }.toSet()
+                            )
+                        }
+                    } else store.delete(id)
+                }
                 if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id },
@@ -436,7 +447,16 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.deleteAll() }
+                withContext(Dispatchers.IO) {
+                    if (insightsStore != null && restoration != null) {
+                        store.list()
+                        insightsStore.list()
+                        restoration.replaceTogether {
+                            store.deleteAll()
+                            insightsStore.retainJournalReferences(emptySet())
+                        }
+                    } else store.deleteAll()
+                }
                 if (currentAccess(epoch)) _journalState.value = JournalUiState(loaded = true)
             } catch (e: Exception) {
                 if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
