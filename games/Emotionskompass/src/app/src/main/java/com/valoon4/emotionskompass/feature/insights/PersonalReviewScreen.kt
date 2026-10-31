@@ -26,6 +26,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -99,6 +100,7 @@ fun PersonalReviewScreen(
         val initial = runCatching {
             LocalDate.parse(if (isStart) startText else endText)
         }.getOrElse { today }
+        key(isStart) {
         val dateState = rememberDatePickerState(
             initialSelectedDateMillis = initial.toEpochDay() * DAY_MILLIS
         )
@@ -118,6 +120,7 @@ fun PersonalReviewScreen(
                 TextButton(onClick = { pickingStart = null }) { Text("Abbrechen") }
             }
         ) { DatePicker(state = dateState) }
+        }
     }
 
     LazyColumn(
@@ -198,17 +201,18 @@ fun PersonalReviewScreen(
                 val matching = when (chosen.first) {
                     "emotion" -> overview.emotionCounts.firstOrNull { it.termId == chosen.second }
                     "need" -> overview.needCounts.firstOrNull { it.termId == chosen.second }
+                    "all" -> InsightTermCount("all", overview.journalIds)
                     else -> null
                 }
-                val title = if (chosen.first == "emotion") {
-                    emotions.find(chosen.second)?.name ?: "Gefühlsbegriff"
-                } else {
-                    needs.find(chosen.second)?.name ?: "Bedürfnisbegriff"
+                val heading = when (chosen.first) {
+                    "emotion" -> "Einträge mit „${emotions.find(chosen.second)?.name ?: "Gefühlsbegriff"}“"
+                    "need" -> "Einträge mit „${needs.find(chosen.second)?.name ?: "Bedürfnisbegriff"}“"
+                    else -> "Alle Einträge im Zeitraum"
                 }
                 item {
                     TextButton(onClick = { selectedTerm = null },
                         modifier = Modifier.fillMaxWidth()) { Text("Zurück zum Überblick") }
-                    Text("Einträge mit „$title“",
+                    Text(heading,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.semantics { heading() })
                     Text(
