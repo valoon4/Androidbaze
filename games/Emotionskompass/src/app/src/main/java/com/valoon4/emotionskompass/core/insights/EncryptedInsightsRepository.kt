@@ -74,6 +74,18 @@ class EncryptedInsightsRepository(context: Context) {
         write(old.filterNot { it.id == id })
     }
 
+    /** Keep user-written text, but unlink references to missing journal entries. */
+    @Synchronized
+    fun retainJournalReferences(validIds: Set<String>) {
+        val old = list()
+        val next = old.map {
+            if (it.journalId != null && it.journalId !in validIds)
+                it.copy(journalId = null, updatedAt = maxOf(System.currentTimeMillis(), it.updatedAt))
+            else it
+        }
+        if (next != old) write(next)
+    }
+
     /** Validated replacement only; callers must explicitly confirm cross-device restore. */
     @Synchronized
     fun replaceAll(items: List<PersonalInsight>) {
