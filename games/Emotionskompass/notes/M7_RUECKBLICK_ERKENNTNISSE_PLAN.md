@@ -1,6 +1,6 @@
 # M7 – Rückblick, Erkenntnisse und Strategien: Funktions- und Umsetzungsplan
 
-**Stand:** 30.10.2026 · **Status:** M7.0 in Draft-PR #23 implementiert (nicht gemergt); M7.1–M7.6 weiterhin geplant · **Basis:** M6.3.4 · **Ziel:** 0.7.0-m7
+**Stand:** 31.10.2026 · **Status:** M7.0 in main; M7.1 in Draft-PR #24 implementiert (noch nicht gemergt); M7.2–M7.6 geplant · **Basis:** M7.0 · **Ziel:** 0.7.x-m7
 
 ## 1. Produktziel
 Den bestehenden Gefühls-/Bedürfnisatlas, Check-in, das verschlüsselte Tagebuch und die Wissenswelt sinnvoll verbinden: Erfahrungen überblicken, nachvollziehbare Zusammenhänge untersuchen, eigene Erkenntnisse formulieren, freiwillig Strategien ausprobieren und erneut reflektieren. Keine Diagnostik, keine Glücks-/Gesundheitsnote, keine KI-Interpretation, kein Gamification-Druck. Alles offline.
@@ -46,7 +46,7 @@ Erste Beobachtungstypen: Gefühl+Bedürfnis, Gefühls-Kombination, Gefühl+expli
 Ist-Code/-Datenformate verifizieren, Snapshot-/Use-Case-/Evidenzverträge und separate Persistenz festlegen, Sicherheits- und Regressionstestbasis. **Exit:** deterministische Ergebnisse, Journal nicht verändert. **Implementierung:** [M7.0-Fundament & Datenschutz](M70_FUNDAMENT_UND_DATENSICHERHEIT.md) – flüchtiger strukturierter Snapshot, Zeitfenster, Nennungszählung, explizite Evidenz, nur nach erfolgreichem authentifizierten Journal-Laden. Die Rückblick-Oberfläche bleibt bis M7.1 unverändert.
 
 ### M7.1 – Rückblick
-7/30/90 Tage + eigener Filter, Journalanzahl, getrennte Gefühls-/Bedürfnisnennungen, Navigation zu Einträgen, sinnvolle Leerzustände. **Exit:** Testdaten exakt gezählt, Zeitzonen, 0–n Begriffe, Updates und Löschungen korrekt.
+7/30/90 Tage + eigener Filter, Journalanzahl, getrennte Gefühls-/Bedürfnisnennungen, Navigation zu Einträgen, sinnvolle Leerzustände. **Exit:** Testdaten exakt gezählt, Zeitzonen, 0–n Begriffe, Updates und Löschungen korrekt. **Umsetzung:** [M7.1 Rückblick – UX und Testmatrix](M71_RUECKBLICK_UX_ABNAHME.md) in eigenständigem Draft-PR #24; bestehender Rückblick-Tab ist sichtbar, jede Nennung führt über die Belegliste zum tatsächlich gespeicherten Tagebucheintrag. Kein automatischer Musterhinweis vor M7.2.
 
 ### M7.2 – Behutsame Muster
 Erklärbarer deterministischer Regelkatalog, Mindestmengen, Evidenz und Muster-Detail. **Exit:** Jeder Hinweis hat gültige Quell-IDs, unzureichende Daten ergeben keinen Hinweis; keine Kausalbehauptung.
