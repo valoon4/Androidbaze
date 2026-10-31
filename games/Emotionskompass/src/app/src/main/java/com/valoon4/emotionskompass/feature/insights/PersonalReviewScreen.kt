@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -196,10 +197,15 @@ fun PersonalReviewScreen(
                             fontWeight = FontWeight.SemiBold)
                         Text(error)
                         Text("Vorhandene Daten bleiben unverändert. Es werden keine scheinbar leeren Statistiken angezeigt.")
-                        OutlinedButton(onClick = onReload, enabled = !busy) {
-                            Text("Erneut versuchen")
-                        }
                     }
+                }
+            }
+            // The retry control gets its own lazy item. This remains fully
+            // reachable even when error text spans several lines at 200%.
+            item {
+                OutlinedButton(onClick = onReload, enabled = !busy,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
+                    Text("Erneut versuchen")
                 }
             }
         } else if (busy || snapshot == null) {
@@ -280,11 +286,15 @@ fun PersonalReviewScreen(
                                 Text("In diesem Zeitraum gibt es noch keine Einträge.",
                                     fontWeight = FontWeight.SemiBold)
                                 Text("Das ist völlig in Ordnung. Du kannst einen anderen Zeitraum wählen oder einen Check-in festhalten, wenn du möchtest.")
-                                Button(onClick = onStartCheckIn,
-                                    modifier = Modifier.fillMaxWidth()) {
-                                    Text("Freiwilligen Check-in beginnen")
-                                }
                             }
+                        }
+                    }
+                    // Separate full-width lazy item improves touch visibility
+                    // and scrolling on 200%-font, narrow 320dp Android phones.
+                    item {
+                        Button(onClick = onStartCheckIn,
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
+                            Text("Freiwilligen Check-in beginnen")
                         }
                     }
                 } else {
