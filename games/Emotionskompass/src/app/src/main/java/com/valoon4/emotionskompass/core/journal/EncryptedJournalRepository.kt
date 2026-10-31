@@ -98,6 +98,16 @@ class EncryptedJournalRepository(context: Context) {
         return restored.size
     }
 
+    /**
+     * For an already authenticated and fully validated EKB2 restore.
+     * Coordinating rollback across files is the caller's responsibility.
+     */
+    @Synchronized
+    fun replaceAll(entries: List<JournalEntry>) {
+        list() // Never overwrite inaccessible current data.
+        write(entries)
+    }
+
     private fun write(entries: List<JournalEntry>) {
         val plaintext = JournalFormat.encode(entries)
         val key = getKey(create = true)
