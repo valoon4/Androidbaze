@@ -52,7 +52,7 @@ jobs:
           test -n "$SDKMGR"
           yes | "$SDKMGR" --licenses > /dev/null || true
           "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
-      - name: Run four actual Compose tests at 100% and 200% font sizes (adb install)
+      - name: Run eleven instrumented UI and storage tests at 100% and 200% fonts (adb install)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
