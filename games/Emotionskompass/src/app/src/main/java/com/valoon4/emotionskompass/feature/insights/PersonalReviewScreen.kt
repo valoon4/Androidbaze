@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -204,7 +205,7 @@ fun PersonalReviewScreen(
             // reachable even when error text spans several lines at 200%.
             item {
                 OutlinedButton(onClick = onReload, enabled = !busy,
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("review-retry")) {
                     Text("Erneut versuchen")
                 }
             }
@@ -293,7 +294,7 @@ fun PersonalReviewScreen(
                     // and scrolling on 200%-font, narrow 320dp Android phones.
                     item {
                         Button(onClick = onStartCheckIn,
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("review-start-checkin")) {
                             Text("Freiwilligen Check-in beginnen")
                         }
                     }
