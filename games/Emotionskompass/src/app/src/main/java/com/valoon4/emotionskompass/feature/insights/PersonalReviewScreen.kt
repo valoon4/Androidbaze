@@ -39,7 +39,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.insights.CalculateOverview
+import com.valoon4.emotionskompass.core.insights.DiscoverPatterns
+import com.valoon4.emotionskompass.core.insights.PatternObservation
 import com.valoon4.emotionskompass.core.insights.InsightEntry
 import com.valoon4.emotionskompass.core.insights.InsightOverview
 import com.valoon4.emotionskompass.core.insights.InsightTermCount
@@ -82,6 +85,7 @@ fun PersonalReviewScreen(
     var startText by rememberSaveable { mutableStateOf(today.minusDays(29).toString()) }
     var endText by rememberSaveable { mutableStateOf(today.toString()) }
     var pickingStart by remember { mutableStateOf<Boolean?>(null) }
+    var patternsVisible by rememberSaveable { mutableStateOf(true) }
     // Selection is held only in the locked ViewModel's in-memory Flow, never Bundle.
     val zone = ZoneId.systemDefault()
     val window = remember(preset, startText, endText, today, zone) {
@@ -98,6 +102,22 @@ fun PersonalReviewScreen(
     val overview = remember(snapshot, window) {
         if (snapshot != null && window != null) CalculateOverview.calculate(snapshot, window)
         else null
+    }
+
+    val patterns = remember(snapshot, window, zone) {
+        if (snapshot != null && window != null) DiscoverPatterns.discover(snapshot, window, zone)
+        else emptyList()
+    }
+    fun patternTitle(pattern: PatternObservation): String {
+        val first = emotions.find(pattern.firstId)?.name ?: "Unbekannter Gefühlsbegriff"
+        val second = when (pattern.kind) {
+            "emotion-need" -> needs.find(pattern.secondId)?.name ?: "Unbekanntes Bedürfnis"
+            "emotion-area" -> LifeArea.entries.firstOrNull {
+                it.name == pattern.secondId
+            }?.label ?: "Unbekannter Lebensbereich"
+            else -> emotions.find(pattern.secondId)?.name ?: "Unbekannter Gefühlsbegriff"
+        }
+        return "„$first“ und „$second“"
     }
 
     if (pickingStart != null) {
@@ -221,11 +241,17 @@ fun PersonalReviewScreen(
                     "emotion" -> overview.emotionCounts.firstOrNull { it.termId == chosen.second }
                     "need" -> overview.needCounts.firstOrNull { it.termId == chosen.second }
                     "all" -> InsightTermCount("all", overview.journalIds)
+                    "pattern" -> patterns.firstOrNull { it.key == chosen.second }?.let {
+                        InsightTermCount(it.key, it.evidence.matchingJournalIds)
+                    }
                     else -> null
                 }
                 val heading = when (chosen.first) {
                     "emotion" -> "Einträge mit „${emotions.find(chosen.second)?.name ?: "Gefühlsbegriff"}“"
                     "need" -> "Einträge mit „${needs.find(chosen.second)?.name ?: "Bedürfnisbegriff"}“"
+                    "pattern" -> patterns.firstOrNull { it.key == chosen.second }?.let {
+                        "Einträge zu ${patternTitle(it)}"
+                    } ?: "Beobachtung nicht mehr verfügbar"
                     else -> "Alle Einträge im Zeitraum"
                 }
                 item {
@@ -234,6 +260,12 @@ fun PersonalReviewScreen(
                     Text(heading,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.semantics { heading() })
+                    if (chosen.first == "pattern") {
+                        patterns.firstOrNull { it.key == chosen.second }?.let { p ->
+                            Text("${p.evidence.numerator} von ${p.evidence.denominator} auswertbaren Einträgen im gewählten Zeitraum; an ${p.distinctDays} verschiedenen Tagen. Die beiden Begriffe wurden im selben Eintrag ausgewählt. Das belegt keinen ursächlichen Zusammenhang.",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
                     Text(
                         if (chosen.first == "all")
                             "${overview.entryCount} gespeicherte Einträge im ausgewählten Zeitraum. Tippe auf einen Eintrag, um ihn anzusehen."
@@ -276,6 +308,44 @@ fun PersonalReviewScreen(
                                 else "${overview.needMentionCount} Bedürfnisnennungen")
                             Text("Ein Eintrag kann mehrere Wörter enthalten. Gezählt wird nur, was du selbst ausgewählt hast – nicht, wie oft du etwas erlebt hast.",
                                 style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+                if (overview.entryCount > 0) {
+                    item {
+                        Text("Behutsame Beobachtungen",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.semantics { heading() })
+                        Text("Nur gemeinsame Auswahlen aus deinem Tagebuch – keine Erklärung, Diagnose oder Aussage über Ursachen. Die Regeln benötigen mindestens zehn vergleichbare Einträge und Belege von mehreren Tagen.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = { patternsVisible = !patternsVisible }) {
+                            Text(if (patternsVisible) "Beobachtungen ausblenden" else "Beobachtungen anzeigen")
+                        }
+                    }
+                    if (!patternsVisible) {
+                        // Hidden by choice; never persist or modify the source entries.
+                    } else if (patterns.isEmpty()) {
+                        item {
+                            Text("Für vorsichtige Beobachtungen gibt es im gewählten Zeitraum noch nicht genug geeignete Belege. Das ist keine Bewertung deiner Erfahrungen.")
+                        }
+                    } else {
+                        items(patterns.take(3), key = { "pattern-${it.key}" }) { pattern ->
+                            Card(
+                                onClick = { onSelectTerm("pattern" to pattern.key) },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Column(Modifier.padding(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Text(patternTitle(pattern),
+                                        fontWeight = FontWeight.SemiBold)
+                                    Text("${pattern.evidence.numerator} von ${pattern.evidence.denominator} vergleichbaren Einträgen · ${pattern.distinctDays} verschiedene Tage",
+                                        style = MaterialTheme.typography.bodyMedium)
+                                    Text("Gemeinsam ausgewählt, ohne Aussage über Ursache oder Bedeutung. Belege ansehen",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                            }
                         }
                     }
                 }
