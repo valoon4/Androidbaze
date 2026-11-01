@@ -1,5 +1,6 @@
 package com.valoon4.emotionskompass.feature.insights
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -92,6 +93,10 @@ fun PersonalReviewScreen(
     var showInsightPage by rememberSaveable { mutableStateOf(false) }
     // Selected observation wording is in-memory only, never rememberSaveable.
     var reflectionOriginLabel by remember { mutableStateOf<String?>(null) }
+    BackHandler(enabled = showInsightPage) {
+        showInsightPage = false
+        reflectionOriginLabel = null
+    }
     val today = LocalDate.now()
     var startText by rememberSaveable { mutableStateOf(today.minusDays(29).toString()) }
     var endText by rememberSaveable { mutableStateOf(today.toString()) }
