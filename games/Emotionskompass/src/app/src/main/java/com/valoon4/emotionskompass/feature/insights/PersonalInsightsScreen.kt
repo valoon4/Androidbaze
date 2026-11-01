@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.insights.PersonalInsightChanges
+import com.valoon4.emotionskompass.core.insights.ReflectionRoute
 import com.valoon4.emotionskompass.core.insights.PersonalInsight as UserInsight
 import com.valoon4.emotionskompass.core.navigation.InsightUiState
 import com.valoon4.emotionskompass.core.journal.JournalEntry
@@ -56,7 +57,8 @@ fun PersonalInsightsScreen(
     onArchive: (String, Boolean) -> Unit,
     onDelete: (String) -> Unit,
     onUnlink: (String, String) -> Unit,
-    onOpenJournal: (String) -> Unit
+    onOpenJournal: (String) -> Unit,
+    reflectionOriginLabel: String? = null
 ) {
     var query by remember { mutableStateOf("") }
     var showArchived by remember { mutableStateOf(false) }
@@ -66,6 +68,33 @@ fun PersonalInsightsScreen(
     var selectedJournalId by remember { mutableStateOf<String?>(null) }
     var saving by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<PersonalInsight?>(null) }
+    // Deliberately never save private answers, the origin, or progress in a Bundle.
+    var showGuide by remember { mutableStateOf(false) }
+    var guideRoute by remember { mutableStateOf(ReflectionRoute.OPEN) }
+    var initialGuideHandled by remember(reflectionOriginLabel) { mutableStateOf(false) }
+
+    LaunchedEffect(reflectionOriginLabel, state.loaded, state.error) {
+        if (!initialGuideHandled && reflectionOriginLabel != null &&
+            state.loaded && state.error == null &&
+            state.entries.size < UserInsight.MAX_INSIGHTS) {
+            initialGuideHandled = true
+            guideRoute = ReflectionRoute.OBSERVATION
+            showGuide = true
+        }
+    }
+
+    LaunchedEffect(state.loaded, state.error) {
+        if (!state.loaded || state.error != null) {
+            // No prior decrypted/entered personal words survive a failed import or lock.
+            showGuide = false
+            showEditor = false
+            draft = ""
+            editor = null
+            selectedJournalId = null
+            pendingDelete = null
+            saving = false
+        }
+    }
 
     LaunchedEffect(state.message) {
         if (saving && state.message in listOf("Erkenntnis gespeichert.", "Änderungen gespeichert.")) {
@@ -83,6 +112,21 @@ fun PersonalInsightsScreen(
         selectedJournalId = null
         saving = false
         showEditor = true
+    }
+
+    if (showGuide && state.loaded && state.error == null) {
+        GuidedReflectionDialog(
+            route = guideRoute,
+            observationLabel = reflectionOriginLabel.takeIf {
+                guideRoute == ReflectionRoute.OBSERVATION
+            },
+            onCancel = { showGuide = false },
+            onDraftReady = { userWords ->
+                showGuide = false
+                openEditor(null)
+                draft = userWords
+            }
+        )
     }
 
     pendingDelete?.let { insight ->
@@ -222,6 +266,22 @@ fun PersonalInsightsScreen(
                     enabled = !state.busy && state.entries.size < UserInsight.MAX_INSIGHTS,
                     modifier = Modifier.fillMaxWidth().testTag("insight-create")
                 ) { Text("Eigene Erkenntnis festhalten") }
+                OutlinedButton(
+                    onClick = {
+                        guideRoute = ReflectionRoute.OPEN
+                        showGuide = true
+                    },
+                    enabled = !state.busy && state.error == null &&
+                        state.entries.size < UserInsight.MAX_INSIGHTS,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                        .testTag("insight-guided-reflection")
+                ) { Text("Freiwillige Reflexion mit Fragen") }
+                Text(
+                    "Drei offene Fragen als Anregung – du kannst jederzeit abbrechen " +
+                        "oder Fragen überspringen. Nichts wird automatisch gespeichert.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 state.message?.let {
                     Text(it, color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodySmall)

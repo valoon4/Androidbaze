@@ -1,5 +1,6 @@
 package com.valoon4.emotionskompass.feature.insights
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -43,6 +44,7 @@ import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.insights.CalculateOverview
 import com.valoon4.emotionskompass.core.insights.DiscoverPatterns
 import com.valoon4.emotionskompass.core.insights.PatternObservation
+import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.insights.InsightEntry
 import com.valoon4.emotionskompass.core.insights.InsightOverview
 import com.valoon4.emotionskompass.core.insights.InsightTermCount
@@ -90,6 +92,12 @@ fun PersonalReviewScreen(
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
     var showInsightPage by rememberSaveable { mutableStateOf(false) }
+    // Selected observation wording is in-memory only, never rememberSaveable.
+    var reflectionOriginLabel by remember { mutableStateOf<String?>(null) }
+    BackHandler(enabled = showInsightPage) {
+        showInsightPage = false
+        reflectionOriginLabel = null
+    }
     val today = LocalDate.now()
     var startText by rememberSaveable { mutableStateOf(today.minusDays(29).toString()) }
     var endText by rememberSaveable { mutableStateOf(today.toString()) }
@@ -129,6 +137,13 @@ fun PersonalReviewScreen(
         return "„$first“ und „$second“"
     }
 
+    fun inviteReflection(pattern: PatternObservation) {
+        if (!personalInsights.loaded || personalInsights.busy || personalInsights.error != null ||
+            personalInsights.entries.size >= PersonalInsight.MAX_INSIGHTS) return
+        reflectionOriginLabel = patternTitle(pattern)
+        showInsightPage = true
+    }
+
     if (pickingStart != null) {
         val isStart = pickingStart == true
         val initial = runCatching {
@@ -162,13 +177,17 @@ fun PersonalReviewScreen(
         PersonalInsightsScreen(
             state = personalInsights,
             journalEntries = diaryEntries,
-            onBack = { showInsightPage = false },
+            onBack = {
+                showInsightPage = false
+                reflectionOriginLabel = null
+            },
             onReload = onReload,
             onSave = onSaveInsight,
             onArchive = onArchiveInsight,
             onDelete = onDeleteInsight,
             onUnlink = onUnlinkInsight,
-            onOpenJournal = onOpenJournalEntry
+            onOpenJournal = onOpenJournalEntry,
+            reflectionOriginLabel = reflectionOriginLabel
         )
         return
     }
@@ -190,7 +209,10 @@ fun PersonalReviewScreen(
         }
         item {
             OutlinedButton(
-                onClick = { showInsightPage = true },
+                onClick = {
+                    reflectionOriginLabel = null
+                    showInsightPage = true
+                },
                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                     .testTag("review-open-personal-insights")
             ) {
@@ -297,6 +319,16 @@ fun PersonalReviewScreen(
                         patterns.firstOrNull { it.key == chosen.second }?.let { p ->
                             Text("${p.evidence.numerator} von ${p.evidence.denominator} auswertbaren Einträgen im gewählten Zeitraum; an ${p.distinctDays} verschiedenen Tagen. Die beiden Begriffe wurden im selben Eintrag ausgewählt. Das belegt keinen ursächlichen Zusammenhang.",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            OutlinedButton(
+                                onClick = { inviteReflection(p) },
+                                enabled = personalInsights.loaded && !personalInsights.busy &&
+                                    personalInsights.error == null &&
+                                    personalInsights.entries.size < PersonalInsight.MAX_INSIGHTS,
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                    .testTag("review-reflect-on-pattern")
+                            ) {
+                                Text("Über diese Beobachtung nachdenken")
+                            }
                         }
                     }
                     Text(
@@ -378,6 +410,16 @@ fun PersonalReviewScreen(
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
+                            }
+                            OutlinedButton(
+                                onClick = { inviteReflection(pattern) },
+                                enabled = personalInsights.loaded && !personalInsights.busy &&
+                                    personalInsights.error == null &&
+                                    personalInsights.entries.size < PersonalInsight.MAX_INSIGHTS,
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                    .testTag("review-pattern-reflection-${pattern.key}")
+                            ) {
+                                Text("Dazu freiwillig reflektieren")
                             }
                         }
                     }
