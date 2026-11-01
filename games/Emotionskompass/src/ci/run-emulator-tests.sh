@@ -96,11 +96,11 @@ fi
 echo "::endgroup::"
 
 # M7.4.1: real EKS1/EKB3/legacy import validation with AndroidKeyStore.
-echo "::group::Run five encrypted three-area EKB3 integration tests"
+echo "::group::Run seven encrypted three-area EKB3 integration tests"
 adb shell am instrument -w -r -e class \
   "com.valoon4.emotionskompass.StrategyBackupEmulatorTest" "$RUNNER" \
   | tee "$REPORT_DIR/m741-strategy-backup-integrity.log"
-if ! grep -Fq 'OK (5 tests)' "$REPORT_DIR/m741-strategy-backup-integrity.log" \
+if ! grep -Fq 'OK (7 tests)' "$REPORT_DIR/m741-strategy-backup-integrity.log" \
     || ! grep -q 'INSTRUMENTATION_CODE: -1' "$REPORT_DIR/m741-strategy-backup-integrity.log" \
     || grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=|Error in ' \
       "$REPORT_DIR/m741-strategy-backup-integrity.log"; then
@@ -116,4 +116,4 @@ adb shell wm size
 adb shell wm density
 run_suite "narrow-320dp-200-percent" "2.0"
 
-echo "M7.4.1: 28 Compose UI executions plus 3 EKB2 and 5 EKB3 KeyStore tests passed."
+echo "M7.4.1: 28 Compose UI executions plus 3 EKB2 and 7 EKB3 KeyStore tests passed."
