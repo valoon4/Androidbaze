@@ -58,7 +58,8 @@ fun PersonalInsightsScreen(
     onDelete: (String) -> Unit,
     onUnlink: (String, String) -> Unit,
     onOpenJournal: (String) -> Unit,
-    reflectionOriginLabel: String? = null
+    reflectionOriginLabel: String? = null,
+    showBackButton: Boolean = true
 ) {
     var query by remember { mutableStateOf("") }
     var showArchived by remember { mutableStateOf(false) }
@@ -66,6 +67,8 @@ fun PersonalInsightsScreen(
     var showEditor by remember { mutableStateOf(false) }
     var draft by remember { mutableStateOf("") }
     var selectedJournalId by remember { mutableStateOf<String?>(null) }
+    var showAllJournalEntries by remember { mutableStateOf(false) }
+    var journalDateQuery by remember { mutableStateOf("") }
     var saving by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<PersonalInsight?>(null) }
     // Deliberately never save private answers, the origin, or progress in a Bundle.
@@ -110,6 +113,8 @@ fun PersonalInsightsScreen(
         editor = insight
         draft = insight?.text.orEmpty()
         selectedJournalId = null
+        showAllJournalEntries = false
+        journalDateQuery = ""
         saving = false
         showEditor = true
     }
@@ -180,7 +185,7 @@ fun PersonalInsightsScreen(
                         item {
                             Text("Optional mit einem Tagebucheintrag verbinden",
                                 fontWeight = FontWeight.SemiBold)
-                            Text("Nur wenn du es möchtest. Eine Verknüpfung ist keine automatisch erkannte Ursache.",
+                            Text("Nur wenn du es möchtest. Die Verknüpfung ist keine automatisch erkannte Ursache. Du kannst sie später wieder lösen.",
                                 style = MaterialTheme.typography.bodySmall)
                         }
                         item {
@@ -190,11 +195,53 @@ fun PersonalInsightsScreen(
                                 label = { Text("Keine neue Verknüpfung") }
                             )
                         }
-                        items(journalEntries.take(7), key = { it.id }) { item ->
+                        if (journalEntries.size > 7) {
+                            item {
+                                OutlinedButton(
+                                    onClick = {
+                                        showAllJournalEntries = !showAllJournalEntries
+                                        journalDateQuery = ""
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                        .testTag("insight-journal-expand")
+                                ) {
+                                    Text(if (showAllJournalEntries) "Nur die letzten 7 Einträge"
+                                        else "Weitere Tagebucheinträge auswählen")
+                                }
+                            }
+                        }
+                        if (showAllJournalEntries) {
+                            item {
+                                OutlinedTextField(
+                                    value = journalDateQuery,
+                                    onValueChange = { journalDateQuery = it.take(40) },
+                                    label = { Text("Nach Datum suchen") },
+                                    supportingText = { Text("Zum Beispiel 01. Nov oder 2026") },
+                                    modifier = Modifier.fillMaxWidth()
+                                        .testTag("insight-journal-date-search")
+                                )
+                            }
+                        }
+                        val matches = journalEntries.sortedByDescending { it.createdAt }
+                            .let { entries ->
+                                if (!showAllJournalEntries) entries.take(7)
+                                else entries.filter {
+                                    formatJournalMoment(it.createdAt).contains(
+                                        journalDateQuery.trim(), ignoreCase = true
+                                    )
+                                }
+                            }
+                        if (matches.isEmpty()) {
+                            item {
+                                Text("Kein Tagebucheintrag mit diesem Datum gefunden.",
+                                    style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                        items(matches, key = { it.id }) { item ->
                             FilterChip(
                                 selected = selectedJournalId == item.id,
                                 onClick = { selectedJournalId = item.id },
-                                label = { Text("Eintrag vom ${formatDate(item.createdAt)}") },
+                                label = { Text("Eintrag vom ${formatJournalMoment(item.createdAt)}") },
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -238,8 +285,10 @@ fun PersonalInsightsScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            TextButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-                Text("Zurück zum Rückblick")
+            if (showBackButton) {
+                TextButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+                    Text("Zurück zur Rückblick-Übersicht")
+                }
             }
             Text("Deine Erkenntnisse",
                 style = MaterialTheme.typography.headlineSmall,
@@ -369,3 +418,9 @@ fun PersonalInsightsScreen(
 private fun formatDate(millis: Long): String =
     Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault())
         .toLocalDate().format(dateFormat)
+
+private val journalMomentFormat =
+    DateTimeFormatter.ofPattern("dd. MMM yyyy · HH:mm", Locale.GERMANY)
+
+private fun formatJournalMoment(millis: Long): String =
+    Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).format(journalMomentFormat)
