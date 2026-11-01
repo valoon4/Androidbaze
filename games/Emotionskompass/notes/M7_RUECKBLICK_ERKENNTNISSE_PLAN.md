@@ -1,6 +1,12 @@
 # M7 – Rückblick, Erkenntnisse und Strategien: Funktions- und Umsetzungsplan
 
-**Stand:** 31.10.2026 · **Status:** M7.0 und M7.1 in main (PR #24 gemergt); M7.2 als Draft-PR #25; M7.3–M7.6 geplant · **Basis:** M7.1 · **Ziel:** 0.7.x-m7 · **Planergänzung:** optionale Visualisierungen für M7.5
+**Stand:** 01.11.2026 · **Status:** M7.0–M7.3 inkl. UX-Qualitätsrunde #31 in main; M7.4 und M7.5 noch offen, M7.6-Release-Abnahme noch nicht vollständig nachgewiesen · **Ziel:** 0.7.x-m7 · **Planergänzung:** optionale Visualisierungen für M7.5
+
+## Aktuelle Fortschrittsnotiz vor M8 (01.11.2026)
+
+Die folgenden Etappenbeschreibungen sind **historische Planvorgaben** und können noch den ursprünglichen Draft-Stand nennen. Der tatsächliche Implementierungsstand ist: M7.0 und M7.1 sowie M7.2 (PR #25), M7.3.0–M7.3.3 (PRs #28–#30) und die M7-UX-Qualitätsrunde (PR #31) wurden gemergt. **Noch nicht geliefert:** M7.4-Strategieexperimente samt Backup-Erweiterung, M7.5-Grafiken (PR #26 war nur Roadmap), vollständige M7.6-Release-Abnahme. Eine aktuelle Exit-Gate-Liste steht in [M7-Abschlussplan vor M8](M7_ABSCHLUSSPLAN_VOR_M8.md).
+
+**UX-Abweichung vom alten Plan:** Der Rückblick bietet nach PR #31 die gleichwertigen Bereiche „Übersicht & Muster“ und „Meine Erkenntnisse“ und kann alle gefundenen Kombinationen aufklappen; die ursprüngliche Beschränkung auf drei betrifft nur die anfängliche kompakte Ansicht.
 
 ## 1. Produktziel
 Den bestehenden Gefühls-/Bedürfnisatlas, Check-in, das verschlüsselte Tagebuch und die Wissenswelt sinnvoll verbinden: Erfahrungen überblicken, nachvollziehbare Zusammenhänge untersuchen, eigene Erkenntnisse formulieren, freiwillig Strategien ausprobieren und erneut reflektieren. Keine Diagnostik, keine Glücks-/Gesundheitsnote, keine KI-Interpretation, kein Gamification-Druck. Alles offline.
