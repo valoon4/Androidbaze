@@ -58,6 +58,8 @@ class PersonalInsightsEmulatorTest {
             hasTestTag("insight-create")
         )
         rule.onNodeWithTag("insight-create").performClick()
+        rule.onNodeWithTag("insight-editor-list")
+            .performScrollToNode(hasTestTag("insight-editor"))
         rule.onNodeWithTag("insight-editor").performTextInput(
             "Ich habe selbst bemerkt, dass mir verständliche Absprachen helfen."
         )
