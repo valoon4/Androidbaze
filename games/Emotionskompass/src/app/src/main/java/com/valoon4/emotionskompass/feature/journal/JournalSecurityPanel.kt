@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.insights.BackupImportPreview
 
 /**
  * Both SAF file choices are explicitly initiated by the user. Plain journal JSON
@@ -39,13 +40,16 @@ fun JournalSecurityPanel(
     onToggleLock: () -> Unit,
     onExport: (Uri, String) -> Unit,
     onImport: (Uri, String) -> Unit,
-    onSystemPicker: (Boolean) -> Unit
+    onSystemPicker: (Boolean) -> Unit,
+    onPreviewImport: (Uri, String, (BackupImportPreview?, String?) -> Unit) -> Unit
 ) {
     var exportPassword by remember { mutableStateOf("") }
     var exportConfirmation by remember { mutableStateOf("") }
     var importPassword by remember { mutableStateOf("") }
     var pendingExport by remember { mutableStateOf("") }
     var pendingImport by remember { mutableStateOf<Uri?>(null) }
+    var importPreview by remember { mutableStateOf<BackupImportPreview?>(null) }
+    var previewBusy by remember { mutableStateOf(false) }
     var pickerError by remember { mutableStateOf<String?>(null) }
 
     val exportPicker = rememberLauncherForActivityResult(
@@ -61,22 +65,55 @@ fun JournalSecurityPanel(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
         onSystemPicker(false)
-        if (uri != null) pendingImport = uri
-        else importPassword = ""
+        if (uri != null) {
+            previewBusy = true
+            // Decrypt and authenticate *before* asking to replace any local data.
+            onPreviewImport(uri, importPassword) { result, problem ->
+                previewBusy = false
+                if (result != null) {
+                    importPreview = result
+                    pendingImport = uri
+                } else {
+                    importPreview = null
+                    pendingImport = null
+                    pickerError = problem ?: "Die Sicherung konnte nicht geprüft werden."
+                    importPassword = ""
+                }
+            }
+        } else importPassword = ""
     }
 
     if (pendingImport != null) {
         AlertDialog(
             onDismissRequest = {
                 pendingImport = null
+                importPreview = null
                 importPassword = ""
             },
-            title = { Text("Gespeicherte Daten wirklich ersetzen?") },
-            text = { Text("Die Sicherung wird vor dem Ersetzen entschlüsselt und geprüft. EKB3 ersetzt alle drei Bereiche: Tagebuch, eigene Erkenntnisse und gespeicherte Strategieideen (auch mit leeren Listen). EKB2 ersetzt Tagebuch und Erkenntnisse, erhält aber deine vorhandenen Strategieideen. EKB1 ersetzt nur das Tagebuch; Erkenntnisse und Strategieideen bleiben erhalten. Ungültige Verknüpfungen zu ersetzten Einträgen werden dabei entfernt; eigene Texte bleiben bestehen. Sichere den aktuellen Bestand vorher. Das Ersetzen kann nicht rückgängig gemacht werden.") },
+            title = { Text("Geprüfte Sicherung wirklich übernehmen?") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val report = importPreview
+                    if (report != null) {
+                        Text("Sicherungsformat: ${report.format} · ${report.journalCount} Tagebucheinträge",
+                            fontWeight = FontWeight.SemiBold)
+                        Text(if (report.insightCount == null)
+                            "Eigene Erkenntnisse: nicht enthalten – bestehende bleiben erhalten."
+                        else "Eigene Erkenntnisse: ${report.insightCount} – werden ersetzt.")
+                        Text(if (report.strategyExperimentCount == null)
+                            "Strategieideen: nicht enthalten – bestehende bleiben erhalten."
+                        else "Strategieideen: ${report.strategyExperimentCount} – werden ersetzt.")
+                    }
+                    Text("Die Datei wurde mit deiner Passphrase geprüft. Nur die aufgeführten Datenbereiche werden ersetzt – auch dann, wenn eine enthaltene Liste leer ist. Ungültige Verknüpfungen werden entfernt, nicht deine eigenen Texte. Das Ersetzen kann nicht rückgängig gemacht werden.")
+                    Text("Sichere deinen aktuellen Stand zuerst. Die App prüft beim Ersetzen, ob die Datei seit dieser Vorschau verändert wurde.",
+                        style = MaterialTheme.typography.bodySmall)
+                }
+            },
             confirmButton = {
                 TextButton(onClick = {
                     val uri = pendingImport!!
                     pendingImport = null
+                    importPreview = null
                     val password = importPassword
                     importPassword = ""
                     onImport(uri, password)
@@ -85,6 +122,7 @@ fun JournalSecurityPanel(
             dismissButton = {
                 TextButton(onClick = {
                     pendingImport = null
+                    importPreview = null
                     importPassword = ""
                 }) { Text("Abbrechen") }
             }
@@ -150,7 +188,7 @@ fun JournalSecurityPanel(
             }
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !busy && importPassword.isNotBlank(),
+                enabled = !busy && !previewBusy && importPassword.isNotBlank(),
                 onClick = {
                     pickerError = null
                     onSystemPicker(true)
@@ -162,7 +200,11 @@ fun JournalSecurityPanel(
                         pickerError = "Android konnte die Dateiauswahl nicht öffnen."
                     }
                 }
-            ) { Text("Verschlüsselte Sicherungsdatei auswählen") }
+            ) { Text("Verschlüsselte Sicherungsdatei auswählen und prüfen") }
+            if (previewBusy) {
+                Text("Sicherung wird entschlüsselt und geprüft; noch keine Daten werden ersetzt.",
+                    style = MaterialTheme.typography.bodySmall)
+            }
             Text("Wichtig: Die Passphrase wird nicht gespeichert. Nur selbst gewählte Sicherungsdateien verlassen die App; es findet kein automatischer Cloud-Upload statt.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
