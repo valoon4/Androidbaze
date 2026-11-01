@@ -14,6 +14,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.valoon4.emotionskompass.core.checkin.CheckInDraft
+import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.designsystem.EmotionskompassTheme
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.navigation.InsightUiState
@@ -85,6 +87,37 @@ class PersonalInsightsEmulatorTest {
         rule.onNodeWithText(
             "Ich habe selbst bemerkt, dass mir verständliche Absprachen helfen."
         ).assertExists()
+    }
+
+    @Test fun editorExposesOlderJournalReferencesWithoutGuessingDates() {
+        val now = System.currentTimeMillis()
+        val journal = (0..11).map { day ->
+            val at = now - day * 86_400_000L
+            JournalEntry("fictional-ux-entry-$day", at, at, CheckInDraft())
+        }
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalInsightsScreen(
+                    state = InsightUiState(loaded = true), journalEntries = journal,
+                    onBack = {}, onReload = {}, onSave = { _, _, _ -> },
+                    onArchive = { _, _ -> }, onDelete = {},
+                    onUnlink = { _, _ -> }, onOpenJournal = {}
+                )
+            }
+        }
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("insight-create")
+        )
+        rule.onNodeWithTag("insight-create").performClick()
+        rule.onNodeWithTag("insight-editor-list").performScrollToNode(
+            hasTestTag("insight-journal-expand")
+        )
+        rule.onNodeWithTag("insight-journal-expand").performClick()
+        rule.onNodeWithTag("insight-editor-list").performScrollToNode(
+            hasTestTag("insight-journal-date-search")
+        )
+        rule.onNodeWithTag("insight-journal-date-search").assertExists()
+        rule.onNodeWithText("Abbrechen").performClick()
     }
 
     @Test fun unavailableInsightsNeverDisplayDecryptedTextOrCreationAction() {
