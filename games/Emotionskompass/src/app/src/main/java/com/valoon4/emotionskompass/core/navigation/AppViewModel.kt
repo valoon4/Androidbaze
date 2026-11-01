@@ -18,6 +18,7 @@ import com.valoon4.emotionskompass.core.journal.JournalBackup
 import com.valoon4.emotionskompass.core.insights.CombinedBackupRepository
 import com.valoon4.emotionskompass.core.insights.InsightBundleBackup
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
+import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
@@ -60,6 +61,14 @@ data class JournalUiState(
     val loaded: Boolean = false
 )
 
+data class InsightUiState(
+    val entries: List<PersonalInsight> = emptyList(),
+    val loaded: Boolean = false,
+    val busy: Boolean = false,
+    val error: String? = null,
+    val message: String? = null
+)
+
 class AppViewModel(
     private val catalog: EmotionCatalog,
     private val needCatalog: NeedCatalog? = null,
@@ -77,6 +86,8 @@ class AppViewModel(
     val checkIn = _checkIn.asStateFlow()
     private val _journalState = MutableStateFlow(JournalUiState())
     val journalState = _journalState.asStateFlow()
+    private val _insightState = MutableStateFlow(InsightUiState())
+    val insightState = _insightState.asStateFlow()
     // Private, strictly in-memory Rückblick evidence selection. Never SavedState.
     private val _reviewSelection = MutableStateFlow<Pair<String, String>?>(null)
     val reviewSelection = _reviewSelection.asStateFlow()
@@ -112,6 +123,7 @@ class AppViewModel(
         accessEpoch++
         _unlocked.value = false
         _journalState.value = JournalUiState()
+        _insightState.value = InsightUiState()
         _reviewSelection.value = null
         _editingEntryId.value = null
         _checkIn.value = CheckInDraft()
@@ -156,7 +168,7 @@ class AppViewModel(
     fun exportJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
@@ -211,6 +223,7 @@ class AppViewModel(
                     // JournalUiState() resets busy=false before the fresh authenticated read.
                     _journalState.value = JournalUiState(
                         message = "Wiederherstellung erfolgreich: $count Einträge.")
+                    _insightState.value = InsightUiState()
                     reloadJournal()
                 }
             } catch (e: Exception) {
@@ -230,22 +243,34 @@ class AppViewModel(
         val epoch = accessEpoch
         val transferMessage = _journalState.value.message
         _journalState.value = _journalState.value.copy(busy = true, error = null)
+        _insightState.value = InsightUiState(busy = true)
         viewModelScope.launch {
             try {
                 val entries = withContext(Dispatchers.IO) {
                     combinedBackup?.recoverPending()
-                    store.list()
+                    val journalEntries = store.list()
+                    val userInsights = combinedBackup?.listInsights() ?: emptyList()
+                    journalEntries to userInsights
                 }
-                if (currentAccess(epoch)) _journalState.value = JournalUiState(
-                    entries.sortedByDescending { it.createdAt }, message = transferMessage,
-                    loaded = true
-                )
+                if (currentAccess(epoch)) {
+                    _insightState.value = InsightUiState(
+                        entries = entries.second.sortedByDescending { it.updatedAtUtcMillis },
+                        loaded = combinedBackup != null
+                    )
+                    _journalState.value = JournalUiState(
+                        entries.first.sortedByDescending { it.createdAt },
+                        message = transferMessage, loaded = true
+                    )
+                }
             } catch (e: Exception) {
                 if (currentAccess(epoch)) {
                     // Fail closed: do not leave previously decrypted entries visible
                     // when re-reading/authenticating the local encrypted file fails.
                     _journalState.value = JournalUiState(
                         error = e.message ?: "Tagebuch konnte nicht geöffnet werden"
+                    )
+                    _insightState.value = InsightUiState(
+                        error = "Persönliche Daten konnten nicht sicher geladen werden."
                     )
                 }
             }
