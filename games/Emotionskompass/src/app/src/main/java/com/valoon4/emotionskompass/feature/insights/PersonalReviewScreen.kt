@@ -2,6 +2,7 @@ package com.valoon4.emotionskompass.feature.insights
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -59,6 +61,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 private val dayFormatter = DateTimeFormatter.ofPattern("dd. MMM yyyy", Locale.GERMANY)
 private const val DAY_MILLIS = 86_400_000L
@@ -103,6 +106,9 @@ fun PersonalReviewScreen(
     var endText by rememberSaveable { mutableStateOf(today.toString()) }
     var pickingStart by remember { mutableStateOf<Boolean?>(null) }
     var patternsVisible by rememberSaveable { mutableStateOf(true) }
+    var showAllPatterns by rememberSaveable { mutableStateOf(false) }
+    var showPatternCriteria by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     // Selection is held only in the locked ViewModel's in-memory Flow, never Bundle.
     val zone = ZoneId.systemDefault()
     val window = remember(preset, startText, endText, today, zone) {
@@ -173,28 +179,55 @@ fun PersonalReviewScreen(
         }
     }
 
-    if (showInsightPage) {
-        PersonalInsightsScreen(
-            state = personalInsights,
-            journalEntries = diaryEntries,
-            onBack = {
-                showInsightPage = false
-                reflectionOriginLabel = null
-            },
-            onReload = onReload,
-            onSave = onSaveInsight,
-            onArchive = onArchiveInsight,
-            onDelete = onDeleteInsight,
-            onUnlink = onUnlinkInsight,
-            onOpenJournal = onOpenJournalEntry,
-            reflectionOriginLabel = reflectionOriginLabel
-        )
-        return
-    }
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
+    // These two equally visible areas belong to the same Rückblick section.
+    // Keep the choice visible while scrolling, rather than hiding a second page.
+    Column(modifier = Modifier.fillMaxSize()) {
+        FlowRow(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(0.dp)
+        ) {
+            FilterChip(
+                selected = !showInsightPage,
+                onClick = {
+                    showInsightPage = false
+                    reflectionOriginLabel = null
+                },
+                label = { Text("Übersicht & Muster") },
+                modifier = Modifier.testTag("review-tab-overview")
+            )
+            FilterChip(
+                selected = showInsightPage,
+                onClick = {
+                    reflectionOriginLabel = null
+                    showInsightPage = true
+                },
+                label = { Text("Meine Erkenntnisse") },
+                modifier = Modifier.testTag("review-tab-insights")
+            )
+        }
+        Box(modifier = Modifier.weight(1f)) {
+            if (showInsightPage) {
+                PersonalInsightsScreen(
+                    state = personalInsights,
+                    journalEntries = diaryEntries,
+                    onBack = {
+                        showInsightPage = false
+                        reflectionOriginLabel = null
+                    },
+                    onReload = onReload,
+                    onSave = onSaveInsight,
+                    onArchive = onArchiveInsight,
+                    onDelete = onDeleteInsight,
+                    onUnlink = onUnlinkInsight,
+                    onOpenJournal = onOpenJournalEntry,
+                    reflectionOriginLabel = reflectionOriginLabel,
+                    showBackButton = false
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState,
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
@@ -202,22 +235,10 @@ fun PersonalReviewScreen(
             Text("Dein Rückblick", style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() })
             Text(
-                "Ein Überblick über das, was du selbst in deinem Tagebuch festgehalten hast. Keine Bewertung deiner Gefühle.",
+                "Hier findest du deine Einträge, Häufigkeiten und wiederkehrende Auswahlen. Deine selbst formulierten Gedanken stehen unter „Meine Erkenntnisse“. Keine Bewertung deiner Gefühle.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium
             )
-        }
-        item {
-            OutlinedButton(
-                onClick = {
-                    reflectionOriginLabel = null
-                    showInsightPage = true
-                },
-                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
-                    .testTag("review-open-personal-insights")
-            ) {
-                Text("Meine eigenen Erkenntnisse")
-            }
         }
         item {
             Text("Zeitraum", style = MaterialTheme.typography.titleMedium,
@@ -373,29 +394,58 @@ fun PersonalReviewScreen(
                                 else "${overview.needMentionCount} Bedürfnisnennungen")
                             Text("Ein Eintrag kann mehrere Wörter enthalten. Gezählt wird nur, was du selbst ausgewählt hast – nicht, wie oft du etwas erlebt hast.",
                                 style = MaterialTheme.typography.bodySmall)
+                            OutlinedButton(
+                                onClick = { scope.launch { listState.animateScrollToItem(3) } },
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                    .testTag("review-jump-patterns")
+                            ) { Text("Zu gemeinsam ausgewählten Begriffen") }
                         }
                     }
                 }
                 if (overview.entryCount > 0) {
                     item {
-                        Text("Behutsame Beobachtungen",
+                        Text("Gemeinsam ausgewählte Begriffe",
                             style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.semantics { heading() })
-                        Text("Nur gemeinsame Auswahlen aus deinem Tagebuch – keine Erklärung, Diagnose oder Aussage über Ursachen. Die Regeln benötigen mindestens zehn vergleichbare Einträge und Belege von mehreren Tagen.",
-                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.semantics { heading() }
+                                .testTag("review-patterns-heading"))
+                        Text("Hier siehst du Gefühle, Bedürfnisse oder Lebensbereiche, die du in mehreren Einträgen zusammen ausgewählt hast. Das sagt nichts über Ursachen aus.",
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        TextButton(onClick = { patternsVisible = !patternsVisible }) {
-                            Text(if (patternsVisible) "Beobachtungen ausblenden" else "Beobachtungen anzeigen")
+                        TextButton(
+                            onClick = { showPatternCriteria = !showPatternCriteria },
+                            modifier = Modifier.fillMaxWidth()
+                                .testTag("review-pattern-criteria")
+                        ) {
+                            Text(if (showPatternCriteria) "Erklärung ausblenden" else "Wie entstehen diese Hinweise?")
+                        }
+                        if (showPatternCriteria) {
+                            Text("Ein Hinweis erscheint erst bei mindestens 10 vergleichbaren Einträgen. Dieselbe Kombination muss mindestens 3-mal, an mindestens 2 verschiedenen Tagen und in mindestens einem Viertel dieser Einträge ausgewählt worden sein. Die App liest dafür keine freien Notizen aus.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        TextButton(
+                            onClick = { patternsVisible = !patternsVisible },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(if (patternsVisible) "Kombinationen ausblenden" else "Kombinationen anzeigen")
                         }
                     }
                     if (!patternsVisible) {
                         // Hidden by choice; never persist or modify the source entries.
                     } else if (patterns.isEmpty()) {
                         item {
-                            Text("Für vorsichtige Beobachtungen gibt es im gewählten Zeitraum noch nicht genug geeignete Belege. Das ist keine Bewertung deiner Erfahrungen.")
+                            Text("Im gewählten Zeitraum gibt es noch keine ausreichend belegten Kombinationen. Das ist keine Bewertung deiner Erfahrungen.")
+                            if (preset != "90") {
+                                OutlinedButton(
+                                    onClick = { preset = "90"; onSelectTerm(null) },
+                                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                        .testTag("review-patterns-90days")
+                                ) { Text("90 Tage betrachten") }
+                            }
                         }
                     } else {
-                        items(patterns.take(3), key = { "pattern-${it.key}" }) { pattern ->
+                        items(if (showAllPatterns) patterns else patterns.take(3),
+                            key = { "pattern-${it.key}" }) { pattern ->
                             Card(
                                 onClick = { onSelectTerm("pattern" to pattern.key) },
                                 modifier = Modifier.fillMaxWidth()
@@ -420,6 +470,18 @@ fun PersonalReviewScreen(
                                     .testTag("review-pattern-reflection-${pattern.key}")
                             ) {
                                 Text("Dazu freiwillig reflektieren")
+                            }
+                        }
+                        if (patterns.size > 3) {
+                            item {
+                                OutlinedButton(
+                                    onClick = { showAllPatterns = !showAllPatterns },
+                                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                        .testTag("review-show-all-patterns")
+                                ) {
+                                    Text(if (showAllPatterns) "Weniger Kombinationen anzeigen"
+                                        else "Alle ${patterns.size} Kombinationen anzeigen")
+                                }
                             }
                         }
                     }
@@ -496,7 +558,10 @@ fun PersonalReviewScreen(
                 }
             }
         }
-    }
+                } // LazyColumn
+            } // overview / insights
+        } // content
+    } // Rückblick tabs
 }
 
 /** Separate list mode that reuses the very same immutable evidence snapshot. */
