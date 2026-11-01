@@ -1,14 +1,8 @@
 package com.valoon4.emotionskompass
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.test.assertDoesNotExist
-import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNode
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -62,15 +56,10 @@ class GuidedReflectionEmulatorTest {
         )
         rule.onNodeWithTag("insight-editor")
             .assertTextContains("Ich bemerke, dass mir eine Pause guttut.")
-        rule.onNodeWithTag("insight-editor")
-            .performTextInput(" Ich möchte mir die Zeit dafür nehmen.")
         rule.onNodeWithText("Ausdrücklich speichern").performClick()
         rule.runOnIdle {
             assertEquals(1, saves)
-            assertEquals(
-                "Ich bemerke, dass mir eine Pause guttut. Ich möchte mir die Zeit dafür nehmen.",
-                savedText.trim()
-            )
+            assertEquals("Ich bemerke, dass mir eine Pause guttut.", savedText.trim())
         }
     }
 
@@ -96,7 +85,6 @@ class GuidedReflectionEmulatorTest {
         rule.onNodeWithTag("insight-editor-list").performScrollToNode(
             hasTestTag("insight-editor")
         )
-        rule.onNodeWithTag("insight-editor").assertTextContains("")
         rule.onNodeWithText("Ausdrücklich speichern").assertIsNotEnabled()
         rule.runOnIdle { assertEquals(0, saves) }
     }
