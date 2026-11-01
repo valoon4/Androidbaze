@@ -75,7 +75,8 @@ fun PersonalInsightsScreen(
 
     LaunchedEffect(reflectionOriginLabel, state.loaded, state.error) {
         if (!initialGuideHandled && reflectionOriginLabel != null &&
-            state.loaded && state.error == null) {
+            state.loaded && state.error == null &&
+            state.entries.size < UserInsight.MAX_INSIGHTS) {
             initialGuideHandled = true
             guideRoute = ReflectionRoute.OBSERVATION
             showGuide = true
