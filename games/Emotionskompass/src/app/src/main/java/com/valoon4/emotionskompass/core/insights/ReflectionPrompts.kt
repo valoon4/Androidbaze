@@ -58,7 +58,7 @@ object ReflectionPrompts {
     fun userDraft(route: ReflectionRoute, answers: List<String>): String {
         require(answers.size == forRoute(route).size)
         require(answers.all { it.length <= MAX_ANSWER_LENGTH })
-        return answers.map(String::trim).filter(String::isNotEmpty).joinToString("\n\n")
+        return answers.map { it.trim() }.filter { it.isNotEmpty() }.joinToString("\n\n")
             .also { require(it.length <= PersonalInsight.MAX_TEXT_LENGTH) }
     }
 }
