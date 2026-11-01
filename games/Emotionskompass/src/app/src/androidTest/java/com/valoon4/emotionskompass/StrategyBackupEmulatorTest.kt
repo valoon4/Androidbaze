@@ -209,4 +209,46 @@ class StrategyBackupEmulatorTest {
             folder.deleteRecursively()
         }
     }
+
+    @Test fun pendingLegacyEkr1IsReplayedBeforeEkr2AndPrunesOnlyBrokenLinks() {
+        val (context, folder) = isolated()
+        try {
+            val s = stores(context)
+            val original = populate(s)
+            val store = java.security.KeyStore.getInstance("AndroidKeyStore")
+            store.load(null)
+            val alias = "emotionskompass_restore_transaction_v1"
+            val existing = store.getKey(alias, null) as? javax.crypto.SecretKey
+            val key = existing ?: javax.crypto.KeyGenerator.getInstance(
+                "AES", "AndroidKeyStore"
+            ).run {
+                init(android.security.keystore.KeyGenParameterSpec.Builder(
+                    alias, android.security.keystore.KeyProperties.PURPOSE_ENCRYPT or
+                        android.security.keystore.KeyProperties.PURPOSE_DECRYPT
+                ).setKeySize(256)
+                    .setBlockModes(android.security.keystore.KeyProperties.BLOCK_MODE_GCM)
+                    .setEncryptionPaddings(
+                        android.security.keystore.KeyProperties.ENCRYPTION_PADDING_NONE
+                    ).setRandomizedEncryptionRequired(true)
+                    .setUserAuthenticationRequired(false).build())
+                generateKey()
+            }
+            val target = InsightBundleFormat.encode(emptyList(), emptyList())
+            val cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, key)
+            cipher.updateAAD("com.valoon4.emotionskompass/pending-restore/v1".toByteArray())
+            val intent = "EKR1".toByteArray() + cipher.iv + cipher.doFinal(target)
+            File(folder, "private_restore_intent_v1.enc").writeBytes(intent)
+            assertTrue(s.combined.recoverPending())
+            assertTrue(s.journal.list().isEmpty())
+            assertTrue(s.insights.list().isEmpty())
+            val remaining = s.strategies.list().single()
+            assertEquals(original.experiment.planText, remaining.planText)
+            assertTrue(remaining.relatedJournalIds.isEmpty())
+            assertTrue(remaining.relatedInsightIds.isEmpty())
+            assertFalse(s.combined.recoverPending())
+            assertFalse(File(folder, "private_restore_intent_v1.enc").exists())
+            assertFalse(File(folder, "private_strategy_restore_intent_v2.enc").exists())
+        } finally { folder.deleteRecursively() }
+    }
 }
