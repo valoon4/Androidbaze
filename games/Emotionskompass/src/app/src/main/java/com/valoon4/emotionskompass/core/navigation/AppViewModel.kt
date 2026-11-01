@@ -297,7 +297,7 @@ class AppViewModel(
         if (existingId != null && old == null) return
         val now = System.currentTimeMillis()
         val next = if (old == null)
-            PersonalInsight.create(clean, now, journalId?.let(::setOf) ?: emptySet())
+            PersonalInsight.create(clean, now, journalId?.let { setOf(it) } ?: emptySet())
         else old.copy(text = clean, updatedAtUtcMillis = maxOf(now, old.updatedAtUtcMillis),
             journalIds = old.journalIds + listOfNotNull(journalId))
         val epoch = accessEpoch
