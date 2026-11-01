@@ -198,7 +198,7 @@ class AppViewModel(
     fun importJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
@@ -239,7 +239,7 @@ class AppViewModel(
     /** A decryption or key failure never replaces the previous encrypted data. */
     fun reloadJournal() {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
         val epoch = accessEpoch
         val transferMessage = _journalState.value.message
         _journalState.value = _journalState.value.copy(busy = true, error = null)
@@ -277,10 +277,95 @@ class AppViewModel(
         }
     }
 
+    /** Only explicitly typed words can become a personal insight. */
+    fun savePersonalInsight(text: String, existingId: String? = null, journalId: String? = null) {
+        val backup = combinedBackup ?: return
+        val current = _insightState.value
+        val diary = _journalState.value
+        val clean = text.trim()
+        if (!allowed() || current.busy || !current.loaded || current.error != null ||
+            diary.busy || !diary.loaded || diary.error != null ||
+            clean.isBlank() || clean.length > PersonalInsight.MAX_TEXT_LENGTH) return
+        if (journalId != null && diary.entries.none { it.id == journalId }) return
+        val old = existingId?.let { id -> current.entries.firstOrNull { it.id == id } }
+        if (existingId != null && old == null) return
+        val now = System.currentTimeMillis()
+        val next = if (old == null)
+            PersonalInsight.create(clean, now, journalId?.let(::setOf) ?: emptySet())
+        else old.copy(text = clean, updatedAtUtcMillis = maxOf(now, old.updatedAtUtcMillis),
+            journalIds = old.journalIds + listOfNotNull(journalId))
+        val epoch = accessEpoch
+        _insightState.value = current.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) { backup.saveInsight(next) }
+                if (currentAccess(epoch)) _insightState.value = InsightUiState(
+                    entries = result.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
+                    message = if (old == null) "Erkenntnis gespeichert." else "Änderungen gespeichert."
+                )
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) _insightState.value = current.copy(
+                    error = "Speichern fehlgeschlagen. Bitte erneut sicher laden."
+                )
+            }
+        }
+    }
+
+    fun setPersonalInsightArchived(id: String, archived: Boolean) {
+        val backup = combinedBackup ?: return
+        val current = _insightState.value
+        val diary = _journalState.value
+        if (!allowed() || !current.loaded || current.busy || current.error != null ||
+            !diary.loaded || diary.busy || diary.error != null) return
+        val old = current.entries.firstOrNull { it.id == id } ?: return
+        val next = old.copy(archived = archived,
+            updatedAtUtcMillis = maxOf(System.currentTimeMillis(), old.updatedAtUtcMillis))
+        val epoch = accessEpoch
+        _insightState.value = current.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) { backup.saveInsight(next) }
+                if (currentAccess(epoch)) _insightState.value = InsightUiState(
+                    result.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
+                    message = if (archived) "Erkenntnis archiviert." else "Erkenntnis wiederhergestellt."
+                )
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) _insightState.value = current.copy(
+                    error = "Archivieren fehlgeschlagen. Bitte erneut sicher laden."
+                )
+            }
+        }
+    }
+
+    fun deletePersonalInsight(id: String) {
+        val backup = combinedBackup ?: return
+        val current = _insightState.value
+        val diary = _journalState.value
+        if (!allowed() || !current.loaded || current.busy || current.error != null ||
+            !diary.loaded || diary.busy || diary.error != null ||
+            current.entries.none { it.id == id }) return
+        val epoch = accessEpoch
+        _insightState.value = current.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) { backup.deleteInsight(id) }
+                if (currentAccess(epoch)) _insightState.value = InsightUiState(
+                    result.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
+                    message = "Erkenntnis gelöscht."
+                )
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) _insightState.value = current.copy(
+                    error = "Löschen fehlgeschlagen. Bitte erneut sicher laden."
+                )
+            }
+        }
+    }
+
     fun saveCheckIn() {
         val store = journal ?: return
         if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
-            _journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
+            _journalState.value.busy || _insightState.value.busy ||
+            _state.value.destination != Destination.CHECKIN ||
             _checkIn.value.step != CheckInStep.AUSKLANG || !_checkIn.value.hasPersonalInput) return
         val epoch = accessEpoch
         val snapshot = _checkIn.value
@@ -307,7 +392,7 @@ class AppViewModel(
     }
 
     fun editJournalEntry(id: String) {
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
         val entry = _journalState.value.entries.firstOrNull { it.id == id } ?: return
         _editingEntryId.value = id
         _checkIn.value = entry.draft.copy(
@@ -320,7 +405,7 @@ class AppViewModel(
     fun deleteJournalEntry(id: String) {
         val store = journal ?: return
         if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
-            _journalState.value.busy) return
+            _journalState.value.busy || _insightState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
@@ -342,7 +427,7 @@ class AppViewModel(
     fun deleteEntireJournal() {
         val store = journal ?: return
         if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
-            _journalState.value.busy) return
+            _journalState.value.busy || _insightState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
