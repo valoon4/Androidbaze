@@ -117,7 +117,11 @@ fun GuidedReflectionDialog(
                     if (step == prompts.lastIndex) "reflection-to-editor" else "reflection-next"
                 )
             ) {
-                Text(if (step == prompts.lastIndex) "Entwurf ansehen" else "Weiter")
+                Text(when {
+                    step == prompts.lastIndex -> "Entwurf ansehen"
+                    answers[step].isBlank() -> "Frage überspringen"
+                    else -> "Weiter"
+                })
             }
         },
         dismissButton = {
