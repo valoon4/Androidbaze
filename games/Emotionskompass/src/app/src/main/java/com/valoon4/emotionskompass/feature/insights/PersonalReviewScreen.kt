@@ -48,6 +48,8 @@ import com.valoon4.emotionskompass.core.insights.InsightOverview
 import com.valoon4.emotionskompass.core.insights.InsightTermCount
 import com.valoon4.emotionskompass.core.insights.InsightTimeWindow
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
+import com.valoon4.emotionskompass.core.journal.JournalEntry
+import com.valoon4.emotionskompass.core.navigation.InsightUiState
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import java.time.Instant
@@ -77,10 +79,16 @@ fun PersonalReviewScreen(
     onStartCheckIn: () -> Unit,
     selectedTerm: Pair<String, String>?,
     onSelectTerm: (Pair<String, String>?) -> Unit,
-    listState: LazyListState
+    listState: LazyListState,
+    personalInsights: InsightUiState,
+    diaryEntries: List<JournalEntry>,
+    onSaveInsight: (String, String?, String?) -> Unit,
+    onArchiveInsight: (String, Boolean) -> Unit,
+    onDeleteInsight: (String) -> Unit
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
+    var showInsightPage by rememberSaveable { mutableStateOf(false) }
     val today = LocalDate.now()
     var startText by rememberSaveable { mutableStateOf(today.minusDays(29).toString()) }
     var endText by rememberSaveable { mutableStateOf(today.toString()) }
@@ -149,6 +157,20 @@ fun PersonalReviewScreen(
         }
     }
 
+    if (showInsightPage) {
+        PersonalInsightsScreen(
+            state = personalInsights,
+            journalEntries = diaryEntries,
+            onBack = { showInsightPage = false },
+            onReload = onReload,
+            onSave = onSaveInsight,
+            onArchive = onArchiveInsight,
+            onDelete = onDeleteInsight,
+            onOpenJournal = onOpenJournalEntry
+        )
+        return
+    }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = listState,
@@ -163,6 +185,15 @@ fun PersonalReviewScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium
             )
+        }
+        item {
+            OutlinedButton(
+                onClick = { showInsightPage = true },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                    .testTag("review-open-personal-insights")
+            ) {
+                Text("Meine eigenen Erkenntnisse")
+            }
         }
         item {
             Text("Zeitraum", style = MaterialTheme.typography.titleMedium,
