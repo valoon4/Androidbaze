@@ -29,6 +29,6 @@ Private Antworten, Frageindex und Musteretikett verbleiben ausschließlich im ak
 
 ## Automatisierte Gates
 
-JVM-Tests sichern die unverfälschte Übergabe ausschließlich selbst geschriebener Antworten und das Überspringen. Zwei zusätzliche Compose-Emulatortests prüfen die explizite Speichergrenze und den leeren Entwurf. Insgesamt werden 11 UI-Tests jeweils bei 100 % und 200 % Schrift ausgeführt, zuzüglich der drei bestehenden EKB1/EKB2-Keystore-Tests.
+JVM-Tests sichern die unverfälschte Übergabe ausschließlich selbst geschriebener Antworten und das Überspringen. Drei neue Compose-Emulatortests prüfen die explizite Speichergrenze, den leeren Entwurf und den Einstieg über eine Musterbeobachtung. Insgesamt werden 12 UI-Tests jeweils bei 100 % und 200 % Schrift ausgeführt, zuzüglich der drei bestehenden EKB1/EKB2-Keystore-Tests.
 
 Nach grüner CI bleiben die manuelle Geräteprüfung und die redaktionelle Sichtung der Fragen vor der Merge-Freigabe notwendig.
