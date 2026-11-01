@@ -15,10 +15,12 @@ import com.valoon4.emotionskompass.core.journal.BoundedJournalInput
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.insights.BackupImportPreview
 import com.valoon4.emotionskompass.core.insights.CombinedBackupRepository
 import com.valoon4.emotionskompass.core.insights.InsightBundleBackup
 import com.valoon4.emotionskompass.core.insights.StrategyBundleBackup
 import com.valoon4.emotionskompass.core.insights.StrategyExperiment
+import com.valoon4.emotionskompass.core.insights.encryptedBackupDigest
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.model.NeedCatalog
@@ -113,6 +115,9 @@ class AppViewModel(
 
     /** Reject async reads/results that originated before the latest relock. */
     private var accessEpoch = 0L
+    // Only counts/digest, never backup plaintext or passphrase in saved state.
+    private var verifiedImportUri: Uri? = null
+    private var verifiedImportHash: String? = null
     private fun currentAccess(epoch: Long): Boolean = allowed() && epoch == accessEpoch
 
     init { if (journal != null && _unlocked.value) reloadJournal() }
@@ -134,6 +139,8 @@ class AppViewModel(
         if (!_lockEnabled.value) return
         accessEpoch++
         _unlocked.value = false
+        verifiedImportUri = null
+        verifiedImportHash = null
         _journalState.value = JournalUiState()
         _insightState.value = InsightUiState()
         _strategyExperimentState.value = StrategyExperimentUiState()
@@ -206,13 +213,65 @@ class AppViewModel(
     }
 
     /**
+     * Authenticates the selected portable backup BEFORE showing the destructive
+     * confirmation. The callback only receives counts and format, never text.
+     * Imports must re-read the same ciphertext digest to avoid a file swap.
+     */
+    fun previewJournalImport(uri: Uri, password: String,
+                             callback: (BackupImportPreview?, String?) -> Unit) {
+        val io = resolver ?: return
+        val backup = combinedBackup ?: return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy) return
+        verifiedImportUri = null
+        verifiedImportHash = null
+        val epoch = accessEpoch
+        _journalState.value = _journalState.value.copy(busy = true)
+        viewModelScope.launch {
+            val chars = password.toCharArray()
+            try {
+                val preview = withContext(Dispatchers.IO) {
+                    val input = io.openInputStream(uri)
+                        ?: throw IllegalStateException("Sicherung kann nicht gelesen werden.")
+                    val bytes = input.use {
+                        BoundedJournalInput.read(it, StrategyBundleBackup.MAX_BACKUP_BYTES)
+                    }
+                    try { backup.previewBackup(bytes, chars) }
+                    finally { bytes.fill(0) }
+                }
+                if (currentAccess(epoch)) {
+                    verifiedImportUri = uri
+                    verifiedImportHash = preview.encryptedSha256
+                    _journalState.value = _journalState.value.copy(busy = false)
+                    callback(preview, null)
+                }
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(busy = false)
+                    callback(null, "Sicherung oder Passphrase ungültig. Deine Daten wurden nicht verändert.")
+                }
+            } finally { chars.fill(0.toChar()) }
+        }
+    }
+
+    /**
      * Explicitly confirmed replacement, never an automatic merge. Refuse
      * oversized data and do not alter existing entries for wrong passwords.
      */
     fun importJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy) return
+        // A current, authenticated preview of the SAME encrypted file is mandatory.
+        val expectedHash = verifiedImportHash
+        if (combinedBackup != null && (verifiedImportUri != uri || expectedHash == null)) {
+            _journalState.value = _journalState.value.copy(
+                message = "Bitte prüfe die Sicherung vor dem Ersetzen erneut.")
+            return
+        }
+        verifiedImportUri = null
+        verifiedImportHash = null
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
         _insightState.value = InsightUiState(busy = true)
@@ -231,6 +290,11 @@ class AppViewModel(
                         require(bytes.size <= (if (combinedBackup != null) StrategyBundleBackup.MAX_BACKUP_BYTES
                             else JournalBackup.MAX_BACKUP_BYTES)) {
                             "Sicherungsdatei ist zu groß."
+                        }
+                        if (combinedBackup != null) {
+                            require(encryptedBackupDigest(bytes) == expectedHash) {
+                                "Die Sicherungsdatei hat sich seit der Prüfung verändert."
+                            }
                         }
                         combinedBackup?.restoreBackup(bytes, chars) ?: store.restoreBackup(bytes, chars)
                     } finally { bytes.fill(0) }
