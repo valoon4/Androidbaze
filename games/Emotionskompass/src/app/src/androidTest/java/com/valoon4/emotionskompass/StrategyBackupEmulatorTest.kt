@@ -152,4 +152,61 @@ class StrategyBackupEmulatorTest {
             assertTrue(s.journal.list().isNotEmpty())
         } finally { folder.deleteRecursively() }
     }
+
+    @Test fun previewShowsOnlyAuthenticatedCountsAndMissingLegacyAreas() {
+        val (context, folder) = isolated()
+        try {
+            val s = stores(context)
+            val original = populate(s)
+            val encrypted = s.combined.exportBackup(password)
+            val inspected = s.combined.previewBackup(encrypted, password)
+            assertEquals("EKB3", inspected.format)
+            assertEquals(1, inspected.journalCount)
+            assertEquals(1, inspected.insightCount)
+            assertEquals(1, inspected.strategyExperimentCount)
+            assertEquals(64, inspected.encryptedSha256.length)
+            val v2 = InsightBundleBackup.seal(
+                InsightBundleFormat.encode(s.journal.list(), s.insights.list()), password)
+            val old = s.combined.previewBackup(v2, password)
+            assertEquals("EKB2", old.format)
+            assertEquals(1, old.insightCount)
+            assertNull(old.strategyExperimentCount)
+            assertNotEquals(inspected.encryptedSha256, old.encryptedSha256)
+            assertThrows(Exception::class.java) {
+                s.combined.previewBackup(v2, "Falsche-Passphrase-2026!".toCharArray())
+            }
+            assertEquals(original.experiment, s.strategies.list().single())
+        } finally { folder.deleteRecursively() }
+    }
+
+    @Test fun checkInSaveAndPortableExportUseOneConsistentCoordinator() {
+        val (context, folder) = isolated()
+        val worker = java.util.concurrent.Executors.newFixedThreadPool(2)
+        try {
+            val s = stores(context)
+            val start = java.util.concurrent.CountDownLatch(1)
+            val saved = worker.submit<java.lang.String> {
+                start.await()
+                s.combined.saveJournalEntry(
+                    CheckInDraft(note = "Fiktive parallele Transaktion")
+                ).id
+            }
+            val backedUp = worker.submit<ByteArray> {
+                start.await()
+                s.combined.exportBackup(password)
+            }
+            start.countDown()
+            val entryId = saved.get(30, java.util.concurrent.TimeUnit.SECONDS)
+            val portable = backedUp.get(30, java.util.concurrent.TimeUnit.SECONDS)
+            val restored = StrategyBundleBackup.open(portable, password)
+            assertTrue(restored.journal.isEmpty() ||
+                restored.journal.single().id == entryId)
+            assertEquals(emptyList<PersonalInsight>(), restored.insights)
+            assertEquals(emptyList<StrategyExperiment>(), restored.experiments)
+            assertEquals(entryId, s.journal.list().single().id)
+        } finally {
+            worker.shutdownNow()
+            folder.deleteRecursively()
+        }
+    }
 }
