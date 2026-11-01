@@ -62,6 +62,60 @@ class PersonalReviewEmulatorTest {
         ))
     }
 
+    @Test fun persistentTabsExplainPatternsAndRevealEveryEligibleCombination() {
+        val now = System.currentTimeMillis()
+        val journal = (0..11).map { day ->
+            val at = now - day * 86_400_000L
+            JournalEntry(
+                "fictional-ux-pattern-$day", at, at,
+                CheckInDraft(
+                    emotions = mapOf("freude" to 4, "angst" to 5),
+                    needs = setOf("klarheit"),
+                    area = com.valoon4.emotionskompass.core.checkin.LifeArea.ALLTAG
+                )
+            )
+        }
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = JournalSnapshot.fromEntries(journal),
+                    busy = false, error = null, emotions = emotions, needs = needs,
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(),
+                    personalInsights = com.valoon4.emotionskompass.core.navigation.InsightUiState(
+                        loaded = true
+                    ),
+                    diaryEntries = journal
+                )
+            }
+        }
+        rule.onNodeWithTag("review-tab-insights").performClick()
+        rule.onNodeWithText("Deine Erkenntnisse").assertExists()
+        rule.onNodeWithTag("review-tab-overview").performClick()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("review-jump-patterns")
+        )
+        rule.onNodeWithTag("review-jump-patterns").performClick()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("review-pattern-criteria")
+        )
+        rule.onNodeWithTag("review-pattern-criteria").performClick()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasText("mindestens 10 vergleichbaren Einträgen", substring = true)
+        )
+        rule.onNodeWithText("mindestens 10 vergleichbaren Einträgen",
+            substring = true).assertExists()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("review-show-all-patterns")
+        )
+        rule.onNodeWithTag("review-show-all-patterns").performClick()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasText("Weniger Kombinationen anzeigen")
+        )
+        rule.onNodeWithText("Weniger Kombinationen anzeigen").assertExists()
+    }
+
     @Test fun countsAreNeutralAndEveryEmotionProvidesAnActualJournalEntry() {
         var opened: String? = null
         val source = snapshot()
