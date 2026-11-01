@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# M7 UX: run real instrumented tests on the Emotionskompass emulator.
+# M7.4.1: run real instrumented tests on the Emotionskompass emulator.
 # Bypass the AGP/UTP ddmlib multi-APK installer, which can falsely report
 # "API level=35. Cannot install split APKs with API level < 21".
 set -euo pipefail
@@ -95,6 +95,20 @@ if ! grep -Fq 'OK (3 tests)' "$REPORT_DIR/m73-backup-integrity.log"     || ! gre
 fi
 echo "::endgroup::"
 
+# M7.4.1: real EKS1/EKB3/legacy import validation with AndroidKeyStore.
+echo "::group::Run five encrypted three-area EKB3 integration tests"
+adb shell am instrument -w -r -e class \
+  "com.valoon4.emotionskompass.StrategyBackupEmulatorTest" "$RUNNER" \
+  | tee "$REPORT_DIR/m741-strategy-backup-integrity.log"
+if ! grep -Fq 'OK (5 tests)' "$REPORT_DIR/m741-strategy-backup-integrity.log" \
+    || ! grep -q 'INSTRUMENTATION_CODE: -1' "$REPORT_DIR/m741-strategy-backup-integrity.log" \
+    || grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=|Error in ' \
+      "$REPORT_DIR/m741-strategy-backup-integrity.log"; then
+  echo "::error::M7.4.1 encrypted EKB3 integration tests failed"
+  exit 1
+fi
+echo "::endgroup::"
+
 # 720 physical px at 360dpi = 320dp portrait viewport; very small phone.
 adb shell wm size 720x1280
 adb shell wm density 360
@@ -102,4 +116,4 @@ adb shell wm size
 adb shell wm density
 run_suite "narrow-320dp-200-percent" "2.0"
 
-echo "M7 UX: fourteen real UI tests passed at 100% and 200% (28 test executions)."
+echo "M7.4.1: 28 Compose UI executions plus 3 EKB2 and 5 EKB3 KeyStore tests passed."
