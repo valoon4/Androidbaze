@@ -53,7 +53,7 @@ class PersonalInsightsEmulatorTest {
                         ui = InsightUiState(entries = ui.entries.filterNot { it.id == id },
                             loaded = true)
                     },
-                    onOpenJournal = {}
+                    onUnlink = { _, _ -> }, onOpenJournal = {}
                 )
             }
         }
@@ -100,7 +100,7 @@ class PersonalInsightsEmulatorTest {
                         error = "Sicheres Laden fehlgeschlagen."),
                     journalEntries = emptyList(), onBack = {}, onReload = {},
                     onSave = { _, _, _ -> }, onArchive = { _, _ -> },
-                    onDelete = {}, onOpenJournal = {}
+                    onDelete = {}, onUnlink = { _, _ -> }, onOpenJournal = {}
                 )
             }
         }
