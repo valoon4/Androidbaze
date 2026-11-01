@@ -750,6 +750,7 @@ private fun EmotionskompassApp(
                         },
                         onExport = vm::exportJournal,
                         onImport = vm::importJournal,
+                        onPreviewImport = vm::previewJournalImport,
                         onSystemPicker = vm::setSystemPickerInProgress
                     )
                     MainSection.RUECKBLICK -> PersonalReviewScreen(
