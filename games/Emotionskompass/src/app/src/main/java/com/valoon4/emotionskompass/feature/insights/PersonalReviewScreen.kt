@@ -44,6 +44,7 @@ import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.insights.CalculateOverview
 import com.valoon4.emotionskompass.core.insights.DiscoverPatterns
 import com.valoon4.emotionskompass.core.insights.PatternObservation
+import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.insights.InsightEntry
 import com.valoon4.emotionskompass.core.insights.InsightOverview
 import com.valoon4.emotionskompass.core.insights.InsightTermCount
@@ -137,7 +138,8 @@ fun PersonalReviewScreen(
     }
 
     fun inviteReflection(pattern: PatternObservation) {
-        if (!personalInsights.loaded || personalInsights.busy || personalInsights.error != null) return
+        if (!personalInsights.loaded || personalInsights.busy || personalInsights.error != null ||
+            personalInsights.entries.size >= PersonalInsight.MAX_INSIGHTS) return
         reflectionOriginLabel = patternTitle(pattern)
         showInsightPage = true
     }
@@ -320,7 +322,8 @@ fun PersonalReviewScreen(
                             OutlinedButton(
                                 onClick = { inviteReflection(p) },
                                 enabled = personalInsights.loaded && !personalInsights.busy &&
-                                    personalInsights.error == null,
+                                    personalInsights.error == null &&
+                                    personalInsights.entries.size < PersonalInsight.MAX_INSIGHTS,
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("review-reflect-on-pattern")
                             ) {
@@ -411,7 +414,8 @@ fun PersonalReviewScreen(
                             OutlinedButton(
                                 onClick = { inviteReflection(pattern) },
                                 enabled = personalInsights.loaded && !personalInsights.busy &&
-                                    personalInsights.error == null,
+                                    personalInsights.error == null &&
+                                    personalInsights.entries.size < PersonalInsight.MAX_INSIGHTS,
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("review-pattern-reflection-${pattern.key}")
                             ) {
