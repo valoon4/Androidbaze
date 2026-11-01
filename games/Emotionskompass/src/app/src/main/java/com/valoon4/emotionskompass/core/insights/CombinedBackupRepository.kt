@@ -1,6 +1,8 @@
 package com.valoon4.emotionskompass.core.insights
 
 import android.content.Context
+import com.valoon4.emotionskompass.core.checkin.CheckInDraft
+import com.valoon4.emotionskompass.core.journal.JournalEntry
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.AtomicFile
@@ -28,10 +30,14 @@ import javax.crypto.spec.GCMParameterSpec
 class CombinedBackupRepository(
     context: Context,
     private val journal: EncryptedJournalRepository,
-    private val insights: EncryptedPersonalInsightRepository
+    private val insights: EncryptedPersonalInsightRepository,
+    private val strategies: EncryptedStrategyExperimentRepository? = null
 ) {
     private val marker = File(context.filesDir, "private_restore_intent_v1.enc")
     private val atomic = AtomicFile(marker)
+    private val tripleIntent: EncryptedStrategyRestoreIntent? = strategies?.let {
+        EncryptedStrategyRestoreIntent(context, journal, insights, it)
+    }
 
     private val transaction = object : RestoreTransactionIo {
         override fun pending(): ByteArray? = readPending()
@@ -65,7 +71,12 @@ class CombinedBackupRepository(
 
     /** Must finish before reading, editing or showing either personal data area. */
     @Synchronized
-    fun recoverPending(): Boolean = RestoreTransactionRunner.recover(transaction)
+    fun recoverPending(): Boolean {
+        // Always complete a pending legacy EKR1 before reading or writing EKR2.
+        val old = RestoreTransactionRunner.recover(transaction)
+        val next = tripleIntent?.let { StrategyRestoreTransactionRunner.recover(it) } ?: false
+        return old || next
+    }
 
     /** Export both authenticated stores into one portable, encrypted EKB2 file. */
     @Synchronized
@@ -73,9 +84,17 @@ class CombinedBackupRepository(
         recoverPending()
         val journalEntries = journal.list()
         val insightEntries = insights.list()
-        val bytes = InsightBundleFormat.encode(journalEntries, insightEntries)
-        return try { InsightBundleBackup.seal(bytes, password) }
-        finally { bytes.fill(0) }
+        val bytes = if (strategies == null) {
+            InsightBundleFormat.encode(journalEntries, insightEntries)
+        } else {
+            StrategyBundleFormat.encode(StrategyBackupContents(
+                journalEntries, insightEntries, strategies.list()
+            ))
+        }
+        return try {
+            if (strategies == null) InsightBundleBackup.seal(bytes, password)
+            else StrategyBundleBackup.seal(bytes, password)
+        } finally { bytes.fill(0) }
     }
 
     /**
@@ -87,6 +106,33 @@ class CombinedBackupRepository(
     @Synchronized
     fun restoreBackup(bytes: ByteArray, password: CharArray): Int {
         recoverPending()
+        if (strategies != null) {
+            val parsed = StrategyBundleBackup.open(bytes, password)
+            // All three existing areas must authenticate BEFORE staging replacement.
+            journal.list()
+            val oldInsights = insights.list()
+            val oldExperiments = strategies.list()
+            val journalIds = parsed.journal.mapTo(hashSetOf()) { it.id }
+            val selectedInsights = parsed.insights ?: oldInsights.map { entry ->
+                val linked = entry.journalIds.intersect(journalIds)
+                if (linked == entry.journalIds) entry
+                else entry.copy(journalIds = linked,
+                    updatedAtUtcMillis = maxOf(entry.updatedAtUtcMillis, System.currentTimeMillis()))
+            }
+            val insightIds = selectedInsights.mapTo(hashSetOf()) { it.id }
+            // An EKB1/EKB2 file has NO experiment section. Preserve user words
+            // and only unlink references to records absent from the restored set.
+            val selectedExperiments = parsed.experiments
+                ?: StrategyExperimentChanges.pruneMissingReferences(
+                    oldExperiments, journalIds, insightIds, System.currentTimeMillis()
+                )
+            val target = StrategyBackupContents(
+                parsed.journal, selectedInsights, selectedExperiments
+            )
+            val intent = requireNotNull(tripleIntent)
+            StrategyRestoreTransactionRunner.commit(intent, target)
+            return parsed.journal.size
+        }
         val parsed = InsightBundleBackup.open(bytes, password)
         journal.list()
         val oldInsights = insights.list()
@@ -105,6 +151,46 @@ class CombinedBackupRepository(
         return parsed.journal.size
     }
 
+    /**
+     * Journal writes must use the same monitor as export/import: unlike the old
+     * ViewModel path, a check-in can no longer race a three-area backup.
+     */
+    @Synchronized
+    fun saveJournalEntry(draft: CheckInDraft, existingId: String? = null): JournalEntry {
+        recoverPending()
+        journal.list()
+        insights.list()
+        strategies?.list()
+        return journal.save(draft, existingId)
+    }
+
+    /** Authenticated, coordinated M7.4.1 storage. No UI writes yet. */
+    @Synchronized
+    fun listStrategyExperiments(): List<StrategyExperiment> {
+        recoverPending()
+        journal.list()
+        insights.list()
+        return requireNotNull(strategies) { "M7.4.1 store unavailable" }.list()
+    }
+
+    @Synchronized
+    fun saveStrategyExperiment(entry: StrategyExperiment): List<StrategyExperiment> {
+        recoverPending()
+        val journalIds = journal.list().mapTo(hashSetOf()) { it.id }
+        val insightIds = insights.list().mapTo(hashSetOf()) { it.id }
+        require(entry.relatedJournalIds.all { it in journalIds })
+        require(entry.relatedInsightIds.all { it in insightIds })
+        return requireNotNull(strategies).save(entry)
+    }
+
+    @Synchronized
+    fun deleteStrategyExperiment(id: String): List<StrategyExperiment> {
+        recoverPending()
+        journal.list()
+        insights.list()
+        return requireNotNull(strategies).delete(id)
+    }
+
     /** All insight operations share the same coordinator lock as portable import/export. */
     @Synchronized
     fun listInsights(): List<PersonalInsight> {
@@ -117,6 +203,7 @@ class CombinedBackupRepository(
     fun saveInsight(insight: PersonalInsight): List<PersonalInsight> {
         recoverPending()
         val validIds = journal.list().mapTo(hashSetOf()) { it.id }
+        strategies?.list()
         require(insight.journalIds.all { it in validIds }) {
             "Der verknüpfte Tagebucheintrag ist nicht mehr vorhanden."
         }
@@ -126,8 +213,19 @@ class CombinedBackupRepository(
     @Synchronized
     fun deleteInsight(id: String): List<PersonalInsight> {
         recoverPending()
-        journal.list()
-        return insights.delete(id)
+        val journalEntries = journal.list()
+        val insightEntries = insights.list()
+        val store = strategies ?: return insights.delete(id)
+        val experiments = store.list()
+        if (insightEntries.none { it.id == id }) return insightEntries
+        val nextInsights = PersonalInsightChanges.delete(insightEntries, id)
+        val nextExperiments = StrategyExperimentChanges.pruneMissingReferences(
+            experiments, journalEntries.mapTo(hashSetOf()) { it.id },
+            nextInsights.mapTo(hashSetOf()) { it.id }, System.currentTimeMillis()
+        )
+        StrategyRestoreTransactionRunner.commit(requireNotNull(tripleIntent),
+            StrategyBackupContents(journalEntries, nextInsights, nextExperiments))
+        return nextInsights
     }
 
     /** Deletes one journal entry and unlinks its evidence from insights atomically by replay. */
@@ -139,9 +237,20 @@ class CombinedBackupRepository(
         val updated = PersonalInsightChanges.removeJournalReference(
             insights.list(), id, System.currentTimeMillis()
         )
-        RestoreTransactionRunner.commit(
-            transaction, InsightBackupContents(current.filterNot { it.id == id }, updated)
-        )
+        val remaining = current.filterNot { it.id == id }
+        val store = strategies
+        if (store == null) {
+            RestoreTransactionRunner.commit(
+                transaction, InsightBackupContents(remaining, updated)
+            )
+        } else {
+            val experiments = StrategyExperimentChanges.pruneMissingReferences(
+                store.list(), remaining.mapTo(hashSetOf()) { it.id },
+                updated.mapTo(hashSetOf()) { it.id }, System.currentTimeMillis()
+            )
+            StrategyRestoreTransactionRunner.commit(requireNotNull(tripleIntent),
+                StrategyBackupContents(remaining, updated, experiments))
+        }
         return true
     }
 
@@ -157,9 +266,18 @@ class CombinedBackupRepository(
             else item.copy(journalIds = emptySet(),
                 updatedAtUtcMillis = maxOf(now, item.updatedAtUtcMillis))
         }
-        RestoreTransactionRunner.commit(
-            transaction, InsightBackupContents(emptyList(), withoutLinks)
-        )
+        if (strategies == null) {
+            RestoreTransactionRunner.commit(
+                transaction, InsightBackupContents(emptyList(), withoutLinks)
+            )
+        } else {
+            val experiments = StrategyExperimentChanges.pruneMissingReferences(
+                strategies.list(), emptySet(), withoutLinks.mapTo(hashSetOf()) { it.id },
+                System.currentTimeMillis()
+            )
+            StrategyRestoreTransactionRunner.commit(requireNotNull(tripleIntent),
+                StrategyBackupContents(emptyList(), withoutLinks, experiments))
+        }
     }
 
     private fun readPending(): ByteArray? {
