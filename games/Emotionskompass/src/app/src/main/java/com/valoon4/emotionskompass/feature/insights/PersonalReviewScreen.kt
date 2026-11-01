@@ -84,7 +84,8 @@ fun PersonalReviewScreen(
     diaryEntries: List<JournalEntry> = emptyList(),
     onSaveInsight: (String, String?, String?) -> Unit = { _, _, _ -> },
     onArchiveInsight: (String, Boolean) -> Unit = { _, _ -> },
-    onDeleteInsight: (String) -> Unit = { _ -> }
+    onDeleteInsight: (String) -> Unit = { _ -> },
+    onUnlinkInsight: (String, String) -> Unit = { _, _ -> }
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
@@ -166,6 +167,7 @@ fun PersonalReviewScreen(
             onSave = onSaveInsight,
             onArchive = onArchiveInsight,
             onDelete = onDeleteInsight,
+            onUnlink = onUnlinkInsight,
             onOpenJournal = onOpenJournalEntry
         )
         return
