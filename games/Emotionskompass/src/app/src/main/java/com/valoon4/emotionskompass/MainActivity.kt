@@ -376,6 +376,7 @@ private fun EmotionskompassApp(
     val filters by vm.filters.collectAsState()
     val checkIn by vm.checkIn.collectAsState()
     val diary by vm.journalState.collectAsState()
+    val personalInsights by vm.insightState.collectAsState()
     val learning by learningVm.state.collectAsState()
     val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
@@ -761,7 +762,13 @@ private fun EmotionskompassApp(
                             vm.selectReviewEvidence(value)
                             reviewScope.launch { reviewListState.scrollToItem(0) }
                         },
-                        listState = reviewListState
+                        listState = reviewListState,
+                        personalInsights = personalInsights,
+                        diaryEntries = diary.entries,
+                        onSaveInsight = vm::savePersonalInsight,
+                        onArchiveInsight = vm::setPersonalInsightArchived,
+                        onDeleteInsight = vm::deletePersonalInsight,
+                        onUnlinkInsight = vm::unlinkPersonalInsight
                     )
                     }
                 }

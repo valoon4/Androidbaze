@@ -105,6 +105,31 @@ class CombinedBackupRepository(
         return parsed.journal.size
     }
 
+    /** All insight operations share the same coordinator lock as portable import/export. */
+    @Synchronized
+    fun listInsights(): List<PersonalInsight> {
+        recoverPending()
+        journal.list()
+        return insights.list()
+    }
+
+    @Synchronized
+    fun saveInsight(insight: PersonalInsight): List<PersonalInsight> {
+        recoverPending()
+        val validIds = journal.list().mapTo(hashSetOf()) { it.id }
+        require(insight.journalIds.all { it in validIds }) {
+            "Der verknüpfte Tagebucheintrag ist nicht mehr vorhanden."
+        }
+        return insights.save(insight)
+    }
+
+    @Synchronized
+    fun deleteInsight(id: String): List<PersonalInsight> {
+        recoverPending()
+        journal.list()
+        return insights.delete(id)
+    }
+
     /** Deletes one journal entry and unlinks its evidence from insights atomically by replay. */
     @Synchronized
     fun deleteJournalEntry(id: String): Boolean {
