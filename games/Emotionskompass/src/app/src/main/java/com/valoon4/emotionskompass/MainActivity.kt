@@ -767,7 +767,8 @@ private fun EmotionskompassApp(
                         diaryEntries = diary.entries,
                         onSaveInsight = vm::savePersonalInsight,
                         onArchiveInsight = vm::setPersonalInsightArchived,
-                        onDeleteInsight = vm::deletePersonalInsight
+                        onDeleteInsight = vm::deletePersonalInsight,
+                        onUnlinkInsight = vm::unlinkPersonalInsight
                     )
                     }
                 }
