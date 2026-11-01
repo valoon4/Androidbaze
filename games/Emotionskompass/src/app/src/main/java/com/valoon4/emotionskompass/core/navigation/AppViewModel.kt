@@ -201,6 +201,7 @@ class AppViewModel(
         if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
+        _insightState.value = InsightUiState(busy = true)
         viewModelScope.launch {
             val chars = password.toCharArray()
             try {
@@ -227,9 +228,14 @@ class AppViewModel(
                     reloadJournal()
                 }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = JournalUiState(
-                    error = "Wiederherstellung nicht abgeschlossen. Bitte Tagebuch erneut sicher laden. Ein begonnener Import wird vor dem Anzeigen deiner Einträge wiederhergestellt."
-                )
+                if (currentAccess(epoch)) {
+                    _journalState.value = JournalUiState(
+                        error = "Wiederherstellung nicht abgeschlossen. Bitte Tagebuch erneut sicher laden. Ein begonnener Import wird vor dem Anzeigen deiner Einträge wiederhergestellt."
+                    )
+                    _insightState.value = InsightUiState(
+                        error = "Erkenntnisse sind bis zum erneuten sicheren Laden nicht verfügbar."
+                    )
+                }
             } finally { chars.fill(0.toChar()) }
         }
     }
@@ -410,16 +416,27 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { combinedBackup?.deleteJournalEntry(id) ?: store.delete(id) }
+                val refreshed = withContext(Dispatchers.IO) {
+                    combinedBackup?.deleteJournalEntry(id) ?: store.delete(id)
+                    combinedBackup?.listInsights()
+                }
                 if (!currentAccess(epoch)) return@launch
+                if (refreshed != null) _insightState.value = InsightUiState(
+                    entries = refreshed, loaded = true
+                )
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id },
                     loaded = true
                 )
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = JournalUiState(
-                    error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
-                )
+                if (currentAccess(epoch)) {
+                    _journalState.value = JournalUiState(
+                        error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
+                    )
+                    _insightState.value = InsightUiState(
+                        error = "Bitte persönliche Daten erneut sicher laden."
+                    )
+                }
             }
         }
     }
@@ -432,12 +449,25 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { combinedBackup?.deleteEntireJournal() ?: store.deleteAll() }
-                if (currentAccess(epoch)) _journalState.value = JournalUiState(loaded = true)
+                val refreshed = withContext(Dispatchers.IO) {
+                    combinedBackup?.deleteEntireJournal() ?: store.deleteAll()
+                    combinedBackup?.listInsights()
+                }
+                if (currentAccess(epoch)) {
+                    if (refreshed != null) _insightState.value = InsightUiState(
+                        entries = refreshed, loaded = true
+                    )
+                    _journalState.value = JournalUiState(loaded = true)
+                }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = JournalUiState(
-                    error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
-                )
+                if (currentAccess(epoch)) {
+                    _journalState.value = JournalUiState(
+                        error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
+                    )
+                    _insightState.value = InsightUiState(
+                        error = "Bitte persönliche Daten erneut sicher laden."
+                    )
+                }
             }
         }
     }
