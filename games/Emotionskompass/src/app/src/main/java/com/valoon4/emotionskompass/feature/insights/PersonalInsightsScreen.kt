@@ -82,8 +82,8 @@ fun PersonalInsightsScreen(
         }
     }
 
-    LaunchedEffect(state.loaded) {
-        if (!state.loaded) {
+    LaunchedEffect(state.loaded, state.error) {
+        if (!state.loaded || state.error != null) {
             // No prior decrypted/entered personal words survive a failed import or lock.
             showGuide = false
             showEditor = false
