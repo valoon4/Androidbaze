@@ -80,11 +80,11 @@ fun PersonalReviewScreen(
     selectedTerm: Pair<String, String>?,
     onSelectTerm: (Pair<String, String>?) -> Unit,
     listState: LazyListState,
-    personalInsights: InsightUiState,
-    diaryEntries: List<JournalEntry>,
-    onSaveInsight: (String, String?, String?) -> Unit,
-    onArchiveInsight: (String, Boolean) -> Unit,
-    onDeleteInsight: (String) -> Unit
+    personalInsights: InsightUiState = InsightUiState(),
+    diaryEntries: List<JournalEntry> = emptyList(),
+    onSaveInsight: (String, String?, String?) -> Unit = { _, _, _ -> },
+    onArchiveInsight: (String, Boolean) -> Unit = { _, _ -> },
+    onDeleteInsight: (String) -> Unit = { _ -> }
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
