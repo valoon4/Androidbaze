@@ -343,6 +343,33 @@ class AppViewModel(
         }
     }
 
+    fun unlinkPersonalInsight(insightId: String, journalId: String) {
+        val backup = combinedBackup ?: return
+        val current = _insightState.value
+        val diary = _journalState.value
+        if (!allowed() || !current.loaded || current.busy || current.error != null ||
+            !diary.loaded || diary.busy || diary.error != null) return
+        val old = current.entries.firstOrNull { it.id == insightId } ?: return
+        if (journalId !in old.journalIds) return
+        val next = old.copy(journalIds = old.journalIds - journalId,
+            updatedAtUtcMillis = maxOf(System.currentTimeMillis(), old.updatedAtUtcMillis))
+        val epoch = accessEpoch
+        _insightState.value = current.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) { backup.saveInsight(next) }
+                if (currentAccess(epoch)) _insightState.value = InsightUiState(
+                    entries = result.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
+                    message = "Verknüpfung entfernt. Die Erkenntnis bleibt erhalten."
+                )
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) _insightState.value = current.copy(
+                    error = "Verknüpfung konnte nicht entfernt werden. Bitte erneut sicher laden."
+                )
+            }
+        }
+    }
+
     fun deletePersonalInsight(id: String) {
         val backup = combinedBackup ?: return
         val current = _insightState.value
