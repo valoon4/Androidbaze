@@ -185,7 +185,7 @@ class StrategyBackupEmulatorTest {
         try {
             val s = stores(context)
             val start = java.util.concurrent.CountDownLatch(1)
-            val saved = worker.submit<java.lang.String> {
+            val saved = worker.submit<String> {
                 start.await()
                 s.combined.saveJournalEntry(
                     CheckInDraft(note = "Fiktive parallele Transaktion")
