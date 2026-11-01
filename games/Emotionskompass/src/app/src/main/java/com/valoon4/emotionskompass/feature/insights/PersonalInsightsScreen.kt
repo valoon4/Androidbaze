@@ -114,7 +114,8 @@ fun PersonalInsightsScreen(
             title = { Text(if (editor == null) "Eigene Erkenntnis notieren" else "Erkenntnis bearbeiten") },
             text = {
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth().heightIn(max = 430.dp),
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 430.dp)
+                        .testTag("insight-editor-list"),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     item {
