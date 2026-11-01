@@ -98,6 +98,31 @@ class CombinedBackupRepository(
     }
 
     /**
+     * Authenticating PREVIEW, not a write: counts and the exact ciphertext digest
+     * can be shown before the user confirms an import. A missing legacy area is
+     * represented as null; zero entries in EKB3 is an explicitly empty area.
+     */
+    @Synchronized
+    fun previewBackup(bytes: ByteArray, password: CharArray): BackupImportPreview {
+        recoverPending()
+        journal.list()
+        insights.list()
+        strategies?.list()
+        require(bytes.size >= 4)
+        val format = bytes.copyOfRange(0, 4).decodeToString()
+        val parsed = if (strategies == null) {
+            val old = InsightBundleBackup.open(bytes, password)
+            StrategyBackupContents(old.journal, old.insights, null)
+        } else {
+            StrategyBundleBackup.open(bytes, password)
+        }
+        require(format in setOf("EKB1", "EKB2", "EKB3"))
+        return BackupImportPreview(format, parsed.journal.size,
+            parsed.insights?.size, parsed.experiments?.size,
+            encryptedBackupDigest(bytes))
+    }
+
+    /**
      * Called only after the user confirms replacement in the document picker.
      * Fail closed if either existing encrypted store cannot be authenticated.
      * For EKB1, keep existing insights and prune only links to entries missing
