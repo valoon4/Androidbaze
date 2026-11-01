@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.valoon4.emotionskompass.core.insights.BackupImportPreview
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.navigation.JournalUiState
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
@@ -54,6 +55,8 @@ fun JournalScreen(
     onExport: (Uri, String) -> Unit,
     onImport: (Uri, String) -> Unit,
     onSystemPicker: (Boolean) -> Unit,
+    onPreviewImport: (Uri, String, (BackupImportPreview?, String?) -> Unit) -> Unit =
+        { _, _, done -> done(null, "Bitte Sicherung über die App prüfen.") },
     requestedEntryId: String? = null,
     onReturnToReview: (() -> Unit)? = null
 ) {
@@ -175,7 +178,8 @@ fun JournalScreen(
                 onToggleLock = onToggleLock,
                 onExport = onExport,
                 onImport = onImport,
-                onSystemPicker = onSystemPicker
+                onSystemPicker = onSystemPicker,
+                onPreviewImport = onPreviewImport
             )
         }
         if (state.busy) {
