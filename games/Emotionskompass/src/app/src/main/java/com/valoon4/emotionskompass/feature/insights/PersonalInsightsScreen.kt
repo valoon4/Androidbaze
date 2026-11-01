@@ -55,6 +55,7 @@ fun PersonalInsightsScreen(
     onSave: (String, String?, String?) -> Unit,
     onArchive: (String, Boolean) -> Unit,
     onDelete: (String) -> Unit,
+    onUnlink: (String, String) -> Unit,
     onOpenJournal: (String) -> Unit
 ) {
     var query by remember { mutableStateOf("") }
@@ -278,6 +279,11 @@ fun PersonalInsightsScreen(
                                     onClick = { onOpenJournal(id) },
                                     modifier = Modifier.fillMaxWidth()
                                 ) { Text("Verknüpften Tagebucheintrag ansehen") }
+                                TextButton(
+                                    onClick = { onUnlink(insight.id, id) },
+                                    enabled = !state.busy,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) { Text("Diese Verknüpfung lösen") }
                             }
                         }
                         OutlinedButton(
