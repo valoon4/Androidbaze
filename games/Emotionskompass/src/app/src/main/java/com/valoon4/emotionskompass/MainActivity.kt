@@ -112,6 +112,7 @@ import com.valoon4.emotionskompass.core.journal.AppLockPreferences
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.insights.CombinedBackupRepository
 import com.valoon4.emotionskompass.core.insights.EncryptedPersonalInsightRepository
+import com.valoon4.emotionskompass.core.insights.EncryptedStrategyExperimentRepository
 import com.valoon4.emotionskompass.core.navigation.AtlasFilters
 import com.valoon4.emotionskompass.core.navigation.AppUiState
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
@@ -156,7 +157,13 @@ class MainActivity : ComponentActivity() {
                 }
                 val journal = remember { EncryptedJournalRepository(applicationContext) }
                 val insightRepository = remember { EncryptedPersonalInsightRepository(applicationContext) }
-                val combinedBackup = remember { CombinedBackupRepository(applicationContext, journal, insightRepository) }
+                val strategyExperimentRepository = remember {
+                    EncryptedStrategyExperimentRepository(applicationContext)
+                }
+                val combinedBackup = remember {
+                    CombinedBackupRepository(applicationContext, journal, insightRepository,
+                        strategyExperimentRepository)
+                }
                 val lockPreferences = remember { AppLockPreferences(applicationContext) }
                 val learningRepository = remember { LearningRepository(applicationContext) }
                 // A corrupt or future-incompatible bundled catalog must never
