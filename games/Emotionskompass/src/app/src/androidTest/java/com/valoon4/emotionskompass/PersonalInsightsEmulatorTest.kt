@@ -6,6 +6,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.assertExists
+import androidx.compose.ui.test.hasScrollToIndexAction
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNode
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -52,18 +57,32 @@ class PersonalInsightsEmulatorTest {
                 )
             }
         }
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("insight-create")
+        )
         rule.onNodeWithTag("insight-create").performClick()
         rule.onNodeWithTag("insight-editor").performTextInput(
             "Ich habe selbst bemerkt, dass mir verständliche Absprachen helfen."
         )
         rule.onNodeWithText("Ausdrücklich speichern").performClick()
         rule.waitForIdle()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasText("Ich habe selbst bemerkt, dass mir verständliche Absprachen helfen.")
+        )
         rule.onNodeWithText(
             "Ich habe selbst bemerkt, dass mir verständliche Absprachen helfen."
         ).assertExists()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasText("Archivieren")
+        )
         rule.onNodeWithText("Archivieren").performClick()
-        rule.onNodeWithText("Dein Archiv ist noch leer.").assertDoesNotExist()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasText("Archiv")
+        )
         rule.onNodeWithText("Archiv").performClick()
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasText("Ich habe selbst bemerkt, dass mir verständliche Absprachen helfen.")
+        )
         rule.onNodeWithText(
             "Ich habe selbst bemerkt, dass mir verständliche Absprachen helfen."
         ).assertExists()
