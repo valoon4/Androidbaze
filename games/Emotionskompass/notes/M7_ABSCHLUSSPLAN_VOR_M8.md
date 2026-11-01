@@ -75,6 +75,12 @@ M8 im alten Umsetzungsplan listet App-Sperre, Erinnerungen, interaktives Körper
 
 **M7.4.0 – Wissen und Strategien mit selbstbestimmtem Ausprobieren verbinden.** Zuerst einen schlanken UX-/Sicherheitsentwurf, keine überdimensionierte Experiment-Tracking-App. Die existierenden M6.3-Karten und deren geprüfte ID-Referenzen wiederverwenden. Danach separate Implementierung und verschlüsselte Backup-Erweiterung. Die M7.5-Visualisierungen erst anhand eines nachgewiesenen Verständlichkeitsgewinns priorisieren.
 
+## M7.4.0 – Konkreter Konzeptstand (noch nicht implementiert)
+
+Der Funktions- und Sicherheitsentwurf liegt in [M7.4.0 Strategieexperimente UX-Konzept](M740_STRATEGIEEXPERIMENTE_UX_KONZEPT.md), ergänzt durch [ADR EKS1/EKB3/EKR2](adr/ADR_M740_STRATEGIEEXPERIMENTE_DATEN_UND_BACKUP.md) und die [Test- und Abnahmematrix](M740_ABNAHME_TESTMATRIX.md). Dies **ändert noch keine Android-Oberfläche und keinen Speicher**; vor M7.4.1 sind die Konzept- und Backup-Entscheidungen gesondert freizugeben.
+
+**Zusätzlich aus der Codeprüfung:** Der aktuelle EKB2-Koordinator schützt Import/Export und mehrere Löschoperationen, aber `AppViewModel.saveCheckIn` schreibt weiterhin direkt über `EncryptedJournalRepository.save`. Vor einem dritten Speicher ist eine geschlossene Koordinationsgrenze einschließlich dieser Schreiboperation eine zwingende Sicherheitsvoraussetzung.
+
 ## 5. Quellen im Repository
 
 - [M7-Funktions- und Umsetzungsplan](M7_RUECKBLICK_ERKENNTNISSE_PLAN.md)
