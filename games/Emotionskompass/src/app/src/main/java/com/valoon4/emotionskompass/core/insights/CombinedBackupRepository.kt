@@ -69,16 +69,32 @@ class CombinedBackupRepository(
         }
     }
 
-    /** Must finish before reading, editing or showing either personal data area. */
+    /** Must finish before reading, editing or showing any personal data area. */
     @Synchronized
     fun recoverPending(): Boolean {
         // Always complete a pending legacy EKR1 before reading or writing EKR2.
         val old = RestoreTransactionRunner.recover(transaction)
         val next = tripleIntent?.let { StrategyRestoreTransactionRunner.recover(it) } ?: false
+        // An EKR1 intent from the previous version may have replaced journal /
+        // insights while EKS1 already exists. Repair only now-invalid links in
+        // a separately staged EKR2 transaction; never remove authored text.
+        if (old && strategies != null) {
+            val currentJournal = journal.list()
+            val currentInsights = insights.list()
+            val oldStrategies = strategies.list()
+            val updated = StrategyExperimentChanges.pruneMissingReferences(
+                oldStrategies, currentJournal.mapTo(hashSetOf()) { it.id },
+                currentInsights.mapTo(hashSetOf()) { it.id }, System.currentTimeMillis()
+            )
+            if (updated != oldStrategies) {
+                StrategyRestoreTransactionRunner.commit(requireNotNull(tripleIntent),
+                    StrategyBackupContents(currentJournal, currentInsights, updated))
+            }
+        }
         return old || next
     }
 
-    /** Export both authenticated stores into one portable, encrypted EKB2 file. */
+    /** Export three authenticated stores as EKB3 (old two-area mode stays EKB2). */
     @Synchronized
     fun exportBackup(password: CharArray): ByteArray {
         recoverPending()
