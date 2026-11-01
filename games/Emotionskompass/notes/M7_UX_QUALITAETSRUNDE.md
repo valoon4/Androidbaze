@@ -1,6 +1,6 @@
 # M7 – UX-Qualitätsrunde (Rückblick, Muster, Erkenntnisse, Selbstreflexion)
 
-Stand: 2026-11-01. Umsetzung: Draft-PR #31. Die Änderungen sind vor der ausdrücklichen Freigabe **nicht** Bestandteil von main.
+Stand: 2026-11-01. Umsetzung: **PR #31 erfolgreich gemergt**. Diese Datei dokumentiert die damalige UX-Bestandsaufnahme und die ausgeführten Korrekturen; die aktuelle übergreifende M7-Abnahmeplanung steht in [M7-Abschlussplan vor M8](M7_ABSCHLUSSPLAN_VOR_M8.md).
 
 ## 1. Befunde aus der realen Bedienung und Codeprüfung
 
@@ -56,4 +56,4 @@ Stand: 2026-11-01. Umsetzung: Draft-PR #31. Die Änderungen sind vor der ausdrü
 - Erweiterte Metadaten/Filter für verknüpfte Einträge (z. B. mehrere Einträge am selben Tag) – nur nach zusätzlicher Datenschutzevaluation.
 - Eine spätere UX-Redaktionsrunde für den gesamten Atlas, Wissen und Tagebuch außerhalb von M7.
 
-**Freigaberegel:** grüner Build und erfolgreiches manuelles Testen, danach ausdrückliche Nutzerfreigabe für Merge.
+**Abnahme:** PR #31 wurde nach erfolgreichem Build, 28 UI-Testdurchläufen und drei Android-Keystore-Integrationsprüfungen vom Nutzer genehmigt und gemergt. Unabhängige Fach- und Security-Reviews für den Gesamtmeilenstein M7 sind damit nicht automatisch abgeschlossen.
