@@ -98,6 +98,19 @@ class EncryptedJournalRepository(context: Context) {
         return restored.size
     }
 
+    /**
+     * Commit a previously authenticated, user-confirmed EKB2 restore target.
+     * Only the combined restore coordinator may call this while its encrypted
+     * redo intent is durable. A missing existing key is never recreated.
+     */
+    @Synchronized
+    fun replaceVerified(entries: List<JournalEntry>) {
+        if ((file.exists() || File(file.path + ".bak").exists()) && getKey(false) == null) {
+            throw IllegalStateException("Journal-Schlüssel fehlt; Wiederherstellung angehalten.")
+        }
+        write(entries)
+    }
+
     private fun write(entries: List<JournalEntry>) {
         val plaintext = JournalFormat.encode(entries)
         val key = getKey(create = true)

@@ -85,6 +85,16 @@ adb shell wm size reset
 adb shell wm density reset
 run_suite "default-100-percent" "1.0"
 
+# M7.3: exercise the real AndroidKeyStore-backed EKB2/EKB1 restore path in an
+# isolated fictional-data sandbox. The existing seven UI tests remain unchanged.
+echo "::group::Run three encrypted backup integration tests on Android emulator"
+adb shell am instrument -w -r -e class   "com.valoon4.emotionskompass.CombinedBackupEmulatorTest" "$RUNNER"   | tee "$REPORT_DIR/m73-backup-integrity.log"
+if ! grep -Fq 'OK (3 tests)' "$REPORT_DIR/m73-backup-integrity.log"     || ! grep -q 'INSTRUMENTATION_CODE: -1' "$REPORT_DIR/m73-backup-integrity.log"     || grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=|Error in '       "$REPORT_DIR/m73-backup-integrity.log"; then
+  echo "::error::M7.3 encrypted backup integration tests failed"
+  exit 1
+fi
+echo "::endgroup::"
+
 # 720 physical px at 360dpi = 320dp portrait viewport; very small phone.
 adb shell wm size 720x1280
 adb shell wm density 360

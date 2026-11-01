@@ -15,6 +15,8 @@ import com.valoon4.emotionskompass.core.journal.BoundedJournalInput
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.insights.CombinedBackupRepository
+import com.valoon4.emotionskompass.core.insights.InsightBundleBackup
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
@@ -63,7 +65,8 @@ class AppViewModel(
     private val needCatalog: NeedCatalog? = null,
     private val journal: EncryptedJournalRepository? = null,
     private val resolver: ContentResolver? = null,
-    initialLockEnabled: Boolean = false
+    initialLockEnabled: Boolean = false,
+    private val combinedBackup: CombinedBackupRepository? = null
 ) : ViewModel() {
     private val _state = MutableStateFlow(AppUiState())
     val state = _state.asStateFlow()
@@ -160,7 +163,7 @@ class AppViewModel(
             val chars = password.toCharArray()
             try {
                 withContext(Dispatchers.IO) {
-                    val backup = store.encryptedBackup(chars)
+                    val backup = combinedBackup?.exportBackup(chars) ?: store.encryptedBackup(chars)
                     try {
                         val output = io.openOutputStream(uri, "w")
                             ?: throw IllegalStateException("Zieldatei nicht beschreibbar.")
@@ -193,24 +196,27 @@ class AppViewModel(
                     val input = io.openInputStream(uri)
                         ?: throw IllegalStateException("Sicherungsdatei konnte nicht gelesen werden.")
                     val bytes = input.use { stream ->
-                        BoundedJournalInput.read(stream, JournalBackup.MAX_BACKUP_BYTES)
+                        BoundedJournalInput.read(stream, combinedBackup?.let { InsightBundleBackup.MAX_BACKUP_BYTES }
+                            ?: JournalBackup.MAX_BACKUP_BYTES)
                     }
                     try {
-                        require(bytes.size <= JournalBackup.MAX_BACKUP_BYTES) {
+                        require(bytes.size <= (if (combinedBackup != null) InsightBundleBackup.MAX_BACKUP_BYTES
+                            else JournalBackup.MAX_BACKUP_BYTES)) {
                             "Sicherungsdatei ist zu groß."
                         }
-                        store.restoreBackup(bytes, chars)
+                        combinedBackup?.restoreBackup(bytes, chars) ?: store.restoreBackup(bytes, chars)
                     } finally { bytes.fill(0) }
                 }
-                if (allowed()) {
+                if (currentAccess(epoch)) {
                     // JournalUiState() resets busy=false before the fresh authenticated read.
                     _journalState.value = JournalUiState(
                         message = "Wiederherstellung erfolgreich: $count Einträge.")
                     reloadJournal()
                 }
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(
-                    busy = false, error = "Wiederherstellung fehlgeschlagen: ${e.message}. Bestehende Daten wurden nicht absichtlich überschrieben.")
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(
+                    error = "Wiederherstellung nicht abgeschlossen. Bitte Tagebuch erneut sicher laden. Ein begonnener Import wird vor dem Anzeigen deiner Einträge wiederhergestellt."
+                )
             } finally { chars.fill(0.toChar()) }
         }
     }
@@ -226,7 +232,10 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                val entries = withContext(Dispatchers.IO) { store.list() }
+                val entries = withContext(Dispatchers.IO) {
+                    combinedBackup?.recoverPending()
+                    store.list()
+                }
                 if (currentAccess(epoch)) _journalState.value = JournalUiState(
                     entries.sortedByDescending { it.createdAt }, message = transferMessage,
                     loaded = true
@@ -245,7 +254,8 @@ class AppViewModel(
 
     fun saveCheckIn() {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
+        if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
+            _journalState.value.busy || _state.value.destination != Destination.CHECKIN ||
             _checkIn.value.step != CheckInStep.AUSKLANG || !_checkIn.value.hasPersonalInput) return
         val epoch = accessEpoch
         val snapshot = _checkIn.value
@@ -284,36 +294,40 @@ class AppViewModel(
 
     fun deleteJournalEntry(id: String) {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
+            _journalState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.delete(id) }
+                withContext(Dispatchers.IO) { combinedBackup?.deleteJournalEntry(id) ?: store.delete(id) }
                 if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id },
                     loaded = true
                 )
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
-                    error = e.message ?: "Eintrag konnte nicht gelöscht werden")
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(
+                    error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
+                )
             }
         }
     }
 
     fun deleteEntireJournal() {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy) return
+        if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
+            _journalState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { store.deleteAll() }
+                withContext(Dispatchers.IO) { combinedBackup?.deleteEntireJournal() ?: store.deleteAll() }
                 if (currentAccess(epoch)) _journalState.value = JournalUiState(loaded = true)
             } catch (e: Exception) {
-                if (currentAccess(epoch)) _journalState.value = _journalState.value.copy(busy = false,
-                    error = e.message ?: "Tagebuch konnte nicht gelöscht werden")
+                if (currentAccess(epoch)) _journalState.value = JournalUiState(
+                    error = "Löschen nicht vollständig bestätigt. Lade das Tagebuch erneut sicher."
+                )
             }
         }
     }
@@ -337,7 +351,7 @@ class AppViewModel(
     fun selectReviewEvidence(value: Pair<String, String>?) {
         if (!allowed()) return
         require(value == null ||
-            (value.first in setOf("all", "emotion", "need") && value.second.isNotBlank()))
+            (value.first in setOf("all", "emotion", "need", "pattern") && value.second.isNotBlank()))
         _reviewSelection.value = value
     }
 
@@ -459,13 +473,15 @@ class AppViewModel(
             needCatalog: NeedCatalog? = null,
             journal: EncryptedJournalRepository? = null,
             resolver: ContentResolver? = null,
-            initialLockEnabled: Boolean = false
+            initialLockEnabled: Boolean = false,
+            combinedBackup: CombinedBackupRepository? = null
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     require(modelClass == AppViewModel::class.java)
-                    return AppViewModel(catalog, needCatalog, journal, resolver, initialLockEnabled) as T
+                    return AppViewModel(catalog, needCatalog, journal, resolver, initialLockEnabled,
+                        combinedBackup) as T
                 }
             }
     }
