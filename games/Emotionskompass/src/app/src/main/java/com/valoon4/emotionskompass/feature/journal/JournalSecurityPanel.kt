@@ -29,8 +29,8 @@ import com.valoon4.emotionskompass.core.journal.JournalBackup
 
 /**
  * Both SAF file choices are explicitly initiated by the user. Plain journal JSON
- * never goes to a document provider: the ViewModel exports EKB2 ciphertext
- * containing the journal and insight data, while importing legacy EKB1 too.
+ * never goes to a document provider: the ViewModel exports EKB3 ciphertext
+ * containing journal, insights and strategy experiments; legacy EKB1/2 remain readable.
  */
 @Composable
 fun JournalSecurityPanel(
@@ -72,7 +72,7 @@ fun JournalSecurityPanel(
                 importPassword = ""
             },
             title = { Text("Gespeicherte Daten wirklich ersetzen?") },
-            text = { Text("Die Sicherung wird vor dem Ersetzen entschlüsselt und geprüft. Alle aktuellen Tagebucheinträge werden ersetzt. Bei einer EKB2-Sicherung werden auch deine eigenen Erkenntnisse ersetzt. Bei einer älteren EKB1-Sicherung bleiben Erkenntnisse erhalten; Verweise auf nicht mehr vorhandene Tagebucheinträge werden entfernt. Bitte sichere vorher deinen aktuellen Bestand. Das Ersetzen kann nicht rückgängig gemacht werden.") },
+            text = { Text("Die Sicherung wird vor dem Ersetzen entschlüsselt und geprüft. EKB3 ersetzt alle drei Bereiche: Tagebuch, eigene Erkenntnisse und gespeicherte Strategieideen (auch mit leeren Listen). EKB2 ersetzt Tagebuch und Erkenntnisse, erhält aber deine vorhandenen Strategieideen. EKB1 ersetzt nur das Tagebuch; Erkenntnisse und Strategieideen bleiben erhalten. Ungültige Verknüpfungen zu ersetzten Einträgen werden dabei entfernt; eigene Texte bleiben bestehen. Sichere den aktuellen Bestand vorher. Das Ersetzen kann nicht rückgängig gemacht werden.") },
             confirmButton = {
                 TextButton(onClick = {
                     val uri = pendingImport!!
@@ -115,8 +115,8 @@ fun JournalSecurityPanel(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
-            Text("Verschlüsselte Gesamtsicherung erstellen (EKB2)", fontWeight = FontWeight.SemiBold)
-            Text("Das neue EKB2-Format sichert Tagebuch und persönliche Erkenntnisse gemeinsam. Verwende eine eigene Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar.",
+            Text("Verschlüsselte Gesamtsicherung erstellen (EKB3)", fontWeight = FontWeight.SemiBold)
+            Text("Die EKB3-Sicherung umfasst Tagebuch, persönliche Erkenntnisse und eigene Strategieideen gemeinsam. Verwende eine Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar. Frühere App-Versionen können EKB3 nicht öffnen.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase für diese Sicherung", exportPassword) { exportPassword = it }
             SecretField("Passphrase wiederholen", exportConfirmation) { exportConfirmation = it }
@@ -131,7 +131,7 @@ fun JournalSecurityPanel(
                     pickerError = null
                     onSystemPicker(true)
                     try {
-                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB2.ekbackup")
+                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB3.ekbackup")
                     } catch (e: Exception) {
                         // A missing/disabled document picker must never leave the
                         // background relock bypass enabled indefinitely.
@@ -143,7 +143,7 @@ fun JournalSecurityPanel(
             ) { Text("Verschlüsselte Sicherungsdatei speichern") }
             HorizontalDivider()
             Text("Sicherung wiederherstellen", fontWeight = FontWeight.SemiBold)
-            Text("EKB2 ersetzt Tagebuch und Erkenntnisse gemeinsam. Bei einer älteren EKB1-Datei bleiben Erkenntnisse erhalten, aber ungültige Tagebuch-Verweise werden entfernt. Der Import erfordert deine ausdrückliche Bestätigung. Sichere den aktuellen Stand zuerst.",
+            Text("EKB1-, EKB2- und EKB3-Dateien werden unterstützt. EKB1 erhält Erkenntnisse und Strategieideen; EKB2 erhält vorhandene Strategieideen. EKB3 ersetzt alle drei Bereiche. Fehlende Bereiche werden niemals als leere Liste behandelt. Ungültige Verknüpfungen werden gelöst, nicht deine eigenen Texte. Du bestätigst jede Wiederherstellung ausdrücklich. Sichere vorher deinen aktuellen Stand.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase der bestehenden Sicherung", importPassword) {
                 importPassword = it
