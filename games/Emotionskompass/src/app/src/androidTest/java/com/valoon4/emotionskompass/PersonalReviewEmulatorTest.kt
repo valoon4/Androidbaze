@@ -122,6 +122,41 @@ class PersonalReviewEmulatorTest {
         rule.runOnIdle { assertTrue(started) }
     }
 
+    @Test fun optionalPatternReflectionNeverCreatesAnInsightByItself() {
+        val now = System.currentTimeMillis()
+        val journal = (0..11).map { day ->
+            val at = now - day * 86_400_000L
+            JournalEntry(
+                "fictional-pattern-$day", at, at,
+                CheckInDraft(emotions = mapOf("freude" to 4), needs = setOf("klarheit"))
+            )
+        }
+        var saveCalls = 0
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = JournalSnapshot.fromEntries(journal),
+                    busy = false, error = null, emotions = emotions, needs = needs,
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(),
+                    personalInsights = com.valoon4.emotionskompass.core.navigation.InsightUiState(
+                        loaded = true
+                    ),
+                    diaryEntries = journal,
+                    onSaveInsight = { _, _, _ -> saveCalls++ }
+                )
+            }
+        }
+        rule.onNode(hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("Dazu freiwillig reflektieren"))
+        rule.onNodeWithText("Dazu freiwillig reflektieren").performClick()
+        rule.onNodeWithText("Ausgangspunkt:", substring = true).assertExists()
+        rule.onNodeWithText("Ohne Speichern beenden").performClick()
+        rule.runOnIdle { assertEquals(0, saveCalls) }
+    }
+
     @Test fun unavailableJournalNeverPretendsToBeEmptyAndCustomRangeCanBeChosen() {
         var reloaded = false
         rule.setContent {
