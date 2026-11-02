@@ -15,8 +15,12 @@ import com.valoon4.emotionskompass.core.journal.BoundedJournalInput
 import com.valoon4.emotionskompass.core.journal.EncryptedJournalRepository
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.insights.BackupImportPreview
 import com.valoon4.emotionskompass.core.insights.CombinedBackupRepository
 import com.valoon4.emotionskompass.core.insights.InsightBundleBackup
+import com.valoon4.emotionskompass.core.insights.StrategyBundleBackup
+import com.valoon4.emotionskompass.core.insights.StrategyExperiment
+import com.valoon4.emotionskompass.core.insights.encryptedBackupDigest
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.model.NeedCatalog
@@ -69,6 +73,14 @@ data class InsightUiState(
     val message: String? = null
 )
 
+/** EKS1 is not a UI feature until M7.4.2, but must fail closed with M7 data. */
+data class StrategyExperimentUiState(
+    val entries: List<StrategyExperiment> = emptyList(),
+    val loaded: Boolean = false,
+    val busy: Boolean = false,
+    val error: String? = null
+)
+
 class AppViewModel(
     private val catalog: EmotionCatalog,
     private val needCatalog: NeedCatalog? = null,
@@ -88,6 +100,8 @@ class AppViewModel(
     val journalState = _journalState.asStateFlow()
     private val _insightState = MutableStateFlow(InsightUiState())
     val insightState = _insightState.asStateFlow()
+    private val _strategyExperimentState = MutableStateFlow(StrategyExperimentUiState())
+    val strategyExperimentState = _strategyExperimentState.asStateFlow()
     // Private, strictly in-memory Rückblick evidence selection. Never SavedState.
     private val _reviewSelection = MutableStateFlow<Pair<String, String>?>(null)
     val reviewSelection = _reviewSelection.asStateFlow()
@@ -101,6 +115,9 @@ class AppViewModel(
 
     /** Reject async reads/results that originated before the latest relock. */
     private var accessEpoch = 0L
+    // Only counts/digest, never backup plaintext or passphrase in saved state.
+    private var verifiedImportUri: Uri? = null
+    private var verifiedImportHash: String? = null
     private fun currentAccess(epoch: Long): Boolean = allowed() && epoch == accessEpoch
 
     init { if (journal != null && _unlocked.value) reloadJournal() }
@@ -122,8 +139,11 @@ class AppViewModel(
         if (!_lockEnabled.value) return
         accessEpoch++
         _unlocked.value = false
+        verifiedImportUri = null
+        verifiedImportHash = null
         _journalState.value = JournalUiState()
         _insightState.value = InsightUiState()
+        _strategyExperimentState.value = StrategyExperimentUiState()
         _reviewSelection.value = null
         _editingEntryId.value = null
         _checkIn.value = CheckInDraft()
@@ -168,7 +188,8 @@ class AppViewModel(
     fun exportJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
@@ -192,16 +213,69 @@ class AppViewModel(
     }
 
     /**
+     * Authenticates the selected portable backup BEFORE showing the destructive
+     * confirmation. The callback only receives counts and format, never text.
+     * Imports must re-read the same ciphertext digest to avoid a file swap.
+     */
+    fun previewJournalImport(uri: Uri, password: String,
+                             callback: (BackupImportPreview?, String?) -> Unit) {
+        val io = resolver ?: return
+        val backup = combinedBackup ?: return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy) return
+        verifiedImportUri = null
+        verifiedImportHash = null
+        val epoch = accessEpoch
+        _journalState.value = _journalState.value.copy(busy = true)
+        viewModelScope.launch {
+            val chars = password.toCharArray()
+            try {
+                val preview = withContext(Dispatchers.IO) {
+                    val input = io.openInputStream(uri)
+                        ?: throw IllegalStateException("Sicherung kann nicht gelesen werden.")
+                    val bytes = input.use {
+                        BoundedJournalInput.read(it, StrategyBundleBackup.MAX_BACKUP_BYTES)
+                    }
+                    try { backup.previewBackup(bytes, chars) }
+                    finally { bytes.fill(0) }
+                }
+                if (currentAccess(epoch)) {
+                    verifiedImportUri = uri
+                    verifiedImportHash = preview.encryptedSha256
+                    _journalState.value = _journalState.value.copy(busy = false)
+                    callback(preview, null)
+                }
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) {
+                    _journalState.value = _journalState.value.copy(busy = false)
+                    callback(null, "Sicherung oder Passphrase ungültig. Deine Daten wurden nicht verändert.")
+                }
+            } finally { chars.fill(0.toChar()) }
+        }
+    }
+
+    /**
      * Explicitly confirmed replacement, never an automatic merge. Refuse
      * oversized data and do not alter existing entries for wrong passwords.
      */
     fun importJournal(uri: Uri, password: String) {
         val store = journal ?: return
         val io = resolver ?: return
-        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy) return
+        // A current, authenticated preview of the SAME encrypted file is mandatory.
+        val expectedHash = verifiedImportHash
+        if (combinedBackup != null && (verifiedImportUri != uri || expectedHash == null)) {
+            _journalState.value = _journalState.value.copy(
+                message = "Bitte prüfe die Sicherung vor dem Ersetzen erneut.")
+            return
+        }
+        verifiedImportUri = null
+        verifiedImportHash = null
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null, message = null)
         _insightState.value = InsightUiState(busy = true)
+        _strategyExperimentState.value = StrategyExperimentUiState(busy = true)
         viewModelScope.launch {
             val chars = password.toCharArray()
             try {
@@ -209,13 +283,18 @@ class AppViewModel(
                     val input = io.openInputStream(uri)
                         ?: throw IllegalStateException("Sicherungsdatei konnte nicht gelesen werden.")
                     val bytes = input.use { stream ->
-                        BoundedJournalInput.read(stream, combinedBackup?.let { InsightBundleBackup.MAX_BACKUP_BYTES }
+                        BoundedJournalInput.read(stream, combinedBackup?.let { StrategyBundleBackup.MAX_BACKUP_BYTES }
                             ?: JournalBackup.MAX_BACKUP_BYTES)
                     }
                     try {
-                        require(bytes.size <= (if (combinedBackup != null) InsightBundleBackup.MAX_BACKUP_BYTES
+                        require(bytes.size <= (if (combinedBackup != null) StrategyBundleBackup.MAX_BACKUP_BYTES
                             else JournalBackup.MAX_BACKUP_BYTES)) {
                             "Sicherungsdatei ist zu groß."
+                        }
+                        if (combinedBackup != null) {
+                            require(encryptedBackupDigest(bytes) == expectedHash) {
+                                "Die Sicherungsdatei hat sich seit der Prüfung verändert."
+                            }
                         }
                         combinedBackup?.restoreBackup(bytes, chars) ?: store.restoreBackup(bytes, chars)
                     } finally { bytes.fill(0) }
@@ -225,6 +304,7 @@ class AppViewModel(
                     _journalState.value = JournalUiState(
                         message = "Wiederherstellung erfolgreich: $count Einträge.")
                     _insightState.value = InsightUiState()
+                    _strategyExperimentState.value = StrategyExperimentUiState()
                     reloadJournal()
                 }
             } catch (e: Exception) {
@@ -234,6 +314,9 @@ class AppViewModel(
                     )
                     _insightState.value = InsightUiState(
                         error = "Erkenntnisse sind bis zum erneuten sicheren Laden nicht verfügbar."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Strategieideen sind bis zum erneuten sicheren Laden nicht verfügbar."
                     )
                 }
             } finally { chars.fill(0.toChar()) }
@@ -245,22 +328,29 @@ class AppViewModel(
     /** A decryption or key failure never replaces the previous encrypted data. */
     fun reloadJournal() {
         val store = journal ?: return
-        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy) return
         val epoch = accessEpoch
         val transferMessage = _journalState.value.message
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         _insightState.value = InsightUiState(busy = true)
+        _strategyExperimentState.value = StrategyExperimentUiState(busy = true)
         viewModelScope.launch {
             try {
                 val entries = withContext(Dispatchers.IO) {
                     combinedBackup?.recoverPending()
                     val journalEntries = store.list()
                     val userInsights = combinedBackup?.listInsights() ?: emptyList()
-                    journalEntries to userInsights
+                    val ownStrategies = combinedBackup?.listStrategyExperiments() ?: emptyList()
+                    Triple(journalEntries, userInsights, ownStrategies)
                 }
                 if (currentAccess(epoch)) {
                     _insightState.value = InsightUiState(
                         entries = entries.second.sortedByDescending { it.updatedAtUtcMillis },
+                        loaded = combinedBackup != null
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        entries = entries.third.sortedByDescending { it.updatedAtUtcMillis },
                         loaded = combinedBackup != null
                     )
                     _journalState.value = JournalUiState(
@@ -277,6 +367,9 @@ class AppViewModel(
                     )
                     _insightState.value = InsightUiState(
                         error = "Persönliche Daten konnten nicht sicher geladen werden."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Strategieideen konnten nicht sicher geladen werden."
                     )
                 }
             }
@@ -406,7 +499,10 @@ class AppViewModel(
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
-                val saved = withContext(Dispatchers.IO) { store.save(snapshot, existingId) }
+                val saved = withContext(Dispatchers.IO) {
+                    combinedBackup?.saveJournalEntry(snapshot, existingId)
+                        ?: store.save(snapshot, existingId)
+                }
                 if (!currentAccess(epoch)) return@launch
                 _journalState.value = JournalUiState(
                     (_journalState.value.entries.filterNot { it.id == saved.id } + saved)

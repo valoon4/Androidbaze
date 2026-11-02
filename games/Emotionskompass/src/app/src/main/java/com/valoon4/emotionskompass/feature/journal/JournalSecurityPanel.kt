@@ -4,6 +4,9 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,11 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.journal.JournalBackup
+import com.valoon4.emotionskompass.core.insights.BackupImportPreview
 
 /**
  * Both SAF file choices are explicitly initiated by the user. Plain journal JSON
- * never goes to a document provider: the ViewModel exports EKB2 ciphertext
- * containing the journal and insight data, while importing legacy EKB1 too.
+ * never goes to a document provider: the ViewModel exports EKB3 ciphertext
+ * containing journal, insights and strategy experiments; legacy EKB1/2 remain readable.
  */
 @Composable
 fun JournalSecurityPanel(
@@ -39,13 +43,16 @@ fun JournalSecurityPanel(
     onToggleLock: () -> Unit,
     onExport: (Uri, String) -> Unit,
     onImport: (Uri, String) -> Unit,
-    onSystemPicker: (Boolean) -> Unit
+    onSystemPicker: (Boolean) -> Unit,
+    onPreviewImport: (Uri, String, (BackupImportPreview?, String?) -> Unit) -> Unit
 ) {
     var exportPassword by remember { mutableStateOf("") }
     var exportConfirmation by remember { mutableStateOf("") }
     var importPassword by remember { mutableStateOf("") }
     var pendingExport by remember { mutableStateOf("") }
     var pendingImport by remember { mutableStateOf<Uri?>(null) }
+    var importPreview by remember { mutableStateOf<BackupImportPreview?>(null) }
+    var previewBusy by remember { mutableStateOf(false) }
     var pickerError by remember { mutableStateOf<String?>(null) }
 
     val exportPicker = rememberLauncherForActivityResult(
@@ -61,22 +68,59 @@ fun JournalSecurityPanel(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
         onSystemPicker(false)
-        if (uri != null) pendingImport = uri
-        else importPassword = ""
+        if (uri != null) {
+            previewBusy = true
+            // Decrypt and authenticate *before* asking to replace any local data.
+            onPreviewImport(uri, importPassword) { result, problem ->
+                previewBusy = false
+                if (result != null) {
+                    importPreview = result
+                    pendingImport = uri
+                } else {
+                    importPreview = null
+                    pendingImport = null
+                    pickerError = problem ?: "Die Sicherung konnte nicht geprüft werden."
+                    importPassword = ""
+                }
+            }
+        } else importPassword = ""
     }
 
     if (pendingImport != null) {
         AlertDialog(
             onDismissRequest = {
                 pendingImport = null
+                importPreview = null
                 importPassword = ""
             },
-            title = { Text("Gespeicherte Daten wirklich ersetzen?") },
-            text = { Text("Die Sicherung wird vor dem Ersetzen entschlüsselt und geprüft. Alle aktuellen Tagebucheinträge werden ersetzt. Bei einer EKB2-Sicherung werden auch deine eigenen Erkenntnisse ersetzt. Bei einer älteren EKB1-Sicherung bleiben Erkenntnisse erhalten; Verweise auf nicht mehr vorhandene Tagebucheinträge werden entfernt. Bitte sichere vorher deinen aktuellen Bestand. Das Ersetzen kann nicht rückgängig gemacht werden.") },
+            title = { Text("Geprüfte Sicherung wirklich übernehmen?") },
+            text = {
+                Column(
+                    modifier = Modifier.heightIn(max = 360.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val report = importPreview
+                    if (report != null) {
+                        Text("Sicherungsformat: ${report.format} · ${report.journalCount} Tagebucheinträge",
+                            fontWeight = FontWeight.SemiBold)
+                        Text(if (report.insightCount == null)
+                            "Eigene Erkenntnisse: nicht enthalten – bestehende bleiben erhalten."
+                        else "Eigene Erkenntnisse: ${report.insightCount} – werden ersetzt.")
+                        Text(if (report.strategyExperimentCount == null)
+                            "Strategieideen: nicht enthalten – bestehende bleiben erhalten."
+                        else "Strategieideen: ${report.strategyExperimentCount} – werden ersetzt.")
+                    }
+                    Text("Die Datei wurde mit deiner Passphrase geprüft. Nur die aufgeführten Datenbereiche werden ersetzt – auch dann, wenn eine enthaltene Liste leer ist. Ungültige Verknüpfungen werden entfernt, nicht deine eigenen Texte. Das Ersetzen kann nicht rückgängig gemacht werden.")
+                    Text("Sichere deinen aktuellen Stand zuerst. Die App prüft beim Ersetzen, ob die Datei seit dieser Vorschau verändert wurde.",
+                        style = MaterialTheme.typography.bodySmall)
+                }
+            },
             confirmButton = {
                 TextButton(onClick = {
                     val uri = pendingImport!!
                     pendingImport = null
+                    importPreview = null
                     val password = importPassword
                     importPassword = ""
                     onImport(uri, password)
@@ -85,6 +129,7 @@ fun JournalSecurityPanel(
             dismissButton = {
                 TextButton(onClick = {
                     pendingImport = null
+                    importPreview = null
                     importPassword = ""
                 }) { Text("Abbrechen") }
             }
@@ -115,8 +160,8 @@ fun JournalSecurityPanel(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
-            Text("Verschlüsselte Gesamtsicherung erstellen (EKB2)", fontWeight = FontWeight.SemiBold)
-            Text("Das neue EKB2-Format sichert Tagebuch und persönliche Erkenntnisse gemeinsam. Verwende eine eigene Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar.",
+            Text("Verschlüsselte Gesamtsicherung erstellen (EKB3)", fontWeight = FontWeight.SemiBold)
+            Text("Die EKB3-Sicherung umfasst Tagebuch, persönliche Erkenntnisse und eigene Strategieideen gemeinsam. Verwende eine Passphrase mit mindestens 12 Zeichen; ohne sie ist die Datei nicht wiederherstellbar. Frühere App-Versionen können EKB3 nicht öffnen.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase für diese Sicherung", exportPassword) { exportPassword = it }
             SecretField("Passphrase wiederholen", exportConfirmation) { exportConfirmation = it }
@@ -131,7 +176,7 @@ fun JournalSecurityPanel(
                     pickerError = null
                     onSystemPicker(true)
                     try {
-                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB2.ekbackup")
+                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB3.ekbackup")
                     } catch (e: Exception) {
                         // A missing/disabled document picker must never leave the
                         // background relock bypass enabled indefinitely.
@@ -143,14 +188,14 @@ fun JournalSecurityPanel(
             ) { Text("Verschlüsselte Sicherungsdatei speichern") }
             HorizontalDivider()
             Text("Sicherung wiederherstellen", fontWeight = FontWeight.SemiBold)
-            Text("EKB2 ersetzt Tagebuch und Erkenntnisse gemeinsam. Bei einer älteren EKB1-Datei bleiben Erkenntnisse erhalten, aber ungültige Tagebuch-Verweise werden entfernt. Der Import erfordert deine ausdrückliche Bestätigung. Sichere den aktuellen Stand zuerst.",
+            Text("EKB1-, EKB2- und EKB3-Dateien werden unterstützt. EKB1 erhält Erkenntnisse und Strategieideen; EKB2 erhält vorhandene Strategieideen. EKB3 ersetzt alle drei Bereiche. Fehlende Bereiche werden niemals als leere Liste behandelt. Ungültige Verknüpfungen werden gelöst, nicht deine eigenen Texte. Du bestätigst jede Wiederherstellung ausdrücklich. Sichere vorher deinen aktuellen Stand.",
                 style = MaterialTheme.typography.bodySmall)
             SecretField("Passphrase der bestehenden Sicherung", importPassword) {
                 importPassword = it
             }
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !busy && importPassword.isNotBlank(),
+                enabled = !busy && !previewBusy && importPassword.isNotBlank(),
                 onClick = {
                     pickerError = null
                     onSystemPicker(true)
@@ -162,7 +207,11 @@ fun JournalSecurityPanel(
                         pickerError = "Android konnte die Dateiauswahl nicht öffnen."
                     }
                 }
-            ) { Text("Verschlüsselte Sicherungsdatei auswählen") }
+            ) { Text("Verschlüsselte Sicherungsdatei auswählen und prüfen") }
+            if (previewBusy) {
+                Text("Sicherung wird entschlüsselt und geprüft; noch keine Daten werden ersetzt.",
+                    style = MaterialTheme.typography.bodySmall)
+            }
             Text("Wichtig: Die Passphrase wird nicht gespeichert. Nur selbst gewählte Sicherungsdateien verlassen die App; es findet kein automatischer Cloud-Upload statt.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
