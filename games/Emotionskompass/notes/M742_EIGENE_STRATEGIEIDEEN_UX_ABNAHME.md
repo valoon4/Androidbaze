@@ -24,7 +24,7 @@ Der freiwillige Bereich **Rückblick → Ausprobieren** ergänzt „Übersicht &
 - Private Editorentwürfe, Suchwörter und ausgewählte Einträge verwenden Compose **remember**, nicht **rememberSaveable** oder Android SavedState.
 - Bei Ladefehlern: **kein** Erstellen, Editieren oder Anzeigen früher entschlüsselter persönlicher Ideen; sichtbarer „Erneut sicher laden“-Weg.
 - Bei Journal-/Erkenntnislöschung: EKR2 entfernt verwaiste Referenz-IDs, nicht eigene Strategietexte. ViewModel aktualisiert die angezeigte Strategiesammlung oder sperrt bei Unklarheit den Zugriff.
-- Im Rückblick passen drei Bereichs-Chips via FlowRow in mehrere Zeilen. Editor sowie Liste sind vertikal scrollbar, einschließlich bei 320 dp und 200 % Schrift.
+- Im Rückblick passen drei Bereichs-Chips via FlowRow in mehrere Zeilen. Editor sowie Liste sind vertikal scrollbar, einschließlich bei 320 dp und 200 % Schrift. Der Ideen-Editor zeigt zuerst das Haupt-Eingabefeld, damit lange Hinweise dieses bei großer Schrift nicht verdecken. Beim Öffnen von Rückblick-Belegen springt die Ansicht zuverlässig zu deren Überschrift.
 - Bei 300 Ideen blockiert die App weitere neue Ideen; bestehende lassen sich noch bearbeiten oder nach expliziter Bestätigung löschen.
 - **Sicherheitsgrenze aus M7.4.1:** Der UI-Schutz durch freiwillige Geräte-Anmeldung ist keine per Zugriff erzwungene Keystore-Benutzerauthentifizierung. Keine stärkere Sicherheit behaupten.
 
@@ -44,7 +44,7 @@ Der freiwillige Bereich **Rückblick → Ausprobieren** ergänzt „Übersicht &
 ### Automatische Regression
 
 - Bestehende EKB2- und EKB3-/EKR1-Emulator- und JVM-Tests laufen weiter.
-- 18 echte Compose-UI-Tests bei 100 % und 200 % Schriftgröße = 36 UI-Testläufe, darunter vier neue Tests für Abbruch, bewusstes Nicht-Ausprobieren, spätere Reflexion, Archiv/Löschen und Fehlerzustände.
+- 19 echte Compose-UI-Tests bei 100 % und 200 % Schriftgröße = 38 UI-Testläufe, darunter vier neue Ideen-Tests und ein Navigations-Regressionsfall für Abbruch, bewusstes Nicht-Ausprobieren, spätere Reflexion, Archiv/Löschen und Fehlerzustände.
 - 3 vorhandene EKB2- und 8 EKB3-/Keystore-Integrationstests bleiben Teil des Emulator-Gates.
 - APK-Build/Signaturprüfung müssen auf dem finalen PR-Commit erfolgreich sein.
 
