@@ -265,6 +265,9 @@ fun PersonalReviewScreen(
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
+        // A selected evidence view should start with its own heading and
+        // records, not two large overview sections at 200% font scale.
+        if (selectedTerm == null) {
         item {
             Text("Dein Rückblick", style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() })
@@ -318,6 +321,7 @@ fun PersonalReviewScreen(
             }
         }
 
+        } // overview introduction and period picker
         if (error != null) {
             item {
                 Card(colors = CardDefaults.cardColors(
