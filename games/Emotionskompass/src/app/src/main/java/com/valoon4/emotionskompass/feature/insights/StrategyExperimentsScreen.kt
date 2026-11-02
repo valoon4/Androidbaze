@@ -110,8 +110,8 @@ fun StrategyExperimentsScreen(
         confirmDiscard = false
     }
 
-    LaunchedEffect(state.loaded, state.error) {
-        if (!state.loaded || state.error != null) {
+    LaunchedEffect(state.loaded, state.error, insightsReady) {
+        if (!state.loaded || state.error != null || !insightsReady) {
             resetEditor()
             pendingDelete = null
             query = ""
@@ -119,8 +119,8 @@ fun StrategyExperimentsScreen(
     }
     // Incoming IDs are only navigation hints, never saved to Android SavedState.
     // An atlas visit, reflection link or idea proposal cannot write any private data.
-    LaunchedEffect(incomingCatalog?.id, incomingInsightId, state.loaded, state.error) {
-        if (state.loaded && state.error == null &&
+    LaunchedEffect(incomingCatalog?.id, incomingInsightId, state.loaded, state.error, insightsReady) {
+        if (state.loaded && state.error == null && insightsReady &&
             (incomingCatalog != null || incomingInsightId != null) && !showEditor) {
             val approved = incomingCatalog?.takeIf(StrategyExperimentEligibility::canOffer)
             openEditor(null)
@@ -171,7 +171,7 @@ fun StrategyExperimentsScreen(
         )
     }
 
-    if (showEditor && state.loaded && state.error == null) {
+    if (showEditor && state.loaded && state.error == null && insightsReady) {
         AlertDialog(
             onDismissRequest = { if (!state.busy) confirmDiscard = true },
             title = {
@@ -351,7 +351,7 @@ fun StrategyExperimentsScreen(
             confirmButton = {
                 TextButton(
                     enabled = state.loaded && !state.busy && !waitingForSave &&
-                        state.error == null && title.trim().isNotEmpty() &&
+                        state.error == null && insightsReady && title.trim().isNotEmpty() &&
                         (editor != null || state.entries.size < StrategyExperiment.MAX_EXPERIMENTS),
                     onClick = {
                         val now = System.currentTimeMillis()
@@ -401,11 +401,12 @@ fun StrategyExperimentsScreen(
             Text("Du entscheidest selbst, ob du etwas versuchen möchtest. Du kannst Ideen sammeln, ohne sie umzusetzen, und später festhalten, was für dich passend war – oder nicht.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        if (!state.loaded || state.error != null) {
+        if (!state.loaded || state.error != null || !insightsReady) {
             item {
                 Text(
-                    state.error ?: "Deine persönlichen Ideen werden sicher geladen …",
-                    color = if (state.error == null) MaterialTheme.colorScheme.onSurfaceVariant
+                    state.error ?: if (!insightsReady) "Eigene Erkenntnisse konnten nicht sicher geladen werden. Bitte erneut sicher laden."
+                    else "Deine persönlichen Ideen werden sicher geladen …",
+                    color = if (state.error == null && insightsReady) MaterialTheme.colorScheme.onSurfaceVariant
                         else MaterialTheme.colorScheme.error,
                     modifier = Modifier.testTag("experiments-load-state")
                 )
