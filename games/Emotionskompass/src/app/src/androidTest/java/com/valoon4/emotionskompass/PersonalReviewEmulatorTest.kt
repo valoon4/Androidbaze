@@ -62,6 +62,33 @@ class PersonalReviewEmulatorTest {
         ))
     }
 
+    @Test fun allThreeReviewTabsStayAccessibleAtLargeFont() {
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = snapshot(), busy = false, error = null,
+                    emotions = emotions, needs = needs,
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(),
+                    personalInsights = com.valoon4.emotionskompass.core.navigation.InsightUiState(
+                        loaded = true
+                    ),
+                    strategyExperiments =
+                        com.valoon4.emotionskompass.core.navigation.StrategyExperimentUiState(
+                            loaded = true
+                        )
+                )
+            }
+        }
+        rule.onNodeWithTag("review-tab-experiments").performClick()
+        rule.onNodeWithTag("experiments-heading").assertExists()
+        rule.onNodeWithTag("review-tab-insights").performClick()
+        rule.onNodeWithTag("insights-heading").assertExists()
+        rule.onNodeWithTag("review-tab-overview").performClick()
+        rule.onNodeWithText("Dein Rückblick").assertExists()
+    }
+
     @Test fun persistentTabsExplainPatternsAndRevealEveryEligibleCombination() {
         val now = System.currentTimeMillis()
         val journal = (0..11).map { day ->
@@ -145,8 +172,14 @@ class PersonalReviewEmulatorTest {
         rule.onNode(hasClickAction() and hasText("Freude", substring = true))
             .performClick()
         rule.onNodeWithText("Einträge mit „Freude“").assertExists()
+        // LazyColumn virtualizes offscreen buttons, especially with 200% text.
+        // Request the journal item first; only then click its visible action.
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("Tagebucheintrag ansehen", substring = true))
         rule.onAllNodes(hasClickAction() and hasText("Tagebucheintrag ansehen", substring = true))
-            .onFirst().performScrollTo().performClick()
+            .onFirst().performClick()
         rule.runOnIdle { assertTrue(opened == "beleg-a" || opened == "beleg-b") }
     }
 

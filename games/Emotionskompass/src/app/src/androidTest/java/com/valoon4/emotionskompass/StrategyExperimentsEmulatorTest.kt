@@ -1,0 +1,189 @@
+package com.valoon4.emotionskompass
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performTextInput
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.valoon4.emotionskompass.core.designsystem.EmotionskompassTheme
+import com.valoon4.emotionskompass.core.insights.ExperimentEvaluation
+import com.valoon4.emotionskompass.core.insights.ExperimentStatus
+import com.valoon4.emotionskompass.core.insights.StrategyExperiment
+import com.valoon4.emotionskompass.core.navigation.StrategyExperimentUiState
+import com.valoon4.emotionskompass.feature.insights.StrategyExperimentsScreen
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class StrategyExperimentsEmulatorTest {
+    @get:Rule val rule = createComposeRule()
+
+    @Test fun cancellingTypedIdeaNeverCallsSaveOrCreatesAnEntry() {
+        var saves = 0
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(loaded = true),
+                    onReload = {}, onSave = { saves++ },
+                    onArchive = { _, _ -> }, onDelete = {}
+                )
+            }
+        }
+        rule.onNodeWithTag("experiment-create").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-title"))
+        rule.onNodeWithTag("experiment-title").performTextInput(
+            "Eine Frage stellen, falls etwas unklar ist")
+        rule.onNodeWithTag("experiment-cancel").performClick()
+        rule.onNodeWithText("Entwurf verwerfen").performClick()
+        rule.runOnIdle { assertEquals(0, saves) }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Hier hast du noch keine Idee gespeichert."))
+        rule.onNodeWithText("Hier hast du noch keine Idee gespeichert.").assertExists()
+        rule.onNodeWithText("Eine Frage stellen, falls etwas unklar ist").assertDoesNotExist()
+    }
+
+    @Test fun statusNotTriedAndNoEvaluationAreValidThenCanReflectWithoutScoring() {
+        var saved: StrategyExperiment? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                var ui by remember { mutableStateOf(StrategyExperimentUiState(loaded = true)) }
+                StrategyExperimentsScreen(
+                    state = ui, onReload = {},
+                    onSave = { item ->
+                        saved = item
+                        ui = StrategyExperimentUiState(
+                            entries = listOf(item), loaded = true,
+                            message = if (ui.entries.isEmpty()) "Idee gespeichert."
+                                else "Idee aktualisiert."
+                        )
+                    },
+                    onArchive = { _, _ -> }, onDelete = {}
+                )
+            }
+        }
+        rule.onNodeWithTag("experiment-create").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-title"))
+        rule.onNodeWithTag("experiment-title").performTextInput("Fiktiv: Pause überlegen")
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-status-NOT_TRIED"))
+        rule.onNodeWithTag("experiment-status-NOT_TRIED").performClick()
+        rule.onNodeWithTag("experiment-explicit-save").performClick()
+        rule.runOnIdle {
+            assertEquals(ExperimentStatus.NOT_TRIED, saved?.status)
+            assertNull(saved?.evaluation)
+        }
+        val id = requireNotNull(saved).id
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-edit-$id"))
+        rule.onNodeWithTag("experiment-edit-$id").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-status-TRIED"))
+        rule.onNodeWithTag("experiment-status-TRIED").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-evaluation-UNCLEAR"))
+        rule.onNodeWithTag("experiment-evaluation-UNCLEAR").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-reflection"))
+        rule.onNodeWithTag("experiment-reflection").performTextInput(
+            "Ich weiß noch nicht, wie es für mich war.")
+        rule.onNodeWithTag("experiment-explicit-save").performClick()
+        rule.runOnIdle {
+            assertEquals(ExperimentStatus.TRIED, saved?.status)
+            assertEquals(ExperimentEvaluation.UNCLEAR, saved?.evaluation)
+            assertEquals("Ich weiß noch nicht, wie es für mich war.", saved?.reflectionText)
+        }
+    }
+
+    @Test fun archiveRestoreAndConfirmedDeleteNeverModifyTheJournal() {
+        val created = StrategyExperiment.fromOwnIdea(
+            "Fiktive selbstbestimmte Idee", System.currentTimeMillis()
+        )
+        var deletedId: String? = null
+        var archiveChanges = 0
+        rule.setContent {
+            EmotionskompassTheme {
+                var ui by remember {
+                    mutableStateOf(StrategyExperimentUiState(
+                        entries = listOf(created), loaded = true))
+                }
+                StrategyExperimentsScreen(
+                    state = ui, onReload = {}, onSave = {},
+                    onArchive = { id, archived ->
+                        archiveChanges++
+                        ui = StrategyExperimentUiState(
+                            entries = ui.entries.map {
+                                if (it.id == id) it.copy(archived = archived) else it
+                            }, loaded = true, message = "Idee archiviert."
+                        )
+                    },
+                    onDelete = { id ->
+                        deletedId = id
+                        ui = StrategyExperimentUiState(
+                            entries = ui.entries.filterNot { it.id == id },
+                            loaded = true, message = "Idee gelöscht."
+                        )
+                    }
+                )
+            }
+        }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Archivieren"))
+        rule.onNodeWithText("Archivieren").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Archiv"))
+        rule.onNodeWithText("Archiv").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Aus Archiv zurückholen"))
+        rule.onNodeWithText("Aus Archiv zurückholen").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Aktuelle"))
+        rule.onNodeWithText("Aktuelle").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-delete-${created.id}"))
+        rule.onNodeWithTag("experiment-delete-${created.id}").performClick()
+        rule.onNodeWithTag("experiment-confirm-delete").performClick()
+        rule.runOnIdle {
+            assertEquals(2, archiveChanges)
+            assertEquals(created.id, deletedId)
+        }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Hier hast du noch keine Idee gespeichert."))
+        rule.onNodeWithText("Hier hast du noch keine Idee gespeichert.").assertExists()
+    }
+
+    @Test fun failedAuthenticatedLoadNeverDisplaysPrivateIdeaOrCreation() {
+        val item = StrategyExperiment.fromOwnIdea(
+            "Private Testidee, die niemals angezeigt werden darf",
+            System.currentTimeMillis()
+        )
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(
+                        entries = listOf(item), loaded = false,
+                        error = "Sichere Entschlüsselung fehlgeschlagen."
+                    ),
+                    onReload = {}, onSave = {}, onArchive = { _, _ -> },
+                    onDelete = {}
+                )
+            }
+        }
+        rule.onNodeWithText(item.customTitle!!).assertDoesNotExist()
+        rule.onNodeWithTag("experiment-create").assertDoesNotExist()
+        rule.onNodeWithTag("experiments-retry").assertExists()
+    }
+}

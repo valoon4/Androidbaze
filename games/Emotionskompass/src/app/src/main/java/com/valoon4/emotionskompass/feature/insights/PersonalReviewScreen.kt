@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +55,7 @@ import com.valoon4.emotionskompass.core.insights.InsightTimeWindow
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.navigation.InsightUiState
+import com.valoon4.emotionskompass.core.navigation.StrategyExperimentUiState
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import java.time.Instant
@@ -90,15 +92,21 @@ fun PersonalReviewScreen(
     onSaveInsight: (String, String?, String?) -> Unit = { _, _, _ -> },
     onArchiveInsight: (String, Boolean) -> Unit = { _, _ -> },
     onDeleteInsight: (String) -> Unit = { _ -> },
-    onUnlinkInsight: (String, String) -> Unit = { _, _ -> }
+    onUnlinkInsight: (String, String) -> Unit = { _, _ -> },
+    strategyExperiments: StrategyExperimentUiState = StrategyExperimentUiState(),
+    onSaveExperiment: (com.valoon4.emotionskompass.core.insights.StrategyExperiment) -> Unit = { },
+    onArchiveExperiment: (String, Boolean) -> Unit = { _, _ -> },
+    onDeleteExperiment: (String) -> Unit = { }
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
     var showInsightPage by rememberSaveable { mutableStateOf(false) }
+    var showExperimentsPage by rememberSaveable { mutableStateOf(false) }
     // Selected observation wording is in-memory only, never rememberSaveable.
     var reflectionOriginLabel by remember { mutableStateOf<String?>(null) }
-    BackHandler(enabled = showInsightPage) {
+    BackHandler(enabled = showInsightPage || showExperimentsPage) {
         showInsightPage = false
+        showExperimentsPage = false
         reflectionOriginLabel = null
     }
     val today = LocalDate.now()
@@ -109,6 +117,11 @@ fun PersonalReviewScreen(
     var showAllPatterns by rememberSaveable { mutableStateOf(false) }
     var showPatternCriteria by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    // The evidence list replaces the overview's lazy items. Always reveal
+    // its heading instead of retaining an offscreen overview scroll position.
+    LaunchedEffect(selectedTerm) {
+        if (selectedTerm != null) listState.scrollToItem(0)
+    }
     // Selection is held only in the locked ViewModel's in-memory Flow, never Bundle.
     val zone = ZoneId.systemDefault()
     val window = remember(preset, startText, endText, today, zone) {
@@ -147,6 +160,7 @@ fun PersonalReviewScreen(
         if (!personalInsights.loaded || personalInsights.busy || personalInsights.error != null ||
             personalInsights.entries.size >= PersonalInsight.MAX_INSIGHTS) return
         reflectionOriginLabel = patternTitle(pattern)
+        showExperimentsPage = false
         showInsightPage = true
     }
 
@@ -188,9 +202,10 @@ fun PersonalReviewScreen(
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             FilterChip(
-                selected = !showInsightPage,
+                selected = !showInsightPage && !showExperimentsPage,
                 onClick = {
                     showInsightPage = false
+                    showExperimentsPage = false
                     reflectionOriginLabel = null
                 },
                 label = { Text("Übersicht & Muster") },
@@ -200,10 +215,21 @@ fun PersonalReviewScreen(
                 selected = showInsightPage,
                 onClick = {
                     reflectionOriginLabel = null
+                    showExperimentsPage = false
                     showInsightPage = true
                 },
                 label = { Text("Meine Erkenntnisse") },
                 modifier = Modifier.testTag("review-tab-insights")
+            )
+            FilterChip(
+                selected = showExperimentsPage,
+                onClick = {
+                    reflectionOriginLabel = null
+                    showInsightPage = false
+                    showExperimentsPage = true
+                },
+                label = { Text("Ausprobieren") },
+                modifier = Modifier.testTag("review-tab-experiments")
             )
         }
         Box(modifier = Modifier.weight(1f)) {
@@ -224,6 +250,14 @@ fun PersonalReviewScreen(
                     reflectionOriginLabel = reflectionOriginLabel,
                     showBackButton = false
                 )
+            } else if (showExperimentsPage) {
+                StrategyExperimentsScreen(
+                    state = strategyExperiments,
+                    onReload = onReload,
+                    onSave = onSaveExperiment,
+                    onArchive = onArchiveExperiment,
+                    onDelete = onDeleteExperiment
+                )
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -231,11 +265,14 @@ fun PersonalReviewScreen(
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
+        // A selected evidence view should start with its own heading and
+        // records, not two large overview sections at 200% font scale.
+        if (selectedTerm == null) {
         item {
             Text("Dein Rückblick", style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() })
             Text(
-                "Hier findest du deine Einträge, Häufigkeiten und wiederkehrende Auswahlen. Deine selbst formulierten Gedanken stehen unter „Meine Erkenntnisse“. Keine Bewertung deiner Gefühle.",
+                "Hier findest du deine Einträge, Häufigkeiten und wiederkehrende Auswahlen. Deine Gedanken stehen unter „Meine Erkenntnisse“. Unter „Ausprobieren“ kannst du freiwillig eigene Ideen festhalten. Keine Bewertung deiner Gefühle.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -284,6 +321,7 @@ fun PersonalReviewScreen(
             }
         }
 
+        } // overview introduction and period picker
         if (error != null) {
             item {
                 Card(colors = CardDefaults.cardColors(

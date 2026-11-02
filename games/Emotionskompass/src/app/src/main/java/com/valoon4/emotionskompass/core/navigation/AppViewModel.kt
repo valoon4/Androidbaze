@@ -73,12 +73,13 @@ data class InsightUiState(
     val message: String? = null
 )
 
-/** EKS1 is not a UI feature until M7.4.2, but must fail closed with M7 data. */
+/** A failed three-store read must never be presented as an empty ideas collection. */
 data class StrategyExperimentUiState(
     val entries: List<StrategyExperiment> = emptyList(),
     val loaded: Boolean = false,
     val busy: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val message: String? = null
 )
 
 class AppViewModel(
@@ -474,13 +475,114 @@ class AppViewModel(
         _insightState.value = current.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
             try {
-                val result = withContext(Dispatchers.IO) { backup.deleteInsight(id) }
-                if (currentAccess(epoch)) _insightState.value = InsightUiState(
-                    result.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
-                    message = "Erkenntnis gelöscht."
+                val result = withContext(Dispatchers.IO) {
+                    Pair(backup.deleteInsight(id), backup.listStrategyExperiments())
+                }
+                if (currentAccess(epoch)) {
+                    _insightState.value = InsightUiState(
+                        result.first.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
+                        message = "Erkenntnis gelöscht."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        entries = result.second, loaded = true
+                    )
+                }
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) {
+                    _insightState.value = InsightUiState(
+                        error = "Löschen fehlgeschlagen. Bitte erneut sicher laden."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Bitte Strategieideen erneut sicher laden."
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * M7.4.2: writes only explicit user-created/edited ideas. Loading, tapping
+     * a catalog card, and changing a dialog field can NEVER persist an entry.
+     */
+    private fun canWriteStrategyExperiments(): Boolean {
+        val ideas = _strategyExperimentState.value
+        val diary = _journalState.value
+        val personal = _insightState.value
+        return allowed() && ideas.loaded && !ideas.busy && ideas.error == null &&
+            diary.loaded && !diary.busy && diary.error == null &&
+            personal.loaded && !personal.busy && personal.error == null
+    }
+
+    fun saveStrategyExperiment(item: StrategyExperiment) {
+        val backup = combinedBackup ?: return
+        if (!canWriteStrategyExperiments()) return
+        val current = _strategyExperimentState.value
+        val previous = current.entries.firstOrNull { it.id == item.id }
+        if (previous == null && current.entries.size >= StrategyExperiment.MAX_EXPERIMENTS) return
+        // Unknown edit IDs are not reinterpreted as new ideas.
+        if (previous == null && item.createdAtUtcMillis != item.updatedAtUtcMillis) return
+        if (previous != null && item.createdAtUtcMillis != previous.createdAtUtcMillis) return
+        val epoch = accessEpoch
+        _strategyExperimentState.value = current.copy(busy = true, error = null, message = null)
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) { backup.saveStrategyExperiment(item) }
+                if (currentAccess(epoch)) _strategyExperimentState.value = StrategyExperimentUiState(
+                    entries = result, loaded = true,
+                    message = if (previous == null) "Idee gespeichert." else "Idee aktualisiert."
                 )
             } catch (_: Exception) {
-                if (currentAccess(epoch)) _insightState.value = current.copy(
+                if (currentAccess(epoch)) {
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Idee konnte nicht sicher gespeichert werden. Bitte erneut laden."
+                    )
+                }
+            }
+        }
+    }
+
+    fun setStrategyExperimentArchived(id: String, archived: Boolean) {
+        if (!canWriteStrategyExperiments()) return
+        val old = _strategyExperimentState.value.entries.firstOrNull { it.id == id } ?: return
+        if (old.archived == archived) return
+        val updated = old.copy(archived = archived,
+            updatedAtUtcMillis = maxOf(System.currentTimeMillis(), old.updatedAtUtcMillis))
+        val backup = combinedBackup ?: return
+        val epoch = accessEpoch
+        _strategyExperimentState.value = _strategyExperimentState.value.copy(
+            busy = true, error = null, message = null
+        )
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) { backup.saveStrategyExperiment(updated) }
+                if (currentAccess(epoch)) _strategyExperimentState.value = StrategyExperimentUiState(
+                    entries = result, loaded = true,
+                    message = if (archived) "Idee archiviert." else "Idee wiederhergestellt."
+                )
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) _strategyExperimentState.value = StrategyExperimentUiState(
+                    error = "Archivieren fehlgeschlagen. Bitte erneut sicher laden."
+                )
+            }
+        }
+    }
+
+    fun deleteStrategyExperiment(id: String) {
+        if (!canWriteStrategyExperiments() ||
+            _strategyExperimentState.value.entries.none { it.id == id }) return
+        val backup = combinedBackup ?: return
+        val epoch = accessEpoch
+        _strategyExperimentState.value = _strategyExperimentState.value.copy(
+            busy = true, error = null, message = null
+        )
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) { backup.deleteStrategyExperiment(id) }
+                if (currentAccess(epoch)) _strategyExperimentState.value = StrategyExperimentUiState(
+                    entries = result, loaded = true, message = "Idee gelöscht."
+                )
+            } catch (_: Exception) {
+                if (currentAccess(epoch)) _strategyExperimentState.value = StrategyExperimentUiState(
                     error = "Löschen fehlgeschlagen. Bitte erneut sicher laden."
                 )
             }
@@ -491,6 +593,8 @@ class AppViewModel(
         val store = journal ?: return
         if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
             _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy || !_strategyExperimentState.value.loaded ||
+            _strategyExperimentState.value.error != null ||
             _state.value.destination != Destination.CHECKIN ||
             _checkIn.value.step != CheckInStep.AUSKLANG || !_checkIn.value.hasPersonalInput) return
         val epoch = accessEpoch
@@ -521,7 +625,8 @@ class AppViewModel(
     }
 
     fun editJournalEntry(id: String) {
-        if (!allowed() || _journalState.value.busy || _insightState.value.busy) return
+        if (!allowed() || _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy) return
         val entry = _journalState.value.entries.firstOrNull { it.id == id } ?: return
         _editingEntryId.value = id
         _checkIn.value = entry.draft.copy(
@@ -534,19 +639,24 @@ class AppViewModel(
     fun deleteJournalEntry(id: String) {
         val store = journal ?: return
         if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
-            _journalState.value.busy || _insightState.value.busy) return
+            _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy || !_strategyExperimentState.value.loaded ||
+            _strategyExperimentState.value.error != null) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 val refreshed = withContext(Dispatchers.IO) {
                     combinedBackup?.deleteJournalEntry(id) ?: store.delete(id)
-                    combinedBackup?.listInsights()
+                    Pair(combinedBackup?.listInsights(),
+                        combinedBackup?.listStrategyExperiments())
                 }
                 if (!currentAccess(epoch)) return@launch
-                if (refreshed != null) _insightState.value = InsightUiState(
-                    entries = refreshed, loaded = true
+                if (refreshed.first != null) _insightState.value = InsightUiState(
+                    entries = refreshed.first!!, loaded = true
                 )
+                if (refreshed.second != null) _strategyExperimentState.value =
+                    StrategyExperimentUiState(entries = refreshed.second!!, loaded = true)
                 _journalState.value = JournalUiState(
                     _journalState.value.entries.filterNot { it.id == id },
                     loaded = true
@@ -559,6 +669,9 @@ class AppViewModel(
                     _insightState.value = InsightUiState(
                         error = "Bitte persönliche Daten erneut sicher laden."
                     )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Bitte Strategieideen erneut sicher laden."
+                    )
                 }
             }
         }
@@ -567,19 +680,24 @@ class AppViewModel(
     fun deleteEntireJournal() {
         val store = journal ?: return
         if (!allowed() || !_journalState.value.loaded || _journalState.value.error != null ||
-            _journalState.value.busy || _insightState.value.busy) return
+            _journalState.value.busy || _insightState.value.busy ||
+            _strategyExperimentState.value.busy || !_strategyExperimentState.value.loaded ||
+            _strategyExperimentState.value.error != null) return
         val epoch = accessEpoch
         _journalState.value = _journalState.value.copy(busy = true, error = null)
         viewModelScope.launch {
             try {
                 val refreshed = withContext(Dispatchers.IO) {
                     combinedBackup?.deleteEntireJournal() ?: store.deleteAll()
-                    combinedBackup?.listInsights()
+                    Pair(combinedBackup?.listInsights(),
+                        combinedBackup?.listStrategyExperiments())
                 }
                 if (currentAccess(epoch)) {
-                    if (refreshed != null) _insightState.value = InsightUiState(
-                        entries = refreshed, loaded = true
+                    if (refreshed.first != null) _insightState.value = InsightUiState(
+                        entries = refreshed.first!!, loaded = true
                     )
+                    if (refreshed.second != null) _strategyExperimentState.value =
+                        StrategyExperimentUiState(entries = refreshed.second!!, loaded = true)
                     _journalState.value = JournalUiState(loaded = true)
                 }
             } catch (e: Exception) {
@@ -589,6 +707,9 @@ class AppViewModel(
                     )
                     _insightState.value = InsightUiState(
                         error = "Bitte persönliche Daten erneut sicher laden."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Bitte Strategieideen erneut sicher laden."
                     )
                 }
             }
