@@ -13,6 +13,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.valoon4.emotionskompass.core.insights.PersonalInsight
+import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.designsystem.EmotionskompassTheme
 import com.valoon4.emotionskompass.core.insights.ExperimentEvaluation
 import com.valoon4.emotionskompass.core.insights.ExperimentStatus
@@ -29,6 +32,93 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class StrategyExperimentsEmulatorTest {
     @get:Rule val rule = createComposeRule()
+
+    private val catalog by lazy {
+        val assets = InstrumentationRegistry.getInstrumentation().targetContext.assets
+        fun read(file: String) = assets.open(file).bufferedReader().use { it.readText() }
+        StrategyCatalog.fromJsonParts(read("catalog/strategies.de.v1.json"),
+            listOf("situation", "regulation-a", "regulation-b", "cognition-a",
+                "cognition-b", "social", "values", "recovery", "patterns")
+                .map { read("catalog/strategies.$it.de.v1.json") })
+    }
+
+    @Test fun catalogProposalIsAnUnsavedDraftUntilExplicitConfirmation() {
+        var saved: StrategyExperiment? = null
+        val selected = requireNotNull(catalog.find("planning"))
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(loaded = true),
+                    onReload = {}, onSave = { saved = it },
+                    onArchive = { _, _ -> }, onDelete = {},
+                    catalog = catalog, incomingCatalog = selected
+                )
+            }
+        }
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-title")
+        )
+        rule.runOnIdle { assertNull(saved) }
+        rule.onNodeWithTag("experiment-explicit-save").performClick()
+        rule.runOnIdle {
+            assertEquals("planning", saved?.sourceStrategyId)
+            assertEquals(selected.title, saved?.sourceTitleFallback)
+            assertTrue(saved?.relatedInsightIds.orEmpty().isEmpty())
+        }
+    }
+
+    @Test fun insightReferenceIsNotAddedUntilItIsExplicitlySelected() {
+        val insight = PersonalInsight.create(
+            "Nur ein fiktiver eigener Erkenntnistext", System.currentTimeMillis()
+        )
+        var saved: StrategyExperiment? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(loaded = true),
+                    onReload = {}, onSave = { saved = it },
+                    onArchive = { _, _ -> }, onDelete = {},
+                    insights = listOf(insight), incomingInsightId = insight.id
+                )
+            }
+        }
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-title")
+        )
+        rule.onNodeWithTag("experiment-title").performTextInput("Eine eigene Idee")
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-insight-link-${insight.id}")
+        )
+        rule.onNodeWithTag("experiment-insight-link-${insight.id}").performClick()
+        rule.onNodeWithTag("experiment-explicit-save").performClick()
+        rule.runOnIdle {
+            assertEquals(setOf(insight.id), saved?.relatedInsightIds)
+            assertEquals("Eine eigene Idee", saved?.customTitle)
+            assertTrue(saved?.planText.orEmpty().isEmpty())
+        }
+    }
+
+    @Test fun absentCatalogCardRetainsUsersSavedIdeaWithoutGuessingReplacement() {
+        val item = StrategyExperiment.fromCatalog(
+            "old-not-present", "Frühere Beispielkarte", System.currentTimeMillis()
+        )
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(entries = listOf(item), loaded = true),
+                    onReload = {}, onSave = {},
+                    onArchive = { _, _ -> }, onDelete = {},
+                    catalog = catalog,
+                    onOpenStrategy = { throw AssertionError("must not guess catalog ID") }
+                )
+            }
+        }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-missing-catalog")
+        )
+        rule.onNodeWithTag("experiment-missing-catalog").assertExists()
+        rule.onNodeWithTag("experiment-open-strategy").assertDoesNotExist()
+    }
 
     @Test fun cancellingTypedIdeaNeverCallsSaveOrCreatesAnEntry() {
         var saves = 0
