@@ -20,7 +20,6 @@ import com.valoon4.emotionskompass.core.insights.CombinedBackupRepository
 import com.valoon4.emotionskompass.core.insights.InsightBundleBackup
 import com.valoon4.emotionskompass.core.insights.StrategyBundleBackup
 import com.valoon4.emotionskompass.core.insights.StrategyExperiment
-import com.valoon4.emotionskompass.core.insights.StrategyExperimentChanges
 import com.valoon4.emotionskompass.core.insights.encryptedBackupDigest
 import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
@@ -476,15 +475,27 @@ class AppViewModel(
         _insightState.value = current.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
             try {
-                val result = withContext(Dispatchers.IO) { backup.deleteInsight(id) }
-                if (currentAccess(epoch)) _insightState.value = InsightUiState(
-                    result.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
-                    message = "Erkenntnis gelöscht."
-                )
+                val result = withContext(Dispatchers.IO) {
+                    Pair(backup.deleteInsight(id), backup.listStrategyExperiments())
+                }
+                if (currentAccess(epoch)) {
+                    _insightState.value = InsightUiState(
+                        result.first.sortedByDescending { it.updatedAtUtcMillis }, loaded = true,
+                        message = "Erkenntnis gelöscht."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        entries = result.second, loaded = true
+                    )
+                }
             } catch (_: Exception) {
-                if (currentAccess(epoch)) _insightState.value = current.copy(
-                    error = "Löschen fehlgeschlagen. Bitte erneut sicher laden."
-                )
+                if (currentAccess(epoch)) {
+                    _insightState.value = InsightUiState(
+                        error = "Löschen fehlgeschlagen. Bitte erneut sicher laden."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Bitte Strategieideen erneut sicher laden."
+                    )
+                }
             }
         }
     }
@@ -696,6 +707,9 @@ class AppViewModel(
                     )
                     _insightState.value = InsightUiState(
                         error = "Bitte persönliche Daten erneut sicher laden."
+                    )
+                    _strategyExperimentState.value = StrategyExperimentUiState(
+                        error = "Bitte Strategieideen erneut sicher laden."
                     )
                 }
             }
