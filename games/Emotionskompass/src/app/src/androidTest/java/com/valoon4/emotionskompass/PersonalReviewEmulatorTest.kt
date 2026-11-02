@@ -172,8 +172,14 @@ class PersonalReviewEmulatorTest {
         rule.onNode(hasClickAction() and hasText("Freude", substring = true))
             .performClick()
         rule.onNodeWithText("Einträge mit „Freude“").assertExists()
+        // LazyColumn virtualizes offscreen buttons, especially with 200% text.
+        // Request the journal item first; only then click its visible action.
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("Tagebucheintrag ansehen", substring = true))
         rule.onAllNodes(hasClickAction() and hasText("Tagebucheintrag ansehen", substring = true))
-            .onFirst().performScrollTo().performClick()
+            .onFirst().performClick()
         rule.runOnIdle { assertTrue(opened == "beleg-a" || opened == "beleg-b") }
     }
 
