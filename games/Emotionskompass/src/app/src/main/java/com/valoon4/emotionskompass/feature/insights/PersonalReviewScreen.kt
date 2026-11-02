@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -116,6 +117,11 @@ fun PersonalReviewScreen(
     var showAllPatterns by rememberSaveable { mutableStateOf(false) }
     var showPatternCriteria by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    // The evidence list replaces the overview's lazy items. Always reveal
+    // its heading instead of retaining an offscreen overview scroll position.
+    LaunchedEffect(selectedTerm) {
+        if (selectedTerm != null) listState.scrollToItem(0)
+    }
     // Selection is held only in the locked ViewModel's in-memory Flow, never Bundle.
     val zone = ZoneId.systemDefault()
     val window = remember(preset, startText, endText, today, zone) {
