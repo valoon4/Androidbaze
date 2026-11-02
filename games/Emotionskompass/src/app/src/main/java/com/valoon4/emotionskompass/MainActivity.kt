@@ -102,6 +102,7 @@ import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
 import com.valoon4.emotionskompass.core.lessons.StrategyCaseCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyExperimentEligibility
 import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
 import com.valoon4.emotionskompass.core.learning.LearningEngine
 import com.valoon4.emotionskompass.core.learning.LearningKind
@@ -389,6 +390,11 @@ private fun EmotionskompassApp(
     val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
     var selectedStrategyId by rememberSaveable { mutableStateOf<String?>(null) }
+    // Public catalog ID, only an unsaved navigation proposal. No personal text in Bundle.
+    var proposedExperimentStrategyId by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(unlocked) {
+        if (!unlocked) proposedExperimentStrategyId = null
+    }
     var strategyHistory by rememberSaveable { mutableStateOf(emptyList<String>()) }
     var strategyReturnTarget by rememberSaveable { mutableStateOf<String?>(null) }
     var returnCaseId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -418,6 +424,12 @@ private fun EmotionskompassApp(
     }
     val returnFromStrategy: () -> Unit = {
         when (strategyReturnTarget) {
+            "experiment" -> {
+                selectedStrategyId = null
+                strategyHistory = emptyList()
+                strategyReturnTarget = null
+                vm.selectSection(MainSection.RUECKBLICK)
+            }
             "need" -> {
                 selectedStrategyId = null
                 strategyHistory = emptyList()
@@ -703,9 +715,16 @@ private fun EmotionskompassApp(
                                             sourceLabel = when (strategyReturnTarget) {
                                                 "need" -> "Zum Bedürfnis"
                                                 "case" -> "Zum Praxisfall"
+                                                "experiment" -> "Zurück zu Ausprobieren"
                                                 else -> ""
                                             },
-                                            hasPreviousStrategy = strategyHistory.isNotEmpty()
+                                            hasPreviousStrategy = strategyHistory.isNotEmpty(),
+                                            onProposeStrategy = { card ->
+                                                if (StrategyExperimentEligibility.canOffer(card)) {
+                                                    proposedExperimentStrategyId = card.id
+                                                    vm.selectSection(MainSection.RUECKBLICK)
+                                                }
+                                            }
                                         )
                                     } else {
                                         Text("Der Strategieatlas konnte nicht geladen werden. Die anderen Atlanten bleiben verfügbar.",
@@ -781,7 +800,22 @@ private fun EmotionskompassApp(
                         strategyExperiments = strategyExperiments,
                         onSaveExperiment = vm::saveStrategyExperiment,
                         onArchiveExperiment = vm::setStrategyExperimentArchived,
-                        onDeleteExperiment = vm::deleteStrategyExperiment
+                        onDeleteExperiment = vm::deleteStrategyExperiment,
+                        strategyCatalog = strategyCatalog,
+                        incomingStrategyCard = proposedExperimentStrategyId?.let { id ->
+                            strategyCatalog?.find(id)?.takeIf(StrategyExperimentEligibility::canOffer)
+                        },
+                        onCatalogProposalConsumed = { proposedExperimentStrategyId = null },
+                        onBrowseStrategyAtlas = {
+                            selectedStrategyId = null
+                            strategyHistory = emptyList()
+                            strategyReturnTarget = "experiment"
+                            discoveryAtlas = DiscoveryAtlas.STRATEGIEN
+                            vm.selectSection(MainSection.ENTDECKEN)
+                        },
+                        onOpenStrategyCard = { id ->
+                            if (strategyCatalog?.find(id) != null) openStrategy(id, "experiment")
+                        }
                     )
                     }
                 }
