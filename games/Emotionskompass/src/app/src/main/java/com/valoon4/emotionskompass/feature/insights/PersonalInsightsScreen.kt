@@ -59,7 +59,8 @@ fun PersonalInsightsScreen(
     onUnlink: (String, String) -> Unit,
     onOpenJournal: (String) -> Unit,
     reflectionOriginLabel: String? = null,
-    showBackButton: Boolean = true
+    showBackButton: Boolean = true,
+    onConsiderIdeaFromInsight: (String) -> Unit = {}
 ) {
     var query by remember { mutableStateOf("") }
     var showArchived by remember { mutableStateOf(false) }
@@ -396,6 +397,12 @@ fun PersonalInsightsScreen(
                                 ) { Text("Diese Verknüpfung lösen") }
                             }
                         }
+                        OutlinedButton(
+                            onClick = { onConsiderIdeaFromInsight(insight.id) },
+                            enabled = !state.busy,
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                .testTag("insight-consider-idea-${insight.id}")
+                        ) { Text("Daraus freiwillig eine Idee entwickeln") }
                         OutlinedButton(
                             onClick = { openEditor(insight) }, enabled = !state.busy,
                             modifier = Modifier.fillMaxWidth()
