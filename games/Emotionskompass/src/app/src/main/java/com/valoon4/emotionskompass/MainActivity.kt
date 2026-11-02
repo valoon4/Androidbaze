@@ -384,6 +384,7 @@ private fun EmotionskompassApp(
     val checkIn by vm.checkIn.collectAsState()
     val diary by vm.journalState.collectAsState()
     val personalInsights by vm.insightState.collectAsState()
+    val strategyExperiments by vm.strategyExperimentState.collectAsState()
     val learning by learningVm.state.collectAsState()
     val editingId by vm.editingEntryId.collectAsState()
     var confirmDiscard by remember { mutableStateOf(false) }
@@ -776,7 +777,11 @@ private fun EmotionskompassApp(
                         onSaveInsight = vm::savePersonalInsight,
                         onArchiveInsight = vm::setPersonalInsightArchived,
                         onDeleteInsight = vm::deletePersonalInsight,
-                        onUnlinkInsight = vm::unlinkPersonalInsight
+                        onUnlinkInsight = vm::unlinkPersonalInsight,
+                        strategyExperiments = strategyExperiments,
+                        onSaveExperiment = vm::saveStrategyExperiment,
+                        onArchiveExperiment = vm::setStrategyExperimentArchived,
+                        onDeleteExperiment = vm::deleteStrategyExperiment
                     )
                     }
                 }
