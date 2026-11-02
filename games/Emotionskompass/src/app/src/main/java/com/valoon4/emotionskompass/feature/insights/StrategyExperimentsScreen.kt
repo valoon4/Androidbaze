@@ -32,6 +32,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.valoon4.emotionskompass.core.insights.PersonalInsight
+import com.valoon4.emotionskompass.core.strategies.StrategyCard
+import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyExperimentEligibility
 import com.valoon4.emotionskompass.core.insights.ExperimentEvaluation
 import com.valoon4.emotionskompass.core.insights.ExperimentStatus
 import com.valoon4.emotionskompass.core.insights.StrategyExperiment
@@ -44,7 +48,15 @@ fun StrategyExperimentsScreen(
     onReload: () -> Unit,
     onSave: (StrategyExperiment) -> Unit,
     onArchive: (String, Boolean) -> Unit,
-    onDelete: (String) -> Unit
+    onDelete: (String) -> Unit,
+    catalog: StrategyCatalog? = null,
+    insights: List<PersonalInsight> = emptyList(),
+    insightsReady: Boolean = true,
+    incomingCatalog: StrategyCard? = null,
+    incomingInsightId: String? = null,
+    onConsumeIncoming: () -> Unit = {},
+    onBrowseAtlas: () -> Unit = {},
+    onOpenStrategy: (String) -> Unit = {}
 ) {
     var query by remember { mutableStateOf("") }
     var showArchived by rememberSaveable { mutableStateOf(false) }
@@ -59,10 +71,18 @@ fun StrategyExperimentsScreen(
     var waitingForSave by remember { mutableStateOf(false) }
     var confirmDiscard by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<StrategyExperiment?>(null) }
+    var catalogDraft by remember { mutableStateOf<StrategyCard?>(null) }
+    var relatedInsightIds by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var showAllInsightChoices by remember { mutableStateOf(false) }
+    var prominentInsightId by remember { mutableStateOf<String?>(null) }
 
     fun resetEditor() {
         showEditor = false
         editor = null
+        catalogDraft = null
+        relatedInsightIds = emptySet()
+        showAllInsightChoices = false
+        prominentInsightId = null
         title = ""
         plan = ""
         caution = ""
@@ -75,6 +95,10 @@ fun StrategyExperimentsScreen(
 
     fun openEditor(item: StrategyExperiment?) {
         editor = item
+        catalogDraft = null
+        relatedInsightIds = item?.relatedInsightIds.orEmpty()
+        showAllInsightChoices = false
+        prominentInsightId = null
         title = item?.customTitle ?: item?.sourceTitleFallback.orEmpty()
         plan = item?.planText.orEmpty()
         caution = item?.cautionText.orEmpty()
@@ -93,6 +117,22 @@ fun StrategyExperimentsScreen(
             query = ""
         }
     }
+    // Incoming IDs are only navigation hints, never saved to Android SavedState.
+    // An atlas visit, reflection link or idea proposal cannot write any private data.
+    LaunchedEffect(incomingCatalog?.id, incomingInsightId, state.loaded, state.error) {
+        if (state.loaded && state.error == null &&
+            (incomingCatalog != null || incomingInsightId != null) && !showEditor) {
+            val approved = incomingCatalog?.takeIf(StrategyExperimentEligibility::canOffer)
+            openEditor(null)
+            if (approved != null) {
+                catalogDraft = approved
+                title = approved.title
+            }
+            prominentInsightId = incomingInsightId
+            onConsumeIncoming()
+        }
+    }
+
     LaunchedEffect(state.message) {
         if (waitingForSave && state.message in listOf("Idee gespeichert.", "Idee aktualisiert.")) {
             resetEditor()
@@ -150,15 +190,29 @@ fun StrategyExperimentsScreen(
                             value = title,
                             onValueChange = {
                                 if (editor?.sourceStrategyId == null &&
+                                    catalogDraft == null &&
                                     it.length <= StrategyExperiment.MAX_TITLE) title = it
                             },
-                            enabled = editor?.sourceStrategyId == null && !state.busy,
+                            enabled = editor?.sourceStrategyId == null &&
+                                catalogDraft == null && !state.busy,
                             label = { Text("Meine Idee") },
                             supportingText = { Text("${title.length} / ${StrategyExperiment.MAX_TITLE} Zeichen") },
                             modifier = Modifier.fillMaxWidth().testTag("experiment-title"),
                             minLines = 1,
                             maxLines = 3
                         )
+                    }
+                    if (catalogDraft != null || editor?.sourceStrategyId != null) {
+                        item {
+                            Text(
+                                if (catalogDraft != null) "Aus dem Strategieatlas selbst ausgewählt: „${catalogDraft?.title}“."
+                                else "Diese Idee bezieht sich auf eine ausdrücklich ausgewählte Strategiekarte.",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Text("Bitte lies im Strategieatlas die Grenzen und möglichen Nachteile. Die Auswahl ist keine individuelle Empfehlung.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
                     item {
                         Text("Alles ist freiwillig. Du musst nichts ausprobieren; ohne deinen Speicherklick wird nichts abgelegt.",
@@ -240,6 +294,53 @@ fun StrategyExperimentsScreen(
                             minLines = 3
                         )
                     }
+                    if (insightsReady && insights.isNotEmpty()) {
+                        item {
+                            Text("Eigene Erkenntnis als Bezug (freiwillig)",
+                                fontWeight = FontWeight.SemiBold)
+                            Text("Ein Bezug wird nur durch deine Auswahl gespeichert. Der Text deiner Erkenntnis wird nicht in diese Idee kopiert.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            if (prominentInsightId != null &&
+                                prominentInsightId !in relatedInsightIds) {
+                                Text("Du bist von einer Erkenntnis gekommen. Der Bezug ist noch nicht ausgewählt.",
+                                    style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                        val candidates = insights.sortedWith(
+                            compareByDescending<PersonalInsight> {
+                                it.id == prominentInsightId || it.id in relatedInsightIds
+                            }.thenByDescending { it.updatedAtUtcMillis }
+                        ).let { if (showAllInsightChoices) it else it.take(5) }
+                        items(candidates, key = { "insight-ref-${it.id}" }) { insight ->
+                            FilterChip(
+                                selected = insight.id in relatedInsightIds,
+                                onClick = {
+                                    relatedInsightIds = if (insight.id in relatedInsightIds)
+                                        relatedInsightIds - insight.id
+                                    else if (relatedInsightIds.size < StrategyExperiment.MAX_LINKS)
+                                        relatedInsightIds + insight.id
+                                    else relatedInsightIds
+                                },
+                                enabled = !state.busy,
+                                label = { Text(
+                                    insight.text.replace('\n', ' ').take(85) +
+                                        if (insight.text.length > 85) " …" else ""
+                                ) },
+                                modifier = Modifier.fillMaxWidth()
+                                    .testTag("experiment-insight-link-${insight.id}")
+                            )
+                        }
+                        if (insights.size > 5) {
+                            item {
+                                TextButton(
+                                    onClick = { showAllInsightChoices = !showAllInsightChoices },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) { Text(if (showAllInsightChoices) "Weniger Erkenntnisse anzeigen"
+                                    else "Weitere Erkenntnisse auswählen") }
+                            }
+                        }
+                    }
                     item {
                         Text("Nur durch „Ausdrücklich speichern“ wird dieser Entwurf lokal verschlüsselt abgelegt. Die Idee wird in deiner EKB3-Gesamtsicherung mitgesichert.",
                             style = MaterialTheme.typography.bodySmall,
@@ -255,7 +356,10 @@ fun StrategyExperimentsScreen(
                     onClick = {
                         val now = System.currentTimeMillis()
                         val item = editor
-                        val next = if (item == null) {
+                        val next = if (item == null && catalogDraft != null) {
+                            val selected = requireNotNull(catalogDraft)
+                            StrategyExperiment.fromCatalog(selected.id, selected.title, now)
+                        } else if (item == null) {
                             StrategyExperiment.fromOwnIdea(title.trim(), now)
                         } else {
                             item.copy(
@@ -267,7 +371,8 @@ fun StrategyExperimentsScreen(
                         waitingForSave = true
                         onSave(next.copy(
                             planText = plan, cautionText = caution, status = status,
-                            evaluation = evaluation, reflectionText = reflection
+                            evaluation = evaluation, reflectionText = reflection,
+                            relatedInsightIds = relatedInsightIds
                         ))
                     },
                     modifier = Modifier.testTag("experiment-explicit-save")
@@ -317,6 +422,16 @@ fun StrategyExperimentsScreen(
                     modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                         .testTag("experiment-create")
                 ) { Text("Eigene Idee notieren") }
+                OutlinedButton(
+                    onClick = onBrowseAtlas,
+                    enabled = !state.busy && catalog != null &&
+                        state.entries.size < StrategyExperiment.MAX_EXPERIMENTS,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                        .testTag("experiment-browse-atlas")
+                ) { Text("Strategieatlas ansehen") }
+                Text("Du wählst dort selbst aus. Eine Strategie zu lesen speichert noch keine Idee.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
                 if (state.entries.size >= StrategyExperiment.MAX_EXPERIMENTS) {
                     Text("Die Sammlung ist voll. Du kannst vorhandene Ideen bearbeiten oder nach Bestätigung löschen.",
                         style = MaterialTheme.typography.bodySmall)
@@ -373,6 +488,25 @@ fun StrategyExperimentsScreen(
                         Text("Status: ${item.status.label()} · Einschätzung: ${item.evaluation?.label() ?: "Keine Einschätzung"}",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        if (item.sourceStrategyId != null) {
+                            val card = catalog?.find(item.sourceStrategyId)
+                            if (card == null) {
+                                Text("Diese Strategiekarte ist nicht mehr im Atlas verfügbar. Deine eigene Idee bleibt erhalten.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.testTag("experiment-missing-catalog"))
+                            } else {
+                                OutlinedButton(
+                                    onClick = { onOpenStrategy(card.id) },
+                                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                        .testTag("experiment-open-strategy")
+                                ) { Text("Strategie, Grenzen und Wissen ansehen") }
+                            }
+                        }
+                        if (item.relatedInsightIds.isNotEmpty()) {
+                            Text("Mit ${item.relatedInsightIds.size} selbst gewählten Erkenntnissen verknüpft.",
+                                style = MaterialTheme.typography.bodySmall)
+                        }
                         if (item.planText.isNotBlank()) Text(item.planText)
                         if (item.reflectionText.isNotBlank()) {
                             Text("Meine Beobachtung", fontWeight = FontWeight.SemiBold)
