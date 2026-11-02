@@ -59,7 +59,7 @@ echo "::endgroup::"
 
 run_suite() {
   local label="$1" scale="$2" out="$REPORT_DIR/$1.log"
-  echo "::group::Run all eighteen Compose tests: $label (font_scale=$scale)"
+  echo "::group::Run all nineteen Compose tests: $label (font_scale=$scale)"
   adb shell settings put system font_scale "$scale"
   local current_scale
   current_scale="$(adb shell settings get system font_scale | tr -d '\r')"
@@ -72,10 +72,10 @@ run_suite() {
   adb shell am instrument -w -r -e class "$TEST_CLASS" "$RUNNER" | tee "$out"
   # am instrument often exits 0 even for failed/zero tests: explicitly assert
   # the instrumentation result and exact count.
-  if ! grep -Eq 'OK \(18 tests\)' "$out" \
+  if ! grep -Eq 'OK \(19 tests\)' "$out" \
       || ! grep -q 'INSTRUMENTATION_CODE: -1' "$out" \
       || grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=|Error in ' "$out"; then
-    echo "::error::Expected eighteen passing instrumented tests at $label; see $out"
+    echo "::error::Expected nineteen passing instrumented tests at $label; see $out"
     return 1
   fi
   echo "::endgroup::"
@@ -116,4 +116,4 @@ adb shell wm size
 adb shell wm density
 run_suite "narrow-320dp-200-percent" "2.0"
 
-echo "M7.4.2: 36 Compose UI executions plus 3 EKB2 and 8 EKB3 KeyStore tests passed."
+echo "M7.4.2: 38 Compose UI executions plus 3 EKB2 and 8 EKB3 KeyStore tests passed."
