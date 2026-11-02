@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -41,11 +42,15 @@ class StrategyExperimentsEmulatorTest {
             }
         }
         rule.onNodeWithTag("experiment-create").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-title"))
         rule.onNodeWithTag("experiment-title").performTextInput(
             "Eine Frage stellen, falls etwas unklar ist")
         rule.onNodeWithTag("experiment-cancel").performClick()
         rule.onNodeWithText("Entwurf verwerfen").performClick()
         rule.runOnIdle { assertEquals(0, saves) }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Hier hast du noch keine Idee gespeichert."))
         rule.onNodeWithText("Hier hast du noch keine Idee gespeichert.").assertExists()
         rule.onNodeWithText("Eine Frage stellen, falls etwas unklar ist").assertDoesNotExist()
     }
@@ -70,6 +75,8 @@ class StrategyExperimentsEmulatorTest {
             }
         }
         rule.onNodeWithTag("experiment-create").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-title"))
         rule.onNodeWithTag("experiment-title").performTextInput("Fiktiv: Pause überlegen")
         rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
             hasTestTag("experiment-status-NOT_TRIED"))
@@ -133,16 +140,28 @@ class StrategyExperimentsEmulatorTest {
                 )
             }
         }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Archivieren"))
         rule.onNodeWithText("Archivieren").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Archiv"))
         rule.onNodeWithText("Archiv").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Aus Archiv zurückholen"))
         rule.onNodeWithText("Aus Archiv zurückholen").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Aktuelle"))
         rule.onNodeWithText("Aktuelle").performClick()
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-delete-${created.id}"))
         rule.onNodeWithTag("experiment-delete-${created.id}").performClick()
         rule.onNodeWithTag("experiment-confirm-delete").performClick()
         rule.runOnIdle {
             assertEquals(2, archiveChanges)
             assertEquals(created.id, deletedId)
         }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasText("Hier hast du noch keine Idee gespeichert."))
         rule.onNodeWithText("Hier hast du noch keine Idee gespeichert.").assertExists()
     }
 
