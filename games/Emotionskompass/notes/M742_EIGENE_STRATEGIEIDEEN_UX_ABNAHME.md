@@ -24,7 +24,7 @@ Der freiwillige Bereich **Rückblick → Ausprobieren** ergänzt „Übersicht &
 - Private Editorentwürfe, Suchwörter und ausgewählte Einträge verwenden Compose **remember**, nicht **rememberSaveable** oder Android SavedState.
 - Bei Ladefehlern: **kein** Erstellen, Editieren oder Anzeigen früher entschlüsselter persönlicher Ideen; sichtbarer „Erneut sicher laden“-Weg.
 - Bei Journal-/Erkenntnislöschung: EKR2 entfernt verwaiste Referenz-IDs, nicht eigene Strategietexte. ViewModel aktualisiert die angezeigte Strategiesammlung oder sperrt bei Unklarheit den Zugriff.
-- Im Rückblick passen drei Bereichs-Chips via FlowRow in mehrere Zeilen. Editor sowie Liste sind vertikal scrollbar, einschließlich bei 320 dp und 200 % Schrift. Der Ideen-Editor zeigt zuerst das Haupt-Eingabefeld, damit lange Hinweise dieses bei großer Schrift nicht verdecken. Beim Öffnen von Rückblick-Belegen springt die Ansicht zuverlässig zu deren Überschrift.
+- Im Rückblick passen drei Bereichs-Chips via FlowRow in mehrere Zeilen. Editor sowie Liste sind vertikal scrollbar, einschließlich bei 320 dp und 200 % Schrift. Der Ideen-Editor zeigt zuerst das Haupt-Eingabefeld, damit lange Hinweise dieses bei großer Schrift nicht verdecken. Beim Öffnen von Rückblick-Belegen steht die Beleg-Überschrift unmittelbar am Anfang; die ausführliche Zeitraum- und Überblickssteuerung erscheint erst wieder nach „Zurück zum Überblick“. So verdeckt sie bei 200 % Schrift keine Belege.
 - Bei 300 Ideen blockiert die App weitere neue Ideen; bestehende lassen sich noch bearbeiten oder nach expliziter Bestätigung löschen.
 - **Sicherheitsgrenze aus M7.4.1:** Der UI-Schutz durch freiwillige Geräte-Anmeldung ist keine per Zugriff erzwungene Keystore-Benutzerauthentifizierung. Keine stärkere Sicherheit behaupten.
 
