@@ -30,12 +30,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.strategies.StrategyCard
+import com.valoon4.emotionskompass.core.strategies.StrategyExperimentEligibility
 import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
 import com.valoon4.emotionskompass.core.strategies.StrategyLearningIndex
 import com.valoon4.emotionskompass.core.strategies.NeedStrategyLinkIndex
@@ -60,7 +62,8 @@ fun StrategyAtlasScreen(
     onPracticeCase: (String) -> Unit = {},
     onReturnToSource: (() -> Unit)? = null,
     sourceLabel: String = "",
-    hasPreviousStrategy: Boolean = false
+    hasPreviousStrategy: Boolean = false,
+    onProposeStrategy: (StrategyCard) -> Unit = {}
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var familyId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -85,6 +88,7 @@ fun StrategyAtlasScreen(
             caseCatalog = caseCatalog,
             onNeed = onNeed,
             onPracticeCase = onPracticeCase,
+            onProposeStrategy = onProposeStrategy,
             backLabel = if (hasPreviousStrategy) "Zur vorherigen Strategie"
                 else if (onReturnToSource != null) sourceLabel else "Zum Strategieatlas"
         )
@@ -98,6 +102,12 @@ fun StrategyAtlasScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
+            if (onReturnToSource != null && sourceLabel.isNotBlank()) {
+                TextButton(onClick = onReturnToSource, modifier = Modifier.fillMaxWidth()
+                    .testTag("strategy-return-to-source")) {
+                    Text("← $sourceLabel")
+                }
+            }
             Text("Strategien entdecken", style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold)
             Text("${catalog.strategies.size} ausführliche Strategiekarten zu Coping, Emotionsregulation und Bedürfnissen.",
@@ -185,6 +195,7 @@ private fun StrategyDetail(
     caseCatalog: StrategyCaseCatalog?,
     onNeed: (String) -> Unit,
     onPracticeCase: (String) -> Unit,
+    onProposeStrategy: (StrategyCard) -> Unit,
     backLabel: String
 ) {
     val context = LocalContext.current
@@ -218,6 +229,25 @@ private fun StrategyDetail(
                     Text(card.whenUseful)
                     Text("Wichtige Grenze", fontWeight = FontWeight.SemiBold)
                     Text(card.limitations)
+                }
+            }
+        }
+        if (StrategyExperimentEligibility.canOffer(card)) {
+            item {
+                Card {
+                    Column(Modifier.fillMaxWidth().padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        SectionHeading("Für mich prüfen")
+                        Text("Du entscheidest selbst. Diese Strategie ist eine Möglichkeit, keine Empfehlung oder Verpflichtung. Bitte beachte die Grenzen oben.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        OutlinedButton(onClick = { onProposeStrategy(card) },
+                            modifier = Modifier.fillMaxWidth().testTag("strategy-offer-experiment")) {
+                            Text("Freiwillig zum Ausprobieren vormerken")
+                        }
+                        Text("Erst in deinem eigenen Entwurf kannst du ausdrücklich speichern. Allein das Lesen speichert nichts.",
+                            style = MaterialTheme.typography.bodySmall)
+                    }
                 }
             }
         }
