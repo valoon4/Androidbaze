@@ -56,6 +56,8 @@ import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.navigation.InsightUiState
 import com.valoon4.emotionskompass.core.navigation.StrategyExperimentUiState
+import com.valoon4.emotionskompass.core.strategies.StrategyCatalog
+import com.valoon4.emotionskompass.core.strategies.StrategyCard
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import java.time.Instant
@@ -96,12 +98,25 @@ fun PersonalReviewScreen(
     strategyExperiments: StrategyExperimentUiState = StrategyExperimentUiState(),
     onSaveExperiment: (com.valoon4.emotionskompass.core.insights.StrategyExperiment) -> Unit = { },
     onArchiveExperiment: (String, Boolean) -> Unit = { _, _ -> },
-    onDeleteExperiment: (String) -> Unit = { }
+    onDeleteExperiment: (String) -> Unit = { },
+    strategyCatalog: StrategyCatalog? = null,
+    incomingStrategyCard: StrategyCard? = null,
+    onCatalogProposalConsumed: () -> Unit = {},
+    onBrowseStrategyAtlas: () -> Unit = {},
+    onOpenStrategyCard: (String) -> Unit = {}
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
     var showInsightPage by rememberSaveable { mutableStateOf(false) }
     var showExperimentsPage by rememberSaveable { mutableStateOf(false) }
+    // This is an in-memory hint only, not a copy of private insight text.
+    var incomingIdeaInsightId by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(incomingStrategyCard?.id) {
+        if (incomingStrategyCard != null) {
+            showInsightPage = false
+            showExperimentsPage = true
+        }
+    }
     // Selected observation wording is in-memory only, never rememberSaveable.
     var reflectionOriginLabel by remember { mutableStateOf<String?>(null) }
     BackHandler(enabled = showInsightPage || showExperimentsPage) {
@@ -248,7 +263,12 @@ fun PersonalReviewScreen(
                     onUnlink = onUnlinkInsight,
                     onOpenJournal = onOpenJournalEntry,
                     reflectionOriginLabel = reflectionOriginLabel,
-                    showBackButton = false
+                    showBackButton = false,
+                    onConsiderIdeaFromInsight = { id ->
+                        incomingIdeaInsightId = id
+                        showInsightPage = false
+                        showExperimentsPage = true
+                    }
                 )
             } else if (showExperimentsPage) {
                 StrategyExperimentsScreen(
@@ -256,7 +276,19 @@ fun PersonalReviewScreen(
                     onReload = onReload,
                     onSave = onSaveExperiment,
                     onArchive = onArchiveExperiment,
-                    onDelete = onDeleteExperiment
+                    onDelete = onDeleteExperiment,
+                    catalog = strategyCatalog,
+                    insights = personalInsights.entries,
+                    insightsReady = personalInsights.loaded && !personalInsights.busy &&
+                        personalInsights.error == null,
+                    incomingCatalog = incomingStrategyCard,
+                    incomingInsightId = incomingIdeaInsightId,
+                    onConsumeIncoming = {
+                        incomingIdeaInsightId = null
+                        onCatalogProposalConsumed()
+                    },
+                    onBrowseAtlas = onBrowseStrategyAtlas,
+                    onOpenStrategy = onOpenStrategyCard
                 )
             } else {
                 LazyColumn(
