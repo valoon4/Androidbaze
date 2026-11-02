@@ -143,10 +143,8 @@ fun StrategyExperimentsScreen(
                         .testTag("experiment-editor-list"),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    item {
-                        Text("Du entscheidest selbst, ob du eine Idee ausprobieren möchtest. Auch Nicht-Ausprobieren ist völlig in Ordnung. Nichts wird automatisch gespeichert.",
-                            style = MaterialTheme.typography.bodyMedium)
-                    }
+                    // Put the main entry field first. On 320 dp/200%-font
+                    // displays, a long introduction would otherwise hide it.
                     item {
                         OutlinedTextField(
                             value = title,
@@ -161,6 +159,11 @@ fun StrategyExperimentsScreen(
                             minLines = 1,
                             maxLines = 3
                         )
+                    }
+                    item {
+                        Text("Alles ist freiwillig. Du musst nichts ausprobieren; ohne deinen Speicherklick wird nichts abgelegt.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     item {
                         OutlinedTextField(
