@@ -62,6 +62,33 @@ class PersonalReviewEmulatorTest {
         ))
     }
 
+    @Test fun allThreeReviewTabsStayAccessibleAtLargeFont() {
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = snapshot(), busy = false, error = null,
+                    emotions = emotions, needs = needs,
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(),
+                    personalInsights = com.valoon4.emotionskompass.core.navigation.InsightUiState(
+                        loaded = true
+                    ),
+                    strategyExperiments =
+                        com.valoon4.emotionskompass.core.navigation.StrategyExperimentUiState(
+                            loaded = true
+                        )
+                )
+            }
+        }
+        rule.onNodeWithTag("review-tab-experiments").performClick()
+        rule.onNodeWithTag("experiments-heading").assertExists()
+        rule.onNodeWithTag("review-tab-insights").performClick()
+        rule.onNodeWithTag("insights-heading").assertExists()
+        rule.onNodeWithTag("review-tab-overview").performClick()
+        rule.onNodeWithText("Dein Rückblick").assertExists()
+    }
+
     @Test fun persistentTabsExplainPatternsAndRevealEveryEligibleCombination() {
         val now = System.currentTimeMillis()
         val journal = (0..11).map { day ->
