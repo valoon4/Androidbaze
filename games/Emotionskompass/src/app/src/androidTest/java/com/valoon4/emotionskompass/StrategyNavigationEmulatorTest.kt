@@ -7,6 +7,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -66,6 +67,59 @@ class StrategyNavigationEmulatorTest {
             listOf("a", "b", "c").map { asset("lessons/strategy-cases-$it.de.v1.json") },
             strategies.strategies.map { it.id }.toSet()
         )
+    }
+
+    @Test fun approvedCardOpensOnlyAnOptInDraftAfterLimitsAreReadable() {
+        var offered: String? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyAtlasScreen(
+                    catalog = strategies, selectedId = "planning",
+                    onSelect = {}, onBackToList = {}, onKnowledgeArticle = {},
+                    onProposeStrategy = { offered = it.id }
+                )
+            }
+        }
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("Wichtige Grenze"))
+        rule.onNodeWithText("Wichtige Grenze").assertExists()
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("Freiwillig zum Ausprobieren vormerken"))
+        rule.onNodeWithTag("strategy-offer-experiment").performClick()
+        rule.runOnIdle { assertEquals("planning", offered) }
+    }
+
+    @Test fun pureExplanationCardsCanNeverBecomeTryItActions() {
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyAtlasScreen(
+                    catalog = strategies, selectedId = "prolonged-avoidance",
+                    onSelect = {}, onBackToList = {}, onKnowledgeArticle = {},
+                    onProposeStrategy = { throw AssertionError("warning card must not offer") }
+                )
+            }
+        }
+        rule.onNodeWithTag("strategy-offer-experiment").assertDoesNotExist()
+    }
+
+    @Test fun atlasOverviewCanReturnToVoluntaryIdeaSource() {
+        var returned = false
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyAtlasScreen(
+                    catalog = strategies, selectedId = null,
+                    onSelect = {}, onBackToList = {}, onKnowledgeArticle = {},
+                    onReturnToSource = { returned = true },
+                    sourceLabel = "Zurück zu Ausprobieren"
+                )
+            }
+        }
+        rule.onNodeWithTag("strategy-return-to-source").performClick()
+        rule.runOnIdle { assertTrue(returned) }
     }
 
     @Test fun acceptanceNeedDoesNotSuggestInnerAcceptanceAndOpensExactCard() {
