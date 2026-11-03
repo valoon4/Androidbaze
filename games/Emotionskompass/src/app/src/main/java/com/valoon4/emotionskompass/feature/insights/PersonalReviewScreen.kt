@@ -281,6 +281,9 @@ fun PersonalReviewScreen(
                     insights = personalInsights.entries,
                     insightsReady = personalInsights.loaded && !personalInsights.busy &&
                         personalInsights.error == null,
+                    insightsBusy = personalInsights.busy || !personalInsights.loaded &&
+                        personalInsights.error == null,
+                    insightsError = personalInsights.error != null,
                     incomingCatalog = incomingStrategyCard,
                     incomingInsightId = incomingIdeaInsightId,
                     onConsumeIncoming = {
