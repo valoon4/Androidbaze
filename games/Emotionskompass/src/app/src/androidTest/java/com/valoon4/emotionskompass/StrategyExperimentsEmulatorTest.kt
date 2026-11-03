@@ -423,4 +423,32 @@ class StrategyExperimentsEmulatorTest {
         rule.runOnIdle { assertEquals("Idee nicht durch kurzes Laden verlieren", saved?.customTitle) }
     }
 
+
+    @Test fun relockWhileEditingDiscardsPrivateUnsavedDraft() {
+        var updateLoaded: (Boolean) -> Unit = {}
+        rule.setContent {
+            EmotionskompassTheme {
+                var loaded by remember { mutableStateOf(true) }
+                updateLoaded = { loaded = it }
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(loaded = loaded),
+                    onReload = {}, onSave = {},
+                    onArchive = { _, _ -> }, onDelete = {}
+                )
+            }
+        }
+        rule.onNodeWithTag("experiment-create").performClick()
+        rule.onNodeWithTag("experiment-title").performTextInput(
+            "Entwurf ist nach Sperre nicht wiederherstellbar"
+        )
+        rule.runOnIdle { updateLoaded(false) }
+        rule.onNodeWithTag("experiment-title").assertDoesNotExist()
+        rule.runOnIdle { updateLoaded(true) }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-create")
+        )
+        rule.onNodeWithTag("experiment-create").performClick()
+        rule.onNodeWithTag("experiment-title")
+            .assertTextContains("Entwurf ist nach Sperre", substring = true).assertDoesNotExist()
+    }
 }
