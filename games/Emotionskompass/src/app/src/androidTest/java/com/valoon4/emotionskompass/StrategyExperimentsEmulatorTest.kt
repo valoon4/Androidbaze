@@ -328,10 +328,12 @@ class StrategyExperimentsEmulatorTest {
         )
         rule.onNodeWithText(original.planText).assertDoesNotExist()
         rule.onNodeWithTag("experiment-expand-${original.id}").performClick()
+        rule.onNodeWithText("Weniger anzeigen").assertExists()
         rule.onNodeWithText(original.planText).assertExists()
         rule.onNodeWithText(original.cautionText).assertExists()
         rule.onNodeWithText(original.reflectionText).assertExists()
         rule.onNodeWithTag("experiment-expand-${original.id}").performClick()
+        rule.onNodeWithText("Alle eigenen Texte anzeigen").assertExists()
         rule.onNodeWithText(original.planText).assertDoesNotExist()
     }
 
