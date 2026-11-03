@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -451,6 +451,8 @@ class StrategyExperimentsEmulatorTest {
             hasTestTag("experiment-create")
         )
         rule.onNodeWithTag("experiment-create").performClick()
-        rule.onNodeWithTag("experiment-title").assertTextEquals("")
+        val editable = rule.onNodeWithTag("experiment-title")
+            .fetchSemanticsNode().config[SemanticsProperties.EditableText].text
+        rule.runOnIdle { assertEquals("", editable) }
     }
 }
