@@ -183,6 +183,84 @@ class PersonalReviewEmulatorTest {
         rule.runOnIdle { assertTrue(opened == "beleg-a" || opened == "beleg-b") }
     }
 
+    @Test fun optionalMentionBarsKeepTheSameCountsAndRealEvidenceLinks() {
+        val source = snapshot() // Fictional: Freude twice, Angst once, Klarheit once
+        var opened: String? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                var selected by remember { mutableStateOf<Pair<String, String>?>(null) }
+                PersonalReviewScreen(
+                    snapshot = source, busy = false, error = null,
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = { opened = it }, onStartCheckIn = {},
+                    selectedTerm = selected, onSelectTerm = { selected = it },
+                    listState = rememberLazyListState()
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("review-mention-bars-toggle")
+        )
+        rule.onNodeWithTag("review-mention-bars-toggle").performClick()
+        rule.onNodeWithTag("review-mention-bars-explanation").assertExists()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("review-mention-emotion-freude")
+        )
+        rule.onNodeWithTag("review-mention-bar-emotion-freude", useUnmergedTree = true)
+            .assertExists()
+        rule.onNodeWithTag("review-mention-emotion-freude")
+            .assertExists()
+        rule.onNodeWithText("In 2 Einträgen genannt · Einträge ansehen")
+            .assertExists()
+        rule.onNodeWithTag("review-mention-emotion-freude").performClick()
+        rule.onNodeWithText("Einträge mit „Freude“").assertExists()
+        rule.onNode(scroller).performScrollToNode(
+            hasText("Tagebucheintrag ansehen", substring = true)
+        )
+        rule.onAllNodes(hasClickAction() and hasText(
+            "Tagebucheintrag ansehen", substring = true
+        )).onFirst().performClick()
+        rule.runOnIdle { assertTrue(opened == "beleg-a" || opened == "beleg-b") }
+    }
+
+    @Test fun mentionBarsCanBeHiddenWithoutHidingTheTermList() {
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = snapshot(), busy = false, error = null,
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState()
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("review-mention-bars-toggle")
+        )
+        rule.onNodeWithTag("review-mention-bars-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("review-mention-need-klarheit")
+        )
+        rule.onNodeWithTag("review-mention-bar-need-klarheit", useUnmergedTree = true)
+            .assertExists()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("review-mention-bars-toggle")
+        )
+        rule.onNodeWithTag("review-mention-bars-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("review-mention-need-klarheit")
+        )
+        rule.onNodeWithTag("review-mention-bar-need-klarheit", useUnmergedTree = true)
+            .assertDoesNotExist()
+        rule.onNodeWithTag("review-mention-need-klarheit").assertExists()
+        rule.onNodeWithText("In 1 Einträgen genannt · Einträge ansehen").assertExists()
+    }
+
     @Test fun noEntriesShowsHonestOptionalCheckInAction() {
         var started = false
         rule.setContent {
