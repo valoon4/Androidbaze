@@ -1,5 +1,7 @@
 # M7-Abschlussplan vor M8 — geprüfter Stand vom 01.11.2026
 
+**Aktualisierung vom 03.11.2026:** M7.4.0 (Konzept, PR #33) sowie M7.4.1 (EKS1/EKB3/EKR2, PR #34), M7.4.2 (eigene Ideen, PR #35) und M7.4.3 (freiwillige Atlas-/Erkenntnisverknüpfungen, PR #36) sind nun **in `main`**. M7.4.4 ist eine **noch nicht gemergte UX-/Datenschutz-Qualitätsrunde** mit [eigenem Test- und Reviewplan](M744_AUSPROBIEREN_UX_DATENSCHUTZ_QUALITAETSRUNDE.md). Die folgende ältere Bestandsaufnahme beschreibt den Stand **vor** diesen M7.4-PRs und dient der Dokumentationshistorie. M7.5 und die M7.6-Releaseprüfung bleiben offen. Ein grüner Emulatorlauf ersetzt insbesondere kein unabhängiges Fach-/Sicherheitsaudit und keine physisch getrennten Geräte.
+
 **Wichtig:** Die gemergte M7-UX-Runde (#31) schließt **die Teilbereiche M7.0–M7.3** und deren Navigation ab, **nicht automatisch den vollständigen Meilenstein M7**. Diese Datei konkretisiert den tatsächlichen Projektstand, die ausstehenden Arbeitspakete und eine risikoarme Reihenfolge. Keine Android-Codeänderung in diesem Dokumentations-PR.
 
 ## 1. Geprüfter Ist-Stand
