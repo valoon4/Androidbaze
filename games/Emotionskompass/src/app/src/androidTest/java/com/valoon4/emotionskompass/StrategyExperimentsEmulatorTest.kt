@@ -276,4 +276,151 @@ class StrategyExperimentsEmulatorTest {
         rule.onNodeWithTag("experiment-create").assertDoesNotExist()
         rule.onNodeWithTag("experiments-retry").assertExists()
     }
+
+    @Test fun selectedAtlasLimitIsVisibleBeforeUserSaves() {
+        val selected = requireNotNull(catalog.find("boundaries"))
+        var saves = 0
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(loaded = true),
+                    onReload = {}, onSave = { saves++ },
+                    onArchive = { _, _ -> }, onDelete = {},
+                    catalog = catalog, incomingCatalog = selected
+                )
+            }
+        }
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-source-limit")
+        )
+        rule.onNodeWithTag("experiment-source-limit-heading").assertExists()
+        rule.onNodeWithText(selected.limitations).assertExists()
+        rule.runOnIdle { assertEquals(0, saves) }
+        rule.onNodeWithTag("experiment-cancel").performClick()
+        rule.onNodeWithText("Entwurf verwerfen").performClick()
+        rule.runOnIdle { assertEquals(0, saves) }
+    }
+
+    @Test fun longPrivateNotesCollapseAndCanBeExpandedWithoutEditing() {
+        val original = StrategyExperiment.fromOwnIdea(
+            "Fiktive längere Idee", System.currentTimeMillis()
+        ).copy(
+            planText = "P".repeat(245),
+            cautionText = "Achte auf Grenzen: " + "G".repeat(205),
+            reflectionText = "R".repeat(250)
+        )
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(
+                        entries = listOf(original), loaded = true
+                    ),
+                    onReload = {}, onSave = {},
+                    onArchive = { _, _ -> }, onDelete = {}
+                )
+            }
+        }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-expand-${original.id}")
+        )
+        rule.onNodeWithText(original.planText).assertDoesNotExist()
+        rule.onNodeWithTag("experiment-expand-${original.id}").performClick()
+        rule.onNodeWithText(original.planText).assertExists()
+        rule.onNodeWithText(original.cautionText).assertExists()
+        rule.onNodeWithText(original.reflectionText).assertExists()
+        rule.onNodeWithTag("experiment-expand-${original.id}").performClick()
+        rule.onNodeWithText(original.planText).assertDoesNotExist()
+    }
+
+    @Test fun searchingAlsoFindsOwnSafetyNotesAndReflections() {
+        val item = StrategyExperiment.fromOwnIdea(
+            "Fiktive Überschrift", System.currentTimeMillis()
+        ).copy(cautionText = "Individuelles Warnsignal beachten",
+            reflectionText = "Gedanken am Abend")
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(
+                        entries = listOf(item), loaded = true
+                    ),
+                    onReload = {}, onSave = {},
+                    onArchive = { _, _ -> }, onDelete = {}
+                )
+            }
+        }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-search")
+        )
+        rule.onNodeWithTag("experiment-search").performTextInput("Warnsignal")
+        rule.onNodeWithText("Fiktive Überschrift").assertExists()
+    }
+
+    @Test fun staleInsightLinksNeedExplicitRemovalBeforeSaving() {
+        val missing = java.util.UUID.randomUUID().toString()
+        val original = StrategyExperiment.fromOwnIdea(
+            "Meine bestehende Testidee", System.currentTimeMillis()
+        ).copy(relatedInsightIds = setOf(missing))
+        var saved: StrategyExperiment? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(
+                        entries = listOf(original), loaded = true
+                    ),
+                    onReload = {}, onSave = { saved = it },
+                    onArchive = { _, _ -> }, onDelete = {},
+                    insights = emptyList()
+                )
+            }
+        }
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-edit-${original.id}")
+        )
+        rule.onNodeWithTag("experiment-edit-${original.id}").performClick()
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-stale-link-warning")
+        )
+        rule.onNodeWithTag("experiment-stale-link-warning").assertExists()
+        rule.onNodeWithTag("experiment-explicit-save").assertIsNotEnabled()
+        rule.onNodeWithTag("experiment-remove-stale-links").performClick()
+        rule.onNodeWithTag("experiment-explicit-save").performClick()
+        rule.runOnIdle {
+            assertTrue(saved != null)
+            assertTrue(saved?.relatedInsightIds.orEmpty().isEmpty())
+            assertEquals(original.planText, saved?.planText)
+        }
+    }
+
+    @Test fun transientInsightLoadingDoesNotEraseUnsavedIdea() {
+        var changeAvailability: (Boolean) -> Unit = {}
+        var saved: StrategyExperiment? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                var ready by remember { mutableStateOf(true) }
+                changeAvailability = { ready = it }
+                StrategyExperimentsScreen(
+                    state = StrategyExperimentUiState(loaded = true),
+                    onReload = {}, onSave = { saved = it },
+                    onArchive = { _, _ -> }, onDelete = {},
+                    insightsReady = ready,
+                    insightsBusy = !ready
+                )
+            }
+        }
+        rule.onNodeWithTag("experiment-create").performClick()
+        rule.onNodeWithTag("experiment-title").performTextInput(
+            "Idee nicht durch kurzes Laden verlieren"
+        )
+        rule.runOnIdle { changeAvailability(false) }
+        rule.onNodeWithTag("experiment-title").assertDoesNotExist()
+        rule.onNodeWithText(
+            "Deine persönlichen Ideen und Erkenntnisse werden sicher geladen …"
+        ).assertExists()
+        rule.runOnIdle { changeAvailability(true) }
+        rule.onNodeWithTag("experiment-title")
+            .assertTextContains("Idee nicht durch kurzes Laden verlieren")
+        rule.onNodeWithTag("experiment-explicit-save").performClick()
+        rule.runOnIdle { assertEquals("Idee nicht durch kurzes Laden verlieren", saved?.customTitle) }
+    }
+
 }
