@@ -582,8 +582,11 @@ fun StrategyExperimentsScreen(
                         if (hasLongText) {
                             TextButton(
                                 onClick = {
-                                    expandedIdeaIds = if (expanded) expandedIdeaIds - item.id
-                                        else expandedIdeaIds + item.id
+                                    // Read the newest snapshot at click time, not the
+                                    // possibly stale expanded value captured by a recycled row.
+                                    expandedIdeaIds = if (item.id in expandedIdeaIds)
+                                        expandedIdeaIds - item.id
+                                    else expandedIdeaIds + item.id
                                 },
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("experiment-expand-${item.id}")
