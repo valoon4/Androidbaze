@@ -693,7 +693,8 @@ private fun MentionCard(
         ) {
             Text(title, style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
-            Text("In ${term.mentions} Einträgen genannt · Einträge ansehen",
+            Text(if (term.mentions == 1) "In 1 Eintrag genannt · Eintrag ansehen"
+                else "In ${term.mentions} Einträgen genannt · Einträge ansehen",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (showBar) {
