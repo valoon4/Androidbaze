@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -399,7 +400,14 @@ class StrategyExperimentsEmulatorTest {
         )
         rule.onNodeWithTag("experiment-stale-link-warning").assertExists()
         rule.onNodeWithTag("experiment-explicit-save").assertIsNotEnabled()
+        // The warning may be visible while its action is still below the fold.
+        rule.onNodeWithTag("experiment-editor-list").performScrollToNode(
+            hasTestTag("experiment-remove-stale-links")
+        )
         rule.onNodeWithTag("experiment-remove-stale-links").performClick()
+        rule.waitForIdle()
+        // Verify that the invalid links really were removed before saving.
+        rule.onNodeWithTag("experiment-explicit-save").assertIsEnabled()
         rule.onNodeWithTag("experiment-explicit-save").performClick()
         rule.runOnIdle {
             assertTrue(saved != null)
