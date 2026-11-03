@@ -133,4 +133,29 @@ class StrategyBundleBackupTest {
             StrategyExperiment.fromOwnIdea("a".repeat(StrategyExperiment.MAX_TITLE + 1), now)
         }
     }
+
+    @Test fun editingMustNotSilentlyReassignTheOriginalStrategySource() {
+        val own = StrategyExperiment.fromOwnIdea("Eigene Fiktividee", now)
+        assertThrows(IllegalArgumentException::class.java) {
+            StrategyExperimentChanges.save(listOf(own), own.copy(
+                customTitle = null, sourceStrategyId = "planning",
+                sourceTitleFallback = "Kleine Schritte planen",
+                updatedAtUtcMillis = now + 1
+            ))
+        }
+        val catalog = StrategyExperiment.fromCatalog(
+            "planning", "Kleine Schritte planen", now
+        )
+        assertThrows(IllegalArgumentException::class.java) {
+            StrategyExperimentChanges.save(listOf(catalog), catalog.copy(
+                sourceStrategyId = "grounding",
+                updatedAtUtcMillis = now + 1
+            ))
+        }
+        val edited = StrategyExperimentChanges.save(listOf(catalog), catalog.copy(
+            planText = "Eigener freiwilliger Text", updatedAtUtcMillis = now + 2
+        )).single()
+        assertEquals("planning", edited.sourceStrategyId)
+        assertEquals("Eigener freiwilliger Text", edited.planText)
+    }
 }
