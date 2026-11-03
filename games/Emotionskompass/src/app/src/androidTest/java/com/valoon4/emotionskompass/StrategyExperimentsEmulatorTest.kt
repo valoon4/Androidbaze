@@ -448,7 +448,6 @@ class StrategyExperimentsEmulatorTest {
             hasTestTag("experiment-create")
         )
         rule.onNodeWithTag("experiment-create").performClick()
-        rule.onNodeWithTag("experiment-title")
-            .assertTextContains("Entwurf ist nach Sperre", substring = true).assertDoesNotExist()
+        rule.onNodeWithTag("experiment-title").assertTextEquals("")
     }
 }
