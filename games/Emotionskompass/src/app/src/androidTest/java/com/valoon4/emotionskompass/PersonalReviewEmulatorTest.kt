@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasTestTag
@@ -258,7 +259,8 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithTag("review-mention-bar-need-klarheit", useUnmergedTree = true)
             .assertDoesNotExist()
         rule.onNodeWithTag("review-mention-need-klarheit").assertExists()
-        rule.onNodeWithText("In 1 Einträgen genannt · Einträge ansehen").assertExists()
+        rule.onNodeWithTag("review-mention-need-klarheit")
+            .assertTextContains("In 1 Eintrag genannt · Eintrag ansehen")
     }
 
     @Test fun noEntriesShowsHonestOptionalCheckInAction() {
