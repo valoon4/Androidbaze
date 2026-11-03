@@ -65,6 +65,10 @@ object StrategyExperimentChanges {
         require(old != null || items.size < StrategyExperiment.MAX_EXPERIMENTS)
         require(old == null || (old.createdAtUtcMillis == next.createdAtUtcMillis &&
             next.updatedAtUtcMillis >= old.updatedAtUtcMillis))
+        // Stable attribution: an edited experiment must not silently switch to
+        // a different catalog strategy or between a catalog and the user's idea.
+        require(old == null || old.sourceStrategyId == next.sourceStrategyId)
+        require(old == null || (old.customTitle == null) == (next.customTitle == null))
         return (items.filterNot { it.id == next.id } + next)
             .sortedWith(compareByDescending<StrategyExperiment> { it.updatedAtUtcMillis }.thenBy { it.id })
     }
