@@ -77,6 +77,10 @@ fun StrategyExperimentsScreen(
     var relatedInsightIds by remember { mutableStateOf<Set<String>>(emptySet()) }
     var showAllInsightChoices by remember { mutableStateOf(false) }
     var prominentInsightId by remember { mutableStateOf<String?>(null) }
+    // Keep expand/collapse state at list scope. LazyColumn disposes rows while
+    // scrolling; row-local remember() would reset the button unexpectedly.
+    // IDs are only held in process memory, never in Android SavedState.
+    var expandedIdeaIds by remember { mutableStateOf<Set<String>>(emptySet()) }
     val missingInsightLinks = relatedInsightIds - insights.mapTo(hashSetOf()) { it.id }
 
     fun resetEditor() {
@@ -121,6 +125,7 @@ fun StrategyExperimentsScreen(
             resetEditor()
             pendingDelete = null
             query = ""
+            expandedIdeaIds = emptySet()
         }
     }
     // Incoming IDs are only navigation hints, never saved to Android SavedState.
@@ -528,9 +533,7 @@ fun StrategyExperimentsScreen(
                 }
             }
             items(displayed, key = { it.id }) { item ->
-                var expanded by remember(item.id, item.updatedAtUtcMillis) {
-                    mutableStateOf(false)
-                }
+                val expanded = item.id in expandedIdeaIds
                 val hasLongText = listOf(
                     item.planText, item.cautionText, item.reflectionText
                 ).any { it.length > 180 }
@@ -578,7 +581,10 @@ fun StrategyExperimentsScreen(
                         }
                         if (hasLongText) {
                             TextButton(
-                                onClick = { expanded = !expanded },
+                                onClick = {
+                                    expandedIdeaIds = if (expanded) expandedIdeaIds - item.id
+                                        else expandedIdeaIds + item.id
+                                },
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("experiment-expand-${item.id}")
                             ) { Text(if (expanded) "Weniger anzeigen" else "Alle eigenen Texte anzeigen") }
