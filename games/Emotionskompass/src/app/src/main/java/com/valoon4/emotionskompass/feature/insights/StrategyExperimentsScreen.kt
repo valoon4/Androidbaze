@@ -222,7 +222,8 @@ fun StrategyExperimentsScreen(
                                 Text("Wichtige Grenze",
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.testTag("experiment-source-limit-heading"))
+                                    modifier = Modifier.semantics { heading() }
+                                        .testTag("experiment-source-limit-heading"))
                                 Text(sourceCard.limitations,
                                     style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.testTag("experiment-source-limit"))
@@ -329,7 +330,7 @@ fun StrategyExperimentsScreen(
                                     OutlinedButton(
                                         enabled = !state.busy,
                                         onClick = { relatedInsightIds = relatedInsightIds - missingInsightLinks },
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                             .testTag("experiment-remove-stale-links")
                                     ) { Text("Ungültige Verknüpfungen entfernen") }
                                 }
