@@ -333,6 +333,11 @@ class StrategyExperimentsEmulatorTest {
         rule.onNodeWithText(original.planText).assertExists()
         rule.onNodeWithText(original.cautionText).assertExists()
         rule.onNodeWithText(original.reflectionText).assertExists()
+        // The expanded card is taller than the viewport. Bring its final action
+        // into view so the collapse button is not clipped at the viewport edge.
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-delete-${original.id}")
+        )
         rule.onNodeWithTag("experiment-expand-${original.id}").performClick()
         // Collapsing shortens the LazyColumn item, so the button can leave the
         // composed viewport. Scroll it into view before asserting its label.
