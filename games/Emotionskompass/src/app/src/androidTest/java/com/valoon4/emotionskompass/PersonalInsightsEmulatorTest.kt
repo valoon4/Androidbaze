@@ -89,6 +89,35 @@ class PersonalInsightsEmulatorTest {
         ).assertExists()
     }
 
+    @Test fun insightCanInviteAnIdeaWithoutSavingOrCopyingIt() {
+        val note = PersonalInsight.create(
+            "Fiktiver persönlicher Gedanke, der nicht kopiert werden darf",
+            System.currentTimeMillis()
+        )
+        var chosen: String? = null
+        var saved = 0
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalInsightsScreen(
+                    state = InsightUiState(entries = listOf(note), loaded = true),
+                    journalEntries = emptyList(), onBack = {}, onReload = {},
+                    onSave = { _, _, _ -> saved++ },
+                    onArchive = { _, _ -> }, onDelete = {},
+                    onUnlink = { _, _ -> }, onOpenJournal = {},
+                    onConsiderIdeaFromInsight = { chosen = it }
+                )
+            }
+        }
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("insight-consider-idea-${note.id}")
+        )
+        rule.onNodeWithTag("insight-consider-idea-${note.id}").performClick()
+        rule.runOnIdle {
+            org.junit.Assert.assertEquals(note.id, chosen)
+            org.junit.Assert.assertEquals(0, saved)
+        }
+    }
+
     @Test fun editorExposesOlderJournalReferencesWithoutGuessingDates() {
         val now = System.currentTimeMillis()
         val journal = (0..11).map { day ->
