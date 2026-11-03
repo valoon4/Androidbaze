@@ -333,7 +333,13 @@ class StrategyExperimentsEmulatorTest {
         rule.onNodeWithText(original.cautionText).assertExists()
         rule.onNodeWithText(original.reflectionText).assertExists()
         rule.onNodeWithTag("experiment-expand-${original.id}").performClick()
-        rule.onNodeWithText("Alle eigenen Texte anzeigen").assertExists()
+        // Collapsing shortens the LazyColumn item, so the button can leave the
+        // composed viewport. Scroll it into view before asserting its label.
+        rule.onNodeWithTag("experiments-list").performScrollToNode(
+            hasTestTag("experiment-expand-${original.id}")
+        )
+        rule.onNodeWithTag("experiment-expand-${original.id}")
+            .assertTextEquals("Alle eigenen Texte anzeigen")
         rule.onNodeWithText(original.planText).assertDoesNotExist()
     }
 
