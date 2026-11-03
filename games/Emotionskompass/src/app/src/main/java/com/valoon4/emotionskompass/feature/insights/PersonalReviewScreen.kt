@@ -1,6 +1,7 @@
 package com.valoon4.emotionskompass.feature.insights
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -131,6 +133,11 @@ fun PersonalReviewScreen(
     var patternsVisible by rememberSaveable { mutableStateOf(true) }
     var showAllPatterns by rememberSaveable { mutableStateOf(false) }
     var showPatternCriteria by rememberSaveable { mutableStateOf(false) }
+    // Opt-in visual state stays in memory; no personal counts in SavedState.
+    var showMentionBars by remember { mutableStateOf(false) }
+    LaunchedEffect(snapshot, busy, error) {
+        if (snapshot == null || busy || error != null) showMentionBars = false
+    }
     val scope = rememberCoroutineScope()
     // The evidence list replaces the overview's lazy items. Always reveal
     // its heading instead of retaining an offscreen overview scroll position.
@@ -586,6 +593,24 @@ fun PersonalReviewScreen(
                         ) { Text("Alle ${overview.entryCount} Einträge ansehen") }
                     }
                     item {
+                        OutlinedButton(
+                            onClick = { showMentionBars = !showMentionBars },
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                .testTag("review-mention-bars-toggle")
+                        ) {
+                            Text(if (showMentionBars) "Nennungsbalken ausblenden"
+                                else "Nennungsbalken anzeigen")
+                        }
+                        if (showMentionBars) {
+                            Text(
+                                "Die Balken vergleichen nur, wie oft du Begriffe im gewählten Zeitraum in deinen Einträgen ausgewählt hast. Sie zeigen weder Gefühlsstärke noch Fortschritt. Der längste Balken steht jeweils für den am häufigsten genannten Begriff innerhalb der Gefühle bzw. Bedürfnisse.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.testTag("review-mention-bars-explanation")
+                            )
+                        }
+                    }
+                    item {
                         Text("Gefühle", style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.semantics { heading() })
                         Text("${overview.entriesWithEmotions} Einträge mit ausdrücklich ausgewählten Gefühlen",
@@ -596,8 +621,13 @@ fun PersonalReviewScreen(
                         item { Text("Keine Gefühle ausgewählt. Das ist keine Aussage darüber, was du gefühlt hast.") }
                     }
                     items(overview.emotionCounts, key = { "emotion-${it.termId}" }) { term ->
-                        MentionCard(term, emotions.find(term.termId)?.name ?: "Unbekannter Gefühlsbegriff",
-                            onClick = { onSelectTerm("emotion" to term.termId) })
+                        MentionCard(
+                            term, emotions.find(term.termId)?.name ?: "Unbekannter Gefühlsbegriff",
+                            onClick = { onSelectTerm("emotion" to term.termId) },
+                            showBar = showMentionBars,
+                            maxMentions = overview.emotionCounts.firstOrNull()?.mentions ?: 1,
+                            tag = "emotion"
+                        )
                     }
                     item {
                         HorizontalDivider()
@@ -611,8 +641,13 @@ fun PersonalReviewScreen(
                         item { Text("Keine benannten Bedürfnisse ausgewählt. Daraus folgt nicht, dass Bedürfnisse unerfüllt sind.") }
                     }
                     items(overview.needCounts, key = { "need-${it.termId}" }) { term ->
-                        MentionCard(term, needs.find(term.termId)?.name ?: "Unbekannter Bedürfnisbegriff",
-                            onClick = { onSelectTerm("need" to term.termId) })
+                        MentionCard(
+                            term, needs.find(term.termId)?.name ?: "Unbekannter Bedürfnisbegriff",
+                            onClick = { onSelectTerm("need" to term.termId) },
+                            showBar = showMentionBars,
+                            maxMentions = overview.needCounts.firstOrNull()?.mentions ?: 1,
+                            tag = "need"
+                        )
                     }
                     if (overview.entriesWithUnknownNeedChoice > 0) {
                         item {
@@ -637,19 +672,46 @@ fun PersonalReviewScreen(
     } // Rückblick tabs
 }
 
-/** Separate list mode that reuses the very same immutable evidence snapshot. */
+/** The decorative bar is optional; the same exact counts and evidence link remain. */
 @Composable
-private fun MentionCard(term: InsightTermCount, title: String, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp)) {
-        Row(Modifier.fillMaxWidth().padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(title, style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold)
-                Text("In ${term.mentions} Einträgen genannt · Einträge ansehen",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun MentionCard(
+    term: InsightTermCount,
+    title: String,
+    onClick: () -> Unit,
+    showBar: Boolean,
+    maxMentions: Int,
+    tag: String
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().testTag("review-mention-$tag-${term.termId}"),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(title, style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            Text("In ${term.mentions} Einträgen genannt · Einträge ansehen",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (showBar) {
+                // Compare only within this category; the bar is not a score.
+                val fraction = (term.mentions.toFloat() /
+                    maxMentions.coerceAtLeast(1).toFloat()).coerceIn(0f, 1f)
+                Box(
+                    Modifier.fillMaxWidth().height(8.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant,
+                            RoundedCornerShape(8.dp))
+                        .testTag("review-mention-bar-$tag-${term.termId}")
+                ) {
+                    Box(
+                        Modifier.fillMaxWidth(fraction).height(8.dp)
+                            .background(MaterialTheme.colorScheme.primary,
+                                RoundedCornerShape(8.dp))
+                    )
+                }
             }
         }
     }
