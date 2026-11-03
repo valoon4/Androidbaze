@@ -251,4 +251,55 @@ class StrategyBackupEmulatorTest {
             assertFalse(File(folder, "private_strategy_restore_intent_v2.enc").exists())
         } finally { folder.deleteRecursively() }
     }
+
+    @Test fun concurrentEkb3ImportAndCheckinNeverLeaveMixedPersonalStores() {
+        val (sourceContext, sourceFolder) = isolated()
+        val (targetContext, targetFolder) = isolated()
+        val pool = java.util.concurrent.Executors.newFixedThreadPool(2)
+        try {
+            val source = stores(sourceContext)
+            val original = populate(source)
+            val portable = source.combined.exportBackup(password)
+            val destination = stores(targetContext)
+            populate(destination) // start with a DIFFERENT coherent personal snapshot
+
+            val start = java.util.concurrent.CountDownLatch(1)
+            val imported = pool.submit<Int> {
+                start.await()
+                destination.combined.restoreBackup(portable, password)
+            }
+            val checkin = pool.submit<String> {
+                start.await()
+                destination.combined.saveJournalEntry(
+                    CheckInDraft(note = "Parallel erfasste fiktive Situation")
+                ).id
+            }
+            start.countDown()
+            assertEquals(1, imported.get(60, java.util.concurrent.TimeUnit.SECONDS))
+            val checkInId = checkin.get(60, java.util.concurrent.TimeUnit.SECONDS)
+
+            val finalJournalIds = destination.journal.list().map { it.id }.toSet()
+            assertTrue(original.journalId in finalJournalIds)
+            // Import last: the in-flight check-in was intentionally replaced.
+            // Save last: check-in correctly follows the restored snapshot.
+            assertTrue(finalJournalIds == setOf(original.journalId) ||
+                finalJournalIds == setOf(original.journalId, checkInId))
+            assertEquals(listOf(original.insight), destination.insights.list())
+            assertEquals(listOf(original.experiment), destination.strategies.list())
+            assertFalse(destination.combined.recoverPending())
+
+            // A second portable export must also contain an internally valid,
+            // authenticated three-store state regardless of execution order.
+            val verify = StrategyBundleBackup.open(
+                destination.combined.exportBackup(password), password
+            )
+            assertEquals(finalJournalIds, verify.journal.map { it.id }.toSet())
+            assertEquals(listOf(original.insight), verify.insights)
+            assertEquals(listOf(original.experiment), verify.experiments)
+        } finally {
+            pool.shutdownNow()
+            sourceFolder.deleteRecursively()
+            targetFolder.deleteRecursively()
+        }
+    }
 }

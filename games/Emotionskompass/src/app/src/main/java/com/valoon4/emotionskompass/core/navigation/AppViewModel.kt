@@ -470,6 +470,8 @@ class AppViewModel(
         val diary = _journalState.value
         if (!allowed() || !current.loaded || current.busy || current.error != null ||
             !diary.loaded || diary.busy || diary.error != null ||
+            !_strategyExperimentState.value.loaded || _strategyExperimentState.value.busy ||
+            _strategyExperimentState.value.error != null ||
             current.entries.none { it.id == id }) return
         val epoch = accessEpoch
         _insightState.value = current.copy(busy = true, error = null, message = null)
@@ -522,11 +524,22 @@ class AppViewModel(
         // Unknown edit IDs are not reinterpreted as new ideas.
         if (previous == null && item.createdAtUtcMillis != item.updatedAtUtcMillis) return
         if (previous != null && item.createdAtUtcMillis != previous.createdAtUtcMillis) return
+        if (previous != null && (item.sourceStrategyId != previous.sourceStrategyId ||
+            (item.customTitle == null) != (previous.customTitle == null))) return
+        // The UI cannot edit journal links. Use the current, fully authenticated
+        // stored links rather than reinstating an old reference from an editor
+        // opened before a journal deletion or legacy import.
+        val verifiedItem = if (previous == null) item else item.copy(
+            relatedJournalIds = previous.relatedJournalIds,
+            updatedAtUtcMillis = maxOf(item.updatedAtUtcMillis, previous.updatedAtUtcMillis)
+        )
         val epoch = accessEpoch
         _strategyExperimentState.value = current.copy(busy = true, error = null, message = null)
         viewModelScope.launch {
             try {
-                val result = withContext(Dispatchers.IO) { backup.saveStrategyExperiment(item) }
+                val result = withContext(Dispatchers.IO) {
+                    backup.saveStrategyExperiment(verifiedItem)
+                }
                 if (currentAccess(epoch)) _strategyExperimentState.value = StrategyExperimentUiState(
                     entries = result, loaded = true,
                     message = if (previous == null) "Idee gespeichert." else "Idee aktualisiert."

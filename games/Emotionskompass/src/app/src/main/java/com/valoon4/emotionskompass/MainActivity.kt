@@ -690,8 +690,9 @@ private fun EmotionskompassApp(
                                                     selectedStrategyId = strategyHistory.last()
                                                     strategyHistory = strategyHistory.dropLast(1)
                                                 } else {
+                                                    // Keep the source until the user explicitly returns.
+                                                    // Otherwise: idea -> card -> atlas list loses "Zurück zu Ausprobieren".
                                                     selectedStrategyId = null
-                                                    strategyReturnTarget = null
                                                 }
                                             },
                                             onKnowledgeArticle = { id ->

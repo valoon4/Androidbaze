@@ -52,6 +52,8 @@ fun StrategyExperimentsScreen(
     catalog: StrategyCatalog? = null,
     insights: List<PersonalInsight> = emptyList(),
     insightsReady: Boolean = true,
+    insightsBusy: Boolean = false,
+    insightsError: Boolean = false,
     incomingCatalog: StrategyCard? = null,
     incomingInsightId: String? = null,
     onConsumeIncoming: () -> Unit = {},
@@ -75,6 +77,11 @@ fun StrategyExperimentsScreen(
     var relatedInsightIds by remember { mutableStateOf<Set<String>>(emptySet()) }
     var showAllInsightChoices by remember { mutableStateOf(false) }
     var prominentInsightId by remember { mutableStateOf<String?>(null) }
+    // Keep expand/collapse state at list scope. LazyColumn disposes rows while
+    // scrolling; row-local remember() would reset the button unexpectedly.
+    // IDs are only held in process memory, never in Android SavedState.
+    var expandedIdeaIds by remember { mutableStateOf<Set<String>>(emptySet()) }
+    val missingInsightLinks = relatedInsightIds - insights.mapTo(hashSetOf()) { it.id }
 
     fun resetEditor() {
         showEditor = false
@@ -110,11 +117,15 @@ fun StrategyExperimentsScreen(
         confirmDiscard = false
     }
 
-    LaunchedEffect(state.loaded, state.error, insightsReady) {
-        if (!state.loaded || state.error != null || !insightsReady) {
+    LaunchedEffect(state.loaded, state.error, insightsError) {
+        // An unrelated insight write can temporarily make insightsReady=false.
+        // Do not erase an unsaved editor for that transient busy state.
+        // Decryption errors, restore/relock and corrupted states still clear all drafts.
+        if (!state.loaded || state.error != null || insightsError) {
             resetEditor()
             pendingDelete = null
             query = ""
+            expandedIdeaIds = emptySet()
         }
     }
     // Incoming IDs are only navigation hints, never saved to Android SavedState.
@@ -204,12 +215,29 @@ fun StrategyExperimentsScreen(
                     }
                     if (catalogDraft != null || editor?.sourceStrategyId != null) {
                         item {
+                            val sourceCard = catalogDraft ?: editor?.sourceStrategyId?.let {
+                                catalog?.find(it)
+                            }
                             Text(
                                 if (catalogDraft != null) "Aus dem Strategieatlas selbst ausgewählt: „${catalogDraft?.title}“."
                                 else "Diese Idee bezieht sich auf eine ausdrücklich ausgewählte Strategiekarte.",
                                 style = MaterialTheme.typography.bodySmall
                             )
-                            Text("Bitte lies im Strategieatlas die Grenzen und möglichen Nachteile. Die Auswahl ist keine individuelle Empfehlung.",
+                            if (sourceCard != null) {
+                                Text("Wichtige Grenze",
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.semantics { heading() }
+                                        .testTag("experiment-source-limit-heading"))
+                                Text(sourceCard.limitations,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.testTag("experiment-source-limit"))
+                            } else {
+                                Text("Die ursprüngliche Karte ist nicht mehr im Atlas verfügbar. Deine eigenen Angaben bleiben erhalten.",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.testTag("experiment-editor-missing-source"))
+                            }
+                            Text("Die Auswahl ist keine Empfehlung oder Verpflichtung. Du kannst jederzeit abbrechen.",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
@@ -294,6 +322,26 @@ fun StrategyExperimentsScreen(
                             minLines = 3
                         )
                     }
+                    if (missingInsightLinks.isNotEmpty()) {
+                        item {
+                            Card {
+                                Column(Modifier.fillMaxWidth().padding(12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text("Ein früherer Erkenntnisbezug ist nicht mehr verfügbar.",
+                                        color = MaterialTheme.colorScheme.error,
+                                        fontWeight = FontWeight.SemiBold,
+                                        modifier = Modifier.testTag("experiment-stale-link-warning"))
+                                    Text("Deine persönlichen Texte bleiben erhalten. Bitte entferne die ungültigen Bezüge ausdrücklich, bevor du speicherst.")
+                                    OutlinedButton(
+                                        enabled = !state.busy,
+                                        onClick = { relatedInsightIds = relatedInsightIds - missingInsightLinks },
+                                        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                            .testTag("experiment-remove-stale-links")
+                                    ) { Text("Ungültige Verknüpfungen entfernen") }
+                                }
+                            }
+                        }
+                    }
                     if (insightsReady && insights.isNotEmpty()) {
                         item {
                             Text("Eigene Erkenntnis als Bezug (freiwillig)",
@@ -351,7 +399,8 @@ fun StrategyExperimentsScreen(
             confirmButton = {
                 TextButton(
                     enabled = state.loaded && !state.busy && !waitingForSave &&
-                        state.error == null && insightsReady && title.trim().isNotEmpty() &&
+                        state.error == null && insightsReady &&
+                        missingInsightLinks.isEmpty() && title.trim().isNotEmpty() &&
                         (editor != null || state.entries.size < StrategyExperiment.MAX_EXPERIMENTS),
                     onClick = {
                         val now = System.currentTimeMillis()
@@ -404,14 +453,15 @@ fun StrategyExperimentsScreen(
         if (!state.loaded || state.error != null || !insightsReady) {
             item {
                 Text(
-                    state.error ?: if (!insightsReady) "Eigene Erkenntnisse konnten nicht sicher geladen werden. Bitte erneut sicher laden."
-                    else "Deine persönlichen Ideen werden sicher geladen …",
-                    color = if (state.error == null && insightsReady) MaterialTheme.colorScheme.onSurfaceVariant
-                        else MaterialTheme.colorScheme.error,
+                    state.error ?: if (insightsError)
+                        "Eigene Erkenntnisse konnten nicht sicher geladen werden. Bitte erneut sicher laden."
+                    else "Deine persönlichen Ideen und Erkenntnisse werden sicher geladen …",
+                    color = if (state.error != null || insightsError) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.testTag("experiments-load-state")
                 )
                 OutlinedButton(
-                    onClick = onReload, enabled = !state.busy,
+                    onClick = onReload, enabled = !state.busy && !insightsBusy,
                     modifier = Modifier.fillMaxWidth().testTag("experiments-retry")
                 ) { Text("Erneut sicher laden") }
             }
@@ -454,12 +504,15 @@ fun StrategyExperimentsScreen(
                         label = { Text("Archiv") })
                 }
             }
+            val searchTerm = query.trim()
             val displayed = state.entries.filter { item ->
                 item.archived == showArchived &&
-                    (query.isBlank() ||
-                        item.customTitle.orEmpty().contains(query.trim(), ignoreCase = true) ||
-                        item.sourceTitleFallback.orEmpty().contains(query.trim(), ignoreCase = true) ||
-                        item.planText.contains(query.trim(), ignoreCase = true))
+                    (searchTerm.isEmpty() ||
+                        item.customTitle.orEmpty().contains(searchTerm, ignoreCase = true) ||
+                        item.sourceTitleFallback.orEmpty().contains(searchTerm, ignoreCase = true) ||
+                        item.planText.contains(searchTerm, ignoreCase = true) ||
+                        item.cautionText.contains(searchTerm, ignoreCase = true) ||
+                        item.reflectionText.contains(searchTerm, ignoreCase = true))
             }
             if (displayed.isEmpty()) {
                 item {
@@ -480,6 +533,12 @@ fun StrategyExperimentsScreen(
                 }
             }
             items(displayed, key = { it.id }) { item ->
+                val expanded = item.id in expandedIdeaIds
+                val hasLongText = listOf(
+                    item.planText, item.cautionText, item.reflectionText
+                ).any { it.length > 180 }
+                fun excerpt(value: String): String = if (expanded || value.length <= 180)
+                    value else value.take(180).trimEnd() + " …"
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.fillMaxWidth().padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -508,10 +567,30 @@ fun StrategyExperimentsScreen(
                             Text("Mit ${item.relatedInsightIds.size} selbst gewählten Erkenntnissen verknüpft.",
                                 style = MaterialTheme.typography.bodySmall)
                         }
-                        if (item.planText.isNotBlank()) Text(item.planText)
+                        if (item.planText.isNotBlank()) {
+                            Text("Meine Idee zum Vorgehen", fontWeight = FontWeight.SemiBold)
+                            Text(excerpt(item.planText))
+                        }
+                        if (item.cautionText.isNotBlank()) {
+                            Text("Worauf ich achten möchte", fontWeight = FontWeight.SemiBold)
+                            Text(excerpt(item.cautionText))
+                        }
                         if (item.reflectionText.isNotBlank()) {
                             Text("Meine Beobachtung", fontWeight = FontWeight.SemiBold)
-                            Text(item.reflectionText)
+                            Text(excerpt(item.reflectionText))
+                        }
+                        if (hasLongText) {
+                            TextButton(
+                                onClick = {
+                                    // Read the newest snapshot at click time, not the
+                                    // possibly stale expanded value captured by a recycled row.
+                                    expandedIdeaIds = if (item.id in expandedIdeaIds)
+                                        expandedIdeaIds - item.id
+                                    else expandedIdeaIds + item.id
+                                },
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                                    .testTag("experiment-expand-${item.id}")
+                            ) { Text(if (expanded) "Weniger anzeigen" else "Alle eigenen Texte anzeigen") }
                         }
                         OutlinedButton(
                             enabled = !state.busy,

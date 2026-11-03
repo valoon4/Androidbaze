@@ -106,6 +106,21 @@ class StrategyNavigationEmulatorTest {
         rule.onNodeWithTag("strategy-offer-experiment").assertDoesNotExist()
     }
 
+    @Test fun emotionSuppressionExplanationCannotBeBookmarkedAsExperiment() {
+        var attempted = false
+        rule.setContent {
+            EmotionskompassTheme {
+                StrategyAtlasScreen(
+                    catalog = strategies, selectedId = "emotional-suppression",
+                    onSelect = {}, onBackToList = {}, onKnowledgeArticle = {},
+                    onProposeStrategy = { attempted = true }
+                )
+            }
+        }
+        rule.onNodeWithTag("strategy-offer-experiment").assertDoesNotExist()
+        rule.runOnIdle { assertFalse(attempted) }
+    }
+
     @Test fun atlasOverviewCanReturnToVoluntaryIdeaSource() {
         var returned = false
         rule.setContent {
