@@ -177,7 +177,8 @@ function createLabel(text,pos){const c=document.createElement('canvas');c.width=
  sprite.position.copy(pos);sprite.scale.set(.5,.14,1);models.add(sprite);}
 
 function holePosition(wid,h){
- const s=sizes(),u=.10+.8*clamp(h.u,0,1),y=s.h*(.12+.76*clamp(h.v,0,1));
+ const s=sizes(),span=(wid==='SW1'||wid==='SW3')?s.d:s.w,r=openingRadius(h),margin=Math.min(.49,r/span);
+ const u=clamp(h.u,margin,1-margin),y=s.h*clamp(h.v,Math.min(.49,r/s.h),1-Math.min(.49,r/s.h));
  if(wid==='SW1')return new THREE.Vector3(-s.w/2+.024,y,-s.d/2+s.d*u);
  if(wid==='SW2')return new THREE.Vector3(-s.w/2+s.w*u,y,-s.d/2+.024);
  if(wid==='SW3')return new THREE.Vector3(s.w/2-.024,y,-s.d/2+s.d*u);
@@ -234,18 +235,34 @@ function drawWalls(){
  drawHousing('OLA');drawHousing('MS');
 }
 function endpoint(r){if(!r)return null;const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holePosition(w.id,h):null;}
-function drawCable(c){const a=endpoint(c.a),b=endpoint(c.b);if(!a||!b)return;
- const chosen=c.id===cableId,s=sizes(),na=normal(c.a.wall),nb=normal(c.b.wall),thickness=Math.min(s.w,s.d,s.h)*.008;
- const mid=a.clone().add(b).multiplyScalar(.5);mid.y=clamp(mid.y+.04,.18,s.h*.85);mid.z=clamp(mid.z+.08,-s.d/2+.18,s.d/2-.14);
- const curve=new THREE.CatmullRomCurve3([a.clone(),a.clone().addScaledVector(na,.18),mid,b.clone().addScaledVector(nb,.18),b.clone()],false,'centripetal',.5);
- const line=new THREE.Mesh(new THREE.TubeGeometry(curve,52,chosen?thickness*1.55:thickness,7,false),
+function drawCable(c){
+ const a=endpoint(c.a),b=endpoint(c.b);if(!a||!b)return;
+ if(viewMode.startsWith('SW')&&c.a.wall!==viewMode&&c.b.wall!==viewMode)return;
+ const chosen=c.id===cableId,sz=sizes(),na=normal(c.a.wall),nb=normal(c.b.wall);
+ const thickness=Math.max(.004,(Number(c.diameter)||12)/2000);
+ const mid=a.clone().add(b).multiplyScalar(.5);
+ mid.y=clamp(mid.y+.04,.18,sz.h*.85);mid.z=clamp(mid.z+.08,-sz.d/2+.18,sz.d/2-.14);
+ const route=(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000));
+ const pts=[a.clone(),a.clone().addScaledVector(na,.12),
+ ...(route.length?route:[mid]),b.clone().addScaledVector(nb,.12),b.clone()];
+ const curve=new THREE.CatmullRomCurve3(pts,false,'centripetal',.45);
+ const line=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.min(100,48+route.length*10),chosen?thickness*1.22:thickness,8,false),
  new THREE.MeshStandardMaterial({color:c.color,roughness:.34,metalness:.04,transparent:true,opacity:chosen?1:.88}));
  line.userData={type:'cable',id:c.id};models.add(line);hitObjects.push(line);
- if(chosen)for(const [key,vec] of [['a',a],['b',b]]){
- const radius=Math.min(s.w,s.d,s.h)*.026;
+ if(chosen){
+ for(const [key,vec] of [['a',a],['b',b]]){
+ const radius=Math.max(.019,thickness*2.3);
  const sphere=new THREE.Mesh(new THREE.SphereGeometry(radius,16,12),new THREE.MeshBasicMaterial({color:'#ffffff'}));
  sphere.position.copy(vec);sphere.userData={type:'handle',id:c.id,end:key};models.add(sphere);hitObjects.push(sphere);
- const outline=new THREE.Mesh(new THREE.SphereGeometry(radius*1.25,16,12),new THREE.MeshBasicMaterial({color:c.color,wireframe:true}));outline.position.copy(vec);models.add(outline);}
+ const outline=new THREE.Mesh(new THREE.SphereGeometry(radius*1.2,12,10),new THREE.MeshBasicMaterial({color:c.color,wireframe:true}));
+ outline.position.copy(vec);models.add(outline);
+ }
+ for(let i=0;i<route.length;i++){
+ const point=new THREE.Mesh(new THREE.SphereGeometry(Math.max(.026,thickness*2.6),16,12),
+ new THREE.MeshBasicMaterial({color:'#f5c467'}));
+ point.position.copy(route[i]);point.userData={type:'waypoint',id:c.id,index:i};models.add(point);hitObjects.push(point);
+ }
+ }
 }
 function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);view();}
 function renderAll(){fixSelection();renderUI();rebuild();}
@@ -253,7 +270,7 @@ function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientR
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
 function wallCoords(wid,p){const s=sizes(),u=(wid==='SW2'||wid==='SW4')?(p.x/s.w+.5):p.z/s.d+.5;
- return {u:clamp((u-.1)/.8,0,1),v:clamp((p.y/s.h-.12)/.76,0,1)};}
+ return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};}
 function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
  change(()=>{w.holes.push({id,row:0,col:0,...coords});wallId=wid;holeId=id;});}
 const canvas=$('scene');
@@ -261,6 +278,13 @@ canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);const hit=pick(e),obj=hit?.object.userData||{};
  if(mode==='add'){const wallHit=pick(e,wallObjects);if(wallHit){newOpening(wallHit.object.userData.wall,wallHit.point);return;}}
  if(obj.type==='handle'){grab={type:'handle',id:obj.id,end:obj.end};return;}
+ if(obj.type==='waypoint'){
+ const c=project.cables.find(x=>x.id===obj.id),p=c?.route[obj.index];
+ if(p){const normal=new THREE.Vector3();activeCamera.getWorldDirection(normal);
+ const point=new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000);
+ grab={type:'waypoint',id:obj.id,index:obj.index,changed:false,plane:new THREE.Plane().setFromNormalAndCoplanarPoint(normal,point)};}
+ return;
+ }
  if(obj.type==='hole'){wallId=obj.wall;holeId=obj.hole;renderAll();if(mode==='move')grab={type:'move',wall:obj.wall,hole:obj.hole,changed:false};return;}
  if(obj.type==='cable'){cableId=obj.id;filter='all';renderAll();return;}
  if(viewMode==='3D'){grab={type:'orbit',x:e.clientX,y:e.clientY};canvas.classList.add('dragging');}
@@ -271,6 +295,17 @@ canvas.addEventListener('pointermove',e=>{
  const hit=pick(e,wallObjects.filter(x=>x.userData.wall===grab.wall));
  if(h&&hit){if(!grab.changed){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;grab.changed=true;}
  Object.assign(h,wallCoords(w.id,hit.point));rebuild();}return;}
+ if(grab?.type==='waypoint'){
+ const c=project.cables.find(x=>x.id===grab.id);if(!c||!c.route[grab.index])return;
+ pick(e,[]);
+ const p=new THREE.Vector3(),sz=sizes();
+ if(raycaster.ray.intersectPlane(grab.plane,p)){
+ if(!grab.changed){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;grab.changed=true;}
+ c.route[grab.index]=[Math.round(clamp(p.x,-sz.w/2,sz.w/2)*1000),
+ Math.round(clamp(p.y,0,sz.h)*1000),Math.round(clamp(p.z,-sz.d/2,sz.d/2)*1000)];
+ rebuild();
+ }return;
+ }
  if(grab?.type==='handle'){const hit=pick(e,hitObjects.filter(o=>o.userData.type==='hole'));
  $('tooltip').style.display=hit?'block':'none';if(hit){const o=hit.object.userData;$('tooltip').textContent=referenceText({wall:o.wall,hole:o.hole});$('tooltip').style.left=(e.offsetX+13)+'px';$('tooltip').style.top=(e.offsetY+13)+'px';}return;}
  const hit=pick(e),o=hit?.object.userData;$('tooltip').style.display=o?'block':'none';
@@ -280,7 +315,7 @@ canvas.addEventListener('pointermove',e=>{
 canvas.addEventListener('pointerup',e=>{
  if(grab?.type==='handle'){const hit=pick(e,hitObjects.filter(o=>o.userData.type==='hole'));
  if(hit){const o=hit.object.userData,c=project.cables.find(x=>x.id===grab.id);if(c)change(()=>{c[grab.end]={wall:o.wall,hole:o.hole};});}}
- if(grab?.type==='move'&&grab.changed){renderAll();persist();}
+ if((grab?.type==='move'||grab?.type==='waypoint')&&grab.changed){renderAll();persist();}
  grab=null;canvas.classList.remove('dragging');
 });
 canvas.addEventListener('pointercancel',()=>{grab=null;canvas.classList.remove('dragging');renderAll();});
