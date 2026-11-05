@@ -7,6 +7,10 @@ assert.ok(html.includes('id="draftCanvas"'), 'Parallel 2D canvas missing');
 assert.ok(html.includes('id="splitEnabled"'), '2D toggle missing');
 assert.ok(html.includes('src="editor2d.js"'), '2D module not loaded');
 assert.ok(html.includes('src="components.js"'), 'Components module not loaded');
+assert.ok(html.includes('src="network.js"'), 'Network module not loaded');
+assert.ok(html.includes('id="networkCanvas"'), 'Network canvas missing');
+assert.ok(html.includes('id="netRouteSelect"'), 'Route editor missing');
+assert.ok(html.includes('id="netPositionsFile"'), 'Reviewed coordinate import missing');
 assert.ok(html.includes('id="supportList"'), 'Support UI missing');
 assert.ok(html.includes('id="panelSelect"'), 'Plate editor missing');
 assert.ok(html.includes('id="variantSelect"'), 'Variants UI missing');
@@ -18,6 +22,7 @@ new Function(app);
 const ids=[...app.matchAll(/\$\('([A-Za-z0-9_-]+)'\)/g)].map(m=>m[1]);
 for(const id of new Set(ids))assert.ok(html.includes('id="'+id+'"'),'UI element missing: '+id);
 globalThis.KabelsalatComponents=require('../components.js');
+globalThis.KabelsalatNetwork=require('../network.js');
 const before=app.split('let project;try{')[0].replace(/^\(\(\) => \{\s*/, '');
 assert.ok(before.includes('function validProject(o)'), 'Data model must be testable');
 const {demo,validProject,grid}=new Function(before+'\nreturn {demo,validProject,grid};')();
@@ -34,6 +39,20 @@ assert.ok(app.includes("viewMode==='Bodenplatten'"), 'Require separate base view
 assert.ok(html.includes('data-view="SW4"'), 'Require fourth wall view');
 const roundtrip=validProject(JSON.parse(JSON.stringify(initial)));
 assert.equal(roundtrip.walls.length,4);
+assert.equal(roundtrip.activeShaftId,'S1');
+assert.equal(roundtrip.network.shafts.length,1,'v3 single shaft becomes network');
+const base=globalThis.KabelsalatNetwork.snapshot(roundtrip);
+const extra={...base,name:'Nachbarschacht',cables:[{...base.cables[0],id:'NEWSEG'}]};
+const expanded=JSON.parse(JSON.stringify(roundtrip));
+expanded.network.shafts.push({id:'S2',name:'Nachbarschacht',x:5000,z:2500,snapshot:extra});
+expanded.network.links.push({id:'L1',from:'S1',to:'S2'});
+expanded.network.routes.push({id:'R1',name:'Trasse',group:'OLA',
+ steps:[{shaftId:'S1',cableId:base.cables[0].id},{shaftId:'S2',cableId:'NEWSEG'}]});
+const restored=validProject(JSON.parse(JSON.stringify(expanded)));
+assert.equal(restored.network.shafts.length,2);
+assert.deepEqual(globalThis.KabelsalatNetwork.issues(restored.network,restored.network.routes[0]),[]);
+assert.equal(restored.network.routes[0].steps.length,2);
+assert.equal(restored.network.shafts[1].snapshot.cables[0].id,'NEWSEG');
 assert.equal(roundtrip.splitEnabled,true,'parallel layout persists');
 assert.equal(roundtrip.cables.length,16);
 assert.equal(roundtrip.enclosures.OLA.panels.length,6);
@@ -55,7 +74,7 @@ const legacy=JSON.parse(JSON.stringify(initial));legacy.version=1;legacy.walls=l
 for(const w of legacy.walls){delete w.thickness;delete w.dn;for(const h of w.holes)delete h.dn;}
 for(const c of legacy.cables){delete c.group;delete c.diameter;delete c.route;}
 const migrated=validProject(legacy);
-assert.equal(migrated.version,3);
+assert.equal(migrated.version,4);
 assert.equal(migrated.walls.length,4);
 assert.equal(migrated.walls[0].holes[0].dn,70);
 assert.equal(migrated.cables[0].group,'Weitere');
