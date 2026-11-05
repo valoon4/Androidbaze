@@ -3,6 +3,12 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 assert.ok(html.includes('Kabelsalat'), 'UI must display Kabelsalat brand');
+assert.ok(html.includes('id="draftCanvas"'), 'Parallel 2D canvas missing');
+assert.ok(html.includes('id="splitEnabled"'), '2D toggle missing');
+assert.ok(html.includes('src="editor2d.js"'), '2D module not loaded');
+assert.ok(app.includes("function draw2D()"), '2D painter missing');
+assert.ok(app.includes("draft.addEventListener('pointermove'"), '2D direct editing missing');
+assert.ok(app.includes("copySelectedHole"), 'Conduit copy missing');
 assert.equal(require('../package.json').build.productName,'Kabelsalat');
 new Function(app);
 const ids=[...app.matchAll(/\$\('([A-Za-z0-9_-]+)'\)/g)].map(m=>m[1]);
@@ -23,6 +29,7 @@ assert.ok(app.includes("viewMode==='Bodenplatten'"), 'Require separate base view
 assert.ok(html.includes('data-view="SW4"'), 'Require fourth wall view');
 const roundtrip=validProject(JSON.parse(JSON.stringify(initial)));
 assert.equal(roundtrip.walls.length,4);
+assert.equal(roundtrip.splitEnabled,true,'parallel layout persists');
 assert.equal(roundtrip.cables.length,16);
 assert.deepEqual(roundtrip.cables[0].a,initial.cables[0].a);
 const legacy=JSON.parse(JSON.stringify(initial));legacy.version=1;legacy.walls=legacy.walls.slice(0,3);
