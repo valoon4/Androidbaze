@@ -1,33 +1,55 @@
-# Schachtwand Planer 3D · Windows
+# Schachtwand Planer 3D – Windows (v0.2)
 
-Interaktiver **Offline-Prototyp** nach einem kurzen Referenzvideo: ein 3D-Schacht mit drei Schachtwänden (SW1–SW3), veränderbaren Leerrohr-Rastern, frei positionierbaren Öffnungen, einem optionalen OLA-Kasten und farbigen Kabelwegen.
+Prototyp eines **lokalen, portablen Windows-Schachtwandeditors**, weiterentwickelt anhand eines 61-sekündigen zweiten Videos und eines Screenshots vom Referenzschacht 13_T_021 (AVL 0116). Kein Login, kein Internetbetrieb und keine dauerhafte Installation erforderlich.
 
-## Bedienung
+## Bereits umgesetzt
 
-1. Windows-EXE aus dem GitHub Release herunterladen und starten.
-2. Links Maße, Wand und gewünschte Anzahl Reihen × Öffnungen einstellen. **Raster neu erstellen** legt die Öffnungen an.
-3. Im Modus **＋ Leerrohr** durch Klick auf eine Wand neue Öffnungen platzieren; im Modus **↔ Versetzen** Öffnungen mit der Maus verschieben. Auch Prozentpositionen sind bearbeitbar.
-4. Rechts Kabel anlegen, benennen, Farbe wählen, Anschlüsse A/B zuordnen. Alternativ die weißen Griffe des ausgewählten Kabels zu anderen Öffnungen ziehen.
-5. Maus: ziehen = Modell drehen, Mausrad = zoomen. Wanddeckkraft, OLA-Kasten und Beschriftungen lassen sich anpassen.
-6. **Projekt speichern** exportiert eine JSON-Datei; **Öffnen** importiert sie. Ein Autosave in der lokalen App hält die aktuelle Arbeitsfassung vor. **PNG** exportiert die aktuelle 3D-Ansicht.
+- **Vier Schachtwände** SW1–SW4, je einzeln sichtbar, unabhängig konfigurierbar (Raster, Wandstärke in mm, Standard-Rohrdurchmesser in mm).
+- **Leerrohre** mit individuellen DN-/Durchmesserangaben und mm-genauer horizontaler sowie vertikaler Position. Löcher als Geometrie-Ausschnitte durch die modellierte Wandstärke.
+- **Wand- und Top-Ansichten**: 3D / Oben / Bodenplatten / SW1 / SW2 / SW3 / SW4. Die SW-Ansichten verwenden eine orthografische Kamera.
+- **16 Demo-Kabel** in Gruppen OLA (3), MS (2) und Weitere (11). Eigene Kabel anlegen, Farbe, Durchmesser, Gruppe sowie Ein- und Ausgang auswählen.
+- **Kabelverlauf**: automatisch als gekrümmte Linie visualisiert oder mittels zusätzlicher Bogenpunkte, die rechts über X/Y/Z in mm bearbeitet oder als gelbe Griffe im Modell gezogen werden.
+- **Getrennte Einhausungen** OLA und MS als je sechs Platten (Boden, Decke, vier Seiten) mit unabhängiger Sichtbarkeit und Deckkraft; optional gemeinsam ausblendbar.
+- **Bearbeiten**: Drehen mit Maus, Zoomen mit Mausrad, Öffnungen platzieren/verschieben/löschen, Kabelgriffe auf neue Leerrohre ziehen, Rückgängig/Wiederholen.
+- **Geometrische Hinweise**: Rohrkreise, die sich in einer Wand überlappen oder Wandränder schneiden, werden **numerisch** gemeldet.
+- **Lokal speichern**: Projekt-JSON exportieren/importieren, Autosave, PNG der aktuellen Modellansicht.
 
-**Wichtig:** Die dargestellten Wandöffnungen sind grafische Platzhalter und keine tatsächlich durchbrochenen Wandkörper. Bemaßungen sind in Millimetern. Kabelverläufe werden zur Veranschaulichung interpoliert und sind **keine geprüften Leitungswege**. Rohrfüllung, Mindestbiegeradien, Statik, Brandschutz, DIN/VDE und baurechtliche Eignung werden nicht geprüft. Keine Verwendung als alleinige Grundlage für Ausführung oder Abnahme.
+## WICHTIGE SICHERHEITS- UND PLANUNGSGRENZEN
 
-## Windows-EXE beziehen
+Diese Software ist ein **Visualisierungs- und Datenmodellierungsprototyp**. Weder Kabelwege noch Einhausungen wurden statisch oder elektrotechnisch berechnet. **Es gibt KEINE** Prüfung von Mindestbiegeradien, Rohrfüllung, Einziehlängen, thermischer Belastbarkeit, Brandschutz-Abschottungen, Schallschutz, Schachtstatik, Freigaben, Toleranzen, normgerechter Installation oder DIN-/VDE-Konformität. Die Einhausungsplatten sind einfache schematische Rechteckflächen, keine konstruktiv detaillierten Baugruppen; sie bilden keine dicht geprüften Gehäuse. Eine fehlende geometrische Warnung ist **keine Ausführungsfreigabe**. Nicht als alleinige Grundlage für Bauausführung, Ausschreibung oder Abnahme verwenden.
 
-GitHub → **Releases** → **Schachtwand Planer – Windows EXE** → **SchachtwandPlaner-0.1.0-Windows.exe**. Bei neuem Commit startet der Windows-Build über GitHub Actions und aktualisiert das Release nach erfolgreichem Abschluss.
+Die gezeigten Demo-Maße, Öffnungen und Kabelführungen sind keine as-built-Daten eines realen Referenzschachts. Fachliche Ist-Soll-Prüfung und versionierte Bauwerksdokumentation stehen noch aus.
 
-## Selbst starten / bauen
+## Erste Bedienung
 
-Node.js 22+ vorausgesetzt, im Ordner PC/SchachtwandPlaner:
+1. GitHub-Release öffnen und die Windows-EXE herunterladen.
+2. **Neu** erzeugt einen leeren Schacht (4 Wände ohne Öffnungen und Kabel). Alternativ direkt mit dem Referenzbeispiel starten.
+3. In der linken Leiste Breite, Tiefe, Höhe sowie pro Wand **Wandstärke** und **Standard-DN** eintragen.
+4. Über **Raster neu erstellen** Öffnungen anlegen oder über **+ Leerrohr** eine Position im 3D- oder Wandmodus anklicken. Ein Leerrohr anwählen, um horizontale Position, Höhe und Durchmesser in mm zu bearbeiten.
+5. Rechts **+ Kabel** auswählen, Gruppe (OLA/MS/Weitere), Kabel-Außendurchmesser und Anfang/Ende eingeben; Bogenpunkte setzen, um den Verlauf anzupassen.
+6. Im unteren Modellrand auf **Oben**, **Bodenplatten** oder **SW1–SW4** wechseln. Rechts OLA-/MS-Einhausungen ein- oder ausblenden.
+7. **Projekt speichern** speichert eine JSON-Datei. **Öffnen** lädt diese erneut; der Browser-Kern hält zusätzlich ein lokales Autosave. **PNG** exportiert die momentane Ansicht.
+
+## EXE / Quellcode
+
+Release: https://github.com/valoon4/Androidbaze/releases/tag/schachtwand-planer-latest
+
+Das neueste Artefakt heißt **SchachtwandPlaner-0.2.0-Windows.exe** und wird durch GitHub Actions unter Windows gebaut.
+
+Zum lokalen Ausführen mit Node.js 22 oder neuer im Ordner PC/SchachtwandPlaner:
 
     npm install
-    npm start
     npm test
+    npm start
+
+Zum Bauen auf Windows:
+
     npm run dist:win
 
-Das Ergebnis liegt unter dist/. Die App verwendet eine lokal eingebundene Three.js-Bibliothek aus dem bestehenden Repo-Vendorstand, nicht aus einem CDN. Kein Benutzerkonto und kein Server notwendig.
+Das Ergebnis befindet sich im Verzeichnis dist/. Verwendet wird die lokale Three.js-Bibliothek mit der separat enthaltenen Originallizenz; WebGL-Unterstützung ist erforderlich.
 
-### Offene fachliche Punkte
+## Anforderungen aus dem zweiten Video
 
-Die fachliche Bedeutung und geometrische Ausführung des „OLA-Kasten“ sowie reale Anzahl, Maße und Einbaulagen der Schachtwände müssen noch mit dem Anwender abgestimmt werden. Die Demo-Einstellungen sind Platzhalter; das Video allein belegt keine Prüfregeln.
+Siehe [VIDEO2_REQUIREMENTS.md](./VIDEO2_REQUIREMENTS.md): sichtbare Funktionen, Ableitungen und noch unbestätigte Fachfragen.
+
+**Nicht enthalten in v0.2:** freie Schachtgeometrie beliebig vieler Wände, generischer 2D-CAD-Import, Kollisionsprüfung von Kabeln und Baukörpern, überprüfte Mindestbiegeradien und Rohrfüllgrade, Konsolen-Editor, Materialbibliothek, gemeinsames Echtzeit-Arbeiten, PDF-Pläne, Berichte zur Bauabnahme.

@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: schachtwand-planer-exe
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   windows-portable:
@@ -53,4 +53,11 @@ jobs:
               --notes "Portable Windows 10/11 EXE. Visueller Prototyp, keine geprüfte Elektro- oder Brandschutzplanung." \
               --prerelease
           fi
+          # Alte EXEs entfernen, sonst bleibt die vorige Version im gleichen Release liegen.
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' |
+            grep '^SchachtwandPlaner-.*-Windows\.exe
+ |
+            while IFS= read -r old; do
+              gh release delete-asset "$TAG" "$old" --repo "$GITHUB_REPOSITORY" --yes
+            done || true
           gh release upload "$TAG" dist/*.exe --repo "$GITHUB_REPOSITORY" --clobber

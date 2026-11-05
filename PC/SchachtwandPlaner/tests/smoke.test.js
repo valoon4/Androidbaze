@@ -1,0 +1,38 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
+const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
+new Function(app);
+const ids=[...app.matchAll(/\$\('([A-Za-z0-9_-]+)'\)/g)].map(m=>m[1]);
+for(const id of new Set(ids))assert.ok(html.includes('id="'+id+'"'),'UI element missing: '+id);
+const before=app.split('let project;try{')[0];
+assert.ok(before.includes('function validProject(o)'), 'Data model must be testable');
+const {demo,validProject,grid}=new Function(before+'\nreturn {demo,validProject,grid};')();
+const initial=demo();
+assert.equal(initial.walls.length,4,'Four independent shaft walls');
+assert.deepEqual(initial.walls.map(w=>w.id),['SW1','SW2','SW3','SW4']);
+assert.equal(initial.cables.length,16,'Reference contains 16 demo cables');
+assert.equal(initial.cables.filter(c=>c.group==='OLA').length,3);
+assert.equal(initial.cables.filter(c=>c.group==='MS').length,2);
+assert.ok(initial.walls.every(w=>w.holes.length===w.rows*w.cols));
+assert.ok(initial.walls.every(w=>w.holes.every(h=>h.dn===w.dn)));
+assert.ok(app.includes('new THREE.ExtrudeGeometry'), 'Require real through-holes in model');
+assert.ok(app.includes("viewMode==='Bodenplatten'"), 'Require separate base view');
+assert.ok(html.includes('data-view="SW4"'), 'Require fourth wall view');
+const roundtrip=validProject(JSON.parse(JSON.stringify(initial)));
+assert.equal(roundtrip.walls.length,4);
+assert.equal(roundtrip.cables.length,16);
+assert.deepEqual(roundtrip.cables[0].a,initial.cables[0].a);
+const legacy=JSON.parse(JSON.stringify(initial));legacy.version=1;legacy.walls=legacy.walls.slice(0,3);
+for(const w of legacy.walls){delete w.thickness;delete w.dn;for(const h of w.holes)delete h.dn;}
+for(const c of legacy.cables){delete c.group;delete c.diameter;delete c.route;}
+const migrated=validProject(legacy);
+assert.equal(migrated.version,2);
+assert.equal(migrated.walls.length,4);
+assert.equal(migrated.walls[0].holes[0].dn,70);
+assert.equal(migrated.cables[0].group,'Weitere');
+assert.ok(Array.isArray(migrated.cables[0].route));
+assert.ok(grid({id:'SW1',rows:2,cols:3,dn:80}).length===6);
+const invalid=JSON.parse(JSON.stringify(initial));invalid.cables[0].a={wall:'BOGUS',hole:'BOGUS'};
+assert.equal(validProject(invalid).cables[0].a,null);
+console.log('OK – UI IDs, JS syntax, four walls, DN grid, 16 cables, enclosure groups, JSON roundtrip and v1 migration');

@@ -1,6 +1,6 @@
 {
   "name": "schachtwand-planer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Offline 3D-Leerrohr- und Kabelplaner",
   "main": "main.js",
   "author": "Eugi",
@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node --check main.js && node --check app.js",
+    "test": "node --check main.js && node --check app.js && node tests/smoke.test.js",
     "dist:win": "electron-builder --win portable --x64 --publish never"
   },
   "devDependencies": {
