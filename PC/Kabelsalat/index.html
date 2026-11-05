@@ -66,7 +66,7 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">3D · v0.3</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">2D + 3D · v0.4</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="undo" class="btn tiny" title="Rückgängig (Strg+Z)">↶</button><button id="redo" class="btn tiny" title="Wiederholen (Strg+Y)">↷</button>
@@ -102,16 +102,23 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <div class="row"><label class="field">Position (mm)<input type="number" id="holeU" min="0" max="12000" step="1"></label>
 <label class="field">Höhe (mm)<input type="number" id="holeV" min="0" max="8000" step="1"></label></div>
 <label class="field">DN / Durchmesser (mm)<input type="number" id="holeDn" min="20" max="300" step="5"></label>
-<div class="row" style="margin-top:11px"><button id="applyHole" class="btn soft full">Position übernehmen</button><button id="deleteHole" class="btn danger">Entfernen</button></div>
+<div class="row" style="margin-top:11px"><button id="applyHole" class="btn soft full">Position übernehmen</button><button id="copyHole" class="btn soft">Kopieren</button><button id="deleteHole" class="btn danger">Entfernen</button></div>
 </div>
 </section>
-<section class="section"><div class="eyebrow">Ansicht</div>
+<section class="section"><div class="eyebrow">Ansicht</div><label class="row"><input id="splitEnabled" type="checkbox" checked> 2D und 3D gleichzeitig anzeigen</label>
 <div class="row spread"><label for="opacity">Wanddeckkraft</label><b id="opacityText">55 %</b></div><input id="opacity" type="range" min="10" max="100" step="5">
 <div class="row" style="margin-top:12px"><label><input id="showBox" type="checkbox" checked> Einhausungen anzeigen</label></div>
 <div class="row" style="margin-top:10px"><label><input id="showLabels" type="checkbox" checked> Wandbeschriftungen</label></div>
 </section>
 </aside>
-<main id="viewport"><canvas id="scene"></canvas><div id="tooltip"></div>
+<main id="viewport" class="with-2d"><canvas id="scene"></canvas><div id="tooltip"></div>
+<section id="draft2d" aria-label="2D-Wandzeichnung"><div class="draft-head"><strong>2D-Wandeditor · mm</strong>
+<select id="draftWallSelect" class="selector" aria-label="2D-Wand auswählen"><option value="SW1">SW1</option><option value="SW2">SW2</option><option value="SW3">SW3</option><option value="SW4">SW4</option></select></div>
+<div class="small">Leerrohre anklicken, verschieben und maßgenau bearbeiten. Die 3D-Ansicht aktualisiert sich gleichzeitig.</div>
+<div class="draft-canvas-wrap"><canvas id="draftCanvas" aria-label="2D-Schachtwand"></canvas></div>
+<div id="draftCoords" class="draft-metrics">Wähle ein Leerrohr.</div>
+<div class="row"><button id="draftCopy" class="btn soft full">＋ Rohr kopieren</button><button id="draftAdd" class="btn full">＋ Rohr platzieren</button></div>
+<div class="small">2D und 3D verwenden dieselben Objekt-IDs und Abmessungen.</div></section>
 <div class="view-top"><div class="view-head"><strong>3D-Installationsübersicht</strong><span id="viewInfo">Leerrohre und Kabelverläufe</span></div>
 <div class="view-controls"><button id="resetView" class="float" title="Ansicht zurücksetzen">⌖ Ansicht</button><button id="exportPng" class="float" title="Bild exportieren">↧ PNG</button></div></div>
 <div id="viewTabs" class="view-tabs">
@@ -170,6 +177,6 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 </section>
 </aside>
 </div>
-<script src="vendor/three.min.js"></script><script src="app.js"></script>
+<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="app.js"></script>
 </body>
 </html>
