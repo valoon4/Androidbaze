@@ -5,7 +5,7 @@ const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 new Function(app);
 const ids=[...app.matchAll(/\$\('([A-Za-z0-9_-]+)'\)/g)].map(m=>m[1]);
 for(const id of new Set(ids))assert.ok(html.includes('id="'+id+'"'),'UI element missing: '+id);
-const before=app.split('let project;try{')[0];
+const before=app.split('let project;try{')[0].replace(/^\(\(\) => \{\s*/, '');
 assert.ok(before.includes('function validProject(o)'), 'Data model must be testable');
 const {demo,validProject,grid}=new Function(before+'\nreturn {demo,validProject,grid};')();
 const initial=demo();
