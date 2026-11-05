@@ -404,6 +404,49 @@ function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=
  change(()=>{w.holes.push({id,row:0,col:0,dn:w.dn,...coords});wallId=wid;holeId=id;});}
 
 
+
+/* Review metadata and project-controlled geometry checks: NOT normative approvals. */
+let lastQualityResult=null;
+function renderQualityUI(){
+ const net=project.network,cfg=net.quality||qualityModel.normalizeSettings();
+ for(const [id,key] of [['minPipeGap','minPipeGapMm'],['minEdgeGap','minEdgeMm'],['minBend','minBendRadiusMm']]){
+  $(id).value=cfg[key]===null?'':cfg[key];
+ }
+ const query=$('globalSearch').value.trim();
+ const hits=qualityModel.searchNetwork(net,query,90);
+ $('globalResults').innerHTML=query?
+  (hits.map((x,i)=>'<div class="search-hit" data-result="'+i+'"><b>'+esc(x.kind==='shaft'?'Schacht':x.kind==='cable'?'Kabel':'Leerrohr')+'</b> · '+
+  esc(x.label)+'</div>').join('')||'<div class="small">Keine Treffer im Netz.</div>'):
+  '<div class="small">Schacht, Kabel oder Leerrohr im gesamten Projekt finden.</div>';
+ $('globalResults').dataset.results=JSON.stringify(hits);
+ lastQualityResult=qualityModel.evaluate(net,cfg);
+ const counts=lastQualityResult.counts;
+ $('qualitySummary').textContent=counts.error+' geometrische/Datenfehler · '+counts.warning+
+ ' Warnungen · '+counts.info+' Hinweise.\nKeine fachliche DIN/VDE- oder Brandschutzfreigabe.';
+ $('qualitySummary').style.background=counts.error||counts.warning?'#fff1e7':'#edf8f1';
+ $('qualityList').innerHTML=lastQualityResult.issues.slice(0,28).map((issue,i)=>
+  '<div class="quality-hit '+issue.severity+'" data-quality="'+i+'"><b>'+
+  esc(issue.code)+'</b> · '+esc(issue.detail)+'</div>').join('')||
+  '<div class="small">Keine Hinweise im aktuellen, eingeschränkten Prüfumfang – keine Fachfreigabe.</div>';
+ const options='<option value="shaft">Schacht · '+esc(project.activeShaftId)+'</option>'+
+ project.cables.map(c=>'<option value="cable:'+esc(c.id)+'">Kabel · '+esc(c.name)+'</option>').join('');
+ $('reviewTarget').innerHTML=options;
+ if(!['shaft',...project.cables.map(c=>'cable:'+c.id)].includes(reviewKey))reviewKey='shaft';
+ $('reviewTarget').value=reviewKey;
+ const entityType=reviewKey==='shaft'?'shaft':'cable',
+ entityId=entityType==='shaft'?project.activeShaftId:reviewKey.slice(6);
+ const entry=(net.reviews||[]).find(x=>x.shaftId===project.activeShaftId&&
+  x.entityType===entityType&&x.entityId===entityId);
+ $('reviewStatus').value=entry?.status||'Entwurf';
+ $('reviewSource').value=entry?.source||'';
+ $('reviewBy').value=entry?.checkedBy||'';
+ $('reviewNote').value=entry?.note||'';
+ $('auditLast').textContent=net.audit?.length?
+  'Letzter protokollierter Vorgang: '+net.audit[net.audit.length-1].action+' ('+
+  net.audit[net.audit.length-1].at+')':
+  'Noch kein gespeicherter Änderungsvorgang.';
+}
+
 /* Interactive network overview: global X/Z shaft positions in millimetres. */
 const networkCanvas=$('networkCanvas');
 const networkPos=e=>{const r=networkCanvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
