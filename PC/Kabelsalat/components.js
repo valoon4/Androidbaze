@@ -110,7 +110,12 @@ function differences(a,b){
  const count=p=>({wände:p.walls.length,leerrohre:holes(p),kabel:p.cables.length,
   auflager:(p.supports||[]).length,breite:p.dims.w,tiefe:p.dims.d,höhe:p.dims.h});
  const aa=count(a),bb=count(b);
- return Object.keys(aa).filter(k=>aa[k]!==bb[k]).map(k=>k+': '+aa[k]+' → '+bb[k]);
+ const changes=Object.keys(aa).filter(k=>aa[k]!==bb[k]).map(k=>k+': '+aa[k]+' → '+bb[k]);
+ for(const [field,label] of [['walls','Wand- und Rohrdetails'],['cables','Kabelverläufe und Anschlüsse'],
+ ['enclosures','Einhausungsplatten'],['supports','Konsolen und Auflager']]){
+  if(JSON.stringify(a[field]||[])!==JSON.stringify(b[field]||[]))changes.push(label+' verändert');
+ }
+ return changes;
 }
 function potentialBlockages(project,group){
  const e=project.enclosures?.[group];if(!e||!e.visible||project.showBox===false)return [];
