@@ -98,6 +98,19 @@ let panelKey='OLA-floor',supportId=null,variantId=null;
 let networkOpen=false,netRouteId=null,netSegmentShaftId=null,netLinkId=null;
 let mapZoom=1,mapOffsetX=0,mapOffsetY=0,mapDrag=null;
 let netLinkFromId=null,netLinkToId=null,reviewKey='shaft';
+/* Eugi UI preferences are separate from project data and never affect engineering exports. */
+const EXPLORE_MODE_KEY='kabelsalat_ui_mode_v1';
+const EXPLORE_PROGRESS_KEY='kabelsalat_explore_progress_v1';
+let exploreMode=true,exploreWith2D=false,exploreStage='shaft';
+let exploreVisited=new Set();
+try{
+ exploreMode=localStorage.getItem(EXPLORE_MODE_KEY)!=='expert';
+ const stored=JSON.parse(localStorage.getItem(EXPLORE_PROGRESS_KEY)||'[]');
+ if(Array.isArray(stored))exploreVisited=new Set(stored.filter(x=>['network','shaft','cable'].includes(x)));
+}catch(_){exploreMode=true;}
+document.body.classList.toggle('explore-mode',exploreMode);
+document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
+
 const undo=[],redo=[];
 const wall=()=>project.walls.find(w=>w.id===wallId);
 const cable=()=>project.cables.find(c=>c.id===cableId);
@@ -417,7 +430,7 @@ function drawCable(c){
  }
 }
 function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);view();draw2D();}
-function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();renderQualityUI();drawNetwork();}
+function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();renderQualityUI();renderExplorerUI();drawNetwork();}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
@@ -906,6 +919,77 @@ $('loadExample').addEventListener('click',()=>{
  requestAnimationFrame(resize);
 });
 $('showExampleNetwork').addEventListener('click',()=>setNetworkOpen(true));
+
+
+/* Guided, low-noise exploration: no hidden mutations to the project data. */
+function renderExplorerUI(){
+ document.body.classList.toggle('explore-mode',exploreMode);
+ document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
+ $('toggleExpert').textContent=exploreMode?'🛠 Profi-Modus':'✨ Eugi-Modus';
+ $('toggleExpert').setAttribute('aria-pressed',String(!exploreMode));
+ $('explore2DToggle').textContent=exploreWith2D?'▢ 2D-Plan ausblenden':'▤ Wand als 2D-Plan sehen';
+ const tips={
+  network:'🗺️ Die Kreise sind Schächte. Linien verbinden sie schematisch. Tippe auf einen Kreis oder doppelklicke, um einen Schacht zu öffnen.',
+  shaft:'🏗️ Der graublaue Kasten ist ein Schacht. Kleine Kreise sind Rohröffnungen; die Kabel laufen als bunte Linien hindurch. Mit der Maus drehen, mit dem Rad zoomen.',
+  cable:'🔴 Das kräftige Kabel ist ausgewählt. Die anderen Linien treten in den Hintergrund. Rechts kannst du ein anderes Kabel anklicken.'
+ };
+ $('exploreTip').textContent=tips[exploreStage];
+ for(const key of ['network','shaft','cable']){
+  const button=$('quest'+key[0].toUpperCase()+key.slice(1));
+  const done=exploreVisited.has(key);
+  button.classList.toggle('active',exploreStage===key);
+  button.querySelector('.quest-check').textContent=done?'✓':'○';
+  button.setAttribute('aria-pressed',String(exploreStage===key));
+ }
+ document.querySelectorAll('.quest-progress span').forEach((x,i)=>x.classList.toggle('done',
+  exploreVisited.has(['network','shaft','cable'][i])));
+ const c=cable(),w=wall();
+ const target=$('exploreSelectionBody');
+ const describe=(r)=>r?('Wand '+r.wall+' · Rohröffnung '+r.hole):'Noch nicht festgelegt';
+ if(c){
+  target.innerHTML='<strong><span class="selected-color" style="background:'+esc(c.color)+'"></span>'+
+  esc(c.name)+'</strong><div class="small">Gruppe: '+esc(c.group)+' · Kabeldurchmesser: '+
+  esc(c.diameter)+' mm</div><span class="endpoint"><b>Start A:</b> '+esc(describe(c.a))+
+  '</span><span class="endpoint"><b>Ziel B:</b> '+esc(describe(c.b))+
+  '</span><p class="small" style="margin:9px 0 0">Das ist eine schematische Planung, kein überprüfter Bauverlauf. Klick rechts ein anderes Kabel an.</p>';
+ }else{
+  target.textContent='Noch kein Kabel ausgewählt. Klick rechts auf einen farbigen Eintrag.';
+ }
+ $('exploreSceneText').textContent=exploreStage==='cable'&&c?
+  'Der kräftige farbige Weg gehört zu „'+c.name+'“. Start und Ziel siehst du rechts.':
+  'Runde Öffnungen nehmen Rohre auf. Die Linien zeigen schematische Kabelwege. Ziehe mit der Maus, um den Schacht zu drehen.';
+}
+function rememberQuest(which){
+ exploreStage=which;exploreVisited.add(which);
+ try{localStorage.setItem(EXPLORE_PROGRESS_KEY,JSON.stringify([...exploreVisited]));}catch(_){}
+}
+function openQuest(which){
+ rememberQuest(which);
+ if(which==='network'){networkOpen=true;}
+ else{
+  networkOpen=false;viewMode='3D';zoom=1;
+  if(which==='cable'){filter='all';cableId=project.cables.find(x=>x.group==='OLA')?.id||
+    project.cables[0]?.id||null;}
+ }
+ renderAll();
+ requestAnimationFrame(resize);
+}
+$('questNetwork').addEventListener('click',()=>openQuest('network'));
+$('questShaft').addEventListener('click',()=>openQuest('shaft'));
+$('questCable').addEventListener('click',()=>openQuest('cable'));
+$('toggleExpert').addEventListener('click',()=>{
+ exploreMode=!exploreMode;
+ try{localStorage.setItem(EXPLORE_MODE_KEY,exploreMode?'explore':'expert');}catch(_){}
+ renderAll();requestAnimationFrame(resize);
+});
+$('explore2DToggle').addEventListener('click',()=>{
+ exploreWith2D=!exploreWith2D;
+ if(!project.splitEnabled){exploreWith2D=false;alert('Die parallele 2D-Ansicht ist in diesem Projekt deaktiviert. Im Profi-Modus kannst du sie einschalten.');return;}
+ renderAll();requestAnimationFrame(resize);
+});
+$('exploreCameraReset').addEventListener('click',()=>{
+ azimuth=.72;elevation=.42;zoom=1;viewMode='3D';renderAll();
+});
 
 /* Network workspace commands. All changes go through the undo/persistence system. */
 function setNetworkOpen(next){
