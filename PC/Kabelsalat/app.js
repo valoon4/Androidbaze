@@ -7,6 +7,8 @@ const networkModel=globalThis.KabelsalatNetwork;
 if(!networkModel)throw Error('Kabelsalat-Netzmodul fehlt');
 const qualityModel=globalThis.KabelsalatQuality,reportModel=globalThis.KabelsalatReports;
 if(!qualityModel||!reportModel)throw Error('Kabelsalat-Prüf- oder Berichtmodul fehlt');
+const samples=globalThis.KabelsalatSamples;
+if(!samples)throw Error('Kabelsalat-Beispielmodul fehlt');
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
 const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -86,7 +88,11 @@ function validProject(o){
  o.activeShaftId:result.network.shafts[0].id;
  return result;
 }
-let project;try{project=validProject(JSON.parse(localStorage.getItem(STORAGE)))}catch(_){project=validProject(demo());}
+let project;
+try{
+ const previous=localStorage.getItem(STORAGE);
+ project=validProject(previous?JSON.parse(previous):samples.create('station'));
+}catch(_){project=validProject(samples.create('reference'));}
 let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mode='orbit',grab=null;
 let panelKey='OLA-floor',supportId=null,variantId=null;
 let networkOpen=false,netRouteId=null,netSegmentShaftId=null,netLinkId=null;
@@ -156,6 +162,11 @@ function optionsHTML(selected){let html='<option value="">– Nicht zugeordnet �
  html+='</optgroup>';}return html;}
 function parseEndpoint(v){if(!v)return null;const i=v.indexOf('|');return i<0?null:{wall:v.slice(0,i),hole:v.slice(i+1)};}
 function renderUI(){
+ const totalShafts=project.network.shafts.length;
+ const totalCables=project.network.shafts.reduce((n,s)=>n+s.snapshot.cables.length,0);
+ $('exampleInfo').textContent=totalShafts+' Schächte · '+totalCables+
+ ' Kabel im Projekt · aktuelle Ansicht: '+project.activeShaftId+
+ '. Die Beispieldaten sind fiktiv.';
  $('projectName').value=project.name;$('width').value=project.dims.w;$('depth').value=project.dims.d;$('height').value=project.dims.h;
  $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallThickness').value=wall().thickness;$('wallDn').value=wall().dn;$('wallTitle').textContent=wallId+' · Konfiguration';
  $('copyHole').disabled=!hole();$('draftCopy').disabled=!hole();
@@ -860,6 +871,29 @@ $('exportPdf').addEventListener('click',async()=>{
   if(result&&!result.ok&&!result.cancelled)alert('PDF-Export nicht möglich: '+(result.error||'Unbekannter Fehler'));
  }catch(ex){alert('PDF konnte nicht gespeichert werden: '+ex.message);}
 });
+
+
+/* Samples are bundled as JavaScript data, so file:// offline installations require no fetch. */
+$('exampleSelect').innerHTML=samples.manifest.map(example=>
+ '<option value="'+esc(example.id)+'">'+esc(example.name)+'</option>').join('');
+$('exampleSelect').value='station';
+$('loadExample').addEventListener('click',()=>{
+ const selected=$('exampleSelect').value;
+ const meta=samples.manifest.find(x=>x.id===selected);
+ if(!meta||!confirm('Beispiel „'+meta.name+'“ laden? Das aktuelle Projekt wird ersetzt. '+
+ 'Bitte vorher als JSON sichern, falls du deine Arbeit behalten möchtest.'))return;
+ change(()=>{
+  project=validProject(samples.create(selected));
+  wallId='SW1';holeId=null;cableId=project.cables[0]?.id||null;
+  panelKey='OLA-floor';supportId=project.supports[0]?.id||null;
+  variantId=project.variants[0]?.id||null;netRouteId=project.network.routes[0]?.id||null;
+  netSegmentShaftId=project.activeShaftId;netLinkFromId=null;netLinkToId=null;netLinkId=null;
+  filter='all';viewMode='3D';zoom=1;networkOpen=selected==='station';
+  mapZoom=1;mapOffsetX=0;mapOffsetY=0;reviewKey='shaft';
+ },'Beispiel '+selected+' geladen');
+ requestAnimationFrame(resize);
+});
+$('showExampleNetwork').addEventListener('click',()=>setNetworkOpen(true));
 
 /* Network workspace commands. All changes go through the undo/persistence system. */
 function setNetworkOpen(next){
