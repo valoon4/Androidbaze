@@ -123,8 +123,13 @@ function renderUI(){
  'Modell mit der Maus drehen, mit dem Mausrad zoomen. Öffnungen oder Kabel anklicken, um sie zu bearbeiten.';
  const h=hole();$('holeEditor').style.display=h?'block':'none';
  if(h){$('holeTitle').textContent=wallId+' · '+holeText(wall(),h);$('holeU').value=Math.round(h.u*wallSpanMm(wallId));$('holeV').value=Math.round(h.v*project.dims.h);$('holeDn').value=h.dn;}
- $('cableFilters').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
- const match=c=>filter==='all'||hueGroup(c.color)===filter;
+ $('cableFilters').querySelectorAll('button').forEach(b=>{
+ b.classList.toggle('active',b.dataset.filter===filter);
+ if(['OLA','MS','Weitere'].includes(b.dataset.filter))
+ b.textContent=b.dataset.filter+' '+project.cables.filter(c=>c.group===b.dataset.filter).length;
+ if(b.dataset.filter==='all')b.textContent='Alle '+project.cables.length;
+ });
+ const match=c=>filter==='all'||(['OLA','MS','Weitere'].includes(filter)?c.group===filter:hueGroup(c.color)===filter);
  $('cableList').innerHTML=project.cables.filter(match).map(c=>'<div class="cable '+(c.id===cableId?'active':'')+'" data-cable="'+esc(c.id)+'"><span class="swatch" style="background:'+c.color+'"></span><div style="flex:1;min-width:0"><div class="cable-name">'+esc(c.name)+'</div><div class="cable-path">'+esc(referenceText(c.a))+' → '+esc(referenceText(c.b))+'</div></div></div>').join('') || '<p class="small">Keine Kabel in diesem Filter.</p>';
  const c=cable();$('empty-cable').hidden=!!c;$('cableForm').hidden=!c;
  if(c){
@@ -418,7 +423,9 @@ $('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];i
  try{const next=validProject(JSON.parse(await f.text()));change(()=>{project=next;wallId='SW1';holeId=null;cableId=project.cables[0]?.id||null;});}
  catch(ex){alert('Projektdatei konnte nicht geladen werden: '+ex.message);}e.target.value='';});
 $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung starten? Die vorherige Planung bleibt über Rückgängig erreichbar.'))return;
- change(()=>{project=demo();project.name='Neue Schachtwandplanung';project.cables=[];wallId='SW1';holeId=null;cableId=null;filter='all';});});
+ change(()=>{project=demo();project.name='Neue Schachtwandplanung';project.cables=[];
+ project.walls.forEach(w=>{w.holes=[];w.rows=3;w.cols=4;});
+ wallId='SW1';holeId=null;cableId=null;filter='all';viewMode='3D';});});
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
 function resize(){const rect=$('viewport').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();}
 new ResizeObserver(resize).observe($('viewport'));
