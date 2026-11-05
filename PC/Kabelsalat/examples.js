@@ -7,8 +7,8 @@
 })(typeof window!=='undefined'?window:null,function(components,network){
 'use strict';
 const manifest=[
- {id:'reference',name:'1 · Referenzschacht 13_T_021 (DEMO)',description:'Vier Wände, viele Leerrohre, 16 farbige Kabel, OLA/MS, Konsolen, Variante'},
- {id:'station',name:'2 · Bahnhofsnetz mit 4 Schächten (DEMO)',description:'Vier Schächte, 48 Kabel, Netzverbindungen und drei schachtübergreifende Kabelwege'},
+ {id:'reference',name:'1 · Referenzschacht 13_T_021 (DEMO)',description:'Vier Wände, 94 Leerrohre, 16 farbige Kabel, OLA/MS, Konsolen und Variante'},
+ {id:'station',name:'2 · Bahnhofsnetz mit 4 Schächten (DEMO)',description:'Vier Schächte, 64 Kabel, Netzverbindungen und drei schachtübergreifende Kabelwege'},
  {id:'quality',name:'3 · Prüffall mit absichtlichen Fehlern (DEMO)',description:'Überschneidungen, unvollständiges Kabel und Geometriehinweise zum Nachvollziehen'}
 ];
 const groups=[
@@ -16,13 +16,17 @@ const groups=[
  ['MS-001','MS','#1d96c1'],['MS-002','MS','#4f8fe7'],['MS-003','MS','#367cc5'],
  ['LST-004','Weitere','#27a77b'],['LST-005','Weitere','#70bd55'],
  ['TK-006','Weitere','#9860d2'],['TK-007','Weitere','#ba84d7'],
- ['RESERVE-008','Weitere','#ae9939'],['TK-009','Weitere','#44a9b0']
+ ['RESERVE-008','Weitere','#ae9939'],['TK-009','Weitere','#44a9b0'],
+ ['LST-010','Weitere','#c76f56'],['TK-011','Weitere','#a86bce'],
+ ['MS-004','MS','#3e8cb4'],['OLA-004','OLA','#e35c76']
 ];
 const refs=[
  ['SW1',1,1,'SW3',2,4],['SW1',2,2,'SW4',1,5],['SW2',3,4,'SW3',1,3],
  ['SW1',3,3,'SW3',4,2],['SW4',2,2,'SW2',1,5],['SW1',4,4,'SW3',3,4],
  ['SW1',2,5,'SW2',3,2],['SW3',2,5,'SW4',2,4],['SW2',2,2,'SW4',3,5],
- ['SW1',3,6,'SW3',2,1],['SW4',1,2,'SW2',4,6],['SW1',1,5,'SW4',2,3]
+ ['SW1',3,6,'SW3',2,1],['SW4',1,2,'SW2',4,6],['SW1',1,5,'SW4',2,3],
+ ['SW1',3,1,'SW3',1,5],['SW2',1,1,'SW4',1,3],
+ ['SW1',4,6,'SW3',3,2],['SW2',4,3,'SW4',2,6]
 ];
 const clone=o=>JSON.parse(JSON.stringify(o));
 const grid=wall=>{
