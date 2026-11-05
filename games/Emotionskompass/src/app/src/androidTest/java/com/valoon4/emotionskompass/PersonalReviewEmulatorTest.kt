@@ -421,10 +421,18 @@ class PersonalReviewEmulatorTest {
         rule.onNode(scroller).performScrollToNode(
             hasTestTag("diary-calendar-day-2027-01-02"))
         rule.onNodeWithTag("diary-calendar-day-2027-01-02").performClick()
+        // Date list and day detail are separate LazyColumn items. At 200%
+        // font the selected-day header may be outside the current viewport.
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-selected-count"))
         rule.onNodeWithTag("diary-calendar-selected-count")
             .assertTextContains("0 gespeicherte Einträge", substring = true)
+        rule.onNode(scroller).performScrollToNode(
+            hasText("Daraus lässt sich nichts über dein Erleben ableiten.", substring = true))
         rule.onNodeWithText("Daraus lässt sich nichts über dein Erleben ableiten.",
             substring = true).assertExists()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-back-to-month"))
         rule.onNodeWithTag("diary-calendar-back-to-month").performClick()
         rule.runOnIdle { assertEquals(null, navigation.selectedDate) }
     }
