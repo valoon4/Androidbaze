@@ -1,6 +1,9 @@
 package com.valoon4.emotionskompass
 
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,8 +30,14 @@ import com.valoon4.emotionskompass.core.insights.JournalSnapshot
 import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
+import com.valoon4.emotionskompass.feature.insights.DiaryCalendarUiState
 import com.valoon4.emotionskompass.feature.insights.PersonalReviewScreen
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.ZoneId
+import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -280,6 +289,10 @@ class PersonalReviewEmulatorTest {
                 SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
         ).performScrollToNode(hasText("0 gespeicherte Einträge"))
         rule.onNodeWithText("0 gespeicherte Einträge").assertExists()
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("In diesem Zeitraum gibt es noch keine Einträge."))
         rule.onNodeWithText("In diesem Zeitraum gibt es noch keine Einträge.").assertExists()
         rule.onNode(
             hasScrollToIndexAction() and
@@ -322,6 +335,178 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithText("Ausgangspunkt:", substring = true).assertExists()
         rule.onNodeWithText("Ohne Speichern beenden").performClick()
         rule.runOnIdle { assertEquals(0, saveCalls) }
+    }
+
+    private fun calendarJournal(month: YearMonth): List<JournalEntry> {
+        val zone = ZoneId.systemDefault()
+        val day = month.atDay(4)
+        fun at(hour: Int): Long =
+            day.atTime(hour, 0).atZone(zone).toInstant().toEpochMilli()
+        return listOf(
+            JournalEntry("calendar-one", at(8), at(8), CheckInDraft()),
+            JournalEntry("calendar-two", at(19), at(19), CheckInDraft()),
+            JournalEntry("calendar-outside", day.minusMonths(1).atTime(12, 0)
+                .atZone(zone).toInstant().toEpochMilli(),
+                day.minusMonths(1).atTime(12, 0)
+                    .atZone(zone).toInstant().toEpochMilli(), CheckInDraft())
+        )
+    }
+
+    @Test fun optInCalendarFindsBothRealEntriesRegardlessOfStatisticFilter() {
+        val month = YearMonth.now()
+        val source = JournalSnapshot.fromEntries(calendarJournal(month))
+        val navigation = DiaryCalendarUiState().apply { this.month = month }
+        var opened: String? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = source, busy = false, error = null,
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = { opened = it }, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(),
+                    calendarUiState = navigation
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(hasTestTag("diary-calendar-toggle"))
+        rule.onNodeWithTag("diary-calendar-toggle").assertExists()
+        rule.runOnIdle { assertFalse(navigation.expanded) }
+        rule.onNodeWithTag("diary-calendar-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-day-${month.atDay(4)}"))
+        rule.onNodeWithTag("diary-calendar-day-${month.atDay(4)}")
+            .assertHeightIsAtLeast(48.dp).performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-selected-count"))
+        rule.onNodeWithTag("diary-calendar-selected-count")
+            .assertTextContains("2 gespeicherte Einträge", substring = true)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-entry-calendar-two"))
+        rule.onNodeWithTag("diary-calendar-entry-calendar-two").performClick()
+        rule.runOnIdle { assertEquals("calendar-two", opened) }
+    }
+
+    @Test fun calendarMonthNavigationAndEmptyDaysDoNotBecomeRatings() {
+        val month = YearMonth.of(2026, 12)
+        val navigation = DiaryCalendarUiState().apply { this.month = month }
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = JournalSnapshot.fromEntries(calendarJournal(month)),
+                    busy = false, error = null, emotions = emotions, needs = needs,
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), calendarUiState = navigation
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(hasTestTag("diary-calendar-toggle"))
+        rule.onNodeWithTag("diary-calendar-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-previous-month"))
+        rule.onNodeWithTag("diary-calendar-previous-month").performClick()
+        rule.runOnIdle { assertEquals(YearMonth.of(2026, 11), navigation.month) }
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-next-month"))
+        rule.onNodeWithTag("diary-calendar-next-month").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-next-month"))
+        rule.onNodeWithTag("diary-calendar-next-month").performClick()
+        rule.runOnIdle { assertEquals(YearMonth.of(2027, 1), navigation.month) }
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-day-2027-01-02"))
+        rule.onNodeWithTag("diary-calendar-day-2027-01-02").performClick()
+        // Date list and day detail are separate LazyColumn items. At 200%
+        // font the selected-day header may be outside the current viewport.
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-selected-count"))
+        rule.onNodeWithTag("diary-calendar-selected-count")
+            .assertTextContains("0 gespeicherte Einträge", substring = true)
+        rule.onNode(scroller).performScrollToNode(
+            hasText("Daraus lässt sich nichts über dein Erleben ableiten.", substring = true))
+        rule.onNodeWithText("Daraus lässt sich nichts über dein Erleben ableiten.",
+            substring = true).assertExists()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-back-to-month"))
+        rule.onNodeWithTag("diary-calendar-back-to-month").performClick()
+        rule.runOnIdle { assertEquals(null, navigation.selectedDate) }
+    }
+
+    @Test fun calendarIsOnlyAvailableAfterAuthenticatedLoading() {
+        val navigation = DiaryCalendarUiState().apply {
+            expanded = true
+            month = YearMonth.of(2026, 11)
+            selectedDate = LocalDate.of(2026, 11, 4)
+        }
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = null, busy = false, error = "Test: Journal-Schlüssel fehlt",
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), calendarUiState = navigation
+                )
+            }
+        }
+        rule.onNodeWithTag("diary-calendar-panel").assertDoesNotExist()
+        rule.runOnIdle {
+            assertFalse(navigation.expanded)
+            assertEquals(null, navigation.selectedDate)
+        }
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(
+            hasText("Dein Tagebuch konnte nicht sicher geöffnet werden."))
+        rule.onNodeWithText("Dein Tagebuch konnte nicht sicher geöffnet werden.")
+            .assertExists()
+    }
+
+    @Test fun calendarSelectionCanSurviveAJournalDetailReturnInMemory() {
+        val month = YearMonth.now()
+        val nav = DiaryCalendarUiState().apply { this.month = month }
+        val source = JournalSnapshot.fromEntries(calendarJournal(month))
+        rule.setContent {
+            EmotionskompassTheme {
+                var detail by remember { mutableStateOf(false) }
+                if (detail) {
+                    Button(onClick = { detail = false }) { Text("Zurück vom Eintrag") }
+                } else {
+                    PersonalReviewScreen(
+                        snapshot = source, busy = false, error = null,
+                        emotions = emotions, needs = needs, onReload = {},
+                        onOpenJournalEntry = { detail = true }, onStartCheckIn = {},
+                        selectedTerm = null, onSelectTerm = {},
+                        listState = rememberLazyListState(), calendarUiState = nav
+                    )
+                }
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(hasTestTag("diary-calendar-toggle"))
+        rule.onNodeWithTag("diary-calendar-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-day-${month.atDay(4)}"))
+        rule.onNodeWithTag("diary-calendar-day-${month.atDay(4)}").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-entry-calendar-one"))
+        rule.onNodeWithTag("diary-calendar-entry-calendar-one").performClick()
+        rule.onNodeWithText("Zurück vom Eintrag").performClick()
+        rule.runOnIdle {
+            assertTrue(nav.expanded)
+            assertEquals(month.atDay(4), nav.selectedDate)
+        }
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-selected-count"))
+        rule.onNodeWithTag("diary-calendar-selected-count")
+            .assertTextContains("2 gespeicherte Einträge", substring = true)
     }
 
     @Test fun unavailableJournalNeverPretendsToBeEmptyAndCustomRangeCanBeChosen() {

@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,12 +41,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.checkin.LifeArea
+import com.valoon4.emotionskompass.core.insights.DiaryCalendar
 import com.valoon4.emotionskompass.core.insights.CalculateOverview
 import com.valoon4.emotionskompass.core.insights.DiscoverPatterns
 import com.valoon4.emotionskompass.core.insights.PatternObservation
@@ -105,7 +108,8 @@ fun PersonalReviewScreen(
     incomingStrategyCard: StrategyCard? = null,
     onCatalogProposalConsumed: () -> Unit = {},
     onBrowseStrategyAtlas: () -> Unit = {},
-    onOpenStrategyCard: (String) -> Unit = {}
+    onOpenStrategyCard: (String) -> Unit = {},
+    calendarUiState: DiaryCalendarUiState? = null
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
@@ -133,10 +137,21 @@ fun PersonalReviewScreen(
     var patternsVisible by rememberSaveable { mutableStateOf(true) }
     var showAllPatterns by rememberSaveable { mutableStateOf(false) }
     var showPatternCriteria by rememberSaveable { mutableStateOf(false) }
-    // Opt-in visual state stays in memory; no personal counts in SavedState.
+    // All calendar navigation remains outside Android SavedState and encrypted stores.
+    // The app shell supplies its instance to survive journal detail navigation.
+    val diaryCalendarState = calendarUiState ?: remember { DiaryCalendarUiState() }
     var showMentionBars by remember { mutableStateOf(false) }
     LaunchedEffect(snapshot, busy, error) {
-        if (snapshot == null || busy || error != null) showMentionBars = false
+        if (snapshot == null || busy || error != null) {
+            showMentionBars = false
+            diaryCalendarState.resetPrivateState()
+        }
+    }
+    BackHandler(
+        enabled = !showInsightPage && !showExperimentsPage && selectedTerm == null &&
+            diaryCalendarState.expanded && diaryCalendarState.selectedDate != null
+    ) {
+        diaryCalendarState.selectedDate = null
     }
     val scope = rememberCoroutineScope()
     // The evidence list replaces the overview's lazy items. Always reveal
@@ -156,6 +171,14 @@ fun PersonalReviewScreen(
                 InsightTimeWindow.recentDays(preset.toInt(), Instant.now(), zone)
             }
         }.getOrNull()
+    }
+    // Calendar always sees the whole authenticated journal, regardless of the
+    // independent 7/30/90-day overview filter. No extra persistence or API.
+    val diaryCalendarMonth = remember(snapshot, diaryCalendarState.month, zone) {
+        snapshot?.let { DiaryCalendar.month(it, diaryCalendarState.month, zone) }
+    }
+    val diaryById = remember(snapshot) {
+        snapshot?.entries?.associateBy { it.journalId }.orEmpty()
     }
     val overview = remember(snapshot, window) {
         if (snapshot != null && window != null) CalculateOverview.calculate(snapshot, window)
@@ -301,12 +324,17 @@ fun PersonalReviewScreen(
                     onOpenStrategy = onOpenStrategyCard
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = listState,
-        contentPadding = PaddingValues(20.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
+                BoxWithConstraints(Modifier.fillMaxSize()) {
+                    // Content has 20dp horizontal lazy padding on both sides.
+                    // Seven 48dp cells cannot fit on a 320dp device.
+                    val supportsCalendarGrid = maxWidth - 40.dp >= 336.dp &&
+                        LocalDensity.current.fontScale <= 1.3f
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = listState,
+                        contentPadding = PaddingValues(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                    ) {
         // A selected evidence view should start with its own heading and
         // records, not two large overview sections at 200% font scale.
         if (selectedTerm == null) {
@@ -364,6 +392,55 @@ fun PersonalReviewScreen(
         }
 
         } // overview introduction and period picker
+        if (selectedTerm == null && error == null && !busy && snapshot != null &&
+            diaryCalendarMonth != null) {
+            item(key = "diary-calendar") {
+                DiaryCalendarPanel(
+                    diaryCalendarMonth,
+                    diaryCalendarState,
+                    supportsGrid = supportsCalendarGrid
+                )
+            }
+            // In list mode each local date is independently lazy and scrollable.
+            // Avoid a 31-button child column that can be unreachable at 200% font.
+            if (diaryCalendarState.expanded && diaryCalendarState.selectedDate == null &&
+                (!supportsCalendarGrid || diaryCalendarState.listRequested)) {
+                items(diaryCalendarMonth.days, key = { "calendar-day-${it.date}" }) { day ->
+                    DiaryCalendarDateListItem(day) {
+                        diaryCalendarState.selectedDate = day.date
+                    }
+                }
+            }
+            // Lazily render this day's evidence, not thousands of cards in
+            // one calendar item. These IDs come from the same secure snapshot.
+            val chosenDay = diaryCalendarState.selectedDate?.let(diaryCalendarMonth::day)
+            if (diaryCalendarState.expanded && chosenDay != null) {
+                items(chosenDay.journalIds, key = { "calendar-entry-$it" }) { id ->
+                    val entry = diaryById[id]
+                    if (entry != null) {
+                        Card(
+                            onClick = { onOpenJournalEntry(id) },
+                            modifier = Modifier.fillMaxWidth()
+                                .testTag("diary-calendar-entry-$id")
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(5.dp)
+                            ) {
+                                Text(
+                                    formatTime(entry.createdAtUtcMillis, zone),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    "Tagebucheintrag ansehen",
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (error != null) {
             item {
                 Card(colors = CardDefaults.cardColors(
@@ -475,7 +552,7 @@ fun PersonalReviewScreen(
                             Text("Ein Eintrag kann mehrere Wörter enthalten. Gezählt wird nur, was du selbst ausgewählt hast – nicht, wie oft du etwas erlebt hast.",
                                 style = MaterialTheme.typography.bodySmall)
                             OutlinedButton(
-                                onClick = { scope.launch { listState.animateScrollToItem(3) } },
+                                onClick = { scope.launch { listState.animateScrollToItem(4) } },
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("review-jump-patterns")
                             ) { Text("Zu gemeinsam ausgewählten Begriffen") }
@@ -667,6 +744,7 @@ fun PersonalReviewScreen(
             }
         }
                 } // LazyColumn
+                } // BoxWithConstraints
             } // overview / insights
         } // content
     } // Rückblick tabs
