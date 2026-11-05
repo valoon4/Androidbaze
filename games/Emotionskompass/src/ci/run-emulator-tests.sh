@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# M7.5.2a: run real instrumented tests on the Emotionskompass emulator.
+# M7.5.2b: run real instrumented tests on the Emotionskompass emulator.
 # Bypass the AGP/UTP ddmlib multi-APK installer, which can falsely report
 # "API level=35. Cannot install split APKs with API level < 21".
 set -euo pipefail
@@ -59,7 +59,7 @@ echo "::endgroup::"
 
 run_suite() {
   local label="$1" scale="$2" out="$REPORT_DIR/$1.log"
-  echo "::group::Run all thirty-nine Compose tests: $label (font_scale=$scale)"
+  echo "::group::Run all forty-three Compose tests: $label (font_scale=$scale)"
   adb shell settings put system font_scale "$scale"
   local current_scale
   current_scale="$(adb shell settings get system font_scale | tr -d '\r')"
@@ -72,10 +72,10 @@ run_suite() {
   adb shell am instrument -w -r -e class "$TEST_CLASS" "$RUNNER" | tee "$out"
   # am instrument often exits 0 even for failed/zero tests: explicitly assert
   # the instrumentation result and exact count.
-  if ! grep -Eq 'OK \(39 tests\)' "$out" \
+  if ! grep -Eq 'OK \(43 tests\)' "$out" \
       || ! grep -q 'INSTRUMENTATION_CODE: -1' "$out" \
       || grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=|Error in ' "$out"; then
-    echo "::error::Expected thirty-nine passing instrumented tests at $label; see $out"
+    echo "::error::Expected forty-three passing instrumented tests at $label; see $out"
     return 1
   fi
   echo "::endgroup::"
@@ -116,4 +116,4 @@ adb shell wm size
 adb shell wm density
 run_suite "narrow-320dp-200-percent" "2.0"
 
-echo "M7.5.2a: 78 Compose UI executions plus 3 EKB2 and 9 EKB3 KeyStore tests passed."
+echo "M7.5.2b: 86 Compose UI executions plus 3 EKB2 and 9 EKB3 KeyStore tests passed."
