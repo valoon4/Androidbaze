@@ -47,6 +47,13 @@ function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.len
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;}
 function holeText(w,h){return w.id+' · '+(h.row?'Reihe '+h.row+', Öffnung '+h.col:'Frei platziert');}
 function referenceText(r){if(!r)return 'Nicht zugeordnet';const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holeText(w,h):'Nicht zugeordnet';}
+function hueGroup(color){
+ const r=parseInt(color.slice(1,3),16)/255,g=parseInt(color.slice(3,5),16)/255,b=parseInt(color.slice(5,7),16)/255;
+ const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+ if(d<.1)return 'other';
+ let h=(max===r?(g-b)/d+(g<b?6:0):max===g?(b-r)/d+2:(r-g)/d+4)*60;
+ return h<26||h>=340?'red':h<70?'yellow':h<165?'green':h<260?'blue':'other';
+}
 function optionsHTML(selected){let html='<option value="">– Nicht zugeordnet –</option>';
  for(const w of project.walls){html+='<optgroup label="'+esc(w.id)+'">';
  for(const h of w.holes){const key=w.id+'|'+h.id;html+='<option value="'+esc(key)+'"'+(selected&&selected.wall===w.id&&selected.hole===h.id?' selected':'')+'>'+esc(holeText(w,h))+'</option>';}
@@ -65,7 +72,7 @@ function renderUI(){
  const h=hole();$('holeEditor').style.display=h?'block':'none';
  if(h){$('holeTitle').textContent=wallId+' · '+holeText(wall(),h);$('holeU').value=Math.round(h.u*100);$('holeV').value=Math.round(h.v*100);}
  $('cableFilters').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
- const match=c=>filter==='all'||(filter==='red'?c.color.toLowerCase().startsWith('#e'):filter==='green'?c.color.toLowerCase().startsWith('#1'):filter==='blue'?c.color.toLowerCase().startsWith('#3'):c.color.toLowerCase().startsWith('#e3'));
+ const match=c=>filter==='all'||hueGroup(c.color)===filter;
  $('cableList').innerHTML=project.cables.filter(match).map(c=>'<div class="cable '+(c.id===cableId?'active':'')+'" data-cable="'+esc(c.id)+'"><span class="swatch" style="background:'+c.color+'"></span><div style="flex:1;min-width:0"><div class="cable-name">'+esc(c.name)+'</div><div class="cable-path">'+esc(referenceText(c.a))+' → '+esc(referenceText(c.b))+'</div></div></div>').join('') || '<p class="small">Keine Kabel in diesem Filter.</p>';
  const c=cable();$('empty-cable').hidden=!!c;$('cableForm').hidden=!c;
  if(c){$('cableName').value=c.name;$('cableColor').value=c.color;$('cableA').innerHTML=optionsHTML(c.a);$('cableB').innerHTML=optionsHTML(c.b);}
@@ -222,8 +229,8 @@ $('openProject').addEventListener('click',()=>$('fileInput').click());
 $('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;
  try{const next=validProject(JSON.parse(await f.text()));change(()=>{project=next;wallId='SW1';holeId=null;cableId=project.cables[0]?.id||null;});}
  catch(ex){alert('Projektdatei konnte nicht geladen werden: '+ex.message);}e.target.value='';});
-$('newProject').addEventListener('click',()=>{if(!confirm('Neue Demo-Planung starten? Ungespeicherte Änderungen sind danach nur noch über Rückgängig verfügbar.'))return;
- change(()=>{project=demo();wallId='SW1';holeId=null;cableId=project.cables[0].id;filter='all';});});
+$('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung starten? Die vorherige Planung bleibt über Rückgängig erreichbar.'))return;
+ change(()=>{project=demo();project.name='Neue Schachtwandplanung';project.cables=[];wallId='SW1';holeId=null;cableId=null;filter='all';});});
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
 function resize(){const rect=$('viewport').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();}
 new ResizeObserver(resize).observe($('viewport'));
