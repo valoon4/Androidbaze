@@ -35,6 +35,7 @@ import com.valoon4.emotionskompass.feature.insights.PersonalReviewScreen
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
+import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
