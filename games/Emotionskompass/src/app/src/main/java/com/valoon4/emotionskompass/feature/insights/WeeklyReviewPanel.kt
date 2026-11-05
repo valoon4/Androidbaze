@@ -67,6 +67,9 @@ class WeeklyReviewUiState {
     fun openTermEvidence(kind: String, id: String) {
         require(kind == "emotion" || kind == "need")
         evidenceTerm = kind to id
+        // Replacing the full term list with its selected evidence places the
+        // actual journal links directly below the week, even at 200% font.
+        showAllTerms = false
         showEvidence = true
     }
 
