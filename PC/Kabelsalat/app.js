@@ -269,18 +269,35 @@ function drawOpening(w,h){
  const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.004,6,32),new THREE.MeshBasicMaterial({color:selected?'#f9cf68':'#cad6d9'}));
  ring.position.z=.004;group.add(ring);models.add(group);hitObjects.push(circle);
 }
+function highlightBox(mesh,color='#eec657'){
+ const edges=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),
+ new THREE.LineBasicMaterial({color,depthTest:false,transparent:true,opacity:.9}));
+ edges.position.copy(mesh.position);models.add(edges);
+}
 function drawHousing(key){
- const s=sizes(),e=project.enclosures[key];
- if(!project.showBox||!e.visible)return;
- const isMS=key==='MS',y0=isMS?s.h*.51:s.h*.09,y1=isMS?s.h*.77:s.h*.35,
- bw=s.w*.72,bd=s.d*.68,cz=s.d*.11;
- const op=e.opacity/100,wallColor=isMS?'#9bb2bf':'#c4b9b5';
- box(bw,.024,bd,0,y0,cz,wallColor,op);
- box(bw,.024,bd,0,y1,cz,wallColor,op);
- box(.024,y1-y0,bd,-bw/2,(y1+y0)/2,cz,wallColor,op);
- box(.024,y1-y0,bd,bw/2,(y1+y0)/2,cz,wallColor,op);
- box(bw,y1-y0,.024,0,(y1+y0)/2,cz-bd/2,wallColor,op);
- box(bw,y1-y0,.024,0,(y1+y0)/2,cz+bd/2,wallColor,op);
+ const e=project.enclosures[key];
+ if(!project.showBox||!e.visible||viewMode.startsWith('SW'))return;
+ for(const p of e.panels){
+  if(!p.visible)continue;
+  const g=components.panelGeometry(e,p),opacity=(p.opacity/100)*(e.opacity/100);
+  const mat=p.material.toLowerCase(),color=mat.includes('stahl')?'#779ba9':
+    mat.includes('beton')?'#b1b9be':mat.includes('holz')?'#bd9266':
+    mat.includes('brand')?'#d1a9ac':'#b5c5cc';
+  const mesh=box(g.w/1000,g.h/1000,g.d/1000,g.x/1000,g.y/1000,g.z/1000,
+    color,opacity);
+  mesh.userData={type:'panel',id:p.id,group:key};
+  hitObjects.push(mesh);
+  if(p.id===panelKey)highlightBox(mesh);
+ }
+}
+function drawSupports(){
+ for(const s of project.supports){
+  if(!s.visible||(viewMode.startsWith('SW')&&viewMode!==s.wall))continue;
+  const mesh=box(s.w/1000,s.h/1000,s.d/1000,
+  s.x/1000,s.y/1000,s.z/1000,s.type==='Auflager'?'#c79a5b':'#5c83b0',.9);
+  mesh.userData={type:'support',id:s.id};hitObjects.push(mesh);
+  if(s.id===supportId)highlightBox(mesh,'#f3c756');
+ }
 }
 function drawWalls(){
  const s=sizes(),op=project.opacity/100;
@@ -311,7 +328,7 @@ function drawWalls(){
  s.h+.15,w.id==='SW2'?-s.d/2:w.id==='SW4'?s.d/2:0));
  for(const h of w.holes)drawOpening(w,h);
  }
- drawHousing('OLA');drawHousing('MS');
+ drawHousing('OLA');drawHousing('MS');drawSupports();
 }
 function endpoint(r){if(!r)return null;const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holePosition(w.id,h):null;}
 function drawCable(c){
@@ -466,6 +483,8 @@ canvas.addEventListener('pointerdown',e=>{
  grab={type:'waypoint',id:obj.id,index:obj.index,changed:false,plane:new THREE.Plane().setFromNormalAndCoplanarPoint(normal,point)};}
  return;
  }
+ if(obj.type==='panel'){panelKey=obj.id;renderAll();return;}
+ if(obj.type==='support'){supportId=obj.id;renderAll();return;}
  if(obj.type==='hole'){wallId=obj.wall;holeId=obj.hole;renderAll();if(mode==='move'){const w=project.walls.find(x=>x.id===obj.wall),p=holePosition(obj.wall,w.holes.find(h=>h.id===obj.hole));
  grab={type:'move',wall:obj.wall,hole:obj.hole,changed:false,
  plane:new THREE.Plane().setFromNormalAndCoplanarPoint(normal(obj.wall),p)};}return;}
