@@ -8,6 +8,13 @@ assert.ok(html.includes('id="splitEnabled"'), '2D toggle missing');
 assert.ok(html.includes('src="editor2d.js"'), '2D module not loaded');
 assert.ok(html.includes('src="components.js"'), 'Components module not loaded');
 assert.ok(html.includes('src="network.js"'), 'Network module not loaded');
+assert.ok(html.includes('src="quality.js"'), 'Quality module not loaded');
+assert.ok(html.includes('src="reports.js"'), 'Report module not loaded');
+for(const id of ['globalSearch','qualityList','minPipeGap','minEdgeGap','minBend',
+ 'reviewTarget','saveReview','exportPdf','exportViewer'])
+ assert.ok(html.includes('id="'+id+'"'),'Quality/report UI missing: '+id);
+assert.ok(app.includes('function renderQualityUI()'),'Quality view not wired');
+assert.ok(app.includes('project.network.audit'),'Audit logging not wired');
 assert.ok(html.includes('id="networkCanvas"'), 'Network canvas missing');
 assert.ok(html.includes('id="netRouteSelect"'), 'Route editor missing');
 assert.ok(html.includes('id="netPositionsFile"'), 'Reviewed coordinate import missing');
@@ -23,6 +30,8 @@ const ids=[...app.matchAll(/\$\('([A-Za-z0-9_-]+)'\)/g)].map(m=>m[1]);
 for(const id of new Set(ids))assert.ok(html.includes('id="'+id+'"'),'UI element missing: '+id);
 globalThis.KabelsalatComponents=require('../components.js');
 globalThis.KabelsalatNetwork=require('../network.js');
+globalThis.KabelsalatQuality=require('../quality.js');
+globalThis.KabelsalatReports=require('../reports.js');
 const before=app.split('let project;try{')[0].replace(/^\(\(\) => \{\s*/, '');
 assert.ok(before.includes('function validProject(o)'), 'Data model must be testable');
 const {demo,validProject,grid}=new Function(before+'\nreturn {demo,validProject,grid};')();
@@ -39,6 +48,9 @@ assert.ok(app.includes("viewMode==='Bodenplatten'"), 'Require separate base view
 assert.ok(html.includes('data-view="SW4"'), 'Require fourth wall view');
 const roundtrip=validProject(JSON.parse(JSON.stringify(initial)));
 assert.equal(roundtrip.walls.length,4);
+assert.deepEqual(roundtrip.network.quality,{minPipeGapMm:null,minEdgeMm:null,minBendRadiusMm:null});
+assert.ok(Array.isArray(roundtrip.network.reviews));
+assert.ok(Array.isArray(roundtrip.network.audit));
 assert.equal(roundtrip.activeShaftId,'S1');
 assert.equal(roundtrip.network.shafts.length,1,'v3 single shaft becomes network');
 const base=globalThis.KabelsalatNetwork.snapshot(roundtrip);
@@ -50,6 +62,15 @@ expanded.network.routes.push({id:'R1',name:'Trasse',group:'OLA',
  steps:[{shaftId:'S1',cableId:base.cables[0].id},{shaftId:'S2',cableId:'NEWSEG'}]});
 const restored=validProject(JSON.parse(JSON.stringify(expanded)));
 assert.equal(restored.network.shafts.length,2);
+const withReview=JSON.parse(JSON.stringify(restored));
+withReview.network.quality={minPipeGapMm:30,minEdgeMm:20,minBendRadiusMm:null};
+withReview.network.reviews=[{shaftId:'S1',entityType:'cable',entityId:'c1',
+ status:'Zur Prüfung',source:'Bauakte 12',note:'Vergleichen',checkedBy:'QA',checkedAt:'2026-11-05'}];
+withReview.network.audit=[{at:'2026-11-05',shaftId:'S1',action:'Test geändert',description:'Daten'}];
+const saved=validProject(JSON.parse(JSON.stringify(withReview)));
+assert.equal(saved.network.quality.minPipeGapMm,30);
+assert.equal(saved.network.reviews[0].source,'Bauakte 12');
+assert.equal(saved.network.audit[0].action,'Test geändert');
 assert.deepEqual(globalThis.KabelsalatNetwork.issues(restored.network,restored.network.routes[0]),[]);
 assert.equal(restored.network.routes[0].steps.length,2);
 assert.equal(restored.network.shafts[1].snapshot.cables[0].id,'NEWSEG');
@@ -74,7 +95,7 @@ const legacy=JSON.parse(JSON.stringify(initial));legacy.version=1;legacy.walls=l
 for(const w of legacy.walls){delete w.thickness;delete w.dn;for(const h of w.holes)delete h.dn;}
 for(const c of legacy.cables){delete c.group;delete c.diameter;delete c.route;}
 const migrated=validProject(legacy);
-assert.equal(migrated.version,4);
+assert.equal(migrated.version,5);
 assert.equal(migrated.walls.length,4);
 assert.equal(migrated.walls[0].holes[0].dn,70);
 assert.equal(migrated.cables[0].group,'Weitere');
