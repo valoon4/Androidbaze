@@ -46,6 +46,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.checkin.LifeArea
+import com.valoon4.emotionskompass.core.insights.DiaryCalendar
 import com.valoon4.emotionskompass.core.insights.CalculateOverview
 import com.valoon4.emotionskompass.core.insights.DiscoverPatterns
 import com.valoon4.emotionskompass.core.insights.PatternObservation
@@ -105,7 +106,8 @@ fun PersonalReviewScreen(
     incomingStrategyCard: StrategyCard? = null,
     onCatalogProposalConsumed: () -> Unit = {},
     onBrowseStrategyAtlas: () -> Unit = {},
-    onOpenStrategyCard: (String) -> Unit = {}
+    onOpenStrategyCard: (String) -> Unit = {},
+    calendarUiState: DiaryCalendarUiState? = null
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
@@ -133,10 +135,21 @@ fun PersonalReviewScreen(
     var patternsVisible by rememberSaveable { mutableStateOf(true) }
     var showAllPatterns by rememberSaveable { mutableStateOf(false) }
     var showPatternCriteria by rememberSaveable { mutableStateOf(false) }
-    // Opt-in visual state stays in memory; no personal counts in SavedState.
+    // All calendar navigation remains outside Android SavedState and encrypted stores.
+    // The app shell supplies its instance to survive journal detail navigation.
+    val diaryCalendarState = calendarUiState ?: remember { DiaryCalendarUiState() }
     var showMentionBars by remember { mutableStateOf(false) }
     LaunchedEffect(snapshot, busy, error) {
-        if (snapshot == null || busy || error != null) showMentionBars = false
+        if (snapshot == null || busy || error != null) {
+            showMentionBars = false
+            diaryCalendarState.resetPrivateState()
+        }
+    }
+    BackHandler(
+        enabled = !showInsightPage && !showExperimentsPage && selectedTerm == null &&
+            diaryCalendarState.expanded && diaryCalendarState.selectedDate != null
+    ) {
+        diaryCalendarState.selectedDate = null
     }
     val scope = rememberCoroutineScope()
     // The evidence list replaces the overview's lazy items. Always reveal
@@ -156,6 +169,14 @@ fun PersonalReviewScreen(
                 InsightTimeWindow.recentDays(preset.toInt(), Instant.now(), zone)
             }
         }.getOrNull()
+    }
+    // Calendar always sees the whole authenticated journal, regardless of the
+    // independent 7/30/90-day overview filter. No extra persistence or API.
+    val diaryCalendarMonth = remember(snapshot, diaryCalendarState.month, zone) {
+        snapshot?.let { DiaryCalendar.month(it, diaryCalendarState.month, zone) }
+    }
+    val diaryById = remember(snapshot) {
+        snapshot?.entries?.associateBy { it.journalId }.orEmpty()
     }
     val overview = remember(snapshot, window) {
         if (snapshot != null && window != null) CalculateOverview.calculate(snapshot, window)
@@ -364,6 +385,41 @@ fun PersonalReviewScreen(
         }
 
         } // overview introduction and period picker
+        if (selectedTerm == null && error == null && !busy && snapshot != null &&
+            diaryCalendarMonth != null) {
+            item(key = "diary-calendar") {
+                DiaryCalendarPanel(diaryCalendarMonth, diaryCalendarState)
+            }
+            // Lazily render this day's evidence, not thousands of cards in
+            // one calendar item. These IDs come from the same secure snapshot.
+            val chosenDay = diaryCalendarState.selectedDate?.let(diaryCalendarMonth::day)
+            if (diaryCalendarState.expanded && chosenDay != null) {
+                items(chosenDay.journalIds, key = { "calendar-entry-$it" }) { id ->
+                    val entry = diaryById[id]
+                    if (entry != null) {
+                        Card(
+                            onClick = { onOpenJournalEntry(id) },
+                            modifier = Modifier.fillMaxWidth()
+                                .testTag("diary-calendar-entry-$id")
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(5.dp)
+                            ) {
+                                Text(
+                                    formatTime(entry.createdAtUtcMillis, zone),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    "Tagebucheintrag ansehen",
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (error != null) {
             item {
                 Card(colors = CardDefaults.cardColors(
