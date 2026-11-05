@@ -155,6 +155,43 @@ function renderUI(){
  }
  for(const k of ['ola','ms']){const e=project.enclosures[k.toUpperCase()];
  $(k+'Visible').checked=e.visible;$(k+'Opacity').value=e.opacity;$(k+'OpacityText').textContent=e.opacity+' %';}
+
+ const names=Object.fromEntries(components.FACES);
+ $('panelSelect').innerHTML=['OLA','MS'].flatMap(k=>project.enclosures[k].panels.map(p=>
+ '<option value="'+p.id+'">'+k+' · '+names[p.face]+'</option>')).join('');
+ $('panelSelect').value=panelKey;
+ const pl=plate();
+ if(pl){
+ $('panelMaterial').value=pl.material;$('panelWidth').value=pl.width;
+ $('panelHeight').value=pl.height;$('panelThickness').value=pl.thickness;
+ $('panelOffset').value=pl.offset;$('panelOpacity').value=pl.opacity;
+ $('panelOpacityText').textContent=pl.opacity+' %';$('panelVisible').checked=pl.visible;
+ }
+ const blocked=['OLA','MS'].flatMap(g=>components.potentialBlockages(project,g));
+ $('panelWarning').textContent=blocked.length?
+ '⚠ Mögliche Rohrüberdeckung: '+blocked.length+' betroffene Platten/Rohr-Paare. Nur vereinfachte geometrische Näherung.':
+ 'Kein möglicher Rohrkonflikt nach vereinfachtem geometrischem Check erkannt. Keine normgerechte Freigabe!';
+ $('panelWarning').style.background=blocked.length?'#fff1e7':'#edf8f1';
+ $('supportList').innerHTML=project.supports.map(x=>
+ '<div class="support-item '+(x.id===supportId?'active':'')+'" data-support="'+esc(x.id)+'"><b>'+esc(x.name)+
+ '</b><div class="small">'+esc(x.type)+' · '+esc(x.wall)+' · '+Math.round(x.y)+' mm Höhe</div></div>').join('')||
+ '<div class="small">Noch keine Konsole oder Auflager vorhanden.</div>';
+ const st=support();$('supportForm').hidden=!st;
+ if(st){
+ $('supportName').value=st.name;$('supportType').value=st.type;$('supportWall').value=st.wall;
+ for(const k of ['X','Y','Z','W','H','D'])$('support'+k).value=st[k.toLowerCase()];
+ $('supportVisible').checked=st.visible;
+ }
+ $('variantSelect').innerHTML='<option value="">– Planungsstand wählen –</option>'+
+ project.variants.map(v=>'<option value="'+esc(v.id)+'">'+esc(v.name)+'</option>').join('');
+ $('variantSelect').value=variantId||'';
+ const v=currentVariant();
+ $('restoreVariant').disabled=!v;$('deleteVariant').disabled=!v;
+ const diff=v?components.differences(v.snapshot,components.snapshot(project)):[];
+ $('variantDiff').textContent=v?('Vergleich mit „'+v.name+'“: '+
+ (diff.length?diff.join(' · '):'Keine erfassten Unterschiede.')):
+ 'Bis zu 12 lokale Varianten werden in derselben Projektdatei gespeichert.';
+
  $('viewTabs').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.view===viewMode));
  const count=project.walls.reduce((s,w)=>s+w.holes.length,0);
  $('sceneStats').textContent=project.walls.length+' Wände · '+count+' Öffnungen · '+project.cables.length+' Kabel';
