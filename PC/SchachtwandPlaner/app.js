@@ -81,6 +81,7 @@ function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(project));$('
 function change(fn){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;fn();renderAll();persist();}
 function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;}
+function wallSpanMm(id){return id==='SW1'||id==='SW3'?project.dims.d:project.dims.w;}
 function holeText(w,h){return w.id+' · '+(h.row?'Reihe '+h.row+', Öffnung '+h.col:'Frei platziert');}
 function referenceText(r){if(!r)return 'Nicht zugeordnet';const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holeText(w,h):'Nicht zugeordnet';}
 function hueGroup(color){
@@ -97,7 +98,7 @@ function optionsHTML(selected){let html='<option value="">– Nicht zugeordnet �
 function parseEndpoint(v){if(!v)return null;const i=v.indexOf('|');return i<0?null:{wall:v.slice(0,i),hole:v.slice(i+1)};}
 function renderUI(){
  $('projectName').value=project.name;$('width').value=project.dims.w;$('depth').value=project.dims.d;$('height').value=project.dims.h;
- $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallTitle').textContent=wallId+' · Konfiguration';
+ $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallThickness').value=wall().thickness;$('wallDn').value=wall().dn;$('wallTitle').textContent=wallId+' · Konfiguration';
  $('toggleWall').textContent=wall().visible?'Sichtbar':'Ausgeblendet';
  $('wallList').innerHTML=project.walls.map(w=>'<div class="wall-card '+(w.id===wallId?'active':'')+'" data-wall="'+w.id+'"><div class="row spread"><b><span class="dot" style="background:'+(w.visible?'#68a989':'#c9d2d7')+'"></span>'+w.id+'</b><span class="badge">'+w.holes.length+' Öffnungen</span></div><div class="small">'+WALL_NAMES[w.id]+' · '+w.rows+' × '+w.cols+'</div></div>').join('');
  $('opacity').value=project.opacity;$('opacityText').textContent=project.opacity+' %';$('showBox').checked=project.showBox;$('showLabels').checked=project.showLabels;
@@ -106,12 +107,22 @@ function renderUI(){
  mode==='move'?'Ziehe ein vorhandenes Leerrohr auf seiner Wand. Verschobene Öffnungen bleiben Kabelanschlüsse.':
  'Modell mit der Maus drehen, mit dem Mausrad zoomen. Öffnungen oder Kabel anklicken, um sie zu bearbeiten.';
  const h=hole();$('holeEditor').style.display=h?'block':'none';
- if(h){$('holeTitle').textContent=wallId+' · '+holeText(wall(),h);$('holeU').value=Math.round(h.u*100);$('holeV').value=Math.round(h.v*100);}
+ if(h){$('holeTitle').textContent=wallId+' · '+holeText(wall(),h);$('holeU').value=Math.round(h.u*wallSpanMm(wallId));$('holeV').value=Math.round(h.v*project.dims.h);$('holeDn').value=h.dn;}
  $('cableFilters').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
  const match=c=>filter==='all'||hueGroup(c.color)===filter;
  $('cableList').innerHTML=project.cables.filter(match).map(c=>'<div class="cable '+(c.id===cableId?'active':'')+'" data-cable="'+esc(c.id)+'"><span class="swatch" style="background:'+c.color+'"></span><div style="flex:1;min-width:0"><div class="cable-name">'+esc(c.name)+'</div><div class="cable-path">'+esc(referenceText(c.a))+' → '+esc(referenceText(c.b))+'</div></div></div>').join('') || '<p class="small">Keine Kabel in diesem Filter.</p>';
  const c=cable();$('empty-cable').hidden=!!c;$('cableForm').hidden=!c;
- if(c){$('cableName').value=c.name;$('cableColor').value=c.color;$('cableA').innerHTML=optionsHTML(c.a);$('cableB').innerHTML=optionsHTML(c.b);}
+ if(c){
+ $('cableName').value=c.name;$('cableColor').value=c.color;$('cableGroup').value=c.group;
+ $('cableDiameter').value=c.diameter;$('cableA').innerHTML=optionsHTML(c.a);$('cableB').innerHTML=optionsHTML(c.b);
+ $('waypointList').innerHTML=c.route.map((p,i)=>'<div class="point-row" data-index="'+i+'"><b>'+String(i+1)+'</b>'+
+ ['X','Y','Z'].map((axis,k)=>'<input type="number" data-axis="'+k+'" value="'+Math.round(p[k])+'" title="'+axis+' (mm)" step="10">').join('')+
+ '<button data-remove="'+i+'" title="Bogenpunkt entfernen">×</button></div>').join('')||
+ '<span class="muted">Automatischer Verlauf (noch keine manuellen Bogenpunkte)</span>';
+ }
+ for(const k of ['ola','ms']){const e=project.enclosures[k.toUpperCase()];
+ $(k+'Visible').checked=e.visible;$(k+'Opacity').value=e.opacity;$(k+'OpacityText').textContent=e.opacity+' %';}
+ $('viewTabs').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.view===viewMode));
  const count=project.walls.reduce((s,w)=>s+w.holes.length,0);
  $('sceneStats').textContent=project.walls.length+' Wände · '+count+' Öffnungen · '+project.cables.length+' Kabel';
  $('viewInfo').textContent=project.name;$('undo').disabled=!undo.length;$('redo').disabled=!redo.length;
@@ -264,14 +275,40 @@ $('deleteHole').addEventListener('click',()=>{const w=wall(),h=hole();if(!h)retu
  if(n&&!confirm(n+' Kabel haben diesen Anschluss. Das Leerrohr wirklich entfernen?'))return;
  change(()=>{w.holes=w.holes.filter(x=>x.id!==h.id);project.cables.forEach(c=>{if(c.a?.hole===h.id)c.a=null;if(c.b?.hole===h.id)c.b=null;});holeId=null;});
 });
-$('applyHole').addEventListener('click',()=>{const h=hole();if(!h)return;change(()=>{h.u=clamp((Number($('holeU').value)||0)/100,0,1);h.v=clamp((Number($('holeV').value)||0)/100,0,1);});});
+$('applyHole').addEventListener('click',()=>{const h=hole();if(!h)return;const span=wallSpanMm(wallId);
+ change(()=>{h.u=clamp((Number($('holeU').value)||0)/span,0,1);h.v=clamp((Number($('holeV').value)||0)/project.dims.h,0,1);
+ h.dn=clamp(Number($('holeDn').value)||h.dn,20,300);});});
 $('cableList').addEventListener('click',e=>{const card=e.target.closest('[data-cable]');if(card){cableId=card.dataset.cable;renderAll();}});
 $('cableFilters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(b){filter=b.dataset.filter;renderUI();}});
-$('addCable').addEventListener('click',()=>change(()=>{const n=project.cables.length+1,id=uid('c');project.cables.push({id,name:'Kabel '+n,color:COLORS[(n-1)%COLORS.length],a:null,b:null});cableId=id;filter='all';}));
+$('addCable').addEventListener('click',()=>change(()=>{const n=project.cables.length+1,id=uid('c');
+ project.cables.push({id,name:'Kabel '+n,color:COLORS[(n-1)%COLORS.length],group:'Weitere',diameter:12,route:[],a:null,b:null});
+ cableId=id;filter='all';}));
 $('deleteCable').addEventListener('click',()=>{if(!cable())return;change(()=>{project.cables=project.cables.filter(c=>c.id!==cableId);cableId=project.cables[0]?.id||null;});});
 $('swapCable').addEventListener('click',()=>{const c=cable();if(c)change(()=>{const t=c.a;c.a=c.b;c.b=t;});});
 $('cableName').addEventListener('change',()=>{const c=cable();if(c)change(()=>c.name=$('cableName').value.trim().slice(0,80)||'Kabel');});
 $('cableColor').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.color=$('cableColor').value;});});
+$('cableGroup').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.group=$('cableGroup').value;});});
+$('cableDiameter').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.diameter=clamp(Number($('cableDiameter').value)||12,2,80);});});
+$('addWaypoint').addEventListener('click',()=>{const c=cable();if(!c)return;
+ const a=endpoint(c.a),b=endpoint(c.b),sz=sizes();if(!a||!b){alert('Bitte zuerst die Anschlüsse A und B auswählen.');return;}
+ const vec=a.clone().lerp(b,.5);vec.y=clamp(vec.y+(.15),.05,sz.h-.05);
+ change(()=>{if(c.route.length>=12){alert('Maximal 12 manuelle Bogenpunkte je Kabel.');return;}
+ c.route.push([Math.round(vec.x*1000),Math.round(vec.y*1000),Math.round(vec.z*1000)]);});});
+$('clearWaypoints').addEventListener('click',()=>{const c=cable();if(c&&c.route.length)change(()=>{c.route=[];});});
+$('waypointList').addEventListener('change',e=>{const input=e.target.closest('[data-axis]');if(!input)return;
+ const c=cable(),i=Number(input.closest('[data-index]').dataset.index),axis=Number(input.dataset.axis);
+ if(!c||!c.route[i])return;const extent=axis===1?project.dims.h:(axis===0?project.dims.w/2:project.dims.d/2);
+ change(()=>{c.route[i][axis]=clamp(Number(input.value)||0,axis===1?0:-extent,extent);});});
+$('waypointList').addEventListener('click',e=>{const btn=e.target.closest('[data-remove]');if(!btn)return;
+ const c=cable(),i=Number(btn.dataset.remove);if(c&&c.route[i])change(()=>{c.route.splice(i,1);});});
+for(const k of ['ola','ms']){const key=k.toUpperCase();
+ $(k+'Visible').addEventListener('change',()=>change(()=>{project.enclosures[key].visible=$(k+'Visible').checked;}));
+ $(k+'Opacity').addEventListener('input',()=>{$(k+'OpacityText').textContent=$(k+'Opacity').value+' %';});
+ $(k+'Opacity').addEventListener('change',()=>change(()=>{project.enclosures[key].opacity=Number($(k+'Opacity').value);}));
+}
+for(const [el,key,min,max] of [['wallThickness','thickness',40,500],['wallDn','dn',20,300]])
+ $(el).addEventListener('change',()=>change(()=>{wall()[key]=clamp(Number($(el).value)||wall()[key],min,max);}));
+
 for(const [field,key] of [['cableA','a'],['cableB','b']])$(field).addEventListener('change',()=>{const c=cable();if(c)change(()=>{c[key]=parseEndpoint($(field).value);});});
 $('projectName').addEventListener('change',()=>change(()=>project.name=$('projectName').value.trim().slice(0,80)||'Neues Projekt'));
 for(const [el,key,min,max] of [['width','w',600,12000],['depth','d',600,12000],['height','h',600,8000]])
