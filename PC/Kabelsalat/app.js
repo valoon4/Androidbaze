@@ -74,7 +74,7 @@ function validProject(o){
  const enclosures=components.normalizeEnclosures(o.enclosures,dims);
  const supports=components.normalizeSupports(o.supports,dims);
  const variants=components.normalizeVariants(o.variants);
- const result={version:4,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
+ const result={version:5,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
  opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
  showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
  enclosures,supports,variants};
