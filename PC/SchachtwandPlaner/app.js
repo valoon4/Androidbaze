@@ -139,38 +139,63 @@ function createLabel(text,pos){const c=document.createElement('canvas');c.width=
  ctx.fillStyle='#244753';ctx.font='bold 32px Segoe UI,Arial';ctx.textAlign='center';ctx.fillText(text,140,47);
  const tex=new THREE.CanvasTexture(c),sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
  sprite.position.copy(pos);sprite.scale.set(.5,.14,1);models.add(sprite);}
-function holePosition(wid,h){const s=sizes(),u=.10+.8*clamp(h.u,0,1),y=s.h*(.12+.76*clamp(h.v,0,1));
- if(wid==='SW1')return new THREE.Vector3(-s.w/2+.052,y,-s.d/2+s.d*u);
- if(wid==='SW2')return new THREE.Vector3(-s.w/2+s.w*u,y,-s.d/2+.052);
- return new THREE.Vector3(s.w/2-.052,y,-s.d/2+s.d*u);}
-function normal(wid){return new THREE.Vector3(wid==='SW1'?1:wid==='SW3'?-1:0,0,wid==='SW2'?1:0);}
-function drawOpening(w,h){const pos=holePosition(w.id,h),n=normal(w.id),r=Math.min(sizes().w,sizes().d,sizes().h)*.025;
- const selected=w.id===wallId&&h.id===holeId,group=new THREE.Group();group.position.copy(pos);group.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),n);
- const circle=new THREE.Mesh(new THREE.CircleGeometry(r,30),new THREE.MeshBasicMaterial({color:selected?'#366f68':'#52636d',transparent:true,opacity:selected?.22:.055,depthWrite:false,side:THREE.DoubleSide}));
+
+function holePosition(wid,h){
+ const s=sizes(),u=.10+.8*clamp(h.u,0,1),y=s.h*(.12+.76*clamp(h.v,0,1));
+ if(wid==='SW1')return new THREE.Vector3(-s.w/2+.024,y,-s.d/2+s.d*u);
+ if(wid==='SW2')return new THREE.Vector3(-s.w/2+s.w*u,y,-s.d/2+.024);
+ if(wid==='SW3')return new THREE.Vector3(s.w/2-.024,y,-s.d/2+s.d*u);
+ return new THREE.Vector3(-s.w/2+s.w*u,y,s.d/2-.024);
+}
+function normal(wid){return new THREE.Vector3(wid==='SW1'?1:wid==='SW3'?-1:0,0,wid==='SW2'?1:wid==='SW4'?-1:0);}
+function openingRadius(h){return clamp(Number(h.dn)||70,20,300)/2000;}
+function drawOpening(w,h){
+ const pos=holePosition(w.id,h),n=normal(w.id),r=openingRadius(h),selected=w.id===wallId&&h.id===holeId;
+ const group=new THREE.Group();group.position.copy(pos);group.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),n);
+ const circle=new THREE.Mesh(new THREE.CircleGeometry(r,30),new THREE.MeshBasicMaterial({
+ color:selected?'#366f68':'#52636d',transparent:true,opacity:selected?.3:.045,depthWrite:false,side:THREE.DoubleSide}));
  group.add(circle);circle.userData={type:'hole',wall:w.id,hole:h.id};
- const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.007,5,32),new THREE.MeshBasicMaterial({color:selected?'#f9cf68':'#cad6d9'}));ring.position.z=.008;group.add(ring);
- models.add(group);hitObjects.push(circle);}
-function drawWalls(){const s=sizes(),op=project.opacity/100;
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.004,6,32),new THREE.MeshBasicMaterial({color:selected?'#f9cf68':'#cad6d9'}));
+ ring.position.z=.004;group.add(ring);models.add(group);hitObjects.push(circle);
+}
+function drawHousing(key){
+ const s=sizes(),e=project.enclosures[key];
+ if(!project.showBox||!e.visible)return;
+ const isMS=key==='MS',y0=isMS?s.h*.51:s.h*.09,y1=isMS?s.h*.77:s.h*.35,
+ bw=s.w*.72,bd=s.d*.68,cz=s.d*.11;
+ const op=e.opacity/100,wallColor=isMS?'#9bb2bf':'#c4b9b5';
+ box(bw,.024,bd,0,y0,cz,wallColor,op);
+ box(bw,.024,bd,0,y1,cz,wallColor,op);
+ box(.024,y1-y0,bd,-bw/2,(y1+y0)/2,cz,wallColor,op);
+ box(.024,y1-y0,bd,bw/2,(y1+y0)/2,cz,wallColor,op);
+ box(bw,y1-y0,.024,0,(y1+y0)/2,cz-bd/2,wallColor,op);
+}
+function drawWalls(){
+ const s=sizes(),op=project.opacity/100;
  box(s.w+.16,.085,s.d+.16,0,-.055,0,'#a1afb7');
- const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');floor.position.y=-.096;models.add(floor);
+ const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
+ floor.position.y=-.096;models.add(floor);
  for(const w of project.walls){
  if(!w.visible)continue;
- const span=w.id==='SW2'?s.w:s.d,half=span/2,shape=new THREE.Shape();
+ const span=(w.id==='SW2'||w.id==='SW4')?s.w:s.d,half=span/2;
+ const shape=new THREE.Shape();
  shape.moveTo(-half,0);shape.lineTo(half,0);shape.lineTo(half,s.h);shape.lineTo(-half,s.h);shape.closePath();
- const radius=Math.min(s.w,s.d,s.h)*.025;
- for(const h of w.holes){const p=holePosition(w.id,h),u=w.id==='SW2'?p.x:p.z;
- const path=new THREE.Path();path.absarc(u,p.y,radius,0,Math.PI*2,true);shape.holes.push(path);}
- const mesh=new THREE.Mesh(new THREE.ShapeGeometry(shape,16),material(w.id==='SW2'?'#8296a1':'#899ba4',op));
+ for(const h of w.holes){
+ const p=holePosition(w.id,h),u=(w.id==='SW2'||w.id==='SW4')?p.x:p.z;
+ const path=new THREE.Path();path.absarc(u,p.y,openingRadius(h),0,Math.PI*2,true);shape.holes.push(path);
+ }
+ const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:w.thickness/1000,bevelEnabled:false,curveSegments:12,steps:1}),
+ material(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4',op));
  if(w.id==='SW1'){mesh.rotation.y=-Math.PI/2;mesh.position.x=-s.w/2;}
  else if(w.id==='SW3'){mesh.rotation.y=-Math.PI/2;mesh.position.x=s.w/2;}
- else mesh.position.z=-s.d/2;
+ else if(w.id==='SW2'){mesh.position.z=-s.d/2;}
+ else mesh.position.z=s.d/2;
  mesh.userData={type:'wall',wall:w.id};models.add(mesh);wallObjects.push(mesh);
- if(project.showLabels)createLabel(w.id,new THREE.Vector3(w.id==='SW1'?-s.w/2:w.id==='SW3'?s.w/2:0,s.h+.15,w.id==='SW2'?-s.d/2:0));
+ if(project.showLabels)createLabel(w.id,new THREE.Vector3(w.id==='SW1'?-s.w/2:w.id==='SW3'?s.w/2:0,
+ s.h+.15,w.id==='SW2'?-s.d/2:w.id==='SW4'?s.d/2:0));
  for(const h of w.holes)drawOpening(w,h);
  }
- if(project.showBox){const x=0,z=s.d*.22,bw=s.w*.75,bh=s.h*.31,bd=s.d*.32;
- box(bw,.045,bd,x,bh,z,'#b5bec2',.92);box(bw,.045,bd,x,.08,z,'#b6c0c5',.90);
- box(.04,bh,bd,-bw/2,bh/2+.06,z,'#a2afb6',.75);box(.04,bh,bd,bw/2,bh/2+.06,z,'#a2afb6',.75);}
+ drawHousing('OLA');drawHousing('MS');
 }
 function endpoint(r){if(!r)return null;const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holePosition(w.id,h):null;}
 function drawCable(c){const a=endpoint(c.a),b=endpoint(c.b);if(!a||!b)return;
@@ -191,7 +216,7 @@ function renderAll(){fixSelection();renderUI();rebuild();}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,camera);return raycaster.intersectObjects(targets,false)[0]||null;}
-function wallCoords(wid,p){const s=sizes(),u=wid==='SW2'?(p.x/s.w+.5):p.z/s.d+.5;
+function wallCoords(wid,p){const s=sizes(),u=(wid==='SW2'||wid==='SW4')?(p.x/s.w+.5):p.z/s.d+.5;
  return {u:clamp((u-.1)/.8,0,1),v:clamp((p.y/s.h-.12)/.76,0,1)};}
 function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
  change(()=>{w.holes.push({id,row:0,col:0,...coords});wallId=wid;holeId=id;});}
