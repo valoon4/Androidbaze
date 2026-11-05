@@ -10,6 +10,9 @@ assert.ok(html.includes('src="components.js"'), 'Components module not loaded');
 assert.ok(html.includes('src="network.js"'), 'Network module not loaded');
 assert.ok(html.includes('src="quality.js"'), 'Quality module not loaded');
 assert.ok(html.includes('src="reports.js"'), 'Report module not loaded');
+assert.ok(html.includes('src="examples.js"'), 'Examples module not loaded');
+assert.ok(html.includes('id="exampleSelect"'), 'Example selector missing');
+assert.ok(html.includes('id="loadExample"'), 'Example action missing');
 for(const id of ['globalSearch','qualityList','minPipeGap','minEdgeGap','minBend',
  'reviewTarget','saveReview','exportPdf','exportViewer'])
  assert.ok(html.includes('id="'+id+'"'),'Quality/report UI missing: '+id);
@@ -32,8 +35,11 @@ globalThis.KabelsalatComponents=require('../components.js');
 globalThis.KabelsalatNetwork=require('../network.js');
 globalThis.KabelsalatQuality=require('../quality.js');
 globalThis.KabelsalatReports=require('../reports.js');
-const before=app.split('let project;try{')[0].replace(/^\(\(\) => \{\s*/, '');
+globalThis.KabelsalatSamples=require('../examples.js').factory(
+ globalThis.KabelsalatComponents,globalThis.KabelsalatNetwork);
+const before=app.split('let project;')[0].replace(/^\(\(\) => \{\s*/, '');
 assert.ok(before.includes('function validProject(o)'), 'Data model must be testable');
+assert.ok(app.includes("samples.create('station')"), 'First start should load visible network demo');
 const {demo,validProject,grid}=new Function(before+'\nreturn {demo,validProject,grid};')();
 const initial=demo();
 assert.equal(initial.walls.length,4,'Four independent shaft walls');
