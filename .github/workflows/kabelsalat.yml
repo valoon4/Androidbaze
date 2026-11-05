@@ -1,0 +1,76 @@
+name: Kabelsalat – Windows EXE und Offline-Browser
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PC/Kabelsalat/**'
+      - '.github/workflows/kabelsalat.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kabelsalat-release
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: PC/Kabelsalat
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Dependencies
+        run: npm install --no-audit --no-fund
+      - name: Checks
+        run: npm test
+      - name: Build Windows EXE
+        run: npm run dist:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Browserpaket erstellen
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          $folder = "dist/Kabelsalat-Browser"
+          New-Item -ItemType Directory -Path (Join-Path $folder 'vendor') -Force | Out-Null
+          Copy-Item -Path index.html,app.js -Destination $folder
+          Copy-Item -Path vendor/three.min.js,vendor/LICENSE.threejs -Destination (Join-Path $folder 'vendor')
+          Compress-Archive -Path (Join-Path $folder '*') -DestinationPath "dist/Kabelsalat-$version-Browser-Offline.zip" -Force
+      - name: Dateien als Actions-Artefakte
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kabelsalat-Offline-Downloads
+          path: |
+            PC/Kabelsalat/dist/*-Windows.exe
+            PC/Kabelsalat/dist/*-Browser-Offline.zip
+          if-no-files-found: error
+      - name: GitHub Release aktualisieren
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG=kabelsalat-latest
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "Kabelsalat – Offline-Editor" \
+              --notes "Prototyp: Browserpaket ohne Installation sowie portable Windows-EXE. Keine technische Ausführungsfreigabe." \
+              --prerelease
+          fi
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' |
+            while IFS= read -r old; do
+              case "$old" in
+                Kabelsalat-*-Windows.exe|Kabelsalat-*-Browser-Offline.zip)
+                  gh release delete-asset "$TAG" "$old" --repo "$GITHUB_REPOSITORY" --yes
+                  ;;
+              esac
+            done
+          gh release upload "$TAG" dist/*-Windows.exe dist/*-Browser-Offline.zip \
+            --repo "$GITHUB_REPOSITORY" --clobber

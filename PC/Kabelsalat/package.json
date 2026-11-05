@@ -1,7 +1,7 @@
 {
-  "name": "schachtwand-planer",
-  "version": "0.2.0",
-  "description": "Offline 3D-Leerrohr- und Kabelplaner",
+  "name": "kabelsalat",
+  "version": "0.3.0",
+  "description": "Kabelsalat – Offline-Editor für Schächte, Leerrohre und Kabel in 2D/3D",
   "main": "main.js",
   "author": "Eugi",
   "license": "MIT",
@@ -16,8 +16,8 @@
     "electron-builder": "^26.0.0"
   },
   "build": {
-    "appId": "de.eugi.schachtwandplaner",
-    "productName": "Schachtwand Planer",
+    "appId": "de.eugi.kabelsalat",
+    "productName": "Kabelsalat",
     "asar": true,
     "files": [
       "index.html",
@@ -38,7 +38,7 @@
           ]
         }
       ],
-      "artifactName": "SchachtwandPlaner-${version}-Windows.exe"
+      "artifactName": "Kabelsalat-${version}-Windows.exe"
     }
   }
 }
