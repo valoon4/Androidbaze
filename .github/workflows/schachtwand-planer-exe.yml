@@ -1,0 +1,56 @@
+name: Schachtwand Planer Windows EXE
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PC/SchachtwandPlaner/**'
+      - '.github/workflows/schachtwand-planer-exe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: schachtwand-planer-exe
+  cancel-in-progress: false
+
+jobs:
+  windows-portable:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: PC/SchachtwandPlaner
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install packages
+        run: npm install --no-audit --no-fund
+      - name: Syntax check
+        run: npm test
+      - name: Build Windows EXE
+        run: npm run dist:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Upload portable Windows EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: SchachtwandPlaner-Windows
+          path: PC/SchachtwandPlaner/dist/*.exe
+          if-no-files-found: error
+      - name: EXE im GitHub Release aktualisieren
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG=schachtwand-planer-latest
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "Schachtwand Planer – Windows EXE" \
+              --notes "Portable Windows 10/11 EXE. Visueller Prototyp, keine geprüfte Elektro- oder Brandschutzplanung." \
+              --prerelease
+          fi
+          gh release upload "$TAG" dist/*.exe --repo "$GITHUB_REPOSITORY" --clobber
