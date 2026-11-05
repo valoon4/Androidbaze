@@ -379,6 +379,8 @@ class PersonalReviewEmulatorTest {
             hasTestTag("diary-calendar-day-${month.atDay(4)}"))
         rule.onNodeWithTag("diary-calendar-day-${month.atDay(4)}")
             .assertHeightIsAtLeast(48.dp).performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-selected-count"))
         rule.onNodeWithTag("diary-calendar-selected-count")
             .assertTextContains("2 gespeicherte Einträge", substring = true)
         rule.onNode(scroller).performScrollToNode(
@@ -405,9 +407,15 @@ class PersonalReviewEmulatorTest {
             SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
         rule.onNode(scroller).performScrollToNode(hasTestTag("diary-calendar-toggle"))
         rule.onNodeWithTag("diary-calendar-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-previous-month"))
         rule.onNodeWithTag("diary-calendar-previous-month").performClick()
         rule.runOnIdle { assertEquals(YearMonth.of(2026, 11), navigation.month) }
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-next-month"))
         rule.onNodeWithTag("diary-calendar-next-month").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-next-month"))
         rule.onNodeWithTag("diary-calendar-next-month").performClick()
         rule.runOnIdle { assertEquals(YearMonth.of(2027, 1), navigation.month) }
         rule.onNode(scroller).performScrollToNode(
@@ -443,6 +451,11 @@ class PersonalReviewEmulatorTest {
             assertFalse(navigation.expanded)
             assertEquals(null, navigation.selectedDate)
         }
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(
+            hasText("Dein Tagebuch konnte nicht sicher geöffnet werden."))
         rule.onNodeWithText("Dein Tagebuch konnte nicht sicher geöffnet werden.")
             .assertExists()
     }
