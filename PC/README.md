@@ -14,3 +14,4 @@ Sprache, Engine, Build- und Release-Struktur legen wir pro Spiel fest. PC-Projek
 
 - [Kleine Welle – Die Schleiminsel](./KleineWelle/) – 3D-Cel-Shading-Miniinsel, Held mit Schwert und drei Schleimen. [Direkt spielbare Offline-HTML](./KleineWelle/KleineWelle-offline.html).
 - [Eugi Playlist Builder](./EugiPlaylistBuilder/) – portable Windows-App für 5 M3U-Stufen (Rest / Best / Super / Ultra / Mega), 0/1-Tabelle und verlustfreien Playlist-Filter; EXE über GitHub Actions.
+- [Schachtwand Planer 3D](./SchachtwandPlaner/) – interaktive 3D-Planung von Schachtwänden, Leerrohren und Kabeln; Windows-EXE über GitHub Actions.
