@@ -13,6 +13,16 @@ assert.ok(html.includes('src="reports.js"'), 'Report module not loaded');
 assert.ok(html.includes('src="examples.js"'), 'Examples module not loaded');
 assert.ok(html.includes('id="exampleSelect"'), 'Example selector missing');
 assert.ok(html.includes('id="loadExample"'), 'Example action missing');
+for(const id of ['toggleExpert','exploreGuide','questNetwork','questShaft','questCable',
+ 'exploreTip','exploreSceneOverlay','explore2DToggle','exploreSelectionBody','cablesOverview'])
+ assert.ok(html.includes('id="'+id+'"'),'Eugi-Mode UI missing: '+id);
+assert.ok(html.includes('body.explore-mode .sidebar.right'), 'Expert panels are not progressively hidden');
+assert.ok(app.includes('EXPLORE_MODE_KEY'), 'Mode preference must be independent of project');
+assert.ok(app.includes('function openQuest(which)'), 'Guided quests must be wired');
+assert.ok(app.includes('function renderExplorerUI()'), 'Selection explanation must be live');
+assert.ok(app.includes('new THREE.MeshBasicMaterial({color:c.color,transparent:true,opacity:chosen?1:.34'),
+ 'Explorer cables need visible saturated highlighting');
+
 for(const id of ['globalSearch','qualityList','minPipeGap','minEdgeGap','minBend',
  'reviewTarget','saveReview','exportPdf','exportViewer'])
  assert.ok(html.includes('id="'+id+'"'),'Quality/report UI missing: '+id);
