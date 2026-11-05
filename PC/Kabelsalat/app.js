@@ -5,6 +5,8 @@ const components=globalThis.KabelsalatComponents;
 if(!components)throw Error('Kabelsalat-Komponentenmodul fehlt');
 const networkModel=globalThis.KabelsalatNetwork;
 if(!networkModel)throw Error('Kabelsalat-Netzmodul fehlt');
+const qualityModel=globalThis.KabelsalatQuality,reportModel=globalThis.KabelsalatReports;
+if(!qualityModel||!reportModel)throw Error('Kabelsalat-Prüf- oder Berichtmodul fehlt');
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
 const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -77,6 +79,9 @@ function validProject(o){
  showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
  enclosures,supports,variants};
  result.network=networkModel.normalizeNetwork(o.network,networkModel.snapshot(result));
+ result.network.quality=qualityModel.normalizeSettings(o.network?.quality);
+ result.network.reviews=qualityModel.normalizeReviews(o.network?.reviews,result.network.shafts);
+ result.network.audit=qualityModel.normalizeAudit(o.network?.audit);
  result.activeShaftId=result.network.shafts.some(x=>x.id===o.activeShaftId)?
  o.activeShaftId:result.network.shafts[0].id;
  return result;
@@ -86,7 +91,7 @@ let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mo
 let panelKey='OLA-floor',supportId=null,variantId=null;
 let networkOpen=false,netRouteId=null,netSegmentShaftId=null,netLinkId=null;
 let mapZoom=1,mapOffsetX=0,mapOffsetY=0,mapDrag=null;
-let netLinkFromId=null,netLinkToId=null;
+let netLinkFromId=null,netLinkToId=null,reviewKey='shaft';
 const undo=[],redo=[];
 const wall=()=>project.walls.find(w=>w.id===wallId);
 const cable=()=>project.cables.find(c=>c.id===cableId);
@@ -103,7 +108,16 @@ function persist(){
  try{localStorage.setItem(STORAGE,JSON.stringify(project));$('saveStatus').textContent='● Lokal gespeichert';}
  catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}
 }
-function change(fn){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;fn();syncActiveShaft();renderAll();persist();}
+function change(fn,label='Planung geändert'){
+ undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;
+ fn();syncActiveShaft();
+ if(project.network){
+ const entry={at:new Date().toISOString(),shaftId:project.activeShaftId,
+ action:String(label).slice(0,120),description:project.name};
+ project.network.audit=qualityModel.normalizeAudit([...(project.network.audit||[]),entry]);
+ }
+ renderAll();persist();
+}
 function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;
  if(!plate())panelKey='OLA-floor';
@@ -380,7 +394,7 @@ function drawCable(c){
  }
 }
 function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);view();draw2D();}
-function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();drawNetwork();}
+function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();renderQualityUI();drawNetwork();}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
