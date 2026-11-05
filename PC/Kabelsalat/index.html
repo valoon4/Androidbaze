@@ -116,6 +116,75 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 #qualityList .quality-hit.warning{border-left:3px solid #c48f31}
 #qualityList .quality-hit.info{border-left:3px solid #709bb0}
 #qualityPanel textarea{resize:vertical;min-height:55px}
+
+/* Eugi mode: progressive disclosure. All original expert forms remain mounted and functional. */
+.mode-toggle{font-size:12px;padding:9px 13px;background:#f1f7f4;border-color:#b6d3c8;color:#164e43;white-space:nowrap}
+#exploreGuide,#exploreSelection{display:none}
+body.explore-mode #exploreGuide,body.explore-mode #exploreSelection{display:block}
+body.explore-mode .sidebar:not(.right) > .section:not(#exploreGuide):not(#quickstartPanel){display:none}
+body.explore-mode .sidebar.right > .section:not(#exploreSelection):not(#cablesOverview){display:none}
+body.explore-mode #quickstartPanel{margin-top:22px}
+body.explore-mode .sidebar{background:#fcfefd}
+body.explore-mode .sidebar.right{background:#fafffd}
+body.explore-mode #cablesOverview .eyebrow{display:none}
+body.explore-mode #cablesOverview h2{font-size:16px}
+body.explore-mode #cablesOverview .small{color:#617984}
+body.explore-mode #cableList{max-height:none}
+body.explore-mode .cable{padding:13px 11px;border-width:2px}
+body.explore-mode .cable.active{background:#eaf7f1;border-color:#409a79;box-shadow:0 3px 13px #80b8a01f}
+body.explore-mode .view-head{display:none}
+body.explore-mode #viewport.with-2d #scene{width:100%}
+body.explore-mode #viewport.with-2d #draft2d{display:none}
+body.explore-mode #viewport.with-2d .view-top,
+body.explore-mode #viewport.with-2d .view-foot{right:14px}
+body.explore-mode #viewport.with-2d .view-tabs{max-width:calc(100% - 32px)}
+body.explore-mode.explore-with-2d #viewport.with-2d #scene{width:60%}
+body.explore-mode.explore-with-2d #viewport.with-2d #draft2d{display:flex}
+body.explore-mode.explore-with-2d #viewport.with-2d .view-top,
+body.explore-mode.explore-with-2d #viewport.with-2d .view-foot{right:calc(40% + 12px)}
+body.explore-mode.explore-with-2d #viewport.with-2d .view-tabs{max-width:calc(60% - 18px)}
+.quest-list{display:grid;gap:10px}
+.quest{display:grid;grid-template-columns:34px minmax(0,1fr) 22px;gap:10px;align-items:center;text-align:left;
+ width:100%;padding:13px 10px;background:#fff;color:#1c3941;border:1.5px solid #dce8e4;
+ border-radius:12px;box-shadow:0 2px 8px #2c5b4810}
+.quest:hover,.quest:focus-visible{border-color:#44a588;background:#f0faf5}
+.quest.active{border-color:#3a9675;background:#eaf7f0}
+.quest-icon{font-size:23px}.quest-copy strong{display:block;font-size:12px;line-height:1.4}
+.quest-copy small{display:block;margin-top:3px;color:#637a81;line-height:1.4;font-size:10.5px}
+.quest-check{font-size:17px;color:#5e9281}
+.quest-progress{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:12px}
+.quest-progress span{height:6px;border-radius:9px;background:#e2eae6}
+.quest-progress span.done{background:#48a882}
+.explore-tip{font-size:11px;color:#235b50;background:#e7f4ee}
+.mini-glossary{margin-top:14px;color:#466774;border-top:1px solid #e5eeeb;padding-top:10px;font-size:11px}
+.mini-glossary summary{font-weight:700;cursor:pointer}
+.mini-glossary p{line-height:1.5;margin:8px 0}
+.selection-help{font-size:12px;line-height:1.6;color:#42626b;background:#edf7f3;padding:12px;border-radius:10px}
+.selection-help strong{font-size:13px;color:#21473f}
+.selection-help .selected-color{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+.selection-help .endpoint{display:block;margin-top:8px;padding:7px 9px;border-radius:6px;background:#fff}
+.explore-scene-overlay{display:none;position:absolute;left:16px;top:14px;max-width:330px;z-index:3;
+ background:#fffffff2;border:1px solid #cddfe0;border-radius:13px;padding:13px 14px;
+ box-shadow:0 7px 25px #385b641c;pointer-events:auto}
+body.explore-mode #viewport:not(.network-open) .explore-scene-overlay{display:block}
+.explore-scene-label{font-size:14px;font-weight:800;color:#164c49}
+.explore-scene-overlay p{font-size:11px;line-height:1.55;color:#50707a;margin:7px 0 10px}
+.explore-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:#385e67}
+.explore-legend span{display:flex;align-items:center;gap:5px}
+.explore-legend i{display:inline-block;flex:none}
+.swatch-wall{width:12px;height:12px;border:2px solid #557b8c;background:#adc9d1}
+.swatch-hole{width:12px;height:12px;border:2px solid #4c6f7b;border-radius:50%;background:#f5faf9}
+.swatch-wire{width:17px;height:4px;border-radius:8px;background:#e45765}
+.explore-views{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.explore-views .btn{font-size:10px}
+body.explore-mode .view-top{top:14px}
+body.explore-mode .view-controls{margin-left:auto}
+body.explore-mode .view-tabs{opacity:.92}
+body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcfd 0%,#e0eaee 70%,#d4e3e9 100%)}
+@media(max-width:1110px){
+ .explore-scene-overlay{max-width:260px;left:10px;top:12px;padding:10px}
+ .explore-views{flex-direction:column}
+}
 </style>
 </head>
 <body>
@@ -124,12 +193,38 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 <div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">2D + 3D + Netz · v1.0</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
+<button id="toggleExpert" class="btn mode-toggle" title="Zwischen Entdecken und Bearbeiten wechseln" aria-pressed="false">🛠 Profi-Modus</button>
 <button id="undo" class="btn tiny" title="Rückgängig (Strg+Z)">↶</button><button id="redo" class="btn tiny" title="Wiederholen (Strg+Y)">↷</button>
 <button id="newProject" class="btn">Neu</button><button id="openProject" class="btn">Öffnen</button>
 <button id="saveProject" class="btn primary">↓ Projekt speichern</button><input id="fileInput" type="file" accept=".json,application/json" hidden>
 </div>
 </header>
 <aside class="sidebar">
+<section class="section" id="exploreGuide">
+<div class="eyebrow">Eugi-Modus · Weniger suchen, mehr entdecken</div>
+<h2>Was willst du entdecken?</h2>
+<p class="small">Drei Mini-Missionen. Klick einfach irgendwo rein – du kannst nichts versehentlich umbauen.</p>
+<div class="quest-list" role="group" aria-label="Drei kurze Entdeckungsmissionen">
+<button class="quest" id="questNetwork" data-quest="network">
+ <span class="quest-icon">🗺️</span><span class="quest-copy"><strong>1 · Das große Ganze</strong><small>Wo sind die Schächte und wie hängen sie zusammen?</small></span><span class="quest-check" aria-hidden="true">○</span>
+</button>
+<button class="quest" id="questShaft" data-quest="shaft">
+ <span class="quest-icon">🏗️</span><span class="quest-copy"><strong>2 · Rein in den Schacht</strong><small>Was sind Wände, Rohre und Öffnungen?</small></span><span class="quest-check" aria-hidden="true">○</span>
+</button>
+<button class="quest" id="questCable" data-quest="cable">
+ <span class="quest-icon">🔴</span><span class="quest-copy"><strong>3 · Ein Kabel verfolgen</strong><small>Ein farbiger Weg von Anschluss A nach B.</small></span><span class="quest-check" aria-hidden="true">○</span>
+</button>
+</div>
+<div class="quest-progress" aria-label="Entdeckte Themen"><span></span><span></span><span></span></div>
+<div id="exploreTip" class="hint explore-tip" role="status">Starte mit Mission 1 oder spring direkt zu etwas, das dich interessiert.</div>
+<details class="mini-glossary"><summary>Was bedeuten die Wörter?</summary>
+<p><b>Schacht:</b> Ein begehbarer Hohlraum für technische Leitungen.</p>
+<p><b>SW1–SW4:</b> Die vier Schachtwände im Beispiel.</p>
+<p><b>Leerrohr:</b> Öffnung bzw. Rohr, durch das ein Kabel geführt werden kann.</p>
+<p><b>DN:</b> Nennweite als Rohrmaß, nicht automatisch der gemessene Innendurchmesser.</p>
+<p><b>OLA / MS:</b> Systemgruppen aus dem Beispiel, die der Fachanwender einordnen muss.</p>
+</details>
+</section>
 <section class="section" id="quickstartPanel">
 <div class="eyebrow">Sofort ausprobieren</div>
 <h2>Beispielprojekte</h2>
@@ -220,6 +315,12 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 </section>
 </aside>
 <main id="viewport" class="with-2d"><canvas id="scene"></canvas><div id="tooltip"></div>
+<div id="exploreSceneOverlay" class="explore-scene-overlay">
+<div class="explore-scene-label">🧱 Das ist ein Kabelschacht</div>
+<p id="exploreSceneText">Du siehst vier Wände mit runden Rohröffnungen. Die farbigen Linien sind Kabel.</p>
+<div class="explore-legend"><span><i class="swatch-wall"></i> Schachtwand</span><span><i class="swatch-hole"></i> Leerrohr</span><span><i class="swatch-wire"></i> Kabel</span></div>
+<div class="explore-views"><button id="explore2DToggle" class="btn tiny">▤ Wand als 2D-Plan sehen</button><button id="exploreCameraReset" class="btn tiny">⟳ Ansicht zurücksetzen</button></div>
+</div>
 <section id="draft2d" aria-label="2D-Wandzeichnung"><div class="draft-head"><strong>2D-Wandeditor · mm</strong>
 <select id="draftWallSelect" class="selector" aria-label="2D-Wand auswählen"><option value="SW1">SW1</option><option value="SW2">SW2</option><option value="SW3">SW3</option><option value="SW4">SW4</option></select></div>
 <div class="small">Leerrohre anklicken, verschieben und maßgenau bearbeiten. Die 3D-Ansicht aktualisiert sich gleichzeitig.</div>
@@ -251,6 +352,11 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 <div class="view-foot"><div class="float kbd">🖱 Ziehen: drehen · Mausrad: zoomen<br>● Öffnung: anklicken · Weißer Griff: Kabelanschluss ziehen</div><div class="float kbd" id="sceneStats">—</div></div>
 </main>
 <aside class="sidebar right">
+<section class="section" id="exploreSelection">
+<div class="eyebrow">Was du gerade ansiehst</div>
+<h2>Ein Kabel, ein Weg</h2>
+<div id="exploreSelectionBody" class="selection-help">Klicke rechts auf eines der farbigen Kabel, um seinen Verlauf hervorzuheben.</div>
+</section>
 <section class="section" id="qualityPanel">
 <div class="eyebrow">Datenqualität & Dokumentation</div>
 <div class="row spread"><h2 style="margin:0">Prüfübersicht</h2><button id="runQuality" class="btn soft tiny">Prüfen</button></div>
@@ -274,7 +380,7 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 <div class="small" style="margin-top:9px">Windows: PDF direkt speichern. Browser: Bericht als HTML öffnen und über Drucken → Als PDF speichern.</div>
 <div id="auditLast" class="small" style="margin-top:11px"></div>
 </section>
-<section class="section"><div class="eyebrow">Belegung bearbeiten</div>
+<section class="section" id="cablesOverview"><div class="eyebrow">Belegung bearbeiten</div>
 <div class="row spread"><h2 style="margin:0">Deine Kabel</h2><button id="addCable" class="btn primary tiny">＋ Kabel</button></div>
 <p class="small">Kabel auswählen und Anschlüsse per Dropdown oder über die weißen Griffe im 3D-Modell zuordnen.</p>
 <div class="tabs" id="cableFilters">
