@@ -24,10 +24,10 @@ Dieser Backlog ist ein **Implementierungsplan** für die nächste Iteration. Der
 
 ## Priorität P1 – Netzansicht und durchgängige Verfolgung
 
-- Zoom-/Pan-fähige Vogelperspektive für zahlreiche Schächte mit globalen Koordinaten und Verbindungen.
-- Navigation **Netz → Schacht → Leerrohr → Kabel** mit gemeinsamem Selektionszustand.
-- Vollständige Leitungsverfolgung über Schachtgrenzen, belegte Leerrohre, Start/Ziel und Abzweige.
-- Suche/Filter nach IDs, System und Status; „Gesamtverlauf anzeigen“.
+- **v0.6:** Zoom-/Pan-Vogelperspektive für bis zu 30 Schächte mit globalen X/Z-Koordinaten, Links und visueller Auswahl; schematisch.
+- **v0.6:** Netz → Schacht und Netz-Kabelsegment → lokales Kabel. Offen: volle netzweite Leerrohrnavigation.
+- **v0.6:** geordnete Kabelsegmente nach Schacht- und Kabel-ID, Warnung bei fehlenden Übergangslinks. Offen: tatsächliche Leitungskontinuität, Abzweige und reale Übergänge.
+- **v0.6:** lokale Kabel- und Systemfilter, „Gesamtverlauf anzeigen“. Offen: projektweite Suche und Statusfilter.
 
 **Test:** Ein in der Gesamtansicht selektiertes Kabel bleibt im Editor selektiert; alle Schachtübergänge werden in richtiger Reihenfolge angezeigt.
 
@@ -39,3 +39,7 @@ Dieser Backlog ist ein **Implementierungsplan** für die nächste Iteration. Der
 - Schematische Eingaben von bestätigten Vermessungen trennen; Änderungshistorie und Abnahmeprotokolle speichern.
 
 **Keine Freigabeautomatik:** Ob und nach welchen Vorgaben die Planung genehmigungsfähig ist, muss fachlich geklärt werden.
+
+## 75-%-Entwicklungsstufe
+
+Details: [MILESTONE_75.md](./MILESTONE_75.md). Keine Bau-/Brandschutz-/Ausführungsfreigabe.

@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Prototyp v0.5.0** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Prototyp v0.6.0** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-0.5.0-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-0.5.0-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-0.6.0-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-0.6.0-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -20,7 +20,9 @@ Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/rel
 - Einfache geometrische Warnungen für sich überlagernde Leerrohre und Überschreitungen von Wandrändern. Die 2D-Zeichnung ermittelt zusätzlich den kleinsten geometrischen Rohr-/Randabstand in mm, **ohne** normative Freigabe.
 - **Konsolen/Auflager:** Hinzufügen, Benennen, Wandzuordnung, X/Y/Z-Position, Maße, Sichtbarkeit, Auswahl und Darstellung in 2D/3D.
 - **Projektvarianten:** bis zu zwölf benannte Planstände mit Vergleich, Wiederherstellung und Persistenz innerhalb der JSON-Datei.
-- Lokal speichern/laden als Projekt-JSON (Platten, Auflager und Varianten eingeschlossen), PNG-Export und Rückgängig/Wiederholen.
+- **Schachtnetz:** bis zu 30 unabhängige Schächte mit eigenen Kabeln/Wänden. Globale X/Z-mm-Positionen, editierbare Schacht-Links, zoombare Netzkarte und nachverfolgbare Kabelsegmente.
+- **CSV:** Netz-Kabelinventar exportieren, globale Schachtkoordinaten nach Prüfung und Bestätigung importieren.
+- Lokal speichern/laden als JSON mit Netz, Platten, Auflagern und Varianten; PNG-Export und Rückgängig/Wiederholen.
 
 ## Konzeptabgleich (verbindliche Produktanforderungen, noch nicht erfüllt)
 
@@ -30,8 +32,8 @@ Das bereitgestellte Konzept beschreibt **zuerst den vollständigen maßhaltigen 
 - **Offen – Einhausungen:** fachlich validierte Kollisions-/Brandschutzprüfungen und manuelles Verschieben der Platten direkt im 3D-/2D-Modell. Die jetzige geometrische AABB-Warnung ist nur näherungsweise.
 - **Offen – weitere Bauteile:** geprüfte Konstruktion/Tragfähigkeit, Mindestabstände und Befestigungsdetails. Geometrische Konsolen/Auflager lassen sich bereits bearbeiten.
 - **Offen – Projektworkflow:** PDF-Export, interaktiver Viewer und visuelle detaillierte Variantendifferenz. Lokale Planungsstände können bereits gesichert, verglichen und geladen werden.
-- **Offen – Netz:** mehrere Schächte mit globalen Koordinaten, Verbindungen, stabile netzweite Objekt-IDs, Filter und vollständige Kabelverfolgung.
-- **Offen – Import/Prüfung:** Plan- und Bestandsimport, bestätigungspflichtige Erkennung, Quellen/Prüfstatus/Historie, numerisch prüfbare Abstände und Kollisionswarnungen.
+- **Offen – Netz:** real überprüfte Leitungskontinuität über Schachtgrenzen, physische Schachtübergänge, unbegrenztes Netz und projektweite Suche. Die Netzansicht und schematische Segmentverfolgung existieren seit v0.6.
+- **Offen – Import/Prüfung:** CAD/BIM-/Plan-/Bestandsimport, KI-Erkennung, Quellen-/Prüfstatus-/Änderungshistorie, fachlich geprüfte Abstände/Kollisionen. CSV-Positionsimport ist bereits vorhanden.
 
 Technische Planung, tatsächliche Bauausführung und Abnahmen dürfen **nicht** allein auf dieser Software basieren. Es sind keine normgerechten DIN-/VDE- oder Brandschutzprüfungen implementiert; die bisherigen Kabelkurven sind nur eine Visualisierung, **keine** berechnete Biegeradiusfreigabe.
 
@@ -61,3 +63,7 @@ Die erste Projektetappe ist in [MILESTONE_25.md](./MILESTONE_25.md) beschrieben.
 ## Meilenstein 50 %
 
 Die zweite Entwicklungsetappe ist in [MILESTONE_50.md](./MILESTONE_50.md) dokumentiert. **50 %** bezeichnet eine vereinbarte Projektetappe, keine empirisch gemessene Quote der vollständigen Konzeptabdeckung. Die Software ist weiterhin ein Prototyp ohne Freigabe für Bau- oder Elektroabnahmen.
+
+## 75-%-Meilenstein
+
+Siehe [MILESTONE_75.md](./MILESTONE_75.md). **75 %** bezeichnet die dritte Entwicklungsetappe, keine nachgewiesene 75-prozentige Erfüllung der Anforderungen. Das Programm ist nicht für elektrotechnische oder brandschutztechnische Freigaben geeignet.

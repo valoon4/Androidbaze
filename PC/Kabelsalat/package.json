@@ -1,14 +1,14 @@
 {
   "name": "kabelsalat",
-  "version": "0.5.0",
-  "description": "Kabelsalat: Offline-2D/3D-Schachteditor mit Einhausungsplatten, Konsolen und Varianten",
+  "version": "0.6.0",
+  "description": "Kabelsalat: Offline 2D/3D-Schachteditor mit Schachtnetz und Kabelverfolgung",
   "main": "main.js",
   "author": "Eugi",
   "license": "MIT",
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node --check main.js && node --check editor2d.js && node --check components.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js",
+    "test": "node --check main.js && node --check editor2d.js && node --check components.js && node --check network.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js && node tests/network.test.js",
     "dist:win": "electron-builder --win portable --x64 --publish never"
   },
   "devDependencies": {
@@ -24,6 +24,7 @@
       "app.js",
       "editor2d.js",
       "components.js",
+      "network.js",
       "main.js",
       "vendor/three.min.js",
       "package.json"

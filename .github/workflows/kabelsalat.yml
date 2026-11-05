@@ -39,7 +39,7 @@ jobs:
           $version = node -p "require('./package.json').version"
           $folder = "dist/Kabelsalat-Browser"
           New-Item -ItemType Directory -Path (Join-Path $folder 'vendor') -Force | Out-Null
-          Copy-Item -Path index.html,app.js,editor2d.js,components.js -Destination $folder
+          Copy-Item -Path index.html,app.js,editor2d.js,components.js,network.js -Destination $folder
           Copy-Item -Path vendor/three.min.js,vendor/LICENSE.threejs -Destination (Join-Path $folder 'vendor')
           Compress-Archive -Path (Join-Path $folder '*') -DestinationPath "dist/Kabelsalat-$version-Browser-Offline.zip" -Force
       - name: Dateien als Actions-Artefakte
