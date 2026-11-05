@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
-<title>Schachtwand Planer</title>
+<title>Schachtwand Planer · Referenzschacht</title>
 <style>
 :root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#222c38;background:#f1f4f6;font-size:13px}*{box-sizing:border-box}
 body{margin:0;overflow:hidden}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
@@ -54,12 +54,19 @@ hr{border:0;border-top:1px solid #e9eff1;margin:17px 0}
 #empty-cable{border:1px dashed #cbd7db;border-radius:12px;text-align:center;padding:23px 12px;color:#8499a4;line-height:1.6}
 a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 @media(max-width:1020px){#app{grid-template-columns:250px minmax(320px,1fr) 290px}.sidebar{padding:16px 12px}header{padding:0 13px}}
+
+.view-tabs{position:absolute;bottom:101px;left:24px;max-width:calc(100% - 48px);display:flex;flex-wrap:wrap;gap:4px;background:#fffffff2;border:1px solid #dce6e8;padding:6px;border-radius:10px;box-shadow:0 6px 20px #5e849622}
+.view-tabs .chip{padding:7px 9px}
+#waypointList{display:grid;gap:7px}
+.point-row{display:grid;grid-template-columns:16px repeat(3,minmax(0,1fr)) 26px;gap:4px;align-items:center}
+.point-row input{width:100%;border:1px solid #dce5ea;border-radius:5px;padding:5px 4px;min-width:0}
+.point-row button{border:1px solid #ebcdd0;background:#fff6f6;color:#9d2e48;border-radius:5px;padding:4px}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Schachtwand Planer <span style="color:#87a99b">3D</span></div><div class="subtitle">Leerrohre · Kabel · Schachtwände</div></div>
+<div class="mark">◉</div><div><div class="brand">Schachtwand Planer <span style="color:#87a99b">3D · v0.2</span></div><div class="subtitle">Leerrohre · Kabel · Schachtwände</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="undo" class="btn tiny" title="Rückgängig (Strg+Z)">↶</button><button id="redo" class="btn tiny" title="Wiederholen (Strg+Y)">↷</button>
@@ -78,6 +85,10 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <div id="wallList"></div>
 <div style="margin-top:13px"><h3 id="wallTitle">SW1 · Konfiguration</h3>
 <div class="row"><label class="field">Reihen<input id="rows" type="number" min="1" max="20"></label><label class="field">Öffnungen / Reihe<input id="cols" type="number" min="1" max="20"></label></div>
+<div class="row">
+<label class="field">Wandstärke (mm)<input id="wallThickness" type="number" min="40" max="500" step="10"></label>
+<label class="field">Standard-DN (mm)<input id="wallDn" type="number" min="20" max="300" step="10"></label>
+</div>
 <div class="row" style="margin-top:11px"><button id="generate" class="btn soft full">Raster neu erstellen</button><button id="toggleWall" class="btn tiny">Sichtbar</button></div>
 </div>
 </section>
@@ -88,19 +99,30 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <div class="hint" id="modeHint">Modell mit der Maus drehen, mit dem Mausrad zoomen. Öffnungen oder Kabel anklicken, um sie zu bearbeiten.</div>
 <div id="holeEditor" style="display:none">
 <hr><h3 id="holeTitle">Ausgewähltes Leerrohr</h3>
-<div class="row"><label class="field">Horizontal (%)<input type="number" id="holeU" min="0" max="100" step="1"></label><label class="field">Vertikal (%)<input type="number" id="holeV" min="0" max="100" step="1"></label></div>
+<div class="row"><label class="field">Position (mm)<input type="number" id="holeU" min="0" max="12000" step="1"></label>
+<label class="field">Höhe (mm)<input type="number" id="holeV" min="0" max="8000" step="1"></label></div>
+<label class="field">DN / Durchmesser (mm)<input type="number" id="holeDn" min="20" max="300" step="5"></label>
 <div class="row" style="margin-top:11px"><button id="applyHole" class="btn soft full">Position übernehmen</button><button id="deleteHole" class="btn danger">Entfernen</button></div>
 </div>
 </section>
 <section class="section"><div class="eyebrow">Ansicht</div>
 <div class="row spread"><label for="opacity">Wanddeckkraft</label><b id="opacityText">55 %</b></div><input id="opacity" type="range" min="10" max="100" step="5">
-<div class="row" style="margin-top:12px"><label><input id="showBox" type="checkbox" checked> OLA-Kasten anzeigen</label></div>
+<div class="row" style="margin-top:12px"><label><input id="showBox" type="checkbox" checked> Einhausungen anzeigen</label></div>
 <div class="row" style="margin-top:10px"><label><input id="showLabels" type="checkbox" checked> Wandbeschriftungen</label></div>
 </section>
 </aside>
 <main id="viewport"><canvas id="scene"></canvas><div id="tooltip"></div>
 <div class="view-top"><div class="view-head"><strong>3D-Installationsübersicht</strong><span id="viewInfo">Leerrohre und Kabelverläufe</span></div>
 <div class="view-controls"><button id="resetView" class="float" title="Ansicht zurücksetzen">⌖ Ansicht</button><button id="exportPng" class="float" title="Bild exportieren">↧ PNG</button></div></div>
+<div id="viewTabs" class="view-tabs">
+<button class="chip active" data-view="3D">3D</button>
+<button class="chip" data-view="Oben">Oben</button>
+<button class="chip" data-view="Bodenplatten">Bodenplatten</button>
+<button class="chip" data-view="SW1">SW1</button>
+<button class="chip" data-view="SW2">SW2</button>
+<button class="chip" data-view="SW3">SW3</button>
+<button class="chip" data-view="SW4">SW4</button>
+</div>
 <div class="view-foot"><div class="float kbd">🖱 Ziehen: drehen · Mausrad: zoomen<br>● Öffnung: anklicken · Weißer Griff: Kabelanschluss ziehen</div><div class="float kbd" id="sceneStats">—</div></div>
 </main>
 <aside class="sidebar right">
@@ -110,13 +132,27 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <div class="tabs" id="cableFilters"><button class="chip active" data-filter="all">Alle</button><button class="chip" data-filter="red">Rot</button><button class="chip" data-filter="green">Grün</button><button class="chip" data-filter="blue">Blau</button><button class="chip" data-filter="yellow">Gelb</button></div>
 <div id="cableList" style="margin-top:13px"></div>
 </section>
+<section class="section"><div class="eyebrow">Zwei getrennte Einhausungen</div>
+<div class="hint" style="margin-bottom:12px">OLA und MS erhalten eigene Boden-, Seiten- und Deckelplatten. Die 3D-Darstellung ist schematisch.</div>
+<label><input type="checkbox" id="olaVisible" checked> OLA · Einhausung</label>
+<label class="field">Deckkraft <span id="olaOpacityText">70 %</span><input id="olaOpacity" type="range" min="10" max="100" step="5"></label>
+<hr><label><input type="checkbox" id="msVisible" checked> MS · Einhausung</label>
+<label class="field">Deckkraft <span id="msOpacityText">48 %</span><input id="msOpacity" type="range" min="10" max="100" step="5"></label>
+</section>
 <section class="section" id="cableEditor"><div class="eyebrow">Ausgewähltes Kabel</div>
 <div id="empty-cable">Wähle ein Kabel aus oder lege ein neues an.</div>
 <div id="cableForm" hidden>
 <label class="field">Bezeichnung<input id="cableName" maxlength="80"></label>
 <div class="row"><label class="field" style="flex:1">Farbe</label><input id="cableColor" type="color"></div>
+<div class="row"><label class="field">Einhausung<select id="cableGroup"><option value="OLA">OLA</option><option value="MS">MS</option><option value="Weitere">Weitere</option></select></label>
+<label class="field">Kabel-Ø (mm)<input id="cableDiameter" type="number" min="2" max="80" step="1"></label></div>
 <label class="field">A · Anschluss<select id="cableA" class="selector"></select></label>
 <label class="field">B · Anschluss<select id="cableB" class="selector"></select></label>
+<h3 style="margin-top:18px">Kabelführung / Bogenpunkte</h3>
+<div class="row"><button id="addWaypoint" class="btn soft full">＋ Bogenpunkt hinzufügen</button>
+<button id="clearWaypoints" class="btn danger tiny">Reset</button></div>
+<div id="waypointList" class="small" style="margin-top:9px"></div>
+<p class="small">Bogenpunkte im 3D-Modell ziehen oder Koordinaten in Millimetern bearbeiten. Biegeradien werden noch nicht geprüft.</p>
 <div class="row" style="margin-top:15px"><button id="swapCable" class="btn soft full">⇄ A / B tauschen</button><button id="deleteCable" class="btn danger">Löschen</button></div>
 </div>
 </section>
