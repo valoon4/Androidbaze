@@ -244,7 +244,7 @@ function drawWalls(){
  shape.moveTo(-half,0);shape.lineTo(half,0);shape.lineTo(half,s.h);shape.lineTo(-half,s.h);shape.closePath();
  const included=[];
  for(const h of w.holes){
- const p=holePosition(w.id,h),u=(w.id==='SW2'||w.id==='SW4')?p.x:p.z,r=openingRadius(h);
+ const p=holePosition(w.id,h),u=w.id==='SW2'?-p.x:w.id==='SW3'?-p.z:w.id==='SW4'?p.x:p.z,r=openingRadius(h);
  if(u-r< -half||u+r>half||p.y-r<0||p.y+r>s.h)continue;
  if(included.some(v=>Math.hypot(v.u-u,v.y-p.y)<v.r+r))continue;
  const path=new THREE.Path();path.absarc(u,p.y,r,0,Math.PI*2,true);shape.holes.push(path);
@@ -253,8 +253,8 @@ function drawWalls(){
  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:w.thickness/1000,bevelEnabled:false,curveSegments:12,steps:1}),
  material(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4',op));
  if(w.id==='SW1'){mesh.rotation.y=-Math.PI/2;mesh.position.x=-s.w/2;}
- else if(w.id==='SW3'){mesh.rotation.y=-Math.PI/2;mesh.position.x=s.w/2;}
- else if(w.id==='SW2'){mesh.position.z=-s.d/2;}
+ else if(w.id==='SW3'){mesh.rotation.y=Math.PI/2;mesh.position.x=s.w/2;}
+ else if(w.id==='SW2'){mesh.rotation.y=Math.PI;mesh.position.z=-s.d/2;}
  else mesh.position.z=s.d/2;
  mesh.userData={type:'wall',wall:w.id};models.add(mesh);wallObjects.push(mesh);
  if(project.showLabels)createLabel(w.id,new THREE.Vector3(w.id==='SW1'?-s.w/2:w.id==='SW3'?s.w/2:0,
