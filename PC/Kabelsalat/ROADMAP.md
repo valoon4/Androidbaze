@@ -10,9 +10,9 @@ Dieser Backlog ist ein **Implementierungsplan** für die nächste Iteration. Der
 | P0-02 | Frei anlegbare Wände mit IDs und Geometrie | Vier feste Wände | N beliebig positionierbare Wände |
 | P0-03 | Rohre mit DN, Durchmesser, mm-Abständen, Kopieren und Verschieben | **v0.4:** Rohrduplikat mit neuer ID, 1-mm-Mausraster, geometrische Mindest-Rand- und Paarabstände | Projektbezogene Grenzwerte und fachliche Freigaben |
 | P0-04 | Gerade Standardverbindungen; manuelle Kabelführung unter Mindestbiegeradius | Kurvenpunkte nur visuell | Typisierte Kabel, verbindliche Biegeradienparameter und prüfbare Geometrie |
-| P0-05 | Trennung OLA/MS: alle Platten einzeln editierbar, Material, Stärke, Einzeltransparenz | Nur schematische sechs Flächen | Datenmodell für Platten, Kollisionsprüfung mit Fremdrohren |
-| P0-06 | Konsolen und Auflager in 2D/3D | Fehlt | Komponenten, Maß-/Positionseditor, Zuordnung |
-| P0-07 | Persistenz, Varianten, Wiederöffnung, PDF/Bild/Viewer | JSON & PNG | Versionssicherer Import, Varianten, Vergleich, PDF/Viewer |
+| P0-05 | OLA/MS mit einzeln editierbaren Platten, Material, Stärke, Einzeltransparenz | **v0.5:** sechs eigene Platten je Baugruppe, Material/Maße/Dicke/Versatz/Deckkraft, 3D-Auswahl, AABB-Näherungswarnung | Fachlich valide Kollisionen, direkte Plattenbewegung und Brandschutzprüfung |
+| P0-06 | Konsolen und Auflager in 2D/3D | **v0.5:** Bauteil-IDs, Wandbezug, X/Y/Z-Maße und Darstellung in beiden Ansichten | Konstruktive Details, Befestigung und Mindestabstände prüfen |
+| P0-07 | Persistenz, Varianten, Wiederöffnung, PDF/Bild/Viewer | **v0.5:** Projektformat v3, benannte Varianten-Snapshots, einfache Detail- und Mengenvergleiche, PNG | PDF, interaktiver Viewer, visuelle geometrische Variantendifferenz |
 | P0-08 | Nachweisbare stabile IDs und Koordinatenbasis | Lokale IDs, globale Schachtlage fehlt | Schacht-IDs, lokale vs. globale Transformationsmatrix |
 
 ### Prüfkriterien der Editorabnahme
