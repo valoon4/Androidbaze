@@ -92,12 +92,28 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 #supportForm .field{font-size:10px}
 #panelForm .field{font-size:10px}
 #variantDiff{white-space:pre-wrap}
+
+#networkTools .field{margin-top:9px}
+#networkPane{display:none;position:absolute;inset:0;background:#f6fafb;z-index:4;flex-direction:column;padding:15px 16px;gap:11px}
+#viewport.network-open #networkPane{display:flex}
+#viewport.network-open #scene,#viewport.network-open #draft2d,#viewport.network-open .view-tabs,
+#viewport.network-open .view-top,#viewport.network-open .view-foot,#viewport.network-open #tooltip{display:none!important}
+.net-map-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.net-map-heading strong{font-size:15px}
+.net-canvas-wrap{position:relative;min-height:170px;flex:1;border:1px solid #d9e4e8;border-radius:12px;
+background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
+#networkCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+#networkCanvas:active{cursor:grabbing}
+.net-map-foot{display:flex;justify-content:space-between;gap:12px;color:#476572;font-size:11px;flex-wrap:wrap}
+#netTraceList .trace-item{margin-top:6px;border:1px solid #dbe6e8;padding:8px;border-radius:8px;cursor:pointer;font-size:11px}
+#netTraceList .trace-item:hover{background:#eef7f4}
+#netTraceStatus{white-space:pre-wrap}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">2D + 3D · v0.5</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">2D + 3D + Netz · v0.6</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="undo" class="btn tiny" title="Rückgängig (Strg+Z)">↶</button><button id="redo" class="btn tiny" title="Wiederholen (Strg+Y)">↷</button>
@@ -111,6 +127,31 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <div class="row"><label class="field">Breite (mm)<input type="number" id="width" min="600" max="12000" step="100"></label><label class="field">Tiefe (mm)<input type="number" id="depth" min="600" max="12000" step="100"></label></div>
 <label class="field">Höhe (mm)<input type="number" id="height" min="600" max="8000" step="100"></label>
 <div class="small" style="margin-top:10px">Maße sind Modellangaben, keine statische oder elektrotechnische Prüfung.</div>
+</section>
+<section class="section" id="networkTools">
+<div class="eyebrow">Schachtnetz · Standortkoordinaten</div>
+<div class="row spread"><h2 style="margin:0">Netzübersicht</h2>
+<button id="toggleNetwork" class="btn primary tiny">◎ Netz anzeigen</button></div>
+<label class="field">Aktiver Schacht<select id="netShaftSelect" class="selector"></select></label>
+<div class="row" style="margin-top:9px"><button id="netNewShaft" class="btn soft full">＋ Schacht</button>
+<button id="netOpenShaft" class="btn full">3D öffnen</button>
+<button id="netDeleteShaft" class="btn danger">Löschen</button></div>
+<label class="field">Schachtname<input id="netShaftName" maxlength="80"></label>
+<div class="row"><label class="field">Lage X (mm)<input id="netShaftX" type="number" step="1"></label>
+<label class="field">Lage Z (mm)<input id="netShaftZ" type="number" step="1"></label></div>
+<button id="netUpdateShaft" class="btn soft full" style="margin-top:9px">Standort übernehmen</button>
+<hr>
+<h3>Schächte verbinden</h3>
+<label class="field">Schacht A<select id="netLinkFrom" class="selector"></select></label>
+<label class="field">Schacht B<select id="netLinkTo" class="selector"></select></label>
+<div class="row" style="margin-top:9px"><button id="netAddLink" class="btn soft full">＋ Verbindung</button>
+<button id="netDeleteLink" class="btn danger">Entfernen</button></div>
+<label class="field">Vorhandene Verbindungen<select id="netLinkSelect" class="selector"></select></label>
+<hr>
+<div class="row spread"><h3 style="margin:0">Netzdaten</h3><button id="netExportCSV" class="btn tiny">↓ CSV</button></div>
+<div class="row" style="margin-top:9px"><button id="netImportPositions" class="btn soft full">Koordinaten-CSV prüfen</button>
+<input id="netPositionsFile" type="file" accept=".csv,text/csv,text/plain" hidden></div>
+<div class="small" style="margin-top:8px">CSV: shaft_id;x_mm;z_mm. Ein Import zeigt zuerst eine Vorschau und muss bestätigt werden.</div>
 </section>
 <section class="section"><div class="eyebrow">Baugruppe</div><h2>Schachtwände</h2>
 <div id="wallList"></div><div id="collisionInfo" class="hint"></div>
@@ -150,6 +191,16 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <div id="draftCoords" class="draft-metrics">Wähle ein Leerrohr.</div>
 <div class="row"><button id="draftCopy" class="btn soft full">＋ Rohr kopieren</button><button id="draftAdd" class="btn full">＋ Rohr platzieren</button></div>
 <div class="small">2D und 3D verwenden dieselben Objekt-IDs und Abmessungen.</div></section>
+<section id="networkPane" aria-label="Schachtnetz als Vogelperspektive">
+<div class="net-map-heading">
+<div><strong>Schachtnetz · Vogelperspektive</strong><div class="small">Schächte mit Lagekoordinaten in mm · Linien sind schematische Verbindungen</div></div>
+<button id="netBackEditor" class="btn primary">Zum Schachteditor</button>
+</div>
+<div class="net-canvas-wrap"><canvas id="networkCanvas" aria-label="Interaktive Schachtnetzkarte"></canvas></div>
+<div class="net-map-foot">
+<span id="netMapSummary">Schachtnetz</span><span class="small">Klicken: Schacht wählen · Doppelklick: öffnen · Ziehen: verschieben · Mausrad: zoom</span>
+</div>
+</section>
 <div class="view-top"><div class="view-head"><strong>3D-Installationsübersicht</strong><span id="viewInfo">Leerrohre und Kabelverläufe</span></div>
 <div class="view-controls"><button id="resetView" class="float" title="Ansicht zurücksetzen">⌖ Ansicht</button><button id="exportPng" class="float" title="Bild exportieren">↧ PNG</button></div></div>
 <div id="viewTabs" class="view-tabs">
@@ -178,6 +229,28 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 <button class="chip" data-filter="yellow">Gelb</button>
 </div>
 <div id="cableList" style="margin-top:13px"></div>
+</section>
+<section class="section" id="routeEditor">
+<div class="eyebrow">Schachtübergreifende Kabelverfolgung</div>
+<h2>Netz-Kabelwege</h2>
+<label class="field">Kabelweg<select id="netRouteSelect" class="selector"></select></label>
+<div class="row" style="margin-top:9px"><button id="netNewRoute" class="btn soft full">＋ Kabelweg</button>
+<button id="netDeleteRoute" class="btn danger">Löschen</button></div>
+<div id="routeFields">
+<label class="field">Bezeichnung<input id="netRouteName" maxlength="80"></label>
+<label class="field">System<select id="netRouteGroup" class="selector"><option value="OLA">OLA</option><option value="MS">MS</option><option value="Weitere">Weitere</option></select></label>
+<button id="netUpdateRoute" class="btn soft full" style="margin-top:9px">Kabelweg übernehmen</button>
+<hr>
+<h3>Segmente in Reihenfolge</h3>
+<div class="small">Für jeden Schacht ein bereits angelegtes lokales Kabel auswählen und dem Gesamtverlauf hinzufügen.</div>
+<label class="field">Schacht<select id="netSegmentShaft" class="selector"></select></label>
+<label class="field">Lokales Kabel<select id="netSegmentCable" class="selector"></select></label>
+<div class="row" style="margin-top:9px"><button id="netAppendSegment" class="btn soft full">＋ Segment hinzufügen</button>
+<button id="netPopSegment" class="btn danger">Letztes entfernen</button></div>
+<div id="netTraceList" style="margin-top:10px"></div>
+<div id="netTraceStatus" class="hint">Mindestens zwei Kabelsegmente und einen verbundenen Schachtweg festlegen.</div>
+</div>
+<button id="netShowTrace" class="btn primary full" style="margin-top:11px">Verlauf im Netz anzeigen</button>
 </section>
 <section class="section"><div class="eyebrow">Zwei getrennte Einhausungen</div>
 <div class="hint" style="margin-bottom:12px">OLA und MS erhalten eigene Boden-, Seiten- und Deckelplatten. Die 3D-Darstellung ist schematisch.</div>
@@ -260,6 +333,6 @@ a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
 </section>
 </aside>
 </div>
-<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="components.js"></script><script src="app.js"></script>
+<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="components.js"></script><script src="network.js"></script><script src="app.js"></script>
 </body>
 </html>
