@@ -86,6 +86,7 @@ let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mo
 let panelKey='OLA-floor',supportId=null,variantId=null;
 let networkOpen=false,netRouteId=null,netSegmentShaftId=null,netLinkId=null;
 let mapZoom=1,mapOffsetX=0,mapOffsetY=0,mapDrag=null;
+let netLinkFromId=null,netLinkToId=null;
 const undo=[],redo=[];
 const wall=()=>project.walls.find(w=>w.id===wallId);
 const cable=()=>project.cables.find(c=>c.id===cableId);
@@ -387,6 +388,132 @@ function wallCoords(wid,p){const s=sizes(),u=(wid==='SW2'||wid==='SW4')?(p.x/s.w
  return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};}
 function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
  change(()=>{w.holes.push({id,row:0,col:0,dn:w.dn,...coords});wallId=wid;holeId=id;});}
+
+
+/* Interactive network overview: global X/Z shaft positions in millimetres. */
+const networkCanvas=$('networkCanvas');
+const networkPos=e=>{const r=networkCanvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
+const activeShaft=()=>project.network.shafts.find(s=>s.id===project.activeShaftId);
+const selectedRoute=()=>project.network.routes.find(r=>r.id===netRouteId);
+function switchShaft(id,selectedCable=null){
+ if(!project.network.shafts.some(s=>s.id===id))return;
+ if(id===project.activeShaftId){
+  if(selectedCable&&project.cables.some(c=>c.id===selectedCable)){cableId=selectedCable;filter='all';renderAll();}
+  return;
+ }
+ change(()=>{
+  syncActiveShaft();
+  const net=project.network,next=net.shafts.find(s=>s.id===id);
+  project=validProject({...next.snapshot,network:net,activeShaftId:id});
+  wallId='SW1';holeId=null;cableId=selectedCable||project.cables[0]?.id||null;
+  panelKey='OLA-floor';supportId=null;variantId=null;filter='all';
+  viewMode='3D';zoom=1;mapZoom=Math.max(.35,mapZoom);
+ });
+}
+function renderNetworkUI(){
+ const net=project.network,shaft=activeShaft();
+ $('viewport').classList.toggle('network-open',networkOpen);
+ $('toggleNetwork').textContent=networkOpen?'↩ Zum Editor':'◎ Netz anzeigen';
+ const opts=net.shafts.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.id)+' · '+esc(s.name)+'</option>').join('');
+ for(const id of ['netShaftSelect','netLinkFrom','netLinkTo','netSegmentShaft'])$(id).innerHTML=opts;
+ $('netShaftSelect').value=project.activeShaftId;
+ $('netShaftName').value=shaft?.name||'';
+ $('netShaftX').value=shaft?.x??0;$('netShaftZ').value=shaft?.z??0;
+ $('netDeleteShaft').disabled=net.shafts.length<=1;
+ if(!net.shafts.some(s=>s.id===netLinkFromId))netLinkFromId=project.activeShaftId;
+ if(!net.shafts.some(s=>s.id===netLinkToId))netLinkToId=net.shafts.find(s=>s.id!==netLinkFromId)?.id||netLinkFromId;
+ $('netLinkFrom').value=netLinkFromId;$('netLinkTo').value=netLinkToId;
+ $('netLinkSelect').innerHTML='<option value="">– Verbindung auswählen –</option>'+net.links.map(l=>
+ '<option value="'+esc(l.id)+'">'+esc(l.from)+' ↔ '+esc(l.to)+'</option>').join('');
+ if(!net.links.some(l=>l.id===netLinkId))netLinkId=null;
+ $('netLinkSelect').value=netLinkId||'';$('netDeleteLink').disabled=!netLinkId;
+ $('netAddLink').disabled=net.shafts.length<2||netLinkFromId===netLinkToId;
+ $('netRouteSelect').innerHTML='<option value="">– Kabelweg auswählen –</option>'+net.routes.map(r=>
+ '<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>').join('');
+ if(!net.routes.some(r=>r.id===netRouteId))netRouteId=net.routes[0]?.id||null;
+ $('netRouteSelect').value=netRouteId||'';
+ const route=selectedRoute();
+ $('routeFields').hidden=!route;$('netDeleteRoute').disabled=!route;
+ $('netShowTrace').disabled=!route;
+ if(route){
+  $('netRouteName').value=route.name;$('netRouteGroup').value=route.group;
+  $('netTraceList').innerHTML=networkModel.routeDetails(net,route).map(s=>
+   '<div class="trace-item" data-trace-shaft="'+esc(s.shaftId)+'" data-trace-cable="'+esc(s.cableId)+'">'+
+   '<b>'+s.order+'. '+esc(s.shaft)+'</b> · '+esc(s.cable)+
+   '<div class="small">'+esc(s.from)+' → '+esc(s.to)+'</div></div>').join('')||
+   '<div class="small">Noch keine lokalen Kabelsegmente eingetragen.</div>';
+  const problems=networkModel.issues(net,route);
+  $('netTraceStatus').textContent=problems.length?'⚠ Noch nicht durchgehend:\n'+problems.join('\n'):
+   '✓ Alle Kabel-IDs vorhanden und alle Schachtübergänge im Netz verbunden. Kein Nachweis der realen Kabelführung!';
+  $('netTraceStatus').style.background=problems.length?'#fff1e7':'#edf8f1';
+ }
+ if(!net.shafts.some(s=>s.id===netSegmentShaftId))netSegmentShaftId=project.activeShaftId;
+ $('netSegmentShaft').value=netSegmentShaftId;
+ const segmentShaft=net.shafts.find(s=>s.id===netSegmentShaftId);
+ const old=$('netSegmentCable').value;
+ $('netSegmentCable').innerHTML=(segmentShaft?.snapshot.cables||[]).map(c=>
+ '<option value="'+esc(c.id)+'">'+esc(c.name)+' · '+esc(c.id)+'</option>').join('');
+ if((segmentShaft?.snapshot.cables||[]).some(c=>c.id===old))$('netSegmentCable').value=old;
+ $('netAppendSegment').disabled=!route||!segmentShaft?.snapshot.cables.length||route.steps.length>=60;
+ $('netPopSegment').disabled=!route||!route.steps.length;
+ $('netMapSummary').textContent=net.shafts.length+' Schächte · '+net.links.length+
+ ' Verbindungen · '+net.routes.length+' Netz-Kabelwege'+(route?' · '+route.name:'');
+}
+function networkProjection(){
+ const r=networkCanvas.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height);
+ const ss=project.network.shafts,xs=ss.map(s=>s.x),zs=ss.map(s=>s.z);
+ const xmin=Math.min(...xs),xmax=Math.max(...xs),zmin=Math.min(...zs),zmax=Math.max(...zs);
+ const cx=(xmin+xmax)/2,cz=(zmin+zmax)/2;
+ const sx=Math.max(10000,xmax-xmin),sz=Math.max(10000,zmax-zmin);
+ const scale=Math.min(Math.max(1,w-150)/sx,Math.max(1,h-150)/sz)*mapZoom;
+ const point=s=>({x:w/2+(s.x-cx)*scale+mapOffsetX,y:h/2+(s.z-cz)*scale+mapOffsetY});
+ return {w,h,point,scale,cx,cz};
+}
+function drawNetwork(){
+ if(!networkOpen)return;
+ const {w,h,point,scale}=networkProjection();if(w<6||h<6)return;
+ const dpr=Math.min(window.devicePixelRatio||1,2),pw=Math.round(w*dpr),ph=Math.round(h*dpr);
+ if(networkCanvas.width!==pw||networkCanvas.height!==ph){networkCanvas.width=pw;networkCanvas.height=ph;}
+ const ctx=networkCanvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#fafdfe';ctx.fillRect(0,0,w,h);
+ const net=project.network;
+ ctx.strokeStyle='#e8eff2';ctx.lineWidth=1;
+ for(let x=25;x<w;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+ for(let y=25;y<h;y+=50){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+ const byID=id=>net.shafts.find(s=>s.id===id);
+ for(const link of net.links){
+  const a=byID(link.from),b=byID(link.to);if(!a||!b)continue;
+  const p=point(a),q=point(b);
+  ctx.strokeStyle='#92a5af';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();
+ }
+ const route=selectedRoute();
+ if(route){
+  const colors={OLA:'#d75c60',MS:'#3298bb',Weitere:'#b98b34'};
+  ctx.strokeStyle=colors[route.group]||'#b98b34';ctx.lineWidth=6;ctx.setLineDash([10,6]);
+  for(let i=1;i<route.steps.length;i++){
+   const a=byID(route.steps[i-1].shaftId),b=byID(route.steps[i].shaftId);
+   if(!a||!b)continue;
+   const p=point(a),q=point(b);
+   ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();
+  }
+  ctx.setLineDash([]);
+ }
+ for(const s of net.shafts){
+  const p=point(s),chosen=s.id===project.activeShaftId,
+   traced=route?.steps.some(t=>t.shaftId===s.id);
+  ctx.beginPath();ctx.arc(p.x,p.y,chosen?24:20,0,Math.PI*2);
+  ctx.fillStyle=chosen?'#185b53':traced?'#d7a44d':'#527b8b';ctx.fill();
+  ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.stroke();
+  ctx.textAlign='center';ctx.font='bold 12px Segoe UI,Arial';ctx.fillStyle='#ffffff';
+  ctx.fillText(s.id.slice(0,6),p.x,p.y+4);
+  ctx.font='bold 12px Segoe UI,Arial';ctx.fillStyle='#244452';
+  ctx.fillText(s.name.slice(0,22),p.x,p.y-32);
+  ctx.font='10px Segoe UI,Arial';ctx.fillStyle='#7a919d';
+  ctx.fillText(s.x+' / '+s.z+' mm',p.x,p.y+38);
+ }
+ ctx.fillStyle='#597580';ctx.font='11px Segoe UI,Arial';ctx.textAlign='left';
+ ctx.fillText('Globale X/Z-Koordinaten (mm) · schematischer Lageplan, keine Vermessungsfreigabe',12,h-12);
+}
 
 const draft=$('draftCanvas'),geom2d=window.Kabelsalat2D;
 if(!geom2d)throw Error('Kabelsalat-2D-Modul fehlt');
