@@ -575,6 +575,22 @@ function drawNetwork(){
 const draft=$('draftCanvas'),geom2d=window.Kabelsalat2D;
 if(!geom2d)throw Error('Kabelsalat-2D-Modul fehlt');
 let draftMetrics=null,draftDrag=null;
+function projectedCablePoints(c,m){
+ const a=endpoint(c.a),b=endpoint(c.b);
+ if(!a||!b)return [];
+ const points=[a,...(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000)),b];
+ return points.map(p=>{
+  const along=wallId==='SW1'||wallId==='SW3'?
+   p.z*1000+project.dims.d/2:p.x*1000+project.dims.w/2;
+  return geom2d.toPixels(m,along,p.y*1000);
+ });
+}
+function distanceSegment(x,y,a,b){
+ const dx=b.x-a.x,dy=b.y-a.y,den=dx*dx+dy*dy;
+ if(den<.0001)return Math.hypot(x-a.x,y-a.y);
+ const t=clamp(((x-a.x)*dx+(y-a.y)*dy)/den,0,1);
+ return Math.hypot(x-a.x-t*dx,y-a.y-t*dy);
+}
 function draw2D(){
  if(!$('viewport').classList.contains('with-2d'))return;
  const box=draft.getBoundingClientRect(),cw=box.width,ch=box.height;
@@ -596,6 +612,16 @@ function draw2D(){
  ctx.font='11px Segoe UI,Arial';ctx.fillStyle='#607d89';ctx.textAlign='center';
  ctx.fillText(span+' mm',cw/2,Math.min(ch-7,p1.y+18));
  ctx.save();ctx.translate(Math.max(11,p1.x-13),ch/2);ctx.rotate(-Math.PI/2);ctx.fillText(height+' mm',0,0);ctx.restore();
+ // Orthographic projection for visual cross-check only; not a verified cable route.
+ for(const c of project.cables){
+  if(c.a?.wall!==wallId&&c.b?.wall!==wallId)continue;
+  const projected=projectedCablePoints(c,m);
+  if(projected.length<2)continue;
+  ctx.beginPath();projected.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+  ctx.strokeStyle=c.color;ctx.lineWidth=c.id===cableId?3.8:1.4;
+  ctx.globalAlpha=c.id===cableId?.95:.3;ctx.setLineDash(c.id===cableId?[]:[5,4]);
+  ctx.stroke();ctx.globalAlpha=1;ctx.setLineDash([]);
+ }
  for(const h of w.holes){
  const p=geom2d.toPixels(m,h.u*span,h.v*height);
  const r=Math.max(2,Number(h.dn||70)/2*m.scale),selected=h.id===holeId;
@@ -667,6 +693,18 @@ draft.addEventListener('pointerdown',e=>{
    Math.abs(p.y-c.y)<Math.max(6,st.h*draftMetrics.scale/2);
  });
  if(chosenSupport){supportId=chosenSupport.id;renderAll();e.preventDefault();return;}
+ let lineCable=null,best=9;
+ for(const c of project.cables){
+  if(c.a?.wall!==wallId&&c.b?.wall!==wallId)continue;
+  const pts=projectedCablePoints(c,draftMetrics);
+  for(let i=1;i<pts.length;i++){
+   const d=distanceSegment(p.x,p.y,pts[i-1],pts[i]);
+   if(d<best){best=d;lineCable=c;}
+  }
+ }
+ if(lineCable){
+  cableId=lineCable.id;filter='all';renderAll();e.preventDefault();return;
+ }
  if(mode!=='add')return;
  const w=wall();if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
  const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y);
