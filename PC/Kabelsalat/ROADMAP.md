@@ -6,9 +6,9 @@ Dieser Backlog ist ein **Implementierungsplan** für die nächste Iteration. Der
 
 | ID | Funktion | Vorhanden | Nächster Schritt |
 |---|---|---|---|
-| P0-01 | Maßhaltige, **gleichzeitige** 2D-/3D-Ansicht eines gemeinsamen Modells | Umschaltbare Ansichten | Teilfenster nebeneinander, gemeinsame Selektion und Live-Updates |
+| P0-01 | Maßhaltige, **gleichzeitige** 2D-/3D-Ansicht eines gemeinsamen Modells | **v0.4:** parallele Zeichenfläche; gemeinsame Rohrauswahl und 1-mm-Positionen, Live-3D-Update | Praxistest; weitere 2D-Editierfunktionen für Kabel und Einhausungen |
 | P0-02 | Frei anlegbare Wände mit IDs und Geometrie | Vier feste Wände | N beliebig positionierbare Wände |
-| P0-03 | Rohre mit DN, Durchmesser, mm-Abständen, Kopieren und Verschieben | Teilweise | ID-sichere Kopierfunktion, Rand- und Paarabstände, Fangraster |
+| P0-03 | Rohre mit DN, Durchmesser, mm-Abständen, Kopieren und Verschieben | **v0.4:** Rohrduplikat mit neuer ID, 1-mm-Mausraster, geometrische Mindest-Rand- und Paarabstände | Projektbezogene Grenzwerte und fachliche Freigaben |
 | P0-04 | Gerade Standardverbindungen; manuelle Kabelführung unter Mindestbiegeradius | Kurvenpunkte nur visuell | Typisierte Kabel, verbindliche Biegeradienparameter und prüfbare Geometrie |
 | P0-05 | Trennung OLA/MS: alle Platten einzeln editierbar, Material, Stärke, Einzeltransparenz | Nur schematische sechs Flächen | Datenmodell für Platten, Kollisionsprüfung mit Fremdrohren |
 | P0-06 | Konsolen und Auflager in 2D/3D | Fehlt | Komponenten, Maß-/Positionseditor, Zuordnung |
