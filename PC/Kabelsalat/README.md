@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v1.0.0-beta.2 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v1.0.0-beta.3 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-1.0.0-beta.2-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-1.0.0-beta.2-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.0.0-beta.3-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.0.0-beta.3-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -83,3 +83,17 @@ Siehe [MILESTONE_100.md](./MILESTONE_100.md) für Testschritte, Risiken und offe
 Beim ersten Start ohne lokale Daten wird ein synthetisches Bahnhofsnetz mit vier Schächten, 376 Rohren und 64 Kabeln geladen. Eigene gespeicherte Projekte bleiben bei Updates unberührt. Links oben kannst du über Beispielprojekte jederzeit auch einen Einzelschacht mit 16 Kabeln oder einen absichtlich fehlerhaften Prüffall laden. Vor dem Wechsel bitte eigene Projekte als JSON sichern.
 
 Die drei separat ladbaren JSON-Dateien liegen in examples/. Hinweise und Prüfschritte stehen in examples/README.md. Die verbindliche Bewertung der Anforderungen aus dem Original-Konzept steht in CONCEPT_AUDIT.md. **Diese Beta ist nicht zu 100 % konzeptkonform.**
+
+## Eugi-Modus – fokussierter Einstieg (Beta 3)
+
+**Warum?** Der erste realistische Bedienungsscreenshot zeigte zu viele Fachbegriffe und Prüfmasken und ein zu blasses 3D-Modell. Ein Erstnutzer soll sofort erkennen, **was ein Schacht ist, wo Kabel verlaufen und wie die Schächte zusammenhängen**, bevor er Maße oder Prüfdaten bearbeiten muss.
+
+**Neu:** Die Software startet standardmäßig im **Eugi-Modus** (3 Auswahlmöglichkeiten: Netzkarte, Schacht verstehen, Kabel verfolgen). Rechts werden nur der aktuell erklärte Kabelweg und anklickbare Kabel gezeigt. Ein Glossar erklärt „Schacht“, „Schachtwand“, „Leerrohr“ und „DN“. Die Missionen haben einfache, dauerhaft gespeicherte Häkchen; niemand muss sie in einer bestimmten Reihenfolge absolvieren.
+
+**Visuelle Klarheit:** Eine breitere 3D-Ansicht, dunklere erkennbare Schachtwände, kräftige, im Fokus hervorgehobene Kabel, klarere Rohröffnungen. Ein 2D-Wandplan lässt sich mit einem eigenen Button zuschalten. Komplexe Einhausungsplatten und Konsolen sind im Eugi-Modus nur in der Anzeige ausgeblendet, **nicht aus dem Projekt gelöscht**.
+
+**Profi-Modus:** Über die Schaltfläche oben rechts sind alle bisherigen vollständigen Editoren, Prüfvermerke, Einhausungsplatten, Netz- und Materialeinstellungen wieder sichtbar. Der gewählte Modus ist eine **lokale UI-Einstellung** und beeinflusst weder Projektdaten noch JSON-Export, Undo/Redo oder technische Prüfhinweise. Bestehende lokal gespeicherte Projekte bleiben erhalten.
+
+Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Auswahlmöglichkeiten; **eine medizinisch geprüfte ADHS-Wirksamkeit wird nicht behauptet**.
+
+**Abnahme:** Siehe [EUGI_MODE_ACCEPTANCE.md](./EUGI_MODE_ACCEPTANCE.md). Der echte Windows-GUI-Test einschließlich Lesbarkeit/Interaktionsweg steht noch aus.
