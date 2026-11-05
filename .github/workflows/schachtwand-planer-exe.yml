@@ -27,7 +27,7 @@ jobs:
           node-version: '22'
       - name: Install packages
         run: npm install --no-audit --no-fund
-      - name: Syntax check
+      - name: Model and syntax tests
         run: npm test
       - name: Build Windows EXE
         run: npm run dist:win
@@ -53,11 +53,12 @@ jobs:
               --notes "Portable Windows 10/11 EXE. Visueller Prototyp, keine geprüfte Elektro- oder Brandschutzplanung." \
               --prerelease
           fi
-          # Alte EXEs entfernen, sonst bleibt die vorige Version im gleichen Release liegen.
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' |
-            grep '^SchachtwandPlaner-.*-Windows\.exe
- |
             while IFS= read -r old; do
-              gh release delete-asset "$TAG" "$old" --repo "$GITHUB_REPOSITORY" --yes
-            done || true
+              case "$old" in
+                SchachtwandPlaner-*-Windows.exe)
+                  gh release delete-asset "$TAG" "$old" --repo "$GITHUB_REPOSITORY" --yes
+                  ;;
+              esac
+            done
           gh release upload "$TAG" dist/*.exe --repo "$GITHUB_REPOSITORY" --clobber
