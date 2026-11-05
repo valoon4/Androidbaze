@@ -11,6 +11,9 @@ const net={shafts:[shaft],links:[],routes:[]};
 const report=q.evaluate(net,{minPipeGapMm:30,minEdgeMm:100,minBendRadiusMm:200});
 assert.ok(report.issues.some(x=>x.code==='PIPE_OVERLAP'));
 assert.ok(report.issues.some(x=>x.code==='CABLE_TOO_WIDE'));
+const incomplete=JSON.parse(JSON.stringify(net));incomplete.shafts[0].snapshot.cables[0].b=null;
+assert.ok(q.evaluate(incomplete,{minBendRadiusMm:500}).issues.some(x=>x.code==='MISSING_END'),
+ 'Missing cable endpoint must not crash geometry checks');
 assert.ok(report.issues.every(x=>x.severity!=='success'));
 assert.ok(q.searchNetwork(net,'alpha').some(x=>x.kind==='cable'&&x.cableId==='c1'));
 assert.ok(q.searchNetwork(net,'h1').some(x=>x.kind==='hole'));
