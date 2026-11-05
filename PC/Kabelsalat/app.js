@@ -749,6 +749,80 @@ canvas.addEventListener('pointercancel',()=>{grab=null;canvas.classList.remove('
 canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=clamp(zoom*(e.deltaY>0?1.11:.9),.45,4);view();},{passive:false});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
 
+
+function showGlobalResult(hit){
+ if(!hit)return;
+ switchShaft(hit.shaftId,hit.kind==='cable'?hit.cableId:null);
+ if(hit.kind==='hole'){wallId=hit.wallId;holeId=hit.holeId;viewMode='3D';}
+ if(hit.kind==='cable'){cableId=hit.cableId;filter='all';}
+ networkOpen=false;renderAll();requestAnimationFrame(resize);
+}
+$('globalSearch').addEventListener('input',renderQualityUI);
+$('globalResults').addEventListener('click',e=>{
+ const el=e.target.closest('[data-result]');if(!el)return;
+ const hits=JSON.parse($('globalResults').dataset.results||'[]');
+ showGlobalResult(hits[Number(el.dataset.result)]);
+});
+$('applyQuality').addEventListener('click',()=>{
+ const raw={minPipeGapMm:$('minPipeGap').value,minEdgeMm:$('minEdgeGap').value,
+ minBendRadiusMm:$('minBend').value};
+ const invalid=Object.values(raw).some(v=>v!==''&&(!Number.isFinite(Number(v))||Number(v)<0||Number(v)>100000));
+ if(invalid){alert('Prüfparameter: gültige Werte zwischen 0 und 100.000 mm eingeben oder Feld leer lassen.');return;}
+ change(()=>{project.network.quality=qualityModel.normalizeSettings(raw);},'Projekt-Prüfwerte geändert');
+});
+$('runQuality').addEventListener('click',renderQualityUI);
+$('qualityList').addEventListener('click',e=>{
+ const item=e.target.closest('[data-quality]');if(!item||!lastQualityResult)return;
+ const issue=lastQualityResult.issues[Number(item.dataset.quality)];if(!issue)return;
+ const shaft=project.network.shafts.find(s=>s.id===issue.shaftId);
+ if(shaft){
+  const c=shaft.snapshot.cables.find(c=>c.id===issue.ref);
+  const h=shaft.snapshot.walls.find(w=>w.holes.some(x=>x.id===issue.ref));
+  showGlobalResult(c?{kind:'cable',shaftId:issue.shaftId,cableId:c.id}:
+   h?{kind:'hole',shaftId:issue.shaftId,wallId:h.id,holeId:issue.ref}:
+   {kind:'shaft',shaftId:issue.shaftId});
+ }
+});
+$('reviewTarget').addEventListener('change',()=>{reviewKey=$('reviewTarget').value;renderQualityUI();});
+$('saveReview').addEventListener('click',()=>{
+ const entityType=reviewKey==='shaft'?'shaft':'cable',entityId=entityType==='shaft'?
+ project.activeShaftId:reviewKey.slice(6);
+ const status=$('reviewStatus').value,source=$('reviewSource').value.trim().slice(0,250),
+ by=$('reviewBy').value.trim().slice(0,80),note=$('reviewNote').value.trim().slice(0,500);
+ if(status==='Vor Ort abgeglichen'&&!source){
+  alert('Für „Vor Ort abgeglichen“ bitte mindestens die Quelle / den Beleg dokumentieren.');return;
+ }
+ if(entityType==='cable'&&!project.cables.some(c=>c.id===entityId))return;
+ change(()=>{
+  const entries=project.network.reviews||[];
+  const value={shaftId:project.activeShaftId,entityType,entityId,status,source,
+   checkedBy:by,note,checkedAt:new Date().toISOString()};
+  project.network.reviews=qualityModel.normalizeReviews([
+   value,...entries.filter(x=>!(x.shaftId===value.shaftId&&x.entityType===value.entityType&&x.entityId===value.entityId))
+  ],project.network.shafts);
+ },'Manueller Prüfvermerk gespeichert');
+});
+function renderReport(){syncActiveShaft();return reportModel.reportHTML(project,qualityModel.evaluate(project.network,project.network.quality));}
+$('exportReportHtml').addEventListener('click',()=>{
+ download(filename()+'-Pruefbericht.html',renderReport(),'text/html;charset=utf-8');
+});
+$('exportViewer').addEventListener('click',()=>{
+ syncActiveShaft();
+ download(filename()+'-Offline-Viewer.html',reportModel.viewerHTML(project),'text/html;charset=utf-8');
+});
+$('exportPdf').addEventListener('click',async()=>{
+ const html=renderReport();
+ if(!window.kabelsalatDesktop?.saveReportPDF){
+  download(filename()+'-PDF-Druckvorlage.html',html,'text/html;charset=utf-8');
+  alert('Die Browser-Version öffnet keinen nativen PDF-Speicherdialog. HTML-Bericht öffnen und mit Strg+P → Als PDF speichern.');
+  return;
+ }
+ try{
+  const result=await window.kabelsalatDesktop.saveReportPDF(html,filename()+'-Pruefbericht.pdf');
+  if(result&&!result.ok&&!result.cancelled)alert('PDF-Export nicht möglich: '+(result.error||'Unbekannter Fehler'));
+ }catch(ex){alert('PDF konnte nicht gespeichert werden: '+ex.message);}
+});
+
 /* Network workspace commands. All changes go through the undo/persistence system. */
 function setNetworkOpen(next){
  networkOpen=next;renderAll();requestAnimationFrame(resize);
