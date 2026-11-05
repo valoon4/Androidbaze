@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -322,12 +324,17 @@ fun PersonalReviewScreen(
                     onOpenStrategy = onOpenStrategyCard
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = listState,
-        contentPadding = PaddingValues(20.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
+                BoxWithConstraints(Modifier.fillMaxSize()) {
+                    // Content has 20dp horizontal lazy padding on both sides.
+                    // Seven 48dp cells cannot fit on a 320dp device.
+                    val supportsCalendarGrid = maxWidth - 40.dp >= 336.dp &&
+                        LocalDensity.current.fontScale <= 1.3f
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = listState,
+                        contentPadding = PaddingValues(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(15.dp)
+                    ) {
         // A selected evidence view should start with its own heading and
         // records, not two large overview sections at 200% font scale.
         if (selectedTerm == null) {
@@ -388,7 +395,21 @@ fun PersonalReviewScreen(
         if (selectedTerm == null && error == null && !busy && snapshot != null &&
             diaryCalendarMonth != null) {
             item(key = "diary-calendar") {
-                DiaryCalendarPanel(diaryCalendarMonth, diaryCalendarState)
+                DiaryCalendarPanel(
+                    diaryCalendarMonth,
+                    diaryCalendarState,
+                    supportsGrid = supportsCalendarGrid
+                )
+            }
+            // In list mode each local date is independently lazy and scrollable.
+            // Avoid a 31-button child column that can be unreachable at 200% font.
+            if (diaryCalendarState.expanded && diaryCalendarState.selectedDate == null &&
+                (!supportsCalendarGrid || diaryCalendarState.listRequested)) {
+                items(diaryCalendarMonth.days, key = { "calendar-day-${it.date}" }) { day ->
+                    DiaryCalendarDateListItem(day) {
+                        diaryCalendarState.selectedDate = day.date
+                    }
+                }
             }
             // Lazily render this day's evidence, not thousands of cards in
             // one calendar item. These IDs come from the same secure snapshot.
@@ -723,6 +744,7 @@ fun PersonalReviewScreen(
             }
         }
                 } // LazyColumn
+                } // BoxWithConstraints
             } // overview / insights
         } // content
     } // Rückblick tabs
