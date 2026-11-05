@@ -63,6 +63,7 @@ function searchNetwork(net,query,limit=120){
  return items.slice(0,limit);
 }
 function mmPosition(p,r){
+ if(!r||typeof r.wall!=='string'||typeof r.hole!=='string')return null;
  const w=p.dims.w,d=p.dims.d,h=p.dims.h;
  const wall=p.walls.find(x=>x.id===r.wall),hole=wall?.holes.find(x=>x.id===r.hole);
  if(!hole)return null;
