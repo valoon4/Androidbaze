@@ -368,7 +368,7 @@ function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientR
 function wallCoords(wid,p){const s=sizes(),u=(wid==='SW2'||wid==='SW4')?(p.x/s.w+.5):p.z/s.d+.5;
  return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};}
 function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
- change(()=>{w.holes.push({id,row:0,col:0,...coords});wallId=wid;holeId=id;});}
+ change(()=>{w.holes.push({id,row:0,col:0,dn:w.dn,...coords});wallId=wid;holeId=id;});}
 
 const draft=$('draftCanvas'),geom2d=window.Kabelsalat2D;
 if(!geom2d)throw Error('Kabelsalat-2D-Modul fehlt');
@@ -586,6 +586,72 @@ $('waypointList').addEventListener('change',e=>{const input=e.target.closest('[d
  change(()=>{c.route[i][axis]=clamp(Number(input.value)||0,axis===1?0:-extent,extent);});});
 $('waypointList').addEventListener('click',e=>{const btn=e.target.closest('[data-remove]');if(!btn)return;
  const c=cable(),i=Number(btn.dataset.remove);if(c&&c.route[i])change(()=>{c.route.splice(i,1);});});
+
+$('panelSelect').addEventListener('change',()=>{panelKey=$('panelSelect').value;renderAll();});
+$('panelOpacity').addEventListener('input',()=>{$('panelOpacityText').textContent=$('panelOpacity').value+' %';});
+$('applyPanel').addEventListener('click',()=>{
+ const selected=plate();if(!selected)return;
+ const group=panelKey.split('-')[0],enclosure=project.enclosures[group];
+ const draft={...selected,material:$('panelMaterial').value.trim().slice(0,50)||selected.material,
+ visible:$('panelVisible').checked,
+ width:Number($('panelWidth').value),height:Number($('panelHeight').value),
+ thickness:Number($('panelThickness').value),offset:Number($('panelOffset').value),
+ opacity:Number($('panelOpacity').value)};
+ change(()=>{
+  const model={...enclosure,panels:enclosure.panels.map(p=>p.id===panelKey?draft:p)};
+  const sanitized=components.normalizeEnclosures({[group]:model},project.dims)[group];
+  enclosure.panels=sanitized.panels;
+ });
+});
+$('supportList').addEventListener('click',e=>{
+ const item=e.target.closest('[data-support]');if(!item)return;
+ supportId=item.dataset.support;renderAll();
+});
+$('addSupport').addEventListener('click',()=>{
+ if(project.supports.length>=100){alert('Maximal 100 Konsolen und Auflager.');return;}
+ const next=components.newSupport(project.dims,uid('support'));
+ change(()=>{project.supports.push(next);supportId=next.id;});
+});
+$('applySupport').addEventListener('click',()=>{
+ const st=support();if(!st)return;
+ const data={...st,name:$('supportName').value.trim().slice(0,80)||'Konsole',
+ type:$('supportType').value,wall:$('supportWall').value,visible:$('supportVisible').checked};
+ for(const k of ['X','Y','Z','W','H','D'])data[k.toLowerCase()]=Number($('support'+k).value);
+ change(()=>Object.assign(st,components.normalizeSupports([data],project.dims)[0]));
+});
+$('deleteSupport').addEventListener('click',()=>{
+ if(!support())return;change(()=>{
+ project.supports=project.supports.filter(x=>x.id!==supportId);supportId=project.supports[0]?.id||null;
+ });
+});
+$('variantSelect').addEventListener('change',()=>{
+ variantId=$('variantSelect').value||null;renderUI();
+});
+$('createVariant').addEventListener('click',()=>{
+ if(project.variants.length>=12){alert('Bis zu 12 Varianten pro Projektdatei sind möglich.');return;}
+ const name=prompt('Wie soll dieser Planungsstand heißen?','Variante '+(project.variants.length+1));
+ if(name===null)return;
+ const cleaned=name.trim().slice(0,80)||'Variante '+(project.variants.length+1);
+ const snap=components.snapshot(project),id=uid('variant');
+ change(()=>{
+ project.variants.push({id,name:cleaned,createdAt:new Date().toISOString(),snapshot:snap});
+ variantId=id;
+ });
+});
+$('restoreVariant').addEventListener('click',()=>{
+ const v=currentVariant();if(!v||!confirm('Variante „'+v.name+'“ laden? Die aktuelle Planung wird ersetzt, bleibt aber über Rückgängig erreichbar.'))return;
+ const snapshot=JSON.parse(JSON.stringify(v.snapshot)),all=project.variants;
+ change(()=>{
+ project=validProject({...snapshot,variants:all});
+ wallId='SW1';holeId=null;cableId=project.cables[0]?.id||null;
+ supportId=project.supports[0]?.id||null;panelKey='OLA-floor';filter='all';
+ });
+});
+$('deleteVariant').addEventListener('click',()=>{
+ const v=currentVariant();if(!v||!confirm('Variante „'+v.name+'“ löschen?'))return;
+ change(()=>{project.variants=project.variants.filter(x=>x.id!==v.id);variantId=project.variants[0]?.id||null;});
+});
+
 for(const k of ['ola','ms']){const key=k.toUpperCase();
  $(k+'Visible').addEventListener('change',()=>change(()=>{project.enclosures[key].visible=$(k+'Visible').checked;}));
  $(k+'Opacity').addEventListener('input',()=>{$(k+'OpacityText').textContent=$(k+'Opacity').value+' %';});
@@ -619,7 +685,8 @@ $('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];i
 $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung starten? Die vorherige Planung bleibt über Rückgängig erreichbar.'))return;
  change(()=>{project=demo();project.name='Neue Schachtwandplanung';project.cables=[];
  project.walls.forEach(w=>{w.holes=[];w.rows=3;w.cols=4;});
- wallId='SW1';holeId=null;cableId=null;filter='all';viewMode='3D';});});
+ wallId='SW1';holeId=null;cableId=null;filter='all';viewMode='3D';
+ panelKey='OLA-floor';supportId=null;variantId=null;});});
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
 function resize(){const rect=$('scene').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();draw2D();}
 new ResizeObserver(resize).observe($('viewport'));
