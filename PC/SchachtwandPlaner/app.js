@@ -82,6 +82,21 @@ function change(fn){undo.push(JSON.stringify(project));if(undo.length>80)undo.sh
 function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;}
 function wallSpanMm(id){return id==='SW1'||id==='SW3'?project.dims.d:project.dims.w;}
+function geometryWarnings(){
+ let overlaps=0,edges=0;
+ for(const w of project.walls){
+ const span=wallSpanMm(w.id),height=project.dims.h;
+ for(let i=0;i<w.holes.length;i++){
+ const a=w.holes[i],ax=a.u*span,ay=a.v*height,ar=(a.dn||70)/2;
+ if(ax-ar<0||ax+ar>span||ay-ar<0||ay+ar>height)edges++;
+ for(let j=0;j<i;j++){
+ const b=w.holes[j],dx=ax-b.u*span,dy=ay-b.v*height;
+ if(Math.hypot(dx,dy)<ar+(b.dn||70)/2)overlaps++;
+ }
+ }
+ }
+ return {overlaps,edges};
+}
 function holeText(w,h){return w.id+' · '+(h.row?'Reihe '+h.row+', Öffnung '+h.col:'Frei platziert');}
 function referenceText(r){if(!r)return 'Nicht zugeordnet';const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holeText(w,h):'Nicht zugeordnet';}
 function hueGroup(color){
@@ -125,6 +140,11 @@ function renderUI(){
  $('viewTabs').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.view===viewMode));
  const count=project.walls.reduce((s,w)=>s+w.holes.length,0);
  $('sceneStats').textContent=project.walls.length+' Wände · '+count+' Öffnungen · '+project.cables.length+' Kabel';
+ const problems=geometryWarnings();
+ $('collisionInfo').textContent=(problems.overlaps||problems.edges?'⚠ Geometrischer Hinweis: ':'✓ Geometrie: ')+
+ problems.overlaps+' überlappende Rohrpaare, '+problems.edges+' Randüberschreitungen.'+
+ ' Keine DIN-, VDE- oder Brandschutzprüfung.';
+ $('collisionInfo').style.background=problems.overlaps||problems.edges?'#fff1e7':'#edf8f1';
  $('viewInfo').textContent=project.name;$('undo').disabled=!undo.length;$('redo').disabled=!redo.length;
 }
 const scene=new THREE.Scene();scene.background=new THREE.Color('#edf2f4');
@@ -177,8 +197,7 @@ function createLabel(text,pos){const c=document.createElement('canvas');c.width=
  sprite.position.copy(pos);sprite.scale.set(.5,.14,1);models.add(sprite);}
 
 function holePosition(wid,h){
- const s=sizes(),span=(wid==='SW1'||wid==='SW3')?s.d:s.w,r=openingRadius(h),margin=Math.min(.49,r/span);
- const u=clamp(h.u,margin,1-margin),y=s.h*clamp(h.v,Math.min(.49,r/s.h),1-Math.min(.49,r/s.h));
+ const s=sizes(),u=clamp(h.u,0,1),y=s.h*clamp(h.v,0,1);
  if(wid==='SW1')return new THREE.Vector3(-s.w/2+.024,y,-s.d/2+s.d*u);
  if(wid==='SW2')return new THREE.Vector3(-s.w/2+s.w*u,y,-s.d/2+.024);
  if(wid==='SW3')return new THREE.Vector3(s.w/2-.024,y,-s.d/2+s.d*u);
@@ -218,9 +237,13 @@ function drawWalls(){
  const span=(w.id==='SW2'||w.id==='SW4')?s.w:s.d,half=span/2;
  const shape=new THREE.Shape();
  shape.moveTo(-half,0);shape.lineTo(half,0);shape.lineTo(half,s.h);shape.lineTo(-half,s.h);shape.closePath();
+ const included=[];
  for(const h of w.holes){
- const p=holePosition(w.id,h),u=(w.id==='SW2'||w.id==='SW4')?p.x:p.z;
- const path=new THREE.Path();path.absarc(u,p.y,openingRadius(h),0,Math.PI*2,true);shape.holes.push(path);
+ const p=holePosition(w.id,h),u=(w.id==='SW2'||w.id==='SW4')?p.x:p.z,r=openingRadius(h);
+ if(u-r< -half||u+r>half||p.y-r<0||p.y+r>s.h)continue;
+ if(included.some(v=>Math.hypot(v.u-u,v.y-p.y)<v.r+r))continue;
+ const path=new THREE.Path();path.absarc(u,p.y,r,0,Math.PI*2,true);shape.holes.push(path);
+ included.push({u,y:p.y,r});
  }
  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:w.thickness/1000,bevelEnabled:false,curveSegments:12,steps:1}),
  material(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4',op));
