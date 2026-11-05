@@ -531,7 +531,7 @@ fun PersonalReviewScreen(
                             Text("Ein Eintrag kann mehrere Wörter enthalten. Gezählt wird nur, was du selbst ausgewählt hast – nicht, wie oft du etwas erlebt hast.",
                                 style = MaterialTheme.typography.bodySmall)
                             OutlinedButton(
-                                onClick = { scope.launch { listState.animateScrollToItem(3) } },
+                                onClick = { scope.launch { listState.animateScrollToItem(4) } },
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("review-jump-patterns")
                             ) { Text("Zu gemeinsam ausgewählten Begriffen") }
