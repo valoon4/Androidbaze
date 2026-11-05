@@ -519,7 +519,16 @@ fun PersonalReviewScreen(
                             item(key = "weekly-evidence-heading-${week.firstDay}") {
                                 Text(
                                     if (term == null) "Einträge dieser Woche"
-                                    else "Einträge zu diesem Begriff in dieser Woche",
+                                    else {
+                                        val name = when (term.first) {
+                                            "emotion" -> emotions.find(term.second)?.name
+                                                ?: "Unbekannter Gefühlsbegriff"
+                                            "need" -> needs.find(term.second)?.name
+                                                ?: "Unbekanntes Bedürfnis"
+                                            else -> "Begriff"
+                                        }
+                                        "Einträge mit „$name“ in dieser Woche"
+                                    },
                                     style = MaterialTheme.typography.titleMedium,
                                     modifier = Modifier.semantics { heading() }
                                         .testTag("weekly-review-evidence-heading")
@@ -665,7 +674,50 @@ fun PersonalReviewScreen(
                             Text("Ein Eintrag kann mehrere Wörter enthalten. Gezählt wird nur, was du selbst ausgewählt hast – nicht, wie oft du etwas erlebt hast.",
                                 style = MaterialTheme.typography.bodySmall)
                             OutlinedButton(
-                                onClick = { scope.launch { listState.animateScrollToItem(4) } },
+                                onClick = {
+                                    // The optional calendar/weekly list can insert
+                                    // extra lazy items ahead of the pattern section.
+                                    // Jump to the real heading, not a fixed index.
+                                    val calendarExtras = if (diaryCalendarState.expanded) {
+                                        if (diaryCalendarState.selectedDate != null)
+                                            diaryCalendarState.selectedDate?.let {
+                                                diaryCalendarMonth?.day(it)?.entryCount
+                                            } ?: 0
+                                        else if (!supportsCalendarGrid ||
+                                            diaryCalendarState.listRequested)
+                                            diaryCalendarMonth?.days?.size ?: 0
+                                        else 0
+                                    } else 0
+                                    val weeklyExtras = if (weeklyState.expanded &&
+                                        weeklyMonth != null) {
+                                        val selected = weeklyState.selectedWeekStart?.let {
+                                            weeklyMonth.week(it)
+                                        }
+                                        val termItems = if (selected != null &&
+                                            weeklyState.showAllTerms)
+                                            selected.emotionCounts.size + selected.needCounts.size
+                                        else 0
+                                        val evidenceItems = if (selected != null &&
+                                            weeklyState.showEvidence && selected.entryCount > 0) {
+                                            val term = weeklyState.evidenceTerm
+                                            1 + when (term?.first) {
+                                                "emotion" -> selected.emotionCounts.firstOrNull {
+                                                    it.termId == term.second
+                                                }?.journalIds?.size ?: 0
+                                                "need" -> selected.needCounts.firstOrNull {
+                                                    it.termId == term.second
+                                                }?.journalIds?.size ?: 0
+                                                else -> selected.entryCount
+                                            }
+                                        } else 0
+                                        weeklyMonth.weeks.size + termItems + evidenceItems
+                                    } else 0
+                                    scope.launch {
+                                        listState.animateScrollToItem(
+                                            5 + calendarExtras + weeklyExtras
+                                        )
+                                    }
+                                },
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("review-jump-patterns")
                             ) { Text("Zu gemeinsam ausgewählten Begriffen") }
