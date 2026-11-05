@@ -1,0 +1,32 @@
+'use strict';
+const assert=require('node:assert/strict');
+const m=require('../components.js');
+const dims={w:2400,d:1900,h:2100};
+const e=m.normalizeEnclosures({},dims);
+assert.equal(e.OLA.panels.length,6);
+assert.equal(e.MS.panels.length,6);
+const ids=e.OLA.panels.map(p=>p.id);
+assert.equal(new Set(ids).size,6);
+let geo=m.panelGeometry(e.OLA,e.OLA.panels[0]);
+assert.equal(geo.h,24);
+assert.equal(geo.w,e.OLA.bounds.w);
+e.OLA.panels[0].offset=45;e.OLA.panels[0].thickness=42;
+geo=m.panelGeometry(e.OLA,e.OLA.panels[0]);assert.equal(geo.h,42);
+const saved=m.normalizeEnclosures(JSON.parse(JSON.stringify(e)),dims);
+assert.equal(saved.OLA.panels[0].offset,45);
+assert.equal(saved.OLA.panels[0].thickness,42);
+assert.equal(saved.OLA.panels[0].id,'OLA-floor');
+const support=m.newSupport(dims,'SUP-001');
+const roundtrip=m.normalizeSupports([support],dims);
+assert.deepEqual(roundtrip[0],support);
+const fake={name:'Test',dims,walls:[{id:'SW1',holes:[{id:'one'}]}],cables:[{id:'a'}],
+ enclosures:e,supports:[support],variants:[{id:'rec'}]};
+const snap=m.snapshot(fake);assert.equal(snap.variants,undefined);
+const variants=m.normalizeVariants([{id:'v1',name:'Referenz',createdAt:'2026-11-05',snapshot:snap},
+ {id:'v1',name:'Duplikat',snapshot:snap}]);
+assert.equal(variants.length,1);
+assert.deepEqual(variants[0].snapshot,snap);
+assert.ok(m.differences(snap,{...snap,cables:[]}).some(x=>x.includes('kabel')));
+const coll=m.potentialBlockages({...fake,showBox:true,walls:[{id:'SW1',holes:[{id:'wrong',u:.5,v:.5,dn:70}]}]},'OLA');
+assert.ok(Array.isArray(coll));
+console.log('OK – plate geometry, six faces, plate persistence, supports, variants and comparison');
