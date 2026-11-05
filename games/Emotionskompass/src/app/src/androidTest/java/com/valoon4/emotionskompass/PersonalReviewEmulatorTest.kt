@@ -289,6 +289,10 @@ class PersonalReviewEmulatorTest {
                 SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
         ).performScrollToNode(hasText("0 gespeicherte Einträge"))
         rule.onNodeWithText("0 gespeicherte Einträge").assertExists()
+        rule.onNode(
+            hasScrollToIndexAction() and
+                SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        ).performScrollToNode(hasText("In diesem Zeitraum gibt es noch keine Einträge."))
         rule.onNodeWithText("In diesem Zeitraum gibt es noch keine Einträge.").assertExists()
         rule.onNode(
             hasScrollToIndexAction() and
@@ -376,7 +380,7 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithTag("diary-calendar-day-${month.atDay(4)}")
             .assertHeightIsAtLeast(48.dp).performClick()
         rule.onNodeWithTag("diary-calendar-selected-count")
-            .assertTextContains("2 gespeicherte Einträge")
+            .assertTextContains("2 gespeicherte Einträge", substring = true)
         rule.onNode(scroller).performScrollToNode(
             hasTestTag("diary-calendar-entry-calendar-two"))
         rule.onNodeWithTag("diary-calendar-entry-calendar-two").performClick()
@@ -410,7 +414,7 @@ class PersonalReviewEmulatorTest {
             hasTestTag("diary-calendar-day-2027-01-02"))
         rule.onNodeWithTag("diary-calendar-day-2027-01-02").performClick()
         rule.onNodeWithTag("diary-calendar-selected-count")
-            .assertTextContains("0 gespeicherte Einträge")
+            .assertTextContains("0 gespeicherte Einträge", substring = true)
         rule.onNodeWithText("Daraus lässt sich nichts über dein Erleben ableiten.",
             substring = true).assertExists()
         rule.onNodeWithTag("diary-calendar-back-to-month").performClick()
@@ -481,7 +485,7 @@ class PersonalReviewEmulatorTest {
         rule.onNode(scroller).performScrollToNode(
             hasTestTag("diary-calendar-selected-count"))
         rule.onNodeWithTag("diary-calendar-selected-count")
-            .assertTextContains("2 gespeicherte Einträge")
+            .assertTextContains("2 gespeicherte Einträge", substring = true)
     }
 
     @Test fun unavailableJournalNeverPretendsToBeEmptyAndCustomRangeCanBeChosen() {
