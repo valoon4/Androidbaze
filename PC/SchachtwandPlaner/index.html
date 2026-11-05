@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
+<title>Schachtwand Planer</title>
+<style>
+:root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#222c38;background:#f1f4f6;font-size:13px}*{box-sizing:border-box}
+body{margin:0;overflow:hidden}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+#app{display:grid;grid-template-columns:304px minmax(340px,1fr) 342px;grid-template-rows:65px minmax(0,1fr);height:100vh;min-height:550px}
+header{grid-column:1/4;background:#fff;border-bottom:1px solid #dfe6eb;display:flex;align-items:center;padding:0 24px;gap:18px;z-index:3}
+.mark{width:35px;height:35px;border-radius:11px;background:#183e45;color:#c1f7d6;display:grid;place-items:center;font-size:21px;font-weight:800}
+.brand{font-size:15px;font-weight:800;letter-spacing:-.4px}.subtitle{font-size:11px;color:#7b8996;margin-top:3px}
+.header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}.pill{border-radius:99px;background:#ebf8ef;color:#32815e;padding:7px 11px;font-size:11px}
+.sidebar{background:#fff;overflow:auto;padding:20px 18px 35px;border-right:1px solid #e0e7eb}.sidebar.right{border-right:0;border-left:1px solid #e0e7eb}
+.section{margin-bottom:23px;padding-bottom:19px;border-bottom:1px solid #eef1f3}.section:last-child{border:0}
+.eyebrow{color:#8c9aa4;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;margin-bottom:8px}
+h2{font-size:18px;margin:0 0 15px;letter-spacing:-.7px}h3{font-size:12px;letter-spacing:.1px;margin:0 0 12px;color:#3c4c58}
+.small{font-size:11px;color:#8a98a5;line-height:1.5}.muted{color:#8a98a5}
+label.field{display:block;margin:12px 0 0;color:#5f7180;font-size:11px;font-weight:700}
+.field input,.field select,.selector,.txt{display:block;margin-top:6px;width:100%;height:35px;padding:0 10px;border:1px solid #dce5ea;background:white;border-radius:8px;color:#20303b;outline:0}
+.field input:focus,.field select:focus,.selector:focus{border-color:#478a79;box-shadow:0 0 0 2px #d7efe5}
+.row{display:flex;align-items:center;gap:8px}.row>*{min-width:0}.row .field{flex:1}.row .field input{width:100%}
+.btn{border:1px solid #d8e1e6;background:#fff;padding:9px 12px;color:#344553;border-radius:9px;font-weight:650;transition:.12s}.btn:hover{background:#f3f8f7}
+.btn.primary{background:#163e42;color:white;border-color:#163e42}.btn.primary:hover{background:#255d59}
+.btn.soft{background:#ebf6f0;border-color:#d3eadc;color:#26694f}.btn.danger{color:#af4450;border-color:#f1d6d9}
+.btn.tiny{padding:6px 9px;font-size:11px}.btn.full{width:100%}.spread{justify-content:space-between}
+.wall-card{border:1px solid #e2e8ec;border-radius:12px;padding:12px 13px;margin:8px 0;cursor:pointer;background:#fff}
+.wall-card.active{border-color:#73ad97;background:#f3faf5;box-shadow:0 0 0 1px #bfe5cc}
+.wall-card b{font-size:12px}.wall-card .small{margin-top:5px}
+.dot{height:7px;width:7px;background:#68a989;border-radius:50%;display:inline-block;margin-right:7px}
+.chip{border:1px solid #d8e2e7;background:#fff;border-radius:7px;padding:7px 10px;font-size:11px;white-space:nowrap}
+.chip.active{background:#245950;border-color:#245950;color:white}
+.tabs{display:flex;gap:7px;flex-wrap:wrap}
+.hint{border-radius:10px;background:#edf4f5;color:#557078;padding:11px;font-size:11px;line-height:1.55;margin-top:12px}
+#viewport{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#fff 0%,#edf2f4 65%,#e5ecef 100%)}
+#scene{height:100%;width:100%;display:block;touch-action:none;cursor:grab}
+#scene.dragging{cursor:grabbing}#scene.placing{cursor:crosshair}
+.view-top{pointer-events:none;position:absolute;top:19px;left:24px;right:23px;display:flex;justify-content:space-between;align-items:start}
+.view-head{background:#ffffffdc;border:1px solid #e6eff2;padding:11px 14px;border-radius:12px;box-shadow:0 8px 26px #75909715}
+.view-head strong{display:block;font-size:13px;margin-bottom:4px}.view-head span{font-size:11px;color:#7b8d9a}
+.view-controls{display:flex;gap:7px;pointer-events:auto}
+.float{border:1px solid #e0e7eb;border-radius:10px;background:#ffffffde;box-shadow:0 5px 18px #536c7915;padding:8px 12px}
+.view-foot{position:absolute;bottom:22px;left:24px;right:24px;display:flex;align-items:end;justify-content:space-between;gap:8px;pointer-events:none}
+.view-foot>*{pointer-events:auto}.kbd{font-size:11px;color:#6e8290;line-height:1.6}
+#tooltip{pointer-events:none;position:absolute;display:none;background:#1a3842;color:white;padding:7px 10px;border-radius:7px;font-size:11px;z-index:2;white-space:nowrap}
+.cable{display:flex;align-items:center;gap:11px;border:1px solid #e0e8ea;border-radius:10px;padding:11px;margin:8px 0;cursor:pointer}
+.cable.active{background:#f2f9f5;border-color:#7fbaa0}.swatch{width:27px;height:5px;border-radius:99px;flex:none}
+.cable-name{font-size:12px;font-weight:700}.cable-path{font-size:10px;color:#91a1aa;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{font-size:10px;background:#edf1f4;border-radius:99px;padding:4px 7px;color:#8294a0}
+input[type="range"]{width:100%;accent-color:#4a927c}input[type="color"]{width:49px;height:34px;border:1px solid #dfe7eb;padding:3px;border-radius:8px;background:white;cursor:pointer}
+hr{border:0;border-top:1px solid #e9eff1;margin:17px 0}
+#empty-cable{border:1px dashed #cbd7db;border-radius:12px;text-align:center;padding:23px 12px;color:#8499a4;line-height:1.6}
+a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
+@media(max-width:1020px){#app{grid-template-columns:250px minmax(320px,1fr) 290px}.sidebar{padding:16px 12px}header{padding:0 13px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+<div class="mark">◉</div><div><div class="brand">Schachtwand Planer <span style="color:#87a99b">3D</span></div><div class="subtitle">Leerrohre · Kabel · Schachtwände</div></div>
+<div class="header-actions">
+<span id="saveStatus" class="pill">● Lokal gespeichert</span>
+<button id="undo" class="btn tiny" title="Rückgängig (Strg+Z)">↶</button><button id="redo" class="btn tiny" title="Wiederholen (Strg+Y)">↷</button>
+<button id="newProject" class="btn">Neu</button><button id="openProject" class="btn">Öffnen</button>
+<button id="saveProject" class="btn primary">↓ Projekt speichern</button><input id="fileInput" type="file" accept=".json,application/json" hidden>
+</div>
+</header>
+<aside class="sidebar">
+<section class="section"><div class="eyebrow">Projektkonfiguration</div>
+<label class="field">Projektname<input id="projectName" maxlength="80"></label>
+<div class="row"><label class="field">Breite (mm)<input type="number" id="width" min="600" max="12000" step="100"></label><label class="field">Tiefe (mm)<input type="number" id="depth" min="600" max="12000" step="100"></label></div>
+<label class="field">Höhe (mm)<input type="number" id="height" min="600" max="8000" step="100"></label>
+<div class="small" style="margin-top:10px">Maße sind Modellangaben, keine statische oder elektrotechnische Prüfung.</div>
+</section>
+<section class="section"><div class="eyebrow">Baugruppe</div><h2>Schachtwände</h2>
+<div id="wallList"></div>
+<div style="margin-top:13px"><h3 id="wallTitle">SW1 · Konfiguration</h3>
+<div class="row"><label class="field">Reihen<input id="rows" type="number" min="1" max="20"></label><label class="field">Öffnungen / Reihe<input id="cols" type="number" min="1" max="20"></label></div>
+<div class="row" style="margin-top:11px"><button id="generate" class="btn soft full">Raster neu erstellen</button><button id="toggleWall" class="btn tiny">Sichtbar</button></div>
+</div>
+</section>
+<section class="section"><div class="eyebrow">Werkzeuge</div>
+<div class="tabs" id="modeButtons">
+<button class="chip active" data-mode="orbit">↻ Drehen</button><button class="chip" data-mode="add">＋ Leerrohr</button><button class="chip" data-mode="move">↔ Versetzen</button>
+</div>
+<div class="hint" id="modeHint">Modell mit der Maus drehen, mit dem Mausrad zoomen. Öffnungen oder Kabel anklicken, um sie zu bearbeiten.</div>
+<div id="holeEditor" style="display:none">
+<hr><h3 id="holeTitle">Ausgewähltes Leerrohr</h3>
+<div class="row"><label class="field">Horizontal (%)<input type="number" id="holeU" min="0" max="100" step="1"></label><label class="field">Vertikal (%)<input type="number" id="holeV" min="0" max="100" step="1"></label></div>
+<div class="row" style="margin-top:11px"><button id="applyHole" class="btn soft full">Position übernehmen</button><button id="deleteHole" class="btn danger">Entfernen</button></div>
+</div>
+</section>
+<section class="section"><div class="eyebrow">Ansicht</div>
+<div class="row spread"><label for="opacity">Wanddeckkraft</label><b id="opacityText">55 %</b></div><input id="opacity" type="range" min="10" max="100" step="5">
+<div class="row" style="margin-top:12px"><label><input id="showBox" type="checkbox" checked> OLA-Kasten anzeigen</label></div>
+<div class="row" style="margin-top:10px"><label><input id="showLabels" type="checkbox" checked> Wandbeschriftungen</label></div>
+</section>
+</aside>
+<main id="viewport"><canvas id="scene"></canvas><div id="tooltip"></div>
+<div class="view-top"><div class="view-head"><strong>3D-Installationsübersicht</strong><span id="viewInfo">Leerrohre und Kabelverläufe</span></div>
+<div class="view-controls"><button id="resetView" class="float" title="Ansicht zurücksetzen">⌖ Ansicht</button><button id="exportPng" class="float" title="Bild exportieren">↧ PNG</button></div></div>
+<div class="view-foot"><div class="float kbd">🖱 Ziehen: drehen · Mausrad: zoomen<br>● Öffnung: anklicken · Weißer Griff: Kabelanschluss ziehen</div><div class="float kbd" id="sceneStats">—</div></div>
+</main>
+<aside class="sidebar right">
+<section class="section"><div class="eyebrow">Belegung bearbeiten</div>
+<div class="row spread"><h2 style="margin:0">Deine Kabel</h2><button id="addCable" class="btn primary tiny">＋ Kabel</button></div>
+<p class="small">Kabel auswählen und Anschlüsse per Dropdown oder über die weißen Griffe im 3D-Modell zuordnen.</p>
+<div class="tabs" id="cableFilters"><button class="chip active" data-filter="all">Alle</button><button class="chip" data-filter="red">Rot</button><button class="chip" data-filter="green">Grün</button><button class="chip" data-filter="blue">Blau</button><button class="chip" data-filter="yellow">Gelb</button></div>
+<div id="cableList" style="margin-top:13px"></div>
+</section>
+<section class="section" id="cableEditor"><div class="eyebrow">Ausgewähltes Kabel</div>
+<div id="empty-cable">Wähle ein Kabel aus oder lege ein neues an.</div>
+<div id="cableForm" hidden>
+<label class="field">Bezeichnung<input id="cableName" maxlength="80"></label>
+<div class="row"><label class="field" style="flex:1">Farbe</label><input id="cableColor" type="color"></div>
+<label class="field">A · Anschluss<select id="cableA" class="selector"></select></label>
+<label class="field">B · Anschluss<select id="cableB" class="selector"></select></label>
+<div class="row" style="margin-top:15px"><button id="swapCable" class="btn soft full">⇄ A / B tauschen</button><button id="deleteCable" class="btn danger">Löschen</button></div>
+</div>
+</section>
+<section class="section"><div class="eyebrow">Projektdateien</div><h3>Offline & lokal</h3>
+<div class="small">Alle Änderungen werden lokal gespeichert. Mit „Projekt speichern“ entsteht eine JSON-Datei, die du später wieder öffnen kannst. „PNG“ exportiert die 3D-Ansicht.</div>
+</section>
+</aside>
+</div>
+<script src="vendor/three.min.js"></script><script src="app.js"></script>
+</body>
+</html>
