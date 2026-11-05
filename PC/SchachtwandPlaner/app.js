@@ -129,6 +129,7 @@ function renderUI(){
 }
 const scene=new THREE.Scene();scene.background=new THREE.Color('#edf2f4');
 const camera=new THREE.PerspectiveCamera(42,1,.015,200);
+const orthoCamera=new THREE.OrthographicCamera(-2,2,2,-2,.01,200);let activeCamera=camera;
 const renderer=new THREE.WebGLRenderer({canvas:$('scene'),antialias:true,preserveDrawingBuffer:true,alpha:false});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
 renderer.setClearColor('#edf2f4');
@@ -138,11 +139,35 @@ const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(-4,8,6);sc
 scene.add(new THREE.AmbientLight(0xffffff,.3));
 const models=new THREE.Group();scene.add(models);
 const hitObjects=[],wallObjects=[],raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
-let azimuth=.72,elevation=.42,zoom=1.0;
+let azimuth=.72,elevation=.42,zoom=1.0,viewMode='3D';
 const sizes=()=>({w:project.dims.w/1000,d:project.dims.d/1000,h:project.dims.h/1000});
-function view(){const d=sizes(),r=Math.max(d.w,d.d,d.h)*1.7*zoom,t=new THREE.Vector3(0,d.h*.48,0);
- camera.position.set(r*Math.sin(azimuth)*Math.cos(elevation),t.y+r*Math.sin(elevation),r*Math.cos(azimuth)*Math.cos(elevation));
- camera.lookAt(t);camera.updateProjectionMatrix();}
+function view(){
+ const d=sizes(),aspect=Math.max(.3,$('viewport').clientWidth/Math.max(1,$('viewport').clientHeight));
+ if(viewMode==='3D'){
+ activeCamera=camera;
+ const r=Math.max(d.w,d.d,d.h)*1.7*zoom,t=new THREE.Vector3(0,d.h*.48,0);
+ camera.position.set(r*Math.sin(azimuth)*Math.cos(elevation),t.y+r*Math.sin(elevation),
+ r*Math.cos(azimuth)*Math.cos(elevation));camera.lookAt(t);camera.updateProjectionMatrix();
+ }else{
+ activeCamera=orthoCamera;
+ let span=d.w,target=new THREE.Vector3(0,d.h/2,0),pos=new THREE.Vector3(0,d.h+8,0);
+ orthoCamera.up.set(0,1,0);
+ if(viewMode==='Oben'||viewMode==='Bodenplatten'){
+ span=d.w;target.set(0,d.h*.45,0);pos.set(0,d.h+8,0);orthoCamera.up.set(0,0,-1);
+ }else{
+ span=viewMode==='SW1'||viewMode==='SW3'?d.d:d.w;
+ if(viewMode==='SW1'){pos.set(d.w/2+4,d.h/2,0);target.set(-d.w/2,d.h/2,0);}
+ if(viewMode==='SW3'){pos.set(-d.w/2-4,d.h/2,0);target.set(d.w/2,d.h/2,0);}
+ if(viewMode==='SW2'){pos.set(0,d.h/2,d.d/2+4);target.set(0,d.h/2,-d.d/2);}
+ if(viewMode==='SW4'){pos.set(0,d.h/2,-d.d/2-4);target.set(0,d.h/2,d.d/2);}
+ }
+ const neededHeight=Math.max((span*1.38)/aspect,
+ (viewMode==='Oben'||viewMode==='Bodenplatten'?d.d:d.h)*1.35)*zoom;
+ orthoCamera.left=-neededHeight*aspect/2;orthoCamera.right=neededHeight*aspect/2;
+ orthoCamera.top=neededHeight/2;orthoCamera.bottom=-neededHeight/2;
+ orthoCamera.position.copy(pos);orthoCamera.lookAt(target);orthoCamera.updateProjectionMatrix();
+ }
+}
 function disposeModel(){models.traverse(obj=>{if(obj.geometry)obj.geometry.dispose();if(obj.material){const a=Array.isArray(obj.material)?obj.material:[obj.material];a.forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});models.clear();hitObjects.length=0;wallObjects.length=0;}
 function material(color,opacity=1){return new THREE.MeshStandardMaterial({color,roughness:.8,metalness:.05,transparent:opacity<1,opacity,side:THREE.DoubleSide,depthWrite:opacity>=1});}
 function box(w,h,d,x,y,z,col,opacity=1){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material(col,opacity));m.position.set(x,y,z);models.add(m);return m;}
@@ -187,7 +212,7 @@ function drawWalls(){
  const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
  floor.position.y=-.096;models.add(floor);
  for(const w of project.walls){
- if(!w.visible)continue;
+ if(!w.visible||(viewMode.startsWith('SW')&&w.id!==viewMode))continue;
  const span=(w.id==='SW2'||w.id==='SW4')?s.w:s.d,half=span/2;
  const shape=new THREE.Shape();
  shape.moveTo(-half,0);shape.lineTo(half,0);shape.lineTo(half,s.h);shape.lineTo(-half,s.h);shape.closePath();
@@ -226,7 +251,7 @@ function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);
 function renderAll(){fixSelection();renderUI();rebuild();}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
- raycaster.setFromCamera(pointer,camera);return raycaster.intersectObjects(targets,false)[0]||null;}
+ raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
 function wallCoords(wid,p){const s=sizes(),u=(wid==='SW2'||wid==='SW4')?(p.x/s.w+.5):p.z/s.d+.5;
  return {u:clamp((u-.1)/.8,0,1),v:clamp((p.y/s.h-.12)/.76,0,1)};}
 function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
@@ -238,7 +263,7 @@ canvas.addEventListener('pointerdown',e=>{
  if(obj.type==='handle'){grab={type:'handle',id:obj.id,end:obj.end};return;}
  if(obj.type==='hole'){wallId=obj.wall;holeId=obj.hole;renderAll();if(mode==='move')grab={type:'move',wall:obj.wall,hole:obj.hole,changed:false};return;}
  if(obj.type==='cable'){cableId=obj.id;filter='all';renderAll();return;}
- grab={type:'orbit',x:e.clientX,y:e.clientY};canvas.classList.add('dragging');
+ if(viewMode==='3D'){grab={type:'orbit',x:e.clientX,y:e.clientY};canvas.classList.add('dragging');}
 });
 canvas.addEventListener('pointermove',e=>{
  if(grab?.type==='orbit'){azimuth-=(e.clientX-grab.x)*.006;elevation=clamp(elevation+(e.clientY-grab.y)*.005,-.08,1.45);grab.x=e.clientX;grab.y=e.clientY;view();return;}
@@ -318,6 +343,10 @@ $('opacity').addEventListener('input',()=>{$('opacityText').textContent=$('opaci
 $('showBox').addEventListener('change',()=>change(()=>project.showBox=$('showBox').checked));
 $('showLabels').addEventListener('change',()=>change(()=>project.showLabels=$('showLabels').checked));
 $('resetView').addEventListener('click',()=>{azimuth=.72;elevation=.42;zoom=1;view();});
+$('viewTabs').addEventListener('click',e=>{
+ const b=e.target.closest('[data-view]');if(!b)return;
+ viewMode=b.dataset.view;zoom=1;renderAll();
+});
 $('undo').addEventListener('click',()=>undoRedo(true));$('redo').addEventListener('click',()=>undoRedo(false));
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undoRedo(!e.shiftKey);}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();undoRedo(false);}});
 function download(name,data,type){const blob=data instanceof Blob?data:new Blob([data],{type}),href=URL.createObjectURL(blob),a=document.createElement('a');a.href=href;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),1500);}
@@ -329,9 +358,9 @@ $('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];i
  catch(ex){alert('Projektdatei konnte nicht geladen werden: '+ex.message);}e.target.value='';});
 $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung starten? Die vorherige Planung bleibt über Rückgängig erreichbar.'))return;
  change(()=>{project=demo();project.name='Neue Schachtwandplanung';project.cables=[];wallId='SW1';holeId=null;cableId=null;filter='all';});});
-$('exportPng').addEventListener('click',()=>{renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
+$('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
 function resize(){const rect=$('viewport').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();}
 new ResizeObserver(resize).observe($('viewport'));
-function animate(){requestAnimationFrame(animate);renderer.render(scene,camera);}
+function animate(){requestAnimationFrame(animate);renderer.render(scene,activeCamera);}
 renderAll();persist();resize();animate();
 })();
