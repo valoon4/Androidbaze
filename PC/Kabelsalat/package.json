@@ -1,6 +1,6 @@
 {
   "name": "kabelsalat",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Kabelsalat – Offline-Editor für Schächte, Leerrohre und Kabel in 2D/3D",
   "main": "main.js",
   "author": "Eugi",
@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node --check main.js && node --check app.js && node tests/smoke.test.js",
+    "test": "node --check main.js && node --check editor2d.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js",
     "dist:win": "electron-builder --win portable --x64 --publish never"
   },
   "devDependencies": {
@@ -22,6 +22,7 @@
     "files": [
       "index.html",
       "app.js",
+      "editor2d.js",
       "main.js",
       "vendor/three.min.js",
       "package.json"
