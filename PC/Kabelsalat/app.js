@@ -397,7 +397,7 @@ draft.addEventListener('pointermove',e=>{
 function finishDraftDrag(){if(draftDrag?.changed){renderAll();persist();}draftDrag=null;}
 draft.addEventListener('pointerup',finishDraftDrag);
 draft.addEventListener('pointercancel',finishDraftDrag);
-$('draftWallSelect').addEventListener('change',e=>{wallId=e.target.value;holeId=null;renderAll();});
+$('draftWallSelect').addEventListener('change',e=>{wallId=e.target.value;holeId=null;if(viewMode.startsWith('SW'))viewMode='3D';renderAll();});
 $('draftCopy').addEventListener('click',copySelectedHole);
 $('copyHole').addEventListener('click',copySelectedHole);
 $('draftAdd').addEventListener('click',()=>{mode='add';renderUI();});
@@ -456,7 +456,7 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('pointercancel',()=>{grab=null;canvas.classList.remove('dragging');renderAll();});
 canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=clamp(zoom*(e.deltaY>0?1.11:.9),.45,4);view();},{passive:false});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
-$('wallList').addEventListener('click',e=>{const card=e.target.closest('[data-wall]');if(card){wallId=card.dataset.wall;holeId=null;renderAll();}});
+$('wallList').addEventListener('click',e=>{const card=e.target.closest('[data-wall]');if(card){wallId=card.dataset.wall;holeId=null;if(viewMode.startsWith('SW'))viewMode='3D';renderAll();}});
 $('generate').addEventListener('click',()=>{
  const w=wall(),rows=clamp(Number($('rows').value)||w.rows,1,20),cols=clamp(Number($('cols').value)||w.cols,1,20);
  const affected=project.cables.some(c=>c.a?.wall===w.id||c.b?.wall===w.id);
@@ -515,7 +515,7 @@ $('showLabels').addEventListener('change',()=>change(()=>project.showLabels=$('s
 $('resetView').addEventListener('click',()=>{azimuth=.72;elevation=.42;zoom=1;view();});
 $('viewTabs').addEventListener('click',e=>{
  const b=e.target.closest('[data-view]');if(!b)return;
- viewMode=b.dataset.view;zoom=1;renderAll();
+ viewMode=b.dataset.view;if(viewMode.startsWith('SW')){wallId=viewMode;holeId=null;}zoom=1;renderAll();
 });
 $('undo').addEventListener('click',()=>undoRedo(true));$('redo').addEventListener('click',()=>undoRedo(false));
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undoRedo(!e.shiftKey);}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();undoRedo(false);}});
