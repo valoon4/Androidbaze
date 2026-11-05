@@ -276,11 +276,11 @@ const camera=new THREE.PerspectiveCamera(42,1,.015,200);
 const orthoCamera=new THREE.OrthographicCamera(-2,2,2,-2,.01,200);let activeCamera=camera;
 const renderer=new THREE.WebGLRenderer({canvas:$('scene'),antialias:true,preserveDrawingBuffer:true,alpha:false});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-renderer.setClearColor('#edf2f4');
+renderer.setClearColor('#e2edf1');
 if('outputColorSpace' in renderer)renderer.outputColorSpace=THREE.SRGBColorSpace;
-scene.add(new THREE.HemisphereLight(0xffffff,0xb1bbc4,2.4));
-const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(-4,8,6);scene.add(light);
-scene.add(new THREE.AmbientLight(0xffffff,.3));
+scene.add(new THREE.HemisphereLight(0xffffff,0xa3b4bf,1.35));
+const light=new THREE.DirectionalLight(0xffffff,1.1);light.position.set(-4,8,6);scene.add(light);
+scene.add(new THREE.AmbientLight(0xffffff,.15));
 const models=new THREE.Group();scene.add(models);
 const hitObjects=[],wallObjects=[],raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
 let azimuth=.72,elevation=.42,zoom=1.0,viewMode='3D';
@@ -333,9 +333,9 @@ function drawOpening(w,h){
  const pos=holePosition(w.id,h),n=normal(w.id),r=openingRadius(h),selected=w.id===wallId&&h.id===holeId;
  const group=new THREE.Group();group.position.copy(pos);group.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),n);
  const circle=new THREE.Mesh(new THREE.CircleGeometry(r,30),new THREE.MeshBasicMaterial({
- color:selected?'#366f68':'#52636d',transparent:true,opacity:selected?.3:.045,depthWrite:false,side:THREE.DoubleSide}));
+ color:selected?'#267d75':'#486c7d',transparent:true,opacity:selected?.35:(exploreMode?.20:.045),depthWrite:false,side:THREE.DoubleSide}));
  group.add(circle);circle.userData={type:'hole',wall:w.id,hole:h.id};
- const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.004,6,32),new THREE.MeshBasicMaterial({color:selected?'#f9cf68':'#cad6d9'}));
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32),new THREE.MeshBasicMaterial({color:selected?'#f3bb48':(exploreMode?'#426f7c':'#cad6d9')}));
  ring.position.z=.004;group.add(ring);models.add(group);hitObjects.push(circle);
 }
 function highlightBox(mesh,color='#eec657'){
@@ -345,7 +345,7 @@ function highlightBox(mesh,color='#eec657'){
 }
 function drawHousing(key){
  const e=project.enclosures[key];
- if(!project.showBox||!e.visible||viewMode.startsWith('SW'))return;
+ if(exploreMode||!project.showBox||!e.visible||viewMode.startsWith('SW'))return;
  for(const p of e.panels){
   if(!p.visible)continue;
   const g=components.panelGeometry(e,p),opacity=(p.opacity/100)*(e.opacity/100);
@@ -360,6 +360,7 @@ function drawHousing(key){
  }
 }
 function drawSupports(){
+ if(exploreMode)return; // Show structural details in expert mode to reduce initial clutter.
  for(const s of project.supports){
   if(!s.visible||(viewMode.startsWith('SW')&&viewMode!==s.wall))continue;
   const mesh=box(s.w/1000,s.h/1000,s.d/1000,
@@ -369,8 +370,8 @@ function drawSupports(){
  }
 }
 function drawWalls(){
- const s=sizes(),op=project.opacity/100;
- box(s.w+.16,.085,s.d+.16,0,-.055,0,'#a1afb7');
+ const s=sizes(),op=exploreMode?Math.max(.52,project.opacity/100):project.opacity/100;
+ box(s.w+.16,.085,s.d+.16,0,-.055,0,'#8aa2ad',exploreMode?.9:1);
  const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
  floor.position.y=-.096;models.add(floor);
  for(const w of project.walls){
@@ -387,7 +388,7 @@ function drawWalls(){
  included.push({u,y:p.y,r});
  }
  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:w.thickness/1000,bevelEnabled:false,curveSegments:12,steps:1}),
- material(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4',op));
+ material(exploreMode?'#52788b':(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4'),op));
  if(w.id==='SW1'){mesh.rotation.y=-Math.PI/2;mesh.position.x=-s.w/2;}
  else if(w.id==='SW3'){mesh.rotation.y=Math.PI/2;mesh.position.x=s.w/2;}
  else if(w.id==='SW2'){mesh.rotation.y=Math.PI;mesh.position.z=-s.d/2;}
@@ -411,8 +412,13 @@ function drawCable(c){
  const pts=[a.clone(),a.clone().addScaledVector(na,.12),
  ...(route.length?route:[mid]),b.clone().addScaledVector(nb,.12),b.clone()];
  const curve=new THREE.CatmullRomCurve3(pts,false,'centripetal',.45);
- const line=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.min(100,48+route.length*10),chosen?thickness*1.22:thickness,8,false),
- new THREE.MeshStandardMaterial({color:c.color,roughness:.34,metalness:.04,transparent:true,opacity:chosen?1:.88}));
+ const cableRadius=exploreMode?Math.max(.006,thickness)*(chosen?1.75:1.08):
+ chosen?thickness*1.22:thickness;
+ const cableMaterial=exploreMode?
+ new THREE.MeshBasicMaterial({color:c.color,transparent:true,opacity:chosen?1:.34,depthWrite:false}):
+ new THREE.MeshStandardMaterial({color:c.color,roughness:.34,metalness:.04,transparent:true,opacity:chosen?1:.88});
+ const line=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.min(100,48+route.length*10),cableRadius,10,false),
+ cableMaterial);
  line.userData={type:'cable',id:c.id};models.add(line);hitObjects.push(line);
  if(chosen){
  for(const [key,vec] of [['a',a],['b',b]]){
