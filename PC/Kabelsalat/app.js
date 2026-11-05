@@ -691,6 +691,166 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('pointercancel',()=>{grab=null;canvas.classList.remove('dragging');renderAll();});
 canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=clamp(zoom*(e.deltaY>0?1.11:.9),.45,4);view();},{passive:false});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* Network workspace commands. All changes go through the undo/persistence system. */
+function setNetworkOpen(next){
+ networkOpen=next;renderAll();requestAnimationFrame(resize);
+}
+$('toggleNetwork').addEventListener('click',()=>setNetworkOpen(!networkOpen));
+$('netBackEditor').addEventListener('click',()=>setNetworkOpen(false));
+$('netOpenShaft').addEventListener('click',()=>setNetworkOpen(false));
+$('netShaftSelect').addEventListener('change',()=>switchShaft($('netShaftSelect').value));
+$('netNewShaft').addEventListener('click',()=>{
+ if(project.network.shafts.length>=30){alert('Bis zu 30 Schächte pro Netz in dieser Version.');return;}
+ const net=project.network,old=activeShaft(),id=uid('S'),blank=demo();
+ blank.name='Schacht '+(net.shafts.length+1);blank.cables=[];
+ for(const w of blank.walls){w.rows=3;w.cols=4;w.holes=[];}
+ blank.variants=[];blank.supports=[];
+ change(()=>{
+  syncActiveShaft();
+  net.shafts.push({id,name:blank.name,x:(old?.x||0)+10000,z:old?.z||0,snapshot:networkModel.snapshot(blank)});
+  project=validProject({...blank,network:net,activeShaftId:id});
+  netSegmentShaftId=id;netLinkFromId=old?.id||'S1';netLinkToId=id;
+  cableId=null;holeId=null;supportId=null;variantId=null;wallId='SW1';viewMode='3D';
+ });
+});
+$('netUpdateShaft').addEventListener('click',()=>{
+ const name=$('netShaftName').value.trim().slice(0,80)||'Schacht';
+ const x=Number($('netShaftX').value),z=Number($('netShaftZ').value);
+ if(!Number.isSafeInteger(x)||!Number.isSafeInteger(z)||Math.abs(x)>100000000||Math.abs(z)>100000000){
+  alert('Bitte ganzzahlige X-/Z-Koordinaten zwischen -100.000.000 und 100.000.000 mm eingeben.');return;
+ }
+ change(()=>{const p=activeShaft();p.name=name;p.x=x;p.z=z;project.name=name;});
+});
+$('netDeleteShaft').addEventListener('click',()=>{
+ const net=project.network,id=project.activeShaftId;
+ if(net.shafts.length<=1)return;
+ const count=net.links.filter(l=>l.from===id||l.to===id).length,
+ segments=net.routes.reduce((n,r)=>n+r.steps.filter(s=>s.shaftId===id).length,0);
+ if(!confirm('Schacht '+id+' entfernen? '+count+' Verbindungen und '+segments+
+ ' Kabelweg-Segmente werden ebenfalls entfernt. Dies ist rückgängig machbar.'))return;
+ change(()=>{
+  syncActiveShaft();
+  net.shafts=net.shafts.filter(x=>x.id!==id);
+  net.links=net.links.filter(l=>l.from!==id&&l.to!==id);
+  for(const r of net.routes)r.steps=r.steps.filter(x=>x.shaftId!==id);
+  const newShaft=net.shafts[0];
+  project=validProject({...newShaft.snapshot,network:net,activeShaftId:newShaft.id});
+  netLinkFromId=null;netLinkToId=null;netSegmentShaftId=newShaft.id;
+  wallId='SW1';holeId=null;cableId=project.cables[0]?.id||null;
+  panelKey='OLA-floor';supportId=null;variantId=null;
+ });
+});
+$('netLinkFrom').addEventListener('change',()=>{netLinkFromId=$('netLinkFrom').value;renderNetworkUI();});
+$('netLinkTo').addEventListener('change',()=>{netLinkToId=$('netLinkTo').value;renderNetworkUI();});
+$('netLinkSelect').addEventListener('change',()=>{netLinkId=$('netLinkSelect').value||null;renderNetworkUI();});
+$('netAddLink').addEventListener('click',()=>{
+ const a=netLinkFromId,b=netLinkToId;
+ if(!a||!b||a===b)return;
+ if(project.network.links.some(l=>(l.from===a&&l.to===b)||(l.from===b&&l.to===a))){
+  alert('Diese Verbindung existiert bereits.');return;
+ }
+ change(()=>{const id=uid('L');project.network.links.push({id,from:a,to:b,note:'Schematische Verbindung'});
+ netLinkId=id;});
+});
+$('netDeleteLink').addEventListener('click',()=>{
+ if(!netLinkId)return;
+ if(!confirm('Netzverbindung löschen? Kabelwege können dadurch unvollständig werden.'))return;
+ change(()=>{project.network.links=project.network.links.filter(l=>l.id!==netLinkId);netLinkId=null;});
+});
+$('netRouteSelect').addEventListener('change',()=>{netRouteId=$('netRouteSelect').value||null;renderAll();});
+$('netNewRoute').addEventListener('click',()=>{
+ if(project.network.routes.length>=200){alert('Maximal 200 Netz-Kabelwege.');return;}
+ const name=prompt('Neuer Kabelweg – Bezeichnung','Trasse '+(project.network.routes.length+1));
+ if(name===null)return;
+ change(()=>{const id=uid('R');project.network.routes.push({id,name:name.trim().slice(0,80)||'Kabelweg',
+ group:'Weitere',steps:[]});netRouteId=id;netSegmentShaftId=project.activeShaftId;});
+});
+$('netDeleteRoute').addEventListener('click',()=>{
+ if(!selectedRoute()||!confirm('Ausgewählten Netz-Kabelweg löschen?'))return;
+ change(()=>{project.network.routes=project.network.routes.filter(r=>r.id!==netRouteId);
+ netRouteId=project.network.routes[0]?.id||null;});
+});
+$('netUpdateRoute').addEventListener('click',()=>{
+ if(!selectedRoute())return;
+ const name=$('netRouteName').value.trim().slice(0,80)||'Kabelweg',group=$('netRouteGroup').value;
+ change(()=>{const r=selectedRoute();r.name=name;r.group=group;});
+});
+$('netSegmentShaft').addEventListener('change',()=>{
+ netSegmentShaftId=$('netSegmentShaft').value;renderNetworkUI();
+});
+$('netAppendSegment').addEventListener('click',()=>{
+ const route=selectedRoute(),shaft=project.network.shafts.find(s=>s.id===netSegmentShaftId);
+ const cid=$('netSegmentCable').value;
+ if(!route||!shaft||!shaft.snapshot.cables.some(c=>c.id===cid)||route.steps.length>=60)return;
+ change(()=>{route.steps.push({shaftId:shaft.id,cableId:cid});});
+});
+$('netPopSegment').addEventListener('click',()=>{
+ const r=selectedRoute();if(r&&r.steps.length)change(()=>r.steps.pop());
+});
+$('netTraceList').addEventListener('click',e=>{
+ const node=e.target.closest('[data-trace-shaft]');if(!node)return;
+ switchShaft(node.dataset.traceShaft,node.dataset.traceCable);
+ setNetworkOpen(false);
+});
+$('netShowTrace').addEventListener('click',()=>{
+ if(!selectedRoute())return;setNetworkOpen(true);
+});
+$('netExportCSV').addEventListener('click',()=>{
+ syncActiveShaft();
+ download(filename()+'-netzinventar.csv',networkModel.inventoryCSV(project.network),'text/csv;charset=utf-8');
+});
+$('netImportPositions').addEventListener('click',()=>$('netPositionsFile').click());
+$('netPositionsFile').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];e.target.value='';if(!file)return;
+ try{
+  if(file.size>50000)throw Error('CSV-Datei zu groß (maximal 50 KB).');
+  const review=networkModel.parsePositionsCSV(await file.text(),project.network);
+  if(review.warnings.length){
+   alert('CSV-Import abgebrochen – bitte erst korrigieren:\n'+review.warnings.join('\n').slice(0,1400));return;
+  }
+  if(!review.rows.length){alert('Keine Positionsdaten in der Datei.');return;}
+  const preview=review.rows.slice(0,12).map(x=>x.id+': X '+x.x+' / Z '+x.z+' mm').join('\n');
+  if(!confirm('Koordinatenimport mit '+review.rows.length+' Schacht-Positionen übernehmen?\n\n'+preview+
+    (review.rows.length>12?'\n… weitere Einträge':'')+'\n\nAlle Werte sind zunächst ungeprüfte Planwerte.'))return;
+  change(()=>{project.network=networkModel.applyPositions(project.network,review.rows);});
+ }catch(err){alert('Koordinatenimport nicht möglich: '+err.message);}
+});
+function networkHit(p){
+ const proj=networkProjection();let nearest=null,dist=Infinity;
+ for(const s of project.network.shafts){
+  const q=proj.point(s),d=Math.hypot(q.x-p.x,q.y-p.y);
+  if(d<27&&d<dist){dist=d;nearest=s;}
+ }
+ return nearest;
+}
+networkCanvas.addEventListener('pointerdown',e=>{
+ if(e.button!==0)return;
+ networkCanvas.setPointerCapture(e.pointerId);
+ const p=networkPos(e);mapDrag={...p,lastX:p.x,lastY:p.y,moved:false};
+});
+networkCanvas.addEventListener('pointermove',e=>{
+ if(!mapDrag)return;const p=networkPos(e);
+ if(Math.hypot(p.x-mapDrag.x,p.y-mapDrag.y)>4)mapDrag.moved=true;
+ if(mapDrag.moved){
+  mapOffsetX+=p.x-mapDrag.lastX;mapOffsetY+=p.y-mapDrag.lastY;drawNetwork();
+ }
+ mapDrag.lastX=p.x;mapDrag.lastY=p.y;
+});
+networkCanvas.addEventListener('pointerup',e=>{
+ if(mapDrag&&!mapDrag.moved){const node=networkHit(networkPos(e));if(node)switchShaft(node.id);}
+ mapDrag=null;
+});
+networkCanvas.addEventListener('pointercancel',()=>{mapDrag=null;});
+networkCanvas.addEventListener('dblclick',e=>{
+ const node=networkHit(networkPos(e));if(node){switchShaft(node.id);setNetworkOpen(false);}
+});
+networkCanvas.addEventListener('wheel',e=>{
+ e.preventDefault();mapZoom=clamp(mapZoom*(e.deltaY>0?.87:1.15),.25,8);drawNetwork();
+},{passive:false});
+networkCanvas.addEventListener('contextmenu',e=>e.preventDefault());
+new ResizeObserver(drawNetwork).observe($('networkPane'));
+
 $('wallList').addEventListener('click',e=>{const card=e.target.closest('[data-wall]');if(card){wallId=card.dataset.wall;holeId=null;if(viewMode.startsWith('SW'))viewMode='3D';renderAll();}});
 $('generate').addEventListener('click',()=>{
  const w=wall(),rows=clamp(Number($('rows').value)||w.rows,1,20),cols=clamp(Number($('cols').value)||w.cols,1,20);
