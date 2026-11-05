@@ -2,38 +2,74 @@
 'use strict';
 const $=id=>document.getElementById(id),STORAGE='eugi.schachtwand.3d.v1';
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
-const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand'};
+const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let idCounter=0;const uid=p=>p+'-'+Date.now().toString(36)+'-'+(++idCounter).toString(36);
-function grid(wall){const holes=[];for(let row=1;row<=wall.rows;row++)for(let col=1;col<=wall.cols;col++)
- holes.push({id:wall.id+'-r'+row+'-o'+col,row,col,u:col/(wall.cols+1),v:1-row/(wall.rows+1)});return holes;}
+
+function grid(wall){
+ const holes=[];for(let row=1;row<=wall.rows;row++)for(let col=1;col<=wall.cols;col++)
+ holes.push({id:wall.id+'-r'+row+'-o'+col,row,col,u:col/(wall.cols+1),v:1-row/(wall.rows+1),dn:wall.dn||70});
+ return holes;
+}
 function demo(){
- const walls=[{id:'SW1',name:'SW1',visible:true,rows:5,cols:5,holes:[]},{id:'SW2',name:'SW2',visible:true,rows:4,cols:7,holes:[]},{id:'SW3',name:'SW3',visible:true,rows:5,cols:5,holes:[]}];
+ const walls=[
+ {id:'SW1',name:'SW1',visible:true,rows:5,cols:5,thickness:120,dn:70,holes:[]},
+ {id:'SW2',name:'SW2',visible:true,rows:4,cols:7,thickness:120,dn:70,holes:[]},
+ {id:'SW3',name:'SW3',visible:true,rows:5,cols:5,thickness:120,dn:70,holes:[]},
+ {id:'SW4',name:'SW4',visible:true,rows:5,cols:6,thickness:120,dn:70,holes:[]}
+ ];
  walls.forEach(w=>w.holes=grid(w));
- const pairs=[['SW1',2,2,'SW3',2,3],['SW1',3,2,'SW3',4,2],['SW1',4,3,'SW2',3,2],['SW2',1,3,'SW3',3,4],['SW1',1,4,'SW3',1,2],['SW2',3,4,'SW3',4,4],['SW1',4,1,'SW2',2,6],['SW1',2,4,'SW3',5,3]];
- const names=['Rot 1','Rot 2','Grün 1','Blau 1','Gelb 1','Grün 2','Blau 2','Grün 3'],cs=[0,0,1,2,3,1,2,1];
- const cables=pairs.map((p,i)=>({id:'c'+(i+1),name:names[i],color:COLORS[cs[i]],a:{wall:p[0],hole:p[0]+'-r'+p[1]+'-o'+p[2]},b:{wall:p[3],hole:p[3]+'-r'+p[4]+'-o'+p[5]}}));
- return {version:1,name:'Beispiel · Schachtwandbelegung',dims:{w:2400,d:1900,h:2100},walls,cables,opacity:54,showBox:true,showLabels:true};
+ const pairs=[
+ ['SW1',2,2,'SW3',2,3],['SW1',3,2,'SW3',4,2],['SW1',4,3,'SW2',3,2],
+ ['SW2',1,3,'SW3',3,4],['SW1',1,4,'SW3',1,2],['SW2',3,4,'SW3',4,4],
+ ['SW1',4,1,'SW2',2,6],['SW1',2,4,'SW3',5,3],
+ ['SW4',2,2,'SW1',2,3],['SW4',3,3,'SW2',1,6],['SW4',4,4,'SW3',3,2],
+ ['SW1',1,1,'SW4',1,4],['SW1',5,2,'SW4',5,5],['SW2',4,2,'SW4',4,2],
+ ['SW2',2,5,'SW4',2,5],['SW3',1,3,'SW4',1,2]
+ ];
+ const names=['OLA · LR18','OLA · LR19','OLA · LR20','MS · LR13','MS · LR14',
+ 'LST · LR5','LST · LR6','TK Cu · LR7','TK Cu · LR8','Weitere · LR1','Weitere · LR2',
+ 'Weitere · LR3','Weitere · LR4','Weitere · LR5','Weitere · LR6','Weitere · LR7'];
+ const colors=['#d94b57','#d94b57','#d94b57','#248dba','#248dba','#349e7b',
+ '#349e7b','#9b67bd','#9b67bd','#d8a43e','#d8a43e','#9b67bd','#9b67bd','#349e7b','#8a929c','#8a929c'];
+ const cables=pairs.map((p,i)=>({id:'c'+(i+1),name:names[i],color:colors[i],group:i<3?'OLA':i<5?'MS':'Weitere',
+ diameter:12,route:[],a:{wall:p[0],hole:p[0]+'-r'+p[1]+'-o'+p[2]},
+ b:{wall:p[3],hole:p[3]+'-r'+p[4]+'-o'+p[5]}}));
+ return {version:2,name:'Referenzschacht · 3D-Entwurf',
+ dims:{w:2400,d:1900,h:2100},walls,cables,opacity:54,showBox:true,showLabels:true,
+ enclosures:{OLA:{visible:true,opacity:70},MS:{visible:true,opacity:48}}};
 }
 function validProject(o){
  if(!o||typeof o!=='object'||!o.dims||!Array.isArray(o.walls)||!Array.isArray(o.cables))throw Error('Ungültige Projektdatei');
- const base=demo(),ids=['SW1','SW2','SW3'];
+ const base=demo(),ids=['SW1','SW2','SW3','SW4'];
+ const dims={w:clamp(Number(o.dims.w)||2400,600,12000),
+ d:clamp(Number(o.dims.d)||1900,600,12000),h:clamp(Number(o.dims.h)||2100,600,8000)};
  const walls=ids.map(id=>{
  const w=o.walls.find(x=>x&&x.id===id)||base.walls.find(x=>x.id===id);
+ const thickness=clamp(Number(w.thickness)||120,40,500),dn=clamp(Number(w.dn)||70,20,300);
  const holes=Array.isArray(w.holes)?w.holes.filter(h=>h&&typeof h.id==='string'&&Number.isFinite(+h.u)&&Number.isFinite(+h.v)).slice(0,600).map(h=>({
- id:h.id.slice(0,120),row:clamp(Number(h.row)||0,0,30),col:clamp(Number(h.col)||0,0,30),u:clamp(+h.u,0,1),v:clamp(+h.v,0,1)})):grid(w);
- return {id,name:id,visible:w.visible!==false,rows:clamp(Number(w.rows)||5,1,20),cols:clamp(Number(w.cols)||5,1,20),holes};
+ id:h.id.slice(0,120),row:clamp(Number(h.row)||0,0,30),col:clamp(Number(h.col)||0,0,30),
+ u:clamp(+h.u,0,1),v:clamp(+h.v,0,1),dn:clamp(Number(h.dn)||dn,20,300)})):grid(w);
+ return {id,name:id,visible:w.visible!==false,rows:clamp(Number(w.rows)||5,1,20),
+ cols:clamp(Number(w.cols)||5,1,20),thickness,dn,holes};
  });
  const find=r=>r&&walls.some(w=>w.id===r.wall&&w.holes.some(h=>h.id===r.hole));
  const cables=o.cables.slice(0,400).filter(c=>c&&typeof c==='object').map((c,i)=>({
  id:String(c.id||uid('c')).slice(0,120),name:String(c.name||'Kabel '+(i+1)).slice(0,80),
  color:/^#[0-9a-f]{6}$/i.test(c.color)?c.color:COLORS[i%COLORS.length],
- a:find(c.a)?{wall:c.a.wall,hole:c.a.hole}:null,b:find(c.b)?{wall:c.b.wall,hole:c.b.hole}:null
+ group:['OLA','MS','Weitere'].includes(c.group)?c.group:'Weitere',
+ diameter:clamp(Number(c.diameter)||12,2,80),
+ route:Array.isArray(c.route)?c.route.filter(p=>Array.isArray(p)&&p.length===3&&p.every(n=>Number.isFinite(+n)))
+ .slice(0,12).map(p=>[clamp(+p[0],-dims.w/2,dims.w/2),clamp(+p[1],0,dims.h),clamp(+p[2],-dims.d/2,dims.d/2)]):[],
+ a:find(c.a)?{wall:c.a.wall,hole:c.a.hole}:null,
+ b:find(c.b)?{wall:c.b.wall,hole:c.b.hole}:null
  }));
- return {version:1,name:String(o.name||'Neues Projekt').slice(0,80),
- dims:{w:clamp(Number(o.dims.w)||2400,600,12000),d:clamp(Number(o.dims.d)||1900,600,12000),h:clamp(Number(o.dims.h)||2100,600,8000)},
- walls,cables,opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,showLabels:o.showLabels!==false};
+ const encl=o.enclosures||{};
+ const group=k=>({visible:encl[k]?.visible!==false,opacity:clamp(Number(encl[k]?.opacity)||60,10,100)});
+ return {version:2,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
+ opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
+ showLabels:o.showLabels!==false,enclosures:{OLA:group('OLA'),MS:group('MS')}};
 }
 let project;try{project=validProject(JSON.parse(localStorage.getItem(STORAGE)))}catch(_){project=demo();}
 let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mode='orbit',grab=null;
