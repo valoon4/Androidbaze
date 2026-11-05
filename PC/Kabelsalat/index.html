@@ -108,12 +108,20 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 #netTraceList .trace-item{margin-top:6px;border:1px solid #dbe6e8;padding:8px;border-radius:8px;cursor:pointer;font-size:11px}
 #netTraceList .trace-item:hover{background:#eef7f4}
 #netTraceStatus{white-space:pre-wrap}
+
+#globalResults .search-hit,#qualityList .quality-hit{padding:7px 8px;border:1px solid #dce6e8;
+ border-radius:8px;margin-top:5px;cursor:pointer;font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+#globalResults .search-hit:hover,#qualityList .quality-hit:hover{background:#eaf6f0}
+#qualityList .quality-hit.error{border-left:3px solid #b95252}
+#qualityList .quality-hit.warning{border-left:3px solid #c48f31}
+#qualityList .quality-hit.info{border-left:3px solid #709bb0}
+#qualityPanel textarea{resize:vertical;min-height:55px}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">2D + 3D + Netz · v0.6</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">2D + 3D + Netz · v1.0</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="undo" class="btn tiny" title="Rückgängig (Strg+Z)">↶</button><button id="redo" class="btn tiny" title="Wiederholen (Strg+Y)">↷</button>
@@ -122,11 +130,26 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 </div>
 </header>
 <aside class="sidebar">
+<section class="section" id="globalSearchPanel">
+<div class="eyebrow">Gesamtes Schachtnetz</div><h3>Kabel-, Rohr- und Schachtsuche</h3>
+<input id="globalSearch" class="txt" placeholder="Kabelname, ID, Leerrohr …" aria-label="Globale Netzsuche">
+<div id="globalResults" class="small" style="max-height:240px;overflow:auto;margin-top:8px">Hier netzweit suchen.</div>
+</section>
 <section class="section"><div class="eyebrow">Projektkonfiguration</div>
 <label class="field">Projektname<input id="projectName" maxlength="80"></label>
 <div class="row"><label class="field">Breite (mm)<input type="number" id="width" min="600" max="12000" step="100"></label><label class="field">Tiefe (mm)<input type="number" id="depth" min="600" max="12000" step="100"></label></div>
 <label class="field">Höhe (mm)<input type="number" id="height" min="600" max="8000" step="100"></label>
 <div class="small" style="margin-top:10px">Maße sind Modellangaben, keine statische oder elektrotechnische Prüfung.</div>
+</section>
+<section class="section" id="qualityThresholds">
+<div class="eyebrow">Projektbezogene Prüfparameter</div>
+<h3>Geometrische Mindestwerte</h3>
+<p class="small">Diese Werte kommen aus dem Projekt und sind <b>keine</b> automatischen DIN-/VDE-Vorgaben. Leere Felder werden nicht geprüft.</p>
+<label class="field">Mindestabstand Rohr–Rohr (mm)<input id="minPipeGap" type="number" min="0" step="1" placeholder="nicht festgelegt"></label>
+<label class="field">Mindestabstand Rohr–Wandrand (mm)<input id="minEdgeGap" type="number" min="0" step="1" placeholder="nicht festgelegt"></label>
+<label class="field">Bogenradius-Kontrollpunkt-Näherung (mm)<input id="minBend" type="number" min="0" step="1" placeholder="nicht festgelegt"></label>
+<button id="applyQuality" class="btn soft full" style="margin-top:10px">Projektwerte übernehmen</button>
+<div class="small" style="margin-top:8px">Der geschätzte Bogenradius ersetzt keine Prüfung der tatsächlichen Leitungskrümmung.</div>
 </section>
 <section class="section" id="networkTools">
 <div class="eyebrow">Schachtnetz · Standortkoordinaten</div>
@@ -215,6 +238,29 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 <div class="view-foot"><div class="float kbd">🖱 Ziehen: drehen · Mausrad: zoomen<br>● Öffnung: anklicken · Weißer Griff: Kabelanschluss ziehen</div><div class="float kbd" id="sceneStats">—</div></div>
 </main>
 <aside class="sidebar right">
+<section class="section" id="qualityPanel">
+<div class="eyebrow">Datenqualität & Dokumentation</div>
+<div class="row spread"><h2 style="margin:0">Prüfübersicht</h2><button id="runQuality" class="btn soft tiny">Prüfen</button></div>
+<div id="qualitySummary" class="hint">Projektdaten prüfen. Keine automatische Fachfreigabe.</div>
+<div id="qualityList" style="max-height:210px;overflow:auto;margin-top:9px"></div>
+<h3 style="margin-top:16px">Manueller Prüfvermerk</h3>
+<label class="field">Objekt<select id="reviewTarget" class="selector"></select></label>
+<label class="field">Status<select id="reviewStatus" class="selector">
+<option>Entwurf</option><option>Zur Prüfung</option><option>Vor Ort abgeglichen</option></select></label>
+<label class="field">Quelle / Beleg<input id="reviewSource" maxlength="250" placeholder="z. B. Plan-Nr. / Begehung"></label>
+<label class="field">Erfasst durch<input id="reviewBy" maxlength="80" placeholder="Name / Kürzel"></label>
+<label class="field">Notiz<textarea id="reviewNote" rows="3" maxlength="500" class="txt" style="height:auto;padding:8px"></textarea></label>
+<button id="saveReview" class="btn soft full" style="margin-top:10px">Vermerk speichern</button>
+<div class="small" style="margin-top:9px">Manuell eingetragene Statuswerte gelten nicht automatisch als geprüfte Freigabe.</div>
+<h3 style="margin-top:15px">Projektausgabe</h3>
+<div class="row" style="flex-wrap:wrap">
+<button id="exportPdf" class="btn primary">↓ PDF-Bericht</button>
+<button id="exportReportHtml" class="btn">↓ HTML-Bericht</button>
+<button id="exportViewer" class="btn">↓ Offline-Viewer</button>
+</div>
+<div class="small" style="margin-top:9px">Windows: PDF direkt speichern. Browser: Bericht als HTML öffnen und über Drucken → Als PDF speichern.</div>
+<div id="auditLast" class="small" style="margin-top:11px"></div>
+</section>
 <section class="section"><div class="eyebrow">Belegung bearbeiten</div>
 <div class="row spread"><h2 style="margin:0">Deine Kabel</h2><button id="addCable" class="btn primary tiny">＋ Kabel</button></div>
 <p class="small">Kabel auswählen und Anschlüsse per Dropdown oder über die weißen Griffe im 3D-Modell zuordnen.</p>
@@ -333,6 +379,6 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 </section>
 </aside>
 </div>
-<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="components.js"></script><script src="network.js"></script><script src="app.js"></script>
+<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="components.js"></script><script src="network.js"></script><script src="quality.js"></script><script src="reports.js"></script><script src="app.js"></script>
 </body>
 </html>
