@@ -126,6 +126,7 @@ import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
 import com.valoon4.emotionskompass.feature.insights.DiaryCalendarUiState
+import com.valoon4.emotionskompass.feature.insights.WeeklyReviewUiState
 import com.valoon4.emotionskompass.feature.insights.PersonalReviewScreen
 import com.valoon4.emotionskompass.feature.learning.LearningScreen
 import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
@@ -389,14 +390,18 @@ private fun EmotionskompassApp(
     // Keep only ephemeral calendar navigation across a journal detail deep link.
     // Never serialize a selected private date into Android SavedState.
     val diaryCalendarUiState = remember { DiaryCalendarUiState() }
+    val weeklyReviewUiState = remember { WeeklyReviewUiState() }
     LaunchedEffect(unlocked, diary.loaded, diary.busy, diary.error) {
         if (!unlocked || !diary.loaded || diary.busy || diary.error != null) {
             diaryCalendarUiState.resetPrivateState()
+            weeklyReviewUiState.resetPrivateState()
         }
     }
     LaunchedEffect(diary.entries) {
         // An edit, delete or restore invalidates the previously selected day.
         diaryCalendarUiState.selectedDate = null
+        // Edits, deletions and imports recompute the week; avoid stale evidence.
+        weeklyReviewUiState.clearWeekSelection()
     }
     val personalInsights by vm.insightState.collectAsState()
     val strategyExperiments by vm.strategyExperimentState.collectAsState()
@@ -831,7 +836,8 @@ private fun EmotionskompassApp(
                         onOpenStrategyCard = { id ->
                             if (strategyCatalog?.find(id) != null) openStrategy(id, "experiment")
                         },
-                        calendarUiState = diaryCalendarUiState
+                        calendarUiState = diaryCalendarUiState,
+                        weeklyUiState = weeklyReviewUiState
                     )
                     }
                 }
