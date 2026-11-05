@@ -1047,6 +1047,87 @@
         "wall": "SW4",
         "hole": "SW4-r2-o3"
       }
+    },
+    {
+      "id": "13_T_021-LST-010",
+      "name": "LST-010 · Segment 13_T_021",
+      "color": "#c76f56",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [
+        [
+          -300,
+          1870,
+          -200
+        ]
+      ],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1-r3-o1"
+      },
+      "b": {
+        "wall": "SW3",
+        "hole": "SW3-r1-o5"
+      }
+    },
+    {
+      "id": "13_T_021-TK-011",
+      "name": "TK-011 · Segment 13_T_021",
+      "color": "#a86bce",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2-r1-o1"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4-r1-o3"
+      }
+    },
+    {
+      "id": "13_T_021-MS-004",
+      "name": "MS-004 · Segment 13_T_021",
+      "color": "#3e8cb4",
+      "group": "MS",
+      "diameter": 22,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1-r4-o6"
+      },
+      "b": {
+        "wall": "SW3",
+        "hole": "SW3-r3-o2"
+      }
+    },
+    {
+      "id": "13_T_021-OLA-004",
+      "name": "OLA-004 · Segment 13_T_021",
+      "color": "#e35c76",
+      "group": "OLA",
+      "diameter": 18,
+      "route": [
+        [
+          -400,
+          1815,
+          100
+        ],
+        [
+          450,
+          1875,
+          -250
+        ]
+      ],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2-r4-o3"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4-r2-o6"
+      }
     }
   ],
   "opacity": 29,
@@ -2310,6 +2391,87 @@
               "wall": "SW4",
               "hole": "SW4-r2-o3"
             }
+          },
+          {
+            "id": "13_T_021-LST-010",
+            "name": "LST-010 · Segment 13_T_021",
+            "group": "Weitere",
+            "color": "#c76f56",
+            "diameter": 12,
+            "route": [
+              [
+                -300,
+                1870,
+                -200
+              ]
+            ],
+            "a": {
+              "wall": "SW1",
+              "hole": "SW1-r3-o1"
+            },
+            "b": {
+              "wall": "SW3",
+              "hole": "SW3-r1-o5"
+            }
+          },
+          {
+            "id": "13_T_021-TK-011",
+            "name": "TK-011 · Segment 13_T_021",
+            "group": "Weitere",
+            "color": "#a86bce",
+            "diameter": 12,
+            "route": [],
+            "a": {
+              "wall": "SW2",
+              "hole": "SW2-r1-o1"
+            },
+            "b": {
+              "wall": "SW4",
+              "hole": "SW4-r1-o3"
+            }
+          },
+          {
+            "id": "13_T_021-MS-004",
+            "name": "MS-004 · Segment 13_T_021",
+            "group": "MS",
+            "color": "#3e8cb4",
+            "diameter": 22,
+            "route": [],
+            "a": {
+              "wall": "SW1",
+              "hole": "SW1-r4-o6"
+            },
+            "b": {
+              "wall": "SW3",
+              "hole": "SW3-r3-o2"
+            }
+          },
+          {
+            "id": "13_T_021-OLA-004",
+            "name": "OLA-004 · Segment 13_T_021",
+            "group": "OLA",
+            "color": "#e35c76",
+            "diameter": 18,
+            "route": [
+              [
+                -400,
+                1815,
+                100
+              ],
+              [
+                450,
+                1875,
+                -250
+              ]
+            ],
+            "a": {
+              "wall": "SW2",
+              "hole": "SW2-r4-o3"
+            },
+            "b": {
+              "wall": "SW4",
+              "hole": "SW4-r2-o6"
+            }
           }
         ],
         "enclosures": {
@@ -3565,6 +3727,87 @@
               "b": {
                 "wall": "SW4",
                 "hole": "SW4-r2-o3"
+              }
+            },
+            {
+              "id": "13_T_021-LST-010",
+              "name": "LST-010 · Segment 13_T_021",
+              "group": "Weitere",
+              "color": "#c76f56",
+              "diameter": 12,
+              "route": [
+                [
+                  -300,
+                  1870,
+                  -200
+                ]
+              ],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1-r3-o1"
+              },
+              "b": {
+                "wall": "SW3",
+                "hole": "SW3-r1-o5"
+              }
+            },
+            {
+              "id": "13_T_021-TK-011",
+              "name": "TK-011 · Segment 13_T_021",
+              "group": "Weitere",
+              "color": "#a86bce",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2-r1-o1"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4-r1-o3"
+              }
+            },
+            {
+              "id": "13_T_021-MS-004",
+              "name": "MS-004 · Segment 13_T_021",
+              "group": "MS",
+              "color": "#3e8cb4",
+              "diameter": 22,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1-r4-o6"
+              },
+              "b": {
+                "wall": "SW3",
+                "hole": "SW3-r3-o2"
+              }
+            },
+            {
+              "id": "13_T_021-OLA-004",
+              "name": "OLA-004 · Segment 13_T_021",
+              "group": "OLA",
+              "color": "#e35c76",
+              "diameter": 18,
+              "route": [
+                [
+                  -400,
+                  1815,
+                  100
+                ],
+                [
+                  450,
+                  1875,
+                  -250
+                ]
+              ],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2-r4-o3"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4-r2-o6"
               }
             }
           ],
@@ -4824,6 +5067,87 @@
                     "b": {
                       "wall": "SW4",
                       "hole": "SW4-r2-o3"
+                    }
+                  },
+                  {
+                    "id": "13_T_021-LST-010",
+                    "name": "LST-010 · Segment 13_T_021",
+                    "group": "Weitere",
+                    "color": "#c76f56",
+                    "diameter": 12,
+                    "route": [
+                      [
+                        -300,
+                        1870,
+                        -200
+                      ]
+                    ],
+                    "a": {
+                      "wall": "SW1",
+                      "hole": "SW1-r3-o1"
+                    },
+                    "b": {
+                      "wall": "SW3",
+                      "hole": "SW3-r1-o5"
+                    }
+                  },
+                  {
+                    "id": "13_T_021-TK-011",
+                    "name": "TK-011 · Segment 13_T_021",
+                    "group": "Weitere",
+                    "color": "#a86bce",
+                    "diameter": 12,
+                    "route": [],
+                    "a": {
+                      "wall": "SW2",
+                      "hole": "SW2-r1-o1"
+                    },
+                    "b": {
+                      "wall": "SW4",
+                      "hole": "SW4-r1-o3"
+                    }
+                  },
+                  {
+                    "id": "13_T_021-MS-004",
+                    "name": "MS-004 · Segment 13_T_021",
+                    "group": "MS",
+                    "color": "#3e8cb4",
+                    "diameter": 22,
+                    "route": [],
+                    "a": {
+                      "wall": "SW1",
+                      "hole": "SW1-r4-o6"
+                    },
+                    "b": {
+                      "wall": "SW3",
+                      "hole": "SW3-r3-o2"
+                    }
+                  },
+                  {
+                    "id": "13_T_021-OLA-004",
+                    "name": "OLA-004 · Segment 13_T_021",
+                    "group": "OLA",
+                    "color": "#e35c76",
+                    "diameter": 18,
+                    "route": [
+                      [
+                        -400,
+                        1815,
+                        100
+                      ],
+                      [
+                        450,
+                        1875,
+                        -250
+                      ]
+                    ],
+                    "a": {
+                      "wall": "SW2",
+                      "hole": "SW2-r4-o3"
+                    },
+                    "b": {
+                      "wall": "SW4",
+                      "hole": "SW4-r2-o6"
                     }
                   }
                 ],
