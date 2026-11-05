@@ -37,7 +37,7 @@ function demo(){
  diameter:12,route:[],a:{wall:p[0],hole:p[0]+'-r'+p[1]+'-o'+p[2]},
  b:{wall:p[3],hole:p[3]+'-r'+p[4]+'-o'+p[5]}}));
  return {version:2,name:'Referenzschacht · 3D-Entwurf',
- dims:{w:2400,d:1900,h:2100},walls,cables,opacity:54,showBox:true,showLabels:true,
+ dims:{w:2400,d:1900,h:2100},walls,cables,opacity:54,showBox:true,showLabels:true,splitEnabled:true,
  enclosures:{OLA:{visible:true,opacity:70},MS:{visible:true,opacity:48}}};
 }
 function validProject(o){
@@ -69,7 +69,7 @@ function validProject(o){
  const group=k=>({visible:encl[k]?.visible!==false,opacity:clamp(Number(encl[k]?.opacity)||60,10,100)});
  return {version:2,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
  opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
- showLabels:o.showLabels!==false,enclosures:{OLA:group('OLA'),MS:group('MS')}};
+ showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,enclosures:{OLA:group('OLA'),MS:group('MS')}};
 }
 let project;try{project=validProject(JSON.parse(localStorage.getItem(STORAGE)))}catch(_){project=demo();}
 let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mode='orbit',grab=null;
@@ -114,8 +114,10 @@ function parseEndpoint(v){if(!v)return null;const i=v.indexOf('|');return i<0?nu
 function renderUI(){
  $('projectName').value=project.name;$('width').value=project.dims.w;$('depth').value=project.dims.d;$('height').value=project.dims.h;
  $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallThickness').value=wall().thickness;$('wallDn').value=wall().dn;$('wallTitle').textContent=wallId+' · Konfiguration';
+ $('copyHole').disabled=!hole();$('draftCopy').disabled=!hole();
  $('toggleWall').textContent=wall().visible?'Sichtbar':'Ausgeblendet';
  $('wallList').innerHTML=project.walls.map(w=>'<div class="wall-card '+(w.id===wallId?'active':'')+'" data-wall="'+w.id+'"><div class="row spread"><b><span class="dot" style="background:'+(w.visible?'#68a989':'#c9d2d7')+'"></span>'+w.id+'</b><span class="badge">'+w.holes.length+' Öffnungen</span></div><div class="small">'+WALL_NAMES[w.id]+' · '+w.rows+' × '+w.cols+'</div></div>').join('');
+ $('viewport').classList.toggle('with-2d',project.splitEnabled!==false);$('splitEnabled').checked=project.splitEnabled!==false;
  $('opacity').value=project.opacity;$('opacityText').textContent=project.opacity+' %';$('showBox').checked=project.showBox;$('showLabels').checked=project.showLabels;
  $('modeButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('scene').classList.toggle('placing',mode==='add');
  $('modeHint').textContent=mode==='add'?'Klicke auf eine Schachtwand, um dort ein frei positioniertes Leerrohr zu platzieren.':
@@ -354,6 +356,56 @@ function draw2D(){
  $('draftCoords').style.background=clear.overlaps||clear.minEdge!==null&&clear.minEdge<0?'#fff1e7':'#edf7f3';
 }
 
+
+function copySelectedHole(){
+ const w=wall(),selected=hole();if(!selected)return;
+ if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
+ const span=wallSpanMm(w.id),height=project.dims.h,x=selected.u*span;
+ const dx=x+100+(selected.dn||70)/2<=span?100:-100;
+ const clone={id:uid(w.id+'-copy'),...geom2d.copyOffset(selected,span,height,dx,0)};
+ change(()=>{w.holes.push(clone);holeId=clone.id;});
+}
+function draftPoint(e){
+ const rect=draft.getBoundingClientRect();
+ return {x:e.clientX-rect.left,y:e.clientY-rect.top};
+}
+draft.addEventListener('pointerdown',e=>{
+ if(e.button!==0||!draftMetrics)return;
+ const p=draftPoint(e),selected=geom2d.hitHole(wall().holes,draftMetrics,p.x,p.y);
+ if(selected){
+ holeId=selected.id;renderAll();
+ draftDrag={holeId:selected.id,wallId,changed:false,x:p.x,y:p.y};
+ draft.setPointerCapture(e.pointerId);e.preventDefault();return;
+ }
+ if(mode!=='add')return;
+ const w=wall();if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
+ const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y);
+ const newHole={id:uid(w.id+'-2d'),row:0,col:0,u:mm.x/wallSpanMm(w.id),v:mm.y/project.dims.h,dn:w.dn};
+ change(()=>{w.holes.push(newHole);holeId=newHole.id;});e.preventDefault();
+});
+draft.addEventListener('pointermove',e=>{
+ if(!draftDrag||!draftMetrics)return;
+ const p=draftPoint(e);
+ if(!draftDrag.changed&&Math.hypot(p.x-draftDrag.x,p.y-draftDrag.y)<1)return;
+ const w=project.walls.find(x=>x.id===draftDrag.wallId),h=w?.holes.find(x=>x.id===draftDrag.holeId);
+ if(!h)return;
+ if(!draftDrag.changed){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;draftDrag.changed=true;}
+ const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y,1);
+ h.u=mm.x/wallSpanMm(w.id);h.v=mm.y/project.dims.h;
+ rebuild();e.preventDefault();
+});
+function finishDraftDrag(){if(draftDrag?.changed){renderAll();persist();}draftDrag=null;}
+draft.addEventListener('pointerup',finishDraftDrag);
+draft.addEventListener('pointercancel',finishDraftDrag);
+$('draftWallSelect').addEventListener('change',e=>{wallId=e.target.value;holeId=null;renderAll();});
+$('draftCopy').addEventListener('click',copySelectedHole);
+$('copyHole').addEventListener('click',copySelectedHole);
+$('draftAdd').addEventListener('click',()=>{mode='add';renderUI();});
+$('splitEnabled').addEventListener('change',()=>{
+ change(()=>{project.splitEnabled=$('splitEnabled').checked;});
+ requestAnimationFrame(resize);
+});
+
 const canvas=$('scene');
 canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);const hit=pick(e),obj=hit?.object.userData||{};
@@ -481,6 +533,7 @@ $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung st
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
 function resize(){const rect=$('scene').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();draw2D();}
 new ResizeObserver(resize).observe($('viewport'));
+new ResizeObserver(()=>draw2D()).observe($('draft2d'));
 function animate(){requestAnimationFrame(animate);renderer.render(scene,activeCamera);}
 renderAll();persist();resize();animate();
 })();
