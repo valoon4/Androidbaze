@@ -206,6 +206,7 @@ function drawHousing(key){
  box(.024,y1-y0,bd,-bw/2,(y1+y0)/2,cz,wallColor,op);
  box(.024,y1-y0,bd,bw/2,(y1+y0)/2,cz,wallColor,op);
  box(bw,y1-y0,.024,0,(y1+y0)/2,cz-bd/2,wallColor,op);
+ box(bw,y1-y0,.024,0,(y1+y0)/2,cz+bd/2,wallColor,op);
 }
 function drawWalls(){
  const s=sizes(),op=project.opacity/100;
@@ -285,16 +286,18 @@ canvas.addEventListener('pointerdown',e=>{
  grab={type:'waypoint',id:obj.id,index:obj.index,changed:false,plane:new THREE.Plane().setFromNormalAndCoplanarPoint(normal,point)};}
  return;
  }
- if(obj.type==='hole'){wallId=obj.wall;holeId=obj.hole;renderAll();if(mode==='move')grab={type:'move',wall:obj.wall,hole:obj.hole,changed:false};return;}
+ if(obj.type==='hole'){wallId=obj.wall;holeId=obj.hole;renderAll();if(mode==='move'){const w=project.walls.find(x=>x.id===obj.wall),p=holePosition(obj.wall,w.holes.find(h=>h.id===obj.hole));
+ grab={type:'move',wall:obj.wall,hole:obj.hole,changed:false,
+ plane:new THREE.Plane().setFromNormalAndCoplanarPoint(normal(obj.wall),p)};}return;}
  if(obj.type==='cable'){cableId=obj.id;filter='all';renderAll();return;}
  if(viewMode==='3D'){grab={type:'orbit',x:e.clientX,y:e.clientY};canvas.classList.add('dragging');}
 });
 canvas.addEventListener('pointermove',e=>{
  if(grab?.type==='orbit'){azimuth-=(e.clientX-grab.x)*.006;elevation=clamp(elevation+(e.clientY-grab.y)*.005,-.08,1.45);grab.x=e.clientX;grab.y=e.clientY;view();return;}
  if(grab?.type==='move'){const w=project.walls.find(x=>x.id===grab.wall),h=w?.holes.find(x=>x.id===grab.hole);
- const hit=pick(e,wallObjects.filter(x=>x.userData.wall===grab.wall));
+ pick(e,[]);const p=new THREE.Vector3();const hit=raycaster.ray.intersectPlane(grab.plane,p);
  if(h&&hit){if(!grab.changed){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;grab.changed=true;}
- Object.assign(h,wallCoords(w.id,hit.point));rebuild();}return;}
+ Object.assign(h,wallCoords(w.id,p));rebuild();}return;}
  if(grab?.type==='waypoint'){
  const c=project.cables.find(x=>x.id===grab.id);if(!c||!c.route[grab.index])return;
  pick(e,[]);
