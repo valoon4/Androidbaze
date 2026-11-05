@@ -179,7 +179,19 @@ function renderUI(){
  mode==='move'?'Ziehe ein vorhandenes Leerrohr auf seiner Wand. Verschobene Öffnungen bleiben Kabelanschlüsse.':
  'Modell mit der Maus drehen, mit dem Mausrad zoomen. Öffnungen oder Kabel anklicken, um sie zu bearbeiten.';
  const h=hole();$('holeEditor').style.display=h?'block':'none';
- if(h){$('holeTitle').textContent=wallId+' · '+holeText(wall(),h);$('holeU').value=Math.round(h.u*wallSpanMm(wallId));$('holeV').value=Math.round(h.v*project.dims.h);$('holeDn').value=h.dn;}
+ if(h){
+ $('holeTitle').textContent=wallId+' · '+holeText(wall(),h);
+ $('holeU').value=Math.round(h.u*wallSpanMm(wallId));
+ $('holeV').value=Math.round(h.v*project.dims.h);
+ $('holeDn').value=h.dn;
+ const occupied=project.cables.filter(c=>
+  c.a?.wall===wallId&&c.a?.hole===h.id||c.b?.wall===wallId&&c.b?.hole===h.id);
+ $('holeOccupancy').innerHTML=occupied.length?occupied.map(c=>
+  '<div class="search-hit" data-occupied-cable="'+esc(c.id)+'">'+
+  '<span class="dot" style="background:'+c.color+'"></span>'+
+  esc(c.name)+' ('+esc(c.group)+', '+c.diameter+' mm)</div>').join(''):
+  '<div class="small">Frei · keine Kabel zugeordnet</div>';
+}
  $('cableFilters').querySelectorAll('button').forEach(b=>{
  b.classList.toggle('active',b.dataset.filter===filter);
  if(['OLA','MS','Weitere'].includes(b.dataset.filter))
@@ -1054,6 +1066,10 @@ networkCanvas.addEventListener('wheel',e=>{
 networkCanvas.addEventListener('contextmenu',e=>e.preventDefault());
 new ResizeObserver(drawNetwork).observe($('networkPane'));
 
+$('holeOccupancy').addEventListener('click',e=>{
+ const node=e.target.closest('[data-occupied-cable]');if(!node)return;
+ cableId=node.dataset.occupiedCable;filter='all';renderAll();
+});
 $('wallList').addEventListener('click',e=>{const card=e.target.closest('[data-wall]');if(card){wallId=card.dataset.wall;holeId=null;if(viewMode.startsWith('SW'))viewMode='3D';renderAll();}});
 $('generate').addEventListener('click',()=>{
  const w=wall(),rows=clamp(Number($('rows').value)||w.rows,1,20),cols=clamp(Number($('cols').value)||w.cols,1,20);
@@ -1196,6 +1212,7 @@ $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung st
  wallId='SW1';holeId=null;cableId=null;filter='all';viewMode='3D';
  panelKey='OLA-floor';supportId=null;variantId=null;
  project.network=networkModel.createNetwork(project);project.activeShaftId='S1';
+ project=validProject(project);
  networkOpen=false;netRouteId=null;netSegmentShaftId='S1';});});
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
 function resize(){const rect=$('scene').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();draw2D();}
