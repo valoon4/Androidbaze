@@ -31,10 +31,13 @@ import com.valoon4.emotionskompass.core.journal.JournalEntry
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.feature.insights.DiaryCalendarUiState
+import com.valoon4.emotionskompass.feature.insights.WeeklyReviewUiState
 import com.valoon4.emotionskompass.feature.insights.PersonalReviewScreen
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.DayOfWeek
+import java.time.temporal.TemporalAdjusters
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -335,6 +338,178 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithText("Ausgangspunkt:", substring = true).assertExists()
         rule.onNodeWithText("Ohne Speichern beenden").performClick()
         rule.runOnIdle { assertEquals(0, saveCalls) }
+    }
+
+    private fun weeklyJournal(month: YearMonth): List<JournalEntry> {
+        val zone = ZoneId.systemDefault()
+        val day = month.atDay(4)
+        fun at(d: LocalDate, hour: Int) =
+            d.atTime(hour, 0).atZone(zone).toInstant().toEpochMilli()
+        val one = at(day, 8)
+        val two = at(day, 19)
+        val outside = at(day.plusWeeks(1), 12)
+        return listOf(
+            JournalEntry("weekly-one", one, one,
+                CheckInDraft(emotions = mapOf("freude" to 0, "angst" to 3,
+                    "traurigkeit" to null, "wut" to 5), needs = setOf("ruhe",
+                    "klarheit", "sicherheit", "verbindung"))),
+            JournalEntry("weekly-two", two, two,
+                CheckInDraft(emotions = mapOf("freude" to null),
+                    needs = setOf("ruhe"))),
+            JournalEntry("weekly-outside", outside, outside,
+                CheckInDraft(emotions = mapOf("freude" to 4)))
+        )
+    }
+
+    @Test fun weeklyOverviewIsOptionalAndOpensActualJournalEntries() {
+        val month = YearMonth.now()
+        val weekStart = month.atDay(4).with(
+            TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val source = JournalSnapshot.fromEntries(weeklyJournal(month))
+        val weekState = WeeklyReviewUiState().apply { this.month = month }
+        var opened: String? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = source, busy = false, error = null,
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = { opened = it }, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), weeklyUiState = weekState
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-toggle"))
+        rule.runOnIdle { assertFalse(weekState.expanded) }
+        rule.onNodeWithTag("weekly-review-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-week-$weekStart"))
+        rule.onNodeWithTag("weekly-review-week-$weekStart")
+            .assertTextContains("2 gespeicherte Einträge", substring = true)
+            .performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-evidence-toggle-$weekStart"))
+        rule.onNodeWithTag("weekly-review-evidence-toggle-$weekStart").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-entry-weekly-two"))
+        rule.onNodeWithTag("weekly-review-entry-weekly-two").performClick()
+        rule.runOnIdle {
+            assertEquals("weekly-two", opened)
+            assertEquals(weekStart, weekState.selectedWeekStart)
+        }
+    }
+
+    @Test fun weeklyOverviewEmptyWeekIsNeutralEvenAcrossYearChange() {
+        val state = WeeklyReviewUiState().apply {
+            month = YearMonth.of(2026, 12)
+        }
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = JournalSnapshot.fromEntries(emptyList()),
+                    busy = false, error = null,
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), weeklyUiState = state
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-toggle"))
+        rule.onNodeWithTag("weekly-review-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-next-month"))
+        rule.onNodeWithTag("weekly-review-next-month").performClick()
+        rule.runOnIdle { assertEquals(YearMonth.of(2027, 1), state.month) }
+        val week = LocalDate.of(2026, 12, 28)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-week-$week"))
+        rule.onNodeWithTag("weekly-review-week-$week")
+            .assertTextContains("0 gespeicherte Einträge", substring = true)
+            .performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-empty-$week"))
+        rule.onNodeWithTag("weekly-review-empty-$week")
+            .assertTextContains("Daraus lässt sich nichts über dein Erleben ableiten.",
+                substring = true)
+        rule.onNodeWithTag("weekly-review-evidence-toggle-$week")
+            .assertDoesNotExist()
+    }
+
+    @Test fun weeklyOverviewShowsFullTermListAndOnlyMatchingEvidence() {
+        val month = YearMonth.now()
+        val weekStart = month.atDay(4).with(
+            TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val state = WeeklyReviewUiState().apply { this.month = month }
+        var opened: String? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = JournalSnapshot.fromEntries(weeklyJournal(month)),
+                    busy = false, error = null,
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = { opened = it }, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), weeklyUiState = state
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-toggle"))
+        rule.onNodeWithTag("weekly-review-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-week-$weekStart"))
+        rule.onNodeWithTag("weekly-review-week-$weekStart").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-all-terms-$weekStart"))
+        rule.onNodeWithTag("weekly-review-all-terms-$weekStart").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-term-emotion-wut"))
+        rule.onNodeWithTag("weekly-review-term-emotion-wut")
+            .assertTextContains("1× genannt", substring = true)
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-term-emotion-freude"))
+        rule.onNodeWithTag("weekly-review-term-emotion-freude")
+            .assertTextContains("2× genannt", substring = true)
+            .performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-entry-weekly-one"))
+        rule.onNodeWithTag("weekly-review-entry-weekly-one").performClick()
+        rule.runOnIdle { assertEquals("weekly-one", opened) }
+    }
+
+    @Test fun weeklyOverviewNeverShowsPrivateCountsOnLoadError() {
+        val state = WeeklyReviewUiState().apply {
+            expanded = true
+            month = YearMonth.of(2026, 11)
+            selectedWeekStart = LocalDate.of(2026, 11, 2)
+            showEvidence = true
+        }
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = null, busy = false, error = "Keystore gesperrt",
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), weeklyUiState = state
+                )
+            }
+        }
+        rule.onNodeWithTag("weekly-review-panel").assertDoesNotExist()
+        rule.runOnIdle {
+            assertFalse(state.expanded)
+            assertEquals(null, state.selectedWeekStart)
+            assertFalse(state.showEvidence)
+        }
     }
 
     private fun calendarJournal(month: YearMonth): List<JournalEntry> {
