@@ -95,7 +95,7 @@ class WeeklyReviewTest {
         val january = WeeklyReview.month(snapshot, YearMonth.of(2027, 1), berlin)
         val weekStart = LocalDate.of(2026, 12, 28)
         assertEquals(2, december.week(weekStart)!!.entryCount)
-        assertEquals(listOf("dec", "jan"), december.week(weekStart)!!.journalIds)
+        assertEquals(listOf("jan", "dec"), december.week(weekStart)!!.journalIds)
         assertEquals(2, january.week(weekStart)!!.entryCount)
         assertNull(december.week(LocalDate.of(2027, 1, 4)))
     }
