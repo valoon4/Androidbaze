@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Beta-Prototyp v1.0.0-beta.1 – 100-%-Entwicklungsmeilenstein, nicht 100 % Fachabnahme** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v1.0.0-beta.2 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-1.0.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-1.0.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.0.0-beta.2-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.0.0-beta.2-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -77,3 +77,9 @@ Die neuen Objekt- und Vermerkdaten sind Teil der Projekt-JSON (Formatversion 5).
 **Grenzen:** 100 % bedeutet Abschluss des vereinbarten vierstufigen Prototyp-Meilensteinplans, nicht die vollständige Erfüllung des AVL0116-Konzepts. Frei modellierbare Schächte, nachgewiesene physische Kabelkontinuität, normgerechte Biegeradien/Brandabschottung und CAD/BIM-/KI-Planerkennung fehlen. Die lokale Änderungshistorie ist **nicht manipulationssicher** und ersetzt keinen revisionssicheren Prüf-/Freigabeprozess. Fachanwender-Tests stehen aus.
 
 Siehe [MILESTONE_100.md](./MILESTONE_100.md) für Testschritte, Risiken und offene Anforderungen.
+
+## Beispielprojekte – beim Start sichtbar
+
+Beim ersten Start ohne lokale Daten wird ein synthetisches Bahnhofsnetz mit vier Schächten, 376 Rohren und 64 Kabeln geladen. Eigene gespeicherte Projekte bleiben bei Updates unberührt. Links oben kannst du über Beispielprojekte jederzeit auch einen Einzelschacht mit 16 Kabeln oder einen absichtlich fehlerhaften Prüffall laden. Vor dem Wechsel bitte eigene Projekte als JSON sichern.
+
+Die drei separat ladbaren JSON-Dateien liegen in examples/. Hinweise und Prüfschritte stehen in examples/README.md. Die verbindliche Bewertung der Anforderungen aus dem Original-Konzept steht in CONCEPT_AUDIT.md. **Diese Beta ist nicht zu 100 % konzeptkonform.**
