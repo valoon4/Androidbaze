@@ -167,7 +167,7 @@ const hitObjects=[],wallObjects=[],raycaster=new THREE.Raycaster(),pointer=new T
 let azimuth=.72,elevation=.42,zoom=1.0,viewMode='3D';
 const sizes=()=>({w:project.dims.w/1000,d:project.dims.d/1000,h:project.dims.h/1000});
 function view(){
- const d=sizes(),aspect=Math.max(.3,$('viewport').clientWidth/Math.max(1,$('viewport').clientHeight));
+ const d=sizes(),aspect=Math.max(.3,$('scene').clientWidth/Math.max(1,$('scene').clientHeight));
  if(viewMode==='3D'){
  activeCamera=camera;
  const r=Math.max(d.w,d.d,d.h)*1.7*zoom,t=new THREE.Vector3(0,d.h*.48,0);
@@ -293,7 +293,7 @@ function drawCable(c){
  }
  }
 }
-function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);view();}
+function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);view();draw2D();}
 function renderAll(){fixSelection();renderUI();rebuild();}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
@@ -302,6 +302,58 @@ function wallCoords(wid,p){const s=sizes(),u=(wid==='SW2'||wid==='SW4')?(p.x/s.w
  return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};}
 function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
  change(()=>{w.holes.push({id,row:0,col:0,...coords});wallId=wid;holeId=id;});}
+
+const draft=$('draftCanvas'),geom2d=window.Kabelsalat2D;
+if(!geom2d)throw Error('Kabelsalat-2D-Modul fehlt');
+let draftMetrics=null,draftDrag=null;
+function draw2D(){
+ if(!$('viewport').classList.contains('with-2d'))return;
+ const box=draft.getBoundingClientRect(),cw=box.width,ch=box.height;
+ if(cw<8||ch<8)return;
+ const dpr=Math.min(2,window.devicePixelRatio||1);
+ const pxw=Math.max(1,Math.round(cw*dpr)),pxh=Math.max(1,Math.round(ch*dpr));
+ if(draft.width!==pxw||draft.height!==pxh){draft.width=pxw;draft.height=pxh;}
+ const ctx=draft.getContext('2d');
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ ctx.clearRect(0,0,cw,ch);ctx.fillStyle='#fafdfe';ctx.fillRect(0,0,cw,ch);
+ const w=wall(),span=wallSpanMm(wallId),height=project.dims.h,m=geom2d.metrics(span,height,cw,ch);
+ draftMetrics=m;$('draftWallSelect').value=wallId;
+ const p1=geom2d.toPixels(m,0,0),p2=geom2d.toPixels(m,span,height);
+ ctx.save();ctx.strokeStyle='#e8f0f2';ctx.lineWidth=1;
+ const step=span>6000?1000:span>3000?500:250;
+ for(let x=0;x<=span;x+=step){const p=geom2d.toPixels(m,x,0);ctx.beginPath();ctx.moveTo(p.x,p2.y);ctx.lineTo(p.x,p1.y);ctx.stroke();}
+ for(let y=0;y<=height;y+=step){const p=geom2d.toPixels(m,0,y);ctx.beginPath();ctx.moveTo(p1.x,p.y);ctx.lineTo(p2.x,p.y);ctx.stroke();}
+ ctx.strokeStyle='#6c8591';ctx.lineWidth=2;ctx.strokeRect(p1.x,p2.y,p2.x-p1.x,p1.y-p2.y);
+ ctx.font='11px Segoe UI,Arial';ctx.fillStyle='#607d89';ctx.textAlign='center';
+ ctx.fillText(span+' mm',cw/2,Math.min(ch-7,p1.y+18));
+ ctx.save();ctx.translate(Math.max(11,p1.x-13),ch/2);ctx.rotate(-Math.PI/2);ctx.fillText(height+' mm',0,0);ctx.restore();
+ for(const h of w.holes){
+ const p=geom2d.toPixels(m,h.u*span,h.v*height);
+ const r=Math.max(2,Number(h.dn||70)/2*m.scale),selected=h.id===holeId;
+ ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);
+ ctx.fillStyle=selected?'#b7e9d7':'#e5eff2';ctx.fill();
+ ctx.lineWidth=selected?3:1.5;ctx.strokeStyle=selected?'#18745e':'#708b97';ctx.stroke();
+ if(cable()?.a?.wall===wallId&&cable()?.a?.hole===h.id||
+ cable()?.b?.wall===wallId&&cable()?.b?.hole===h.id){
+ ctx.beginPath();ctx.arc(p.x,p.y,r+5,0,Math.PI*2);ctx.strokeStyle=cable().color;
+ ctx.lineWidth=2.5;ctx.stroke();
+ }
+ }
+ if(hole()){
+ const h=hole(),pos=geom2d.holeMillimetres(h,span,height),p=geom2d.toPixels(m,pos.x,pos.y);
+ ctx.font='bold 11px Segoe UI,Arial';ctx.textAlign='left';ctx.fillStyle='#1a655a';
+ ctx.fillText('DN '+h.dn,p.x+9,p.y-9);
+ }
+ ctx.restore();
+ const clear=geom2d.clearance(w.holes,span,height),sel=hole();
+ const pos=sel?geom2d.holeMillimetres(sel,span,height):null;
+ $('draftCoords').textContent=sel?
+ w.id+' · '+Math.round(pos.x)+' mm horizontal · '+Math.round(pos.y)+' mm Höhe · DN '+sel.dn:
+ w.id+' · '+w.holes.length+' Rohre · Mindest-Randabstand: '+(clear.minEdge===null?'–':clear.minEdge+' mm')+
+ ' · kleinster Rohrabstand: '+(clear.minPairGap===null?'–':clear.minPairGap+' mm');
+ $('draftCoords').style.background=clear.overlaps||clear.minEdge!==null&&clear.minEdge<0?'#fff1e7':'#edf7f3';
+}
+
 const canvas=$('scene');
 canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);const hit=pick(e),obj=hit?.object.userData||{};
@@ -427,7 +479,7 @@ $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung st
  project.walls.forEach(w=>{w.holes=[];w.rows=3;w.cols=4;});
  wallId='SW1';holeId=null;cableId=null;filter='all';viewMode='3D';});});
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
-function resize(){const rect=$('viewport').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();}
+function resize(){const rect=$('scene').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();draw2D();}
 new ResizeObserver(resize).observe($('viewport'));
 function animate(){requestAnimationFrame(animate);renderer.render(scene,activeCamera);}
 renderAll();persist();resize();animate();
