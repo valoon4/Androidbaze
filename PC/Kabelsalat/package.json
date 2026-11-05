@@ -1,14 +1,14 @@
 {
   "name": "kabelsalat",
-  "version": "0.6.0",
-  "description": "Kabelsalat: Offline 2D/3D-Schachteditor mit Schachtnetz und Kabelverfolgung",
+  "version": "1.0.0-beta.1",
+  "description": "Kabelsalat 1.0 Beta – Offline 2D/3D Schachtnetz-Prototyp mit Prüfhilfen und Berichten",
   "main": "main.js",
   "author": "Eugi",
   "license": "MIT",
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node --check main.js && node --check editor2d.js && node --check components.js && node --check network.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js && node tests/network.test.js",
+    "test": "node --check main.js && node --check preload.js && node --check editor2d.js && node --check components.js && node --check network.js && node --check quality.js && node --check reports.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js && node tests/network.test.js && node tests/quality.test.js && node tests/reports.test.js",
     "dist:win": "electron-builder --win portable --x64 --publish never"
   },
   "devDependencies": {
@@ -27,7 +27,10 @@
       "network.js",
       "main.js",
       "vendor/three.min.js",
-      "package.json"
+      "package.json",
+      "quality.js",
+      "reports.js",
+      "preload.js"
     ],
     "directories": {
       "output": "dist"

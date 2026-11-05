@@ -43,3 +43,13 @@ Dieser Backlog ist ein **Implementierungsplan** für die nächste Iteration. Der
 ## 75-%-Entwicklungsstufe
 
 Details: [MILESTONE_75.md](./MILESTONE_75.md). Keine Bau-/Brandschutz-/Ausführungsfreigabe.
+
+## Level-100-Beta v1.0.0-beta.1
+
+- **Neu:** globales Schacht-/Kabel-/Rohr-Suchfeld mit Navigation in den Editor.
+- **Neu:** numerische Datenprüfungen mit benutzerdefinierten Mindestwerten und mehreren klar bezeichneten Geometriehinweisen; keine Normprüfung.
+- **Neu:** manuelle Quellen-/Statusvermerke pro Schacht oder Kabel, lokale nicht revisionssichere Änderungshistorie.
+- **Neu:** druckfähiges Berichtsformat mit nativem PDF-Speichern unter Windows sowie read-only Offline-HTML-Viewer.
+- **Weiter offen:** sämtliche fachlich validierten Norm- und Ausführungsnachweise, frei definierte Schachtgeometrie, echte physische Netz-Kabelübergänge, CAD/BIM-/KI-Erkennung, frei verschiebbare Platten in 2D, Mehrbenutzer- und Freigabeworkflow.
+
+**Der Meilenstein ist keine 100-prozentige Anforderungsabdeckung.** [MILESTONE_100.md](./MILESTONE_100.md).

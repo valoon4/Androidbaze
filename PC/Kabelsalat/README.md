@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Prototyp v0.6.0** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Beta-Prototyp v1.0.0-beta.1 – 100-%-Entwicklungsmeilenstein, nicht 100 % Fachabnahme** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-0.6.0-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-0.6.0-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.0.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.0.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -67,3 +67,13 @@ Die zweite Entwicklungsetappe ist in [MILESTONE_50.md](./MILESTONE_50.md) dokume
 ## 75-%-Meilenstein
 
 Siehe [MILESTONE_75.md](./MILESTONE_75.md). **75 %** bezeichnet die dritte Entwicklungsetappe, keine nachgewiesene 75-prozentige Erfüllung der Anforderungen. Das Programm ist nicht für elektrotechnische oder brandschutztechnische Freigaben geeignet.
+
+## Level-100-Meilenstein (Beta 1.0)
+
+Neu: **netzübergreifende Suche** nach Schacht, Kabel und Rohr mit direkter Navigation; konfigurierbare, ausdrücklich **nicht normative** Prüfwerte für Rohrabstände, Wandränder und eine reine Kontrollpunkt-Biegeradius-Näherung; automatische Datenhinweise für unvollständige Kabelanschlüsse und zu große Kabeldurchmesser; manuell dokumentierte Prüf-/Quellvermerke und lokale Änderungshistorie; **druckfähiger Projektbericht**, direkter Windows-PDF-Speicherdialog, HTML-Bericht und eigenständiger **interaktiver Offline-Viewer** (schreibgeschützt, 2D-Wände und Netzkabelwege). Zusätzlich können Kabel in der 2D-Wandprojektion ausgewählt werden.
+
+Die neuen Objekt- und Vermerkdaten sind Teil der Projekt-JSON (Formatversion 5). Vollständige alte Einzel-Schachtprojekte werden weiterhin übernommen. Vor dem Upgrade unbedingt ein JSON-Backup aus der bisherigen Programmversion exportieren und nach einem Versionswechsel erst eine Kopie öffnen.
+
+**Grenzen:** 100 % bedeutet Abschluss des vereinbarten vierstufigen Prototyp-Meilensteinplans, nicht die vollständige Erfüllung des AVL0116-Konzepts. Frei modellierbare Schächte, nachgewiesene physische Kabelkontinuität, normgerechte Biegeradien/Brandabschottung und CAD/BIM-/KI-Planerkennung fehlen. Die lokale Änderungshistorie ist **nicht manipulationssicher** und ersetzt keinen revisionssicheren Prüf-/Freigabeprozess. Fachanwender-Tests stehen aus.
+
+Siehe [MILESTONE_100.md](./MILESTONE_100.md) für Testschritte, Risiken und offene Anforderungen.
