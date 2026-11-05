@@ -130,6 +130,18 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 </div>
 </header>
 <aside class="sidebar">
+<section class="section" id="quickstartPanel">
+<div class="eyebrow">Sofort ausprobieren</div>
+<h2>Beispielprojekte</h2>
+<p class="small">Fiktive Demo-Daten, keine echten Bahnhofspläne. Alle Beispiele enthalten sichtbare Kabel, Leerrohre und Einhausungen.</p>
+<label class="field">Beispiel auswählen<select id="exampleSelect" class="selector">
+<option value="station">Bahnhofsnetz mit 4 Schächten</option>
+<option value="reference">Referenzschacht 13_T_021</option>
+<option value="quality">Prüffall mit Warnungen</option></select></label>
+<div class="row" style="margin-top:8px"><button id="loadExample" class="btn primary full">▶ Beispiel öffnen</button>
+<button id="showExampleNetwork" class="btn soft">◎ Netz</button></div>
+<div class="hint" id="exampleInfo">Im Beispiel sind Schachtwände, Kabel und Rohre bereits belegt.</div>
+</section>
 <section class="section" id="globalSearchPanel">
 <div class="eyebrow">Gesamtes Schachtnetz</div><h3>Kabel-, Rohr- und Schachtsuche</h3>
 <input id="globalSearch" class="txt" placeholder="Kabelname, ID, Leerrohr …" aria-label="Globale Netzsuche">
@@ -379,6 +391,6 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 </section>
 </aside>
 </div>
-<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="components.js"></script><script src="network.js"></script><script src="quality.js"></script><script src="reports.js"></script><script src="app.js"></script>
+<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="components.js"></script><script src="network.js"></script><script src="quality.js"></script><script src="reports.js"></script><script src="examples.js"></script><script src="app.js"></script>
 </body>
 </html>
