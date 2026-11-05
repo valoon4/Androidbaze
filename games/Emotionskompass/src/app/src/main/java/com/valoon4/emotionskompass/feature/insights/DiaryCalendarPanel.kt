@@ -4,14 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -23,14 +20,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.valoon4.emotionskompass.core.insights.DiaryCalendarDay
 import com.valoon4.emotionskompass.core.insights.DiaryCalendarMonth
 import java.time.LocalDate
 import java.time.YearMonth
@@ -71,14 +67,28 @@ class DiaryCalendarUiState {
 private fun countLabel(count: Int): String =
     if (count == 1) "1 gespeicherter Eintrag" else "$count gespeicherte Einträge"
 
+/** One item per date in the parent LazyColumn – no 31-button monolithic item. */
+@Composable
+fun DiaryCalendarDateListItem(day: DiaryCalendarDay, onSelect: () -> Unit) {
+    OutlinedButton(
+        onClick = onSelect,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+            .testTag("diary-calendar-day-${day.date}")
+    ) {
+        Text("${day.date.format(fullDayFormatter)} · ${countLabel(day.entryCount)}")
+    }
+}
+
 /**
- * One optional navigation surface. All 28–31 dates and entry counts are
- * equivalent in the visual grid and the accessible list.
+ * Header and (if there's sufficient room) compact month grid. The date LIST
+ * is rendered as individual LazyColumn items by the parent so each control
+ * can be scrolled to independently even at 320dp / 200% font scale.
  */
 @Composable
 fun DiaryCalendarPanel(
     calendar: DiaryCalendarMonth,
-    state: DiaryCalendarUiState
+    state: DiaryCalendarUiState,
+    supportsGrid: Boolean
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().testTag("diary-calendar-panel"),
@@ -136,18 +146,33 @@ fun DiaryCalendarPanel(
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.testTag("diary-calendar-month")
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        // Large system fonts get full-width navigation controls, not two
+        // squeezed and potentially clipped half-width buttons.
+        if (supportsGrid) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = { state.chooseMonth(state.month.minusMonths(1)) },
+                    modifier = Modifier.weight(1f).heightIn(min = 52.dp)
+                        .testTag("diary-calendar-previous-month")
+                ) { Text("‹ Vorheriger Monat") }
+                OutlinedButton(
+                    onClick = { state.chooseMonth(state.month.plusMonths(1)) },
+                    modifier = Modifier.weight(1f).heightIn(min = 52.dp)
+                        .testTag("diary-calendar-next-month")
+                ) { Text("Nächster Monat ›") }
+            }
+        } else {
             OutlinedButton(
                 onClick = { state.chooseMonth(state.month.minusMonths(1)) },
-                modifier = Modifier.weight(1f).heightIn(min = 52.dp)
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                     .testTag("diary-calendar-previous-month")
             ) { Text("‹ Vorheriger Monat") }
             OutlinedButton(
                 onClick = { state.chooseMonth(state.month.plusMonths(1)) },
-                modifier = Modifier.weight(1f).heightIn(min = 52.dp)
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                     .testTag("diary-calendar-next-month")
             ) { Text("Nächster Monat ›") }
         }
@@ -158,91 +183,67 @@ fun DiaryCalendarPanel(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        BoxWithConstraints(Modifier.fillMaxWidth()) {
-            // Seven cells need >=48dp each; 200% text should use the list.
-            val supportsGrid = maxWidth >= 336.dp && LocalDensity.current.fontScale <= 1.3f
-            if (!supportsGrid || state.listRequested) {
-                if (!supportsGrid) {
-                    Text(
-                        "Für diese Bildschirm- und Schriftgröße wird die " +
-                            "gleichwertige Datumsliste angezeigt.",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                            .testTag("diary-calendar-list-fallback")
-                    )
-                }
-                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    if (supportsGrid) {
-                        OutlinedButton(
-                            onClick = { state.listRequested = false },
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                                .testTag("diary-calendar-show-grid")
-                        ) { Text("Als Monatsraster ansehen") }
-                    }
-                    calendar.days.forEach { day ->
-                        OutlinedButton(
-                            onClick = { state.selectedDate = day.date },
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                                .testTag("diary-calendar-day-${day.date}")
-                        ) {
-                            Text(
-                                "${day.date.format(fullDayFormatter)} · ${countLabel(day.entryCount)}"
-                            )
-                        }
+
+        if (!supportsGrid) {
+            Text(
+                "Für diese Bildschirm- und Schriftgröße wird die " +
+                    "gleichwertige Datumsliste angezeigt.",
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.testTag("diary-calendar-list-fallback")
+            )
+        } else {
+            OutlinedButton(
+                onClick = { state.listRequested = !state.listRequested },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                    .testTag(if (state.listRequested) "diary-calendar-show-grid"
+                        else "diary-calendar-show-list")
+            ) {
+                Text(if (state.listRequested) "Als Monatsraster ansehen"
+                    else "Als Datumliste ansehen")
+            }
+        }
+
+        if (supportsGrid && !state.listRequested) {
+            Row(Modifier.fillMaxWidth()) {
+                listOf("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So").forEach { label ->
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        Text(label, style = MaterialTheme.typography.labelMedium)
                     }
                 }
-            } else {
-                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                    OutlinedButton(
-                        onClick = { state.listRequested = true },
-                        modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                            .testTag("diary-calendar-show-list")
-                    ) { Text("Als Datumliste ansehen") }
-                    Row(Modifier.fillMaxWidth()) {
-                        listOf("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So").forEach { label ->
-                            Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                                Text(label, style = MaterialTheme.typography.labelMedium)
-                            }
-                        }
-                    }
-                    val startBlank = calendar.month.atDay(1).dayOfWeek.value - 1
-                    val cells = List(startBlank) { null } + calendar.days
-                    cells.chunked(7).forEach { week ->
-                        Row(Modifier.fillMaxWidth()) {
-                            (week + List(7 - week.size) { null }).forEach { day ->
-                                if (day == null) {
-                                    Box(Modifier.weight(1f).heightIn(min = 52.dp))
-                                } else {
-                                    val description = "${day.date.format(fullDayFormatter)}, " +
-                                        countLabel(day.entryCount) + ", Tag auswählen"
-                                    Column(
-                                        modifier = Modifier.weight(1f).heightIn(min = 52.dp)
-                                            .testTag("diary-calendar-day-${day.date}")
-                                            .background(
-                                                if (day.entryCount > 0)
-                                                    MaterialTheme.colorScheme.surfaceVariant
-                                                else MaterialTheme.colorScheme.surface,
-                                                RoundedCornerShape(6.dp)
-                                            )
-                                            .clickable(role = Role.Button) {
-                                                state.selectedDate = day.date
-                                            }
-                                            .semantics { contentDescription = description },
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            "${day.date.dayOfMonth}",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        if (day.entryCount > 0) {
-                                            Text(
-                                                "${day.entryCount}×",
-                                                style = MaterialTheme.typography.labelSmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        }
+            }
+            val startBlank = calendar.month.atDay(1).dayOfWeek.value - 1
+            val cells = List(startBlank) { null } + calendar.days
+            cells.chunked(7).forEach { week ->
+                Row(Modifier.fillMaxWidth()) {
+                    (week + List(7 - week.size) { null }).forEach { day ->
+                        if (day == null) {
+                            Box(Modifier.weight(1f).heightIn(min = 52.dp))
+                        } else {
+                            val description = "${day.date.format(fullDayFormatter)}, " +
+                                countLabel(day.entryCount) + ", Tag auswählen"
+                            Column(
+                                modifier = Modifier.weight(1f).heightIn(min = 52.dp)
+                                    .testTag("diary-calendar-day-${day.date}")
+                                    .background(
+                                        if (day.entryCount > 0)
+                                            MaterialTheme.colorScheme.surfaceVariant
+                                        else MaterialTheme.colorScheme.surface,
+                                        RoundedCornerShape(6.dp)
+                                    )
+                                    .clickable(role = Role.Button) {
+                                        state.selectedDate = day.date
                                     }
+                                    .semantics { contentDescription = description },
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text("${day.date.dayOfMonth}", style = MaterialTheme.typography.bodyMedium)
+                                if (day.entryCount > 0) {
+                                    Text(
+                                        "${day.entryCount}×",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                 }
                             }
                         }
