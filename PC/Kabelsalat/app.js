@@ -406,6 +406,20 @@ function draw2D(){
  ctx.lineWidth=2.5;ctx.stroke();
  }
  }
+ for(const st of project.supports){
+  if(!st.visible||st.wall!==wallId)continue;
+  const x=st.wall==='SW1'||st.wall==='SW3'?st.z+project.dims.d/2:st.x+project.dims.w/2;
+  const wmm=st.wall==='SW1'||st.wall==='SW3'?st.d:st.w;
+  const centre=geom2d.toPixels(m,x,st.y);
+  const bw=Math.max(4,wmm*m.scale),bh=Math.max(4,st.h*m.scale);
+  ctx.fillStyle=st.type==='Auflager'?'#f7e3ba':'#d8e8f9';
+  ctx.fillRect(centre.x-bw/2,centre.y-bh/2,bw,bh);
+  ctx.strokeStyle=st.id===supportId?'#b75e2f':'#527c99';
+  ctx.lineWidth=st.id===supportId?3:1.5;
+  ctx.strokeRect(centre.x-bw/2,centre.y-bh/2,bw,bh);
+  ctx.font='10px Segoe UI,Arial';ctx.fillStyle='#456377';
+  ctx.textAlign='left';ctx.fillText(st.name.slice(0,16),centre.x+5,centre.y-5);
+ }
  if(hole()){
  const h=hole(),pos=geom2d.holeMillimetres(h,span,height),p=geom2d.toPixels(m,pos.x,pos.y);
  ctx.font='bold 11px Segoe UI,Arial';ctx.textAlign='left';ctx.fillStyle='#1a655a';
@@ -442,6 +456,15 @@ draft.addEventListener('pointerdown',e=>{
  draftDrag={holeId:selected.id,wallId,changed:false,x:p.x,y:p.y};
  draft.setPointerCapture(e.pointerId);e.preventDefault();return;
  }
+ const chosenSupport=project.supports.find(st=>{
+ if(st.wall!==wallId||!st.visible)return false;
+ const x=st.wall==='SW1'||st.wall==='SW3'?st.z+project.dims.d/2:st.x+project.dims.w/2;
+ const wmm=st.wall==='SW1'||st.wall==='SW3'?st.d:st.w;
+ const c=geom2d.toPixels(draftMetrics,x,st.y);
+ return Math.abs(p.x-c.x)<Math.max(6,wmm*draftMetrics.scale/2)&&
+   Math.abs(p.y-c.y)<Math.max(6,st.h*draftMetrics.scale/2);
+ });
+ if(chosenSupport){supportId=chosenSupport.id;renderAll();e.preventDefault();return;}
  if(mode!=='add')return;
  const w=wall();if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
  const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y);
