@@ -3,6 +3,8 @@
 const $=id=>document.getElementById(id),STORAGE='eugi.schachtwand.3d.v1';
 const components=globalThis.KabelsalatComponents;
 if(!components)throw Error('Kabelsalat-Komponentenmodul fehlt');
+const networkModel=globalThis.KabelsalatNetwork;
+if(!networkModel)throw Error('Kabelsalat-Netzmodul fehlt');
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
 const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -70,14 +72,20 @@ function validProject(o){
  const enclosures=components.normalizeEnclosures(o.enclosures,dims);
  const supports=components.normalizeSupports(o.supports,dims);
  const variants=components.normalizeVariants(o.variants);
- return {version:3,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
+ const result={version:4,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
  opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
  showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
  enclosures,supports,variants};
+ result.network=networkModel.normalizeNetwork(o.network,networkModel.snapshot(result));
+ result.activeShaftId=result.network.shafts.some(x=>x.id===o.activeShaftId)?
+ o.activeShaftId:result.network.shafts[0].id;
+ return result;
 }
-let project;try{project=validProject(JSON.parse(localStorage.getItem(STORAGE)))}catch(_){project=demo();}
+let project;try{project=validProject(JSON.parse(localStorage.getItem(STORAGE)))}catch(_){project=validProject(demo());}
 let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mode='orbit',grab=null;
 let panelKey='OLA-floor',supportId=null,variantId=null;
+let networkOpen=false,netRouteId=null,netSegmentShaftId=null,netLinkId=null;
+let mapZoom=1,mapOffsetX=0,mapOffsetY=0,mapDrag=null;
 const undo=[],redo=[];
 const wall=()=>project.walls.find(w=>w.id===wallId);
 const cable=()=>project.cables.find(c=>c.id===cableId);
@@ -85,13 +93,23 @@ const hole=()=>wall()?.holes.find(h=>h.id===holeId);
 const plate=()=>project.enclosures[panelKey.split('-')[0]]?.panels.find(p=>p.id===panelKey);
 const support=()=>project.supports.find(s=>s.id===supportId);
 const currentVariant=()=>project.variants.find(v=>v.id===variantId);
-function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(project));$('saveStatus').textContent='● Lokal gespeichert';}catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}}
-function change(fn){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;fn();renderAll();persist();}
-function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();renderAll();persist();}
+function syncActiveShaft(){
+ const s=project.network?.shafts.find(x=>x.id===project.activeShaftId);
+ if(s){s.name=project.name;s.snapshot=networkModel.snapshot(project);}
+}
+function persist(){
+ syncActiveShaft();
+ try{localStorage.setItem(STORAGE,JSON.stringify(project));$('saveStatus').textContent='● Lokal gespeichert';}
+ catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}
+}
+function change(fn){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;fn();syncActiveShaft();renderAll();persist();}
+function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;
  if(!plate())panelKey='OLA-floor';
  if(!project.supports.some(s=>s.id===supportId))supportId=project.supports[0]?.id||null;
- if(!project.variants.some(v=>v.id===variantId))variantId=project.variants[0]?.id||null;}
+ if(!project.variants.some(v=>v.id===variantId))variantId=project.variants[0]?.id||null;
+ if(!project.network.routes.some(v=>v.id===netRouteId))netRouteId=project.network.routes[0]?.id||null;
+ if(!project.network.shafts.some(v=>v.id===netSegmentShaftId))netSegmentShaftId=project.activeShaftId;}
 function wallSpanMm(id){return id==='SW1'||id==='SW3'?project.dims.d:project.dims.w;}
 function geometryWarnings(){
  let overlaps=0,edges=0;
@@ -361,7 +379,7 @@ function drawCable(c){
  }
 }
 function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);view();draw2D();}
-function renderAll(){fixSelection();renderUI();rebuild();}
+function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();drawNetwork();}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
@@ -642,7 +660,7 @@ $('restoreVariant').addEventListener('click',()=>{
  const v=currentVariant();if(!v||!confirm('Variante „'+v.name+'“ laden? Die aktuelle Planung wird ersetzt, bleibt aber über Rückgängig erreichbar.'))return;
  const snapshot=JSON.parse(JSON.stringify(v.snapshot)),all=project.variants;
  change(()=>{
- project=validProject({...snapshot,variants:all});
+ project=validProject({...snapshot,variants:all,network:project.network,activeShaftId:project.activeShaftId});
  wallId='SW1';holeId=null;cableId=project.cables[0]?.id||null;
  supportId=project.supports[0]?.id||null;panelKey='OLA-floor';filter='all';
  });
@@ -686,7 +704,9 @@ $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung st
  change(()=>{project=demo();project.name='Neue Schachtwandplanung';project.cables=[];
  project.walls.forEach(w=>{w.holes=[];w.rows=3;w.cols=4;});
  wallId='SW1';holeId=null;cableId=null;filter='all';viewMode='3D';
- panelKey='OLA-floor';supportId=null;variantId=null;});});
+ panelKey='OLA-floor';supportId=null;variantId=null;
+ project.network=networkModel.createNetwork(project);project.activeShaftId='S1';
+ networkOpen=false;netRouteId=null;netSegmentShaftId='S1';});});
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
 function resize(){const rect=$('scene').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();draw2D();}
 new ResizeObserver(resize).observe($('viewport'));
