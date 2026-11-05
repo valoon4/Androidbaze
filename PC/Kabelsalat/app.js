@@ -1,6 +1,8 @@
 (() => {
 'use strict';
 const $=id=>document.getElementById(id),STORAGE='eugi.schachtwand.3d.v1';
+const components=globalThis.KabelsalatComponents;
+if(!components)throw Error('Kabelsalat-Komponentenmodul fehlt');
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
 const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -36,9 +38,9 @@ function demo(){
  const cables=pairs.map((p,i)=>({id:'c'+(i+1),name:names[i],color:colors[i],group:i<3?'OLA':i<5?'MS':'Weitere',
  diameter:12,route:[],a:{wall:p[0],hole:p[0]+'-r'+p[1]+'-o'+p[2]},
  b:{wall:p[3],hole:p[3]+'-r'+p[4]+'-o'+p[5]}}));
- return {version:2,name:'Referenzschacht · 3D-Entwurf',
+ return {version:3,name:'Referenzschacht · 3D-Entwurf',
  dims:{w:2400,d:1900,h:2100},walls,cables,opacity:54,showBox:true,showLabels:true,splitEnabled:true,
- enclosures:{OLA:{visible:true,opacity:70},MS:{visible:true,opacity:48}}};
+ enclosures:components.defaults({w:2400,d:1900,h:2100}),supports:[],variants:[]};
 }
 function validProject(o){
  if(!o||typeof o!=='object'||!o.dims||!Array.isArray(o.walls)||!Array.isArray(o.cables))throw Error('Ungültige Projektdatei');
@@ -65,22 +67,31 @@ function validProject(o){
  a:find(c.a)?{wall:c.a.wall,hole:c.a.hole}:null,
  b:find(c.b)?{wall:c.b.wall,hole:c.b.hole}:null
  }));
- const encl=o.enclosures||{};
- const group=k=>({visible:encl[k]?.visible!==false,opacity:clamp(Number(encl[k]?.opacity)||60,10,100)});
- return {version:2,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
+ const enclosures=components.normalizeEnclosures(o.enclosures,dims);
+ const supports=components.normalizeSupports(o.supports,dims);
+ const variants=components.normalizeVariants(o.variants);
+ return {version:3,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
  opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
- showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,enclosures:{OLA:group('OLA'),MS:group('MS')}};
+ showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
+ enclosures,supports,variants};
 }
 let project;try{project=validProject(JSON.parse(localStorage.getItem(STORAGE)))}catch(_){project=demo();}
 let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mode='orbit',grab=null;
+let panelKey='OLA-floor',supportId=null,variantId=null;
 const undo=[],redo=[];
 const wall=()=>project.walls.find(w=>w.id===wallId);
 const cable=()=>project.cables.find(c=>c.id===cableId);
 const hole=()=>wall()?.holes.find(h=>h.id===holeId);
+const plate=()=>project.enclosures[panelKey.split('-')[0]]?.panels.find(p=>p.id===panelKey);
+const support=()=>project.supports.find(s=>s.id===supportId);
+const currentVariant=()=>project.variants.find(v=>v.id===variantId);
 function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(project));$('saveStatus').textContent='● Lokal gespeichert';}catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}}
 function change(fn){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;fn();renderAll();persist();}
 function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();renderAll();persist();}
-function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;}
+function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;
+ if(!plate())panelKey='OLA-floor';
+ if(!project.supports.some(s=>s.id===supportId))supportId=project.supports[0]?.id||null;
+ if(!project.variants.some(v=>v.id===variantId))variantId=project.variants[0]?.id||null;}
 function wallSpanMm(id){return id==='SW1'||id==='SW3'?project.dims.d:project.dims.w;}
 function geometryWarnings(){
  let overlaps=0,edges=0;
