@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.2 – 06.11.2026 (inhaltliche Vorschläge grundsätzlich akzeptiert; Details noch zu validieren)  
+**Status:** Konzeptstand 0.3 – M2-Detailkonzept zur Prüfung in separatem PR (06.11.2026); ursprüngliche Produktvision v0.2 bereits bestätigt  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -301,6 +301,16 @@ Für jede der sechs Kompetenzen sollen konkrete Indikatoren entwickelt werden; a
 - **Nicht bereits final festgelegt:** exakte Anzahl der Slider, Trainingsszenarien, Charaktere, Pfad-Level, XP, Schwellenwerte, technische Implementierungen, Datenschutzdetails und Pilotmethodik.
 - **MVP-Vorrang:** Zu Beginn eine überschaubare, gut getestete Version mit wenigen hervorragenden Charakteren und vertrauenswürdigem Feedback statt einer großen Anzahl unreifer Features.
 - **GitHub-Vorgabe:** Selbst ein inhaltlich begrüßter Vorschlag ist keine ausdrückliche Genehmigung eines GitHub-PR oder Merges.
+
+### 18.11 M2: Vertiefte Charakter- und Simulationsspezifikation
+
+Die bisherige Charaktervision ist nun in zwei **separaten, ausführlichen Arbeitsdokumenten** konkretisiert:
+- **[CHARAKTER_SIMULATION.md](CHARAKTER_SIMULATION.md):** Charakteridentität, Big-Five-inspirierte Hintergrunddimensionen, eigenständige Kommunikationsachsen, momentaner Zustand, Beziehungskontext, kontrollierbare Erinnerungen, Szenario- und Schwierigkeitsmodelle, Gesprächsregie, Antwortpipeline, Wiederholungsmodus, Charaktereditor, Beispiele und MVP-Etappen M2.1–M2.6.
+- **[CHARAKTER_SIMULATION_TESTPLAN.md](CHARAKTER_SIMULATION_TESTPLAN.md):** 24 konkrete Prüffälle, menschliches Bewertungsraster, Sicherheits-/Qualitätsgates, Langzeit- und Regressionstests.
+
+**Konzeptionelle Leitentscheidungen:** Charaktereigenschaften, Kommunikationstendenzen, situative Stimmung, Gesprächsbereitschaft und Beziehung dürfen nicht vermischt werden. Figuren müssen eigene Interessen, Initiativen, Grenzen und realistische Gesprächsenden zeigen. Die Simulationsengine nutzt Versionierung und begrenzte Zustandsänderungen; sie hält Nutzer-Nachrichten von Systemanweisungen und die spätere Coach-Auswertung von der Persona-Simulation getrennt. Individuelle Schieberegler, Schwierigkeitswerte und Memory-Kriterien bedürfen vor Implementierung einer separaten fachlichen Validierung.
+
+**Status:** Die M2-Vertiefung ist eine neue Ausarbeitung zur Prüfung, keine bereits abgenommene Code-Implementierung. Sie ersetzt die grundsätzlichen Produktentscheidungen aus v0.2 nicht, sondern präzisiert sie.
 
 ## 19. Status offener Entscheidungen
 
