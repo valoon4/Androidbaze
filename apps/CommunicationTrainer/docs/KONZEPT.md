@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.4 – K1 Lern- und Kompetenzsystem zur Prüfung in PR (06.11.2026); M2-Detailkonzept durch PR #45 auf main übernommen  
+**Status:** Konzeptstand 0.5 – K2 Kommunikationscoach und Feedbacksystem zur Prüfung im separaten PR (06.11.2026); K1 durch PR #47 auf main übernommen  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -324,13 +324,27 @@ Auf Basis der bisher vereinbarten sechs Kompetenzfelder wurde das didaktische Fu
 
 **Status:** K1 ist zur Prüfung ausgearbeitet, noch keine freigegebene Implementierung oder abschließende Wirksamkeitsvalidierung. Fachliche Messschwellen und Feedbackausgabe werden in K2 und späteren Tests präzisiert.
 
+### 18.13 K2: Kommunikationscoach, Feedback und Qualitätskontrolle
+
+Die aus K1 abgeleiteten Regeln für den Kommunikationscoach sind als **ausführliche, noch zu prüfende Fachspezifikation** dokumentiert:
+
+- **[K2_KOMMUNIKATIONSCOACH.md](K2_KOMMUNIKATIONSCOACH.md)**: freiwillige Coach-Modi, Belegpflicht, Datenzugriff, Trennung von Beobachtung/Interpretation/Unsicherheit/Option, Nicht-Beurteilbarkeit, Feedbackpriorisierung, Lernprofil, Nutzerkorrektur, strukturiertes Ausgabeformat und MVP-Abgrenzung.
+- **[K2_COACH_BEISPIELE.md](K2_COACH_BEISPIELE.md)**: zwanzig ausgearbeitete Feedback- und Kontrastbeispiele mit zulässigen und unzulässigen Rückmeldungen.
+- **[K2_COACH_QUALITAET.md](K2_COACH_QUALITAET.md)**: 36 Prüffälle, Kontext-Kontrasttests, menschliches Bewertungsraster und kritische Qualitätsgates.
+
+**Kernprinzipien:** Ein guter Coach muss nicht jede Nachricht bewerten. Er erläutert nur belegte Verhaltensweisen, erlaubt verschiedene angemessene Antworten und darf ausdrücklich feststellen, dass **keine Verbesserung nötig** oder **noch keine verlässliche Bewertung möglich** ist. Freie Chats bleiben ohne angeforderten Coach ungestört. Die simulierte Reaktion der Persona ist kein Beweis für die Qualität der Nutzerantwort. Ausdrückliche Grenzen, Privatsphäre und Selbstbestimmung stehen über Gesprächslänge und Engagement.
+
+**Lernprofil:** einzelne Ereignisse bleiben von wiederkehrenden Mustern getrennt. Für eine Pilotierung wird als **nicht validierte, konservative Startbedingung** mindestens drei geeignete unabhängige Beobachtungsgelegenheiten in mindestens zwei unterschiedlichen Kontexten vorgeschlagen. Diese Regel darf nur nach fachlicher Evaluation verwendet werden; bei unzureichender Zuverlässigkeit bleibt automatische Mustererkennung deaktiviert.
+
+**Abhängigkeiten:** K3 wird konkrete Personas und Kontextinformationen liefern, K4 das Coach-Erlebnis in der Oberfläche ausarbeiten, K5 technische Datenverträge und Datenschutz konkretisieren und K6 die Gesamtwirkung prüfen. Es ist noch keine KI-Coach-Funktion implementiert oder validiert.
+
 ## 19. Status offener Entscheidungen
 
 **Bereits abgestimmt:** Fokus auf Alltagskommunikation und soziale Kontakte; freier Chat plus Übung und Wiederholung; unterschiedliche KI-Charaktere und Stimmungen; Feedback, Lernbeobachtungen und Spielmotivation; getrennte Projektablage; PR-Freigabe vor Merge.
 
 **Grundsätzlich befürwortete konzeptionelle Vorschläge:** Kompetenzatlas, drei verbundene Modi, mehrschichtige Charaktere, differenzierte Schwierigkeitsdynamiken, lernorientierter Coach, freiwillige Mini-Lektionen, nachvollziehbarer Fortschritt, Alltagstransfer, vierteilige Navigation und stufenweiser MVP. Die konkrete Zahl der Inhalte, exakte Parameter, technische Wahl und Ausgestaltung sind weiterhin vor Implementierung zu prüfen.
 
-**Noch zu entscheiden:** endgültiger App-Name; genauer Onboarding-Ablauf; Datenhaltung und KI-Dienste; Preismodell; konkrete Charakterprofile und Editor-Defaults; Gesprächslänge und Pausen; Coach-Auswahl und -Priorisierung; Mess- und Qualitätsschwellen; detaillierte Datenschutz- und Teststrategie.
+**Noch zu entscheiden:** endgültiger App-Name; genauer Onboarding-Ablauf; Datenhaltung und KI-Dienste; Preismodell; konkrete Charakterprofile und Editor-Defaults; Gesprächslänge und Pausen; endgültige Coach-UX und Einwilligungsgestaltung; evidenzbasierte Mess- und Qualitätsschwellen; detaillierte Datenschutz- und Pilotstrategie.
 
 ## 20. Weiterführung und Änderungsprozess
 
