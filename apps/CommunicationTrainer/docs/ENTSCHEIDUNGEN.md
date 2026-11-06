@@ -1,6 +1,25 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
-## 2026-11-06 – Konzeptstand 0.3 (PR ausstehend): M2 Charakter- und Simulationssystem
+## 2026-11-06 – Konzeptstand 0.4 (PR offen): K1 Lern- und Kompetenzsystem
+
+**Auftrag:** Nach Durchsicht der konzeptionellen Lücken wurde eine vorgeschaltete Konzeptabschlussphase K1–K6 empfohlen. Der Nutzer hat zugestimmt: Beginn mit K1, anschließend K2, K3, K4, K5 und K6.
+
+**Neue K1-Dokumente:**
+- [K1_LERN_KOMPETENZSYSTEM.md](K1_LERN_KOMPETENZSYSTEM.md) – Lernphilosophie, sechs Kompetenzbereiche mit vier Unterkompetenzen je Bereich, beobachtbare Verhaltensanker, Kontextabhängigkeit, Übungsformen, zwölf Beispiellektionen, Lernkreislauf und Schnittstelle zu K2.
+- [K1_KOMPETENZ_PRUEFFELLE.md](K1_KOMPETENZ_PRUEFFELLE.md) – ausformulierte alternative Antwortpfade, 24 Fallprüfungen, Einordnung von Mehrdeutigkeit, Grenzschutz, fairer Bewertung und Nicht-Beurteilbarkeit.
+
+**Wesentliche konzeptionelle Entscheidungen als neue Vorschläge:**
+- Kompetenzfortschritt ist keine globale psychologische oder soziale Bewertung und folgt keinen simplen Nachrichtenmetriken.
+- Mehrere Antworten können situativ angemessen sein; Interesse, eigener Beitrag und respektvolle Zurückhaltung werden miteinander in Beziehung gesetzt.
+- Kurzfeedback verlangt konkrete Textbelege und erlaubt „kein Verbesserungspunkt belegbar“.
+- Ein klares Nein wird als Grenze respektiert; kurze oder endende Unterhaltungen sind nicht automatisch schlechte Gespräche.
+- Lernprofil und Coaching werden getrennt; langfristige Beobachtungen erfordern wiederholte vergleichbare Kontexte.
+- Keine impliziten Defizitzuschreibungen aus kulturellen, neurodivergenten oder introvertierten Kommunikationsweisen.
+- K1 liefert das Fachmodell; K2 definiert später konkrete Coach-Auswahlregeln, Qualitätsschwellen und Rückmeldeformen.
+
+**Status:** Vom Nutzer genehmigter Arbeitsauftrag zur Konzeptentwicklung, aber **keine automatische Freigabe des K1-Pull-Requests oder Merges**. Alle K1-Änderungen bleiben bis zur ausdrücklichen PR-Freigabe auf dem Entwicklungsbranch.
+
+## 2026-11-06 – Konzeptstand 0.3 (PR #45 gemergt): M2 Charakter- und Simulationssystem
 
 **Anlass:** Der Nutzer hat PR #44 ausdrücklich freigegeben und als nächstes die detaillierte Konzeption des Charakter- und Simulationssystems beauftragt. PR #44 ist nach main gemergt.
 
@@ -18,7 +37,7 @@
 - Persona-Versionen sind pro laufendem Chat stabil; Wiederholungsübungen halten den Ausgangskontext fest.
 - Qualitätsprüfungen beinhalten lange Chats, Grenzen, Datenschutz, Prompt Injection, Sykophanzie und realistische Variabilität.
 
-**Wichtig:** Dieser Stand ist vorläufig und erfordert eine **neue ausdrückliche PR-Freigabe**, bevor er nach main übernommen wird. Es wurde noch keine App implementiert.
+**Statusaktualisierung:** PR #45 wurde vom Nutzer ausdrücklich freigegeben und nach main gemergt. Die M2-Detailkonzeption ist damit dokumentiert; es wurde noch keine App implementiert.
 
 ## 2026-11-06 – Konzeptstand 0.2: bisherige Verbesserungsvorschläge vollständig aufgenommen
 
