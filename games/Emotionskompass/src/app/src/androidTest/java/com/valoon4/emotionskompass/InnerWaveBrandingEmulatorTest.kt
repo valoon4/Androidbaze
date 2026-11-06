@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -53,6 +54,7 @@ class InnerWaveBrandingEmulatorTest {
 
     @Test fun approvedSplashHasAccessibleBrandNameAndNoControls() {
         rule.setContent { InnerWaveSplashScreen() }
-        rule.onNodeWithContentDescription("InnerWave").assertExists()
+        rule.onNodeWithContentDescription("InnerWave-Logo").assertExists()
+        rule.onNodeWithText("InnerWave").assertExists()
     }
 }
