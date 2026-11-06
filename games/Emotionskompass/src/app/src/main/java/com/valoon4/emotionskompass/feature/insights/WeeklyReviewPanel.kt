@@ -172,7 +172,9 @@ fun WeeklyReviewCard(
     week: WeeklyReviewWeek,
     state: WeeklyReviewUiState,
     emotionName: (String) -> String,
-    needName: (String) -> String
+    needName: (String) -> String,
+    canReflect: Boolean = false,
+    onReflect: () -> Unit = {}
 ) {
     val open = state.selectedWeekStart == week.firstDay
     Card(Modifier.fillMaxWidth().testTag("weekly-review-week-card-${week.firstDay}")) {
@@ -253,6 +255,21 @@ fun WeeklyReviewCard(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                     .testTag("weekly-review-evidence-toggle-${week.firstDay}")
             ) { Text("Einträge dieser Woche ansehen") }
+            TextButton(
+                onClick = onReflect,
+                enabled = canReflect,
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                    .testTag("weekly-review-reflection-${week.firstDay}")
+            ) {
+                Text("Freiwillig über diese Woche nachdenken")
+            }
+            Text(
+                "Nur wenn du möchtest: Du kannst eine eigene Erkenntnis " +
+                    "notieren. Es wird nichts automatisch interpretiert, " +
+                    "verknüpft oder gespeichert.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             if (state.showEvidence) {
                 Text(
                     "Passende Tagebucheinträge folgen direkt unter dieser Woche.",
