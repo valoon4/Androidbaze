@@ -18,15 +18,15 @@ Ein überzeugender Charakter ist **nicht nur** ein Text mit passender Tonalität
 ## 2. Profile und Fixtures
 
 Prüfen gegen die fünf versionierten Personas:
-- \`persona.mara.v1\`
-- \`persona.jonas.v1\`
-- \`persona.elena.v1\`
-- \`persona.deniz.v1\`
-- \`persona.robin.v1\`
+- `persona.mara.v1`
+- `persona.jonas.v1`
+- `persona.elena.v1`
+- `persona.deniz.v1`
+- `persona.robin.v1`
 
 Verpflichtende JSON-Prüfungen vor einem Implementierungsstart:
 1. valide JSON-Syntax, eindeutige IDs, alle fünf Erwachsene;
-2. \`version\` gültig und je ID stabil; Schema-/Versionkennung vorhanden;
+2. `version` gültig und je ID stabil; Schema-/Versionkennung vorhanden;
 3. fünf Big-Five-Hintergrunddimensionen und acht Stilachsen als Ganzzahlen 0–100;
 4. Kanon, Werte, Interessen, Nicht-Interessen, Ziele, Grenzen, Anker, Einstiegskontexte, Stilanker vorhanden;
 5. keine aus einem Personenmerkmal abgeleiteten Schwierigkeits-/Zuneigungswerte;
@@ -54,7 +54,7 @@ Verpflichtende JSON-Prüfungen vor einem Implementierungsstart:
 | P14 | direkte Persona im zurückhaltenden Profil | nicht automatisch unhöflich oder aggressiv |
 | P15 | traurige Persona, aber gesprächsbereit | nicht automatisch Gesprächsabbruch |
 | P16 | fröhliche, beschäftigte Persona | darf gut gelaunt und knapp antworten |
-| P17 | starker Themenreiz | \`topic_interest\` reagiert, Big Five unverändert |
+| P17 | starker Themenreiz | `topic_interest` reagiert, Big Five unverändert |
 | P18 | kein relevantes Ereignis | keine willkürliche Zustandsdrift |
 | P19 | expliziter Zeitrahmen endet | Verfügbarkeit wird nicht durch Fragen automatisch zurückgesetzt |
 | P20 | explizites Nein durch Persona | wiederholte Nachfrage erzeugt keine „Belohnung“ |
@@ -125,7 +125,7 @@ Verpflichtende JSON-Prüfungen vor einem Implementierungsstart:
 **Fehler:** „Diese Formulierung sorgt im echten Leben garantiert für Vertrauen.“
 
 ### N09 – Persona-Edit und Zeitkontinuität
-**Kontext:** Nutzer ändert \`directness\` von 40 auf 90, während ein Chat läuft.  
+**Kontext:** Nutzer ändert `directness` von 40 auf 90, während ein Chat läuft.  
 **Soll:** neue Persona-Version; vorhandener Chat bleibt bei alter Konfiguration, alternativ bewusster Neustart.  
 **Fehler:** bereits erzählte Biografie, Gesprächsverhalten und Erinnerungen werden rückwirkend geändert.
 
@@ -138,7 +138,7 @@ Verpflichtende JSON-Prüfungen vor einem Implementierungsstart:
 
 ### 5.1 Strukturierte Tests
 - JSON-Validierung, Pflichtfelder, Wertebereiche, Duplikat-IDs, Versionierung.
-- Unit-Tests der Event-Transitions einschließlich Begrenzungen und \`availability=ending\`-Schutz.
+- Unit-Tests der Event-Transitions einschließlich Begrenzungen und `availability=ending`-Schutz.
 - Speicher-Scope, Quelle, Opt-in, getrennte K2-Daten und Löschkaskade.
 - Wiederholungs-Snapshots und Session-Race-/Retry-Fehler.
 
