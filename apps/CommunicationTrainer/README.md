@@ -14,6 +14,9 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [Lern- und Kompetenzsystem (K1)](docs/K1_LERN_KOMPETENZSYSTEM.md) – sechs Kompetenzbereiche, Anker, zwölf Lektionen, didaktischer Kreislauf und Übergabe an K2.
 - [K1-Dialogkontraste und Prüffälle](docs/K1_KOMPETENZ_PRUEFFELLE.md) – neun Dialogbeispiele und 24 fachliche Gegenprüfungen.
 
+- [K2 Kommunikationscoach und Feedbacksystem](docs/K2_KOMMUNIKATIONSCOACH.md) – Beobachtungslogik, Feedbackvarianten, Priorisierung, Lernprofil und Qualitätsanforderungen.
+- [K2 Test- und Annotationsplan](docs/K2_FEEDBACK_QUALITAET_TESTPLAN.md) – konkrete Kontrastfälle, Fehlerklassen, menschliche Prüfungen und Sicherheitsgates.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. Eine spätere eigene Build-Struktur wird vor einer Umsetzung konzipiert und überprüft.
