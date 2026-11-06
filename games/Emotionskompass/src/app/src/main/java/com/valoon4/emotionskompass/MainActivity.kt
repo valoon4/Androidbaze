@@ -12,9 +12,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -85,7 +88,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
@@ -272,23 +278,86 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- * Exact approved visual composition. The platform Android 12 splash is an
- * icon on a matching background; this short in-app brand frame contains the
- * complete art and wordmark because the OS splash API cannot show a full image.
+ * Native, resolution-independent adaptation of the approved InnerWave design:
+ * a deep teal glow, soft corner waves, the vector logo and its wordmark.
+ * Android 12+ also uses the same logo on the matching system splash background.
+ * No networking, logging, sensitive data or new persistent state.
  */
 @Composable
 fun InnerWaveSplashScreen() {
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize().background(Color(0xFF004C49)),
+        modifier = Modifier.fillMaxSize().background(
+            Brush.radialGradient(
+                colors = listOf(Color(0xFF13735F), Color(0xFF005D55),
+                    Color(0xFF004A47), Color(0xFF003E3D))
+            )
+        ),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(R.drawable.innerwave_splash),
-            contentDescription = "InnerWave",
-            contentScale = if (maxWidth > maxHeight) ContentScale.Fit
-                else ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        Canvas(Modifier.fillMaxSize()) {
+            val w = size.width
+            val h = size.height
+            val upper = Path().apply {
+                moveTo(0f, 0f)
+                lineTo(w, 0f)
+                cubicTo(w * 0.78f, h * 0.035f, w * 0.76f, h * 0.09f,
+                    w * 0.59f, h * 0.115f)
+                cubicTo(w * 0.39f, h * 0.16f, w * 0.27f, h * 0.08f,
+                    0f, h * 0.18f)
+                close()
+            }
+            drawPath(
+                upper,
+                brush = Brush.linearGradient(
+                    colors = listOf(Color(0xFF00655A), Color(0xFF399B77),
+                        Color(0xFF004A46)),
+                    start = Offset(w * 0.75f, 0f),
+                    end = Offset(w * 0.3f, h * 0.21f)
+                ),
+                alpha = 0.68f
+            )
+            val lower = Path().apply {
+                moveTo(0f, h * 0.88f)
+                cubicTo(w * 0.18f, h * 0.85f, w * 0.29f, h * 0.96f,
+                    w * 0.49f, h * 0.86f)
+                cubicTo(w * 0.75f, h * 0.73f, w * 0.83f, h * 0.82f,
+                    w, h * 0.75f)
+                lineTo(w, h)
+                lineTo(0f, h)
+                close()
+            }
+            drawPath(
+                lower,
+                brush = Brush.linearGradient(
+                    listOf(Color(0xFF006254), Color(0xFF3B9C76),
+                        Color(0xFF005044)),
+                    start = Offset(w * 0.55f, h * 0.79f),
+                    end = Offset(w * 0.30f, h)
+                ),
+                alpha = 0.45f
+            )
+        }
+        Column(
+            modifier = Modifier.fillMaxWidth().offset(y = maxHeight * 0.015f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(0.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.innerwave_launcher_foreground),
+                contentDescription = "InnerWave-Logo",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f)
+            )
+            Text(
+                "InnerWave",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color(0xFFFFE9C8),
+                fontSize = if (maxWidth < 380.dp) 46.sp else 55.sp,
+                fontWeight = FontWeight.Normal,
+                maxLines = 1,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
