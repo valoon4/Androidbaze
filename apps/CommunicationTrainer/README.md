@@ -11,6 +11,9 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [Charakter- und Simulationssystem](docs/CHARAKTER_SIMULATION.md) – M2-Detailkonzept für Persona, Zustände, Erinnerung, Gesprächsregie und Editor.
 - [Charakter-Qualität & Testplan](docs/CHARAKTER_SIMULATION_TESTPLAN.md) – Evaluationsfälle, Qualitätskriterien und Regressionstests.
 
+- [Lern- und Kompetenzsystem (K1)](docs/K1_LERN_KOMPETENZSYSTEM.md) – sechs Kompetenzbereiche, Anker, zwölf Lektionen, didaktischer Kreislauf und Übergabe an K2.
+- [K1-Dialogkontraste und Prüffälle](docs/K1_KOMPETENZ_PRUEFFELLE.md) – neun Dialogbeispiele und 24 fachliche Gegenprüfungen.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. Eine spätere eigene Build-Struktur wird vor einer Umsetzung konzipiert und überprüft.
