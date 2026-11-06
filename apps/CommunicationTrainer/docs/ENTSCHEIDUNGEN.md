@@ -1,6 +1,30 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
-## 2026-11-06 – Konzeptstand 0.4 (PR offen): K1 Lern- und Kompetenzsystem
+## 2026-11-06 – Konzeptstand 0.5 (PR offen): K2 Kommunikationscoach und Feedbacksystem
+
+**Auftrag:** Nach ausdrücklicher Freigabe und Merge von PR #47 wurde K2 als nächste Etappe der Konzeptabschlussphase in Auftrag gegeben. Der Nutzer legt Wert auf professionelle, durchdachte Ausarbeitung.
+
+**Neue K2-Dokumente:**
+- [K2_KOMMUNIKATIONSCOACH.md](K2_KOMMUNIKATIONSCOACH.md): Rollen, freiwillige Modi, K1-Zuordnung, Evidenz, Policy-Reihenfolge, Feedback-UX, strukturierter Datenvertrag, Lernprofil und Risiken.
+- [K2_COACH_BEISPIELE.md](K2_COACH_BEISPIELE.md): 20 kontextbezogene Feedbackbeispiele mit zulässigen und unzulässigen Aussagen.
+- [K2_COACH_QUALITAET.md](K2_COACH_QUALITAET.md): 36 Prüffälle, menschliche Prüfmethodik, Kontext-Kontraste, kritische Freigabegates und Testaufbau.
+
+**Fachliche Vorschläge zur Freigabe:**
+- Freie Chats werden nicht ungebeten bewertet; Coaching wird ausdrücklich angefordert oder nach einer Übung freiwillig angeboten.
+- Kurzes Feedback enthält maximal eine priorisierte Stärke und eine sinnvolle Lernoption, wenn jeweils belegbar.
+- Beobachtung, Interpretation, Unsicherheit und Alternative werden unterschieden.
+- "Nicht beurteilbar" und "kein Verbesserungspunkt notwendig" sind beabsichtigte Qualitätsfunktionen.
+- Simulierte Persona-Gefühle und positive KI-Reaktionen gelten nicht als unabhängiger Nachweis von Kommunikationsqualität.
+- Der Coach verwendet überprüfbare, zugriffsberechtigte Nachrichtenreferenzen und respektiert Nutzerkorrekturen.
+- Explizite Grenzen werden nie zugunsten längerer Gespräche unterlaufen.
+- Lernprofil und XP bleiben getrennt; eine konservative, **unvalidierte Pilot-Heuristik** für Muster ist mindestens 3 geeignete Gelegenheiten in mindestens 2 verschiedenen Kontexten. Ohne zuverlässige Validierung keine automatische Musteranzeige.
+- Kritische Fehler (Datenleck, erfundene Belege, manipulative Ratschläge, unzulässige Diagnosen) dürfen nicht durch gute Durchschnittswerte kompensiert werden.
+
+**Noch offen:** konkrete Einwilligungs-/Speicherarchitektur, UI-Wording, API-Schema, Feedback-Kalibrierung, verantwortbare Qualitätsgrenzen und Pilotbetrieb. Fachliche Details sind Vorschläge, keine bereits validierten Resultate.
+
+**Status:** K2 liegt auf einem neuen Entwicklungsbranch; keine App implementiert. **Kein Merge dieses K2-PR ohne die ausdrückliche Freigabe des Nutzers.**
+
+## 2026-11-06 – Konzeptstand 0.4 (PR #47 gemergt): K1 Lern- und Kompetenzsystem
 
 **Auftrag:** Nach Durchsicht der konzeptionellen Lücken wurde eine vorgeschaltete Konzeptabschlussphase K1–K6 empfohlen. Der Nutzer hat zugestimmt: Beginn mit K1, anschließend K2, K3, K4, K5 und K6.
 
@@ -17,7 +41,7 @@
 - Keine impliziten Defizitzuschreibungen aus kulturellen, neurodivergenten oder introvertierten Kommunikationsweisen.
 - K1 liefert das Fachmodell; K2 definiert später konkrete Coach-Auswahlregeln, Qualitätsschwellen und Rückmeldeformen.
 
-**Status:** Vom Nutzer genehmigter Arbeitsauftrag zur Konzeptentwicklung, aber **keine automatische Freigabe des K1-Pull-Requests oder Merges**. Alle K1-Änderungen bleiben bis zur ausdrücklichen PR-Freigabe auf dem Entwicklungsbranch.
+**Statusaktualisierung:** Der Nutzer hat PR #47 ausdrücklich genehmigt. Der K1-Pull-Request wurde danach nach main gemergt. Die K1-Fachbasis ist übernommen; K2 bildet einen neuen, getrennten PR.
 
 ## 2026-11-06 – Konzeptstand 0.3 (PR #45 gemergt): M2 Charakter- und Simulationssystem
 
