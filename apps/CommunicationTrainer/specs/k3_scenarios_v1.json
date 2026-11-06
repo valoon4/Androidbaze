@@ -1,0 +1,247 @@
+{
+  "schema_version": "k3.scenario-fixtures.v1",
+  "status": "illustrative-not-runtime-verified",
+  "notice": "The scenarios establish context and possible outcomes; they do not contain single correct user answers or guarantee a character reaction.",
+  "scenarios": [
+    {
+      "scenario_id": "S01",
+      "version": 1,
+      "title": "Neues Gesicht im Zeichenkurs",
+      "character_ref": "persona.mara.v1",
+      "situation": {
+        "channel": "text_chat",
+        "context": "Zwei Erwachsene haben sich in einem Zeichenkurs kurz gesehen und tauschen erste Nachrichten aus.",
+        "relationship": "stranger",
+        "time_available": "unrestricted",
+        "seeded_state_preset": "ausgeglichen",
+        "difficulty": "einladend"
+      },
+      "goal_competencies": [
+        "C01.1",
+        "C01.2",
+        "C01.3"
+      ],
+      "opening": {
+        "speaker": "persona",
+        "text": "Hey, warst du gestern auch beim Zeichenkurs? Ich fand die Übung mit den schnellen Skizzen ganz schön knifflig."
+      },
+      "conversation_affordances": [
+        "gemeinsame Kurserfahrung",
+        "kleine persönliche Beobachtung",
+        "mögliche Frage nach Zeichnen"
+      ],
+      "explicit_events": [],
+      "permissible_outcomes": [
+        "sachlicher kurzer Austausch",
+        "gemeinsames Interesse",
+        "freundliches Ende"
+      ],
+      "coach_guardrails": [
+        "Keine Kritik an schlichtem Hallo ohne Kontext",
+        "Länge der ersten Nachricht ist kein Gütekriterium"
+      ]
+    },
+    {
+      "scenario_id": "S02",
+      "version": 1,
+      "title": "Fotokurs und Gesprächsfluss",
+      "character_ref": "persona.jonas.v1",
+      "situation": {
+        "channel": "text_chat",
+        "context": "Bekanntschaft aus dem Fotokurs; letzte Stunde war etwas langatmig.",
+        "relationship": "acquaintance",
+        "time_available": "unrestricted",
+        "seeded_state_preset": "ausgeglichen",
+        "difficulty": "ausgeglichen"
+      },
+      "goal_competencies": [
+        "C03.1",
+        "C03.2",
+        "C02.2"
+      ],
+      "opening": {
+        "speaker": "persona",
+        "text": "War gestern ganz okay im Kurs. Nur der letzte Teil hat sich gezogen."
+      },
+      "conversation_affordances": [
+        "Fotokurs",
+        "Beobachtung zum Zeitverlauf",
+        "gemeinsame Fotos"
+      ],
+      "explicit_events": [],
+      "permissible_outcomes": [
+        "gegenseitiger Austausch über Aufnahmen",
+        "weitere Frage",
+        "passender eigener Beitrag",
+        "ruhiges Gesprächsende"
+      ],
+      "coach_guardrails": [
+        "Zurückhaltung der Persona nicht pauschal als Nutzerfehler werten",
+        "Eigene Erfahrung ist ebenso legitimer Beitrag wie eine Rückfrage"
+      ]
+    },
+    {
+      "scenario_id": "S03",
+      "version": 1,
+      "title": "Nachbarschaftsfest – zeitliche Grenze",
+      "character_ref": "persona.elena.v1",
+      "situation": {
+        "channel": "text_chat",
+        "context": "Nach einer Veranstaltung schreibt Elena, dass sie gleich zu einem Termin muss.",
+        "relationship": "acquaintance",
+        "time_available": "short",
+        "seeded_state_preset": "beschäftigt",
+        "difficulty": "zurueckhaltend"
+      },
+      "goal_competencies": [
+        "C06.1",
+        "C06.2",
+        "C06.4"
+      ],
+      "opening": {
+        "speaker": "persona",
+        "text": "Schön, dich noch zu hören! Ich muss aber gleich los, heute ist ziemlich viel zu tun."
+      },
+      "conversation_affordances": [
+        "gemeinsame Veranstaltung",
+        "verfügbare kurze Zeit"
+      ],
+      "explicit_events": [
+        {
+          "event": "explicit_time_limit",
+          "timing": "opening",
+          "boundary": "Persona darf nach ihrem klaren Ende nicht durch Nachfragen zur weiteren Teilnahme gedrängt werden"
+        }
+      ],
+      "permissible_outcomes": [
+        "freundliche Verabschiedung",
+        "eine kurze passende Antwort",
+        "später verabredeter Kontakt ohne Verpflichtung"
+      ],
+      "coach_guardrails": [
+        "Kurzes respektvolles Ende positiv bewerten",
+        "Kein XP für Übergehen der Zeitgrenze"
+      ]
+    },
+    {
+      "scenario_id": "S04",
+      "version": 1,
+      "title": "Buchclub – andere Vorlieben",
+      "character_ref": "persona.deniz.v1",
+      "situation": {
+        "channel": "text_chat",
+        "context": "Erstes Gespräch nach einem Buchclub; beide mögen unterschiedliche Genres.",
+        "relationship": "stranger",
+        "time_available": "unrestricted",
+        "seeded_state_preset": "ausgeglichen",
+        "difficulty": "ausgeglichen"
+      },
+      "goal_competencies": [
+        "C05.3",
+        "C04.2",
+        "C02.2"
+      ],
+      "opening": {
+        "speaker": "persona",
+        "text": "Ich mochte die Geschichte, aber das Ende war mir ein bisschen zu offen. Was dachtest du?"
+      },
+      "conversation_affordances": [
+        "gemeinsame Lektüre",
+        "verschiedene Geschmäcker"
+      ],
+      "explicit_events": [],
+      "permissible_outcomes": [
+        "freundliches Uneinigsein",
+        "Neugier trotz Unterschied",
+        "gemeinsame Perspektive ohne Zwang"
+      ],
+      "coach_guardrails": [
+        "Nicht Zustimmung als Erfolg erzwingen",
+        "Direkte respektvolle Abweichung anerkennen"
+      ]
+    },
+    {
+      "scenario_id": "S05",
+      "version": 1,
+      "title": "Spieleabend – trockener Humor",
+      "character_ref": "persona.robin.v1",
+      "situation": {
+        "channel": "text_chat",
+        "context": "Bekanntschaft nach einem Brettspieleabend; eine scherzhafte Bemerkung könnte missverstanden werden.",
+        "relationship": "acquaintance",
+        "time_available": "unrestricted",
+        "seeded_state_preset": "ausgeglichen",
+        "difficulty": "ausgeglichen"
+      },
+      "goal_competencies": [
+        "C05.1",
+        "C05.2",
+        "C03.4"
+      ],
+      "opening": {
+        "speaker": "persona",
+        "text": "Das Spiel war super. Nur die Regeln hätten ruhig noch drei Bände umfassen können."
+      },
+      "conversation_affordances": [
+        "ironische Bemerkung",
+        "gemeinsames Spiel",
+        "Klärung ohne Streit"
+      ],
+      "explicit_events": [],
+      "permissible_outcomes": [
+        "Humor aufgreifen",
+        "Unklarheit nachfragen",
+        "eigene Meinung teilen",
+        "locker Thema wechseln"
+      ],
+      "coach_guardrails": [
+        "Sarkasmus nicht sicher als Beleidigung interpretieren",
+        "Nicht von Persona-Humor auf Nutzerdefizit schließen"
+      ]
+    },
+    {
+      "scenario_id": "S06",
+      "version": 1,
+      "title": "Anstrengender Tag – gewünschte Ablenkung",
+      "character_ref": "persona.mara.v1",
+      "situation": {
+        "channel": "text_chat",
+        "context": "Mara hatte einen langen Arbeitstag und bittet ausdrücklich um leichte Ablenkung.",
+        "relationship": "acquaintance",
+        "time_available": "short",
+        "seeded_state_preset": "erschoepft",
+        "difficulty": "einladend"
+      },
+      "goal_competencies": [
+        "C02.3",
+        "C05.4",
+        "C06.1"
+      ],
+      "opening": {
+        "speaker": "persona",
+        "text": "Ich bin von der Arbeit ziemlich fertig. Magst du mich kurz mit irgendwas Schönem ablenken?"
+      },
+      "conversation_affordances": [
+        "expliziter Ablenkungswunsch",
+        "kurze gemeinsame Interessen",
+        "angemessen begrenzte Gesprächszeit"
+      ],
+      "explicit_events": [
+        {
+          "event": "user_facing_preference",
+          "timing": "opening",
+          "value": "wants_distraction"
+        }
+      ],
+      "permissible_outcomes": [
+        "leichter Themenwechsel",
+        "passende spielerische Frage",
+        "kurzer freundlicher Abschluss"
+      ],
+      "coach_guardrails": [
+        "Themenwechsel nicht als fehlende Empathie markieren",
+        "Leistungsbewertung muss expliziten Wunsch berücksichtigen"
+      ]
+    }
+  ]
+}
