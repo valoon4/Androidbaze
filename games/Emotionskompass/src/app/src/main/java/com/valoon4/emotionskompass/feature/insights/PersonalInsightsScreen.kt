@@ -69,6 +69,9 @@ fun PersonalInsightsScreen(
     var showArchived by remember { mutableStateOf(false) }
     var editor by remember { mutableStateOf<PersonalInsight?>(null) }
     var showEditor by remember { mutableStateOf(false) }
+    // An entered note must not disappear after an incidental Back/cancel.
+    // Nothing here is ever copied into SavedState or an unencrypted store.
+    var confirmDiscardDraft by remember { mutableStateOf(false) }
     var draft by remember { mutableStateOf("") }
     var selectedJournalId by remember { mutableStateOf<String?>(null) }
     var showAllJournalEntries by remember { mutableStateOf(false) }
@@ -97,6 +100,7 @@ fun PersonalInsightsScreen(
             // No prior decrypted/entered personal words survive a failed import or lock.
             showGuide = false
             showEditor = false
+            confirmDiscardDraft = false
             draft = ""
             editor = null
             selectedJournalId = null
@@ -109,6 +113,7 @@ fun PersonalInsightsScreen(
     LaunchedEffect(state.message) {
         if (saving && state.message in listOf("Erkenntnis gespeichert.", "Änderungen gespeichert.")) {
             showEditor = false
+            confirmDiscardDraft = false
             draft = ""
             editor = null
             selectedJournalId = null
@@ -123,6 +128,7 @@ fun PersonalInsightsScreen(
         selectedJournalId = null
         showAllJournalEntries = false
         journalDateQuery = ""
+        confirmDiscardDraft = false
         saving = false
         fromWeeklyReflection = false
         showEditor = true
@@ -143,12 +149,20 @@ fun PersonalInsightsScreen(
     fun dismissEditor() {
         val returnToWeek = fromWeeklyReflection
         showEditor = false
+        confirmDiscardDraft = false
         draft = ""
         editor = null
         selectedJournalId = null
         saving = false
         fromWeeklyReflection = false
         if (returnToWeek) onWeeklyReflectionDismissed()
+    }
+
+    fun requestEditorDismiss() {
+        if (state.busy || saving) return
+        if (draft.isNotBlank() && draft != editor?.text.orEmpty()) {
+            confirmDiscardDraft = true
+        } else dismissEditor()
     }
 
     if (showGuide && state.loaded && state.error == null) {
@@ -185,7 +199,7 @@ fun PersonalInsightsScreen(
 
     if (showEditor) {
         AlertDialog(
-            onDismissRequest = { if (!state.busy) dismissEditor() },
+            onDismissRequest = { requestEditorDismiss() },
             title = { Text(if (editor == null) "Eigene Erkenntnis notieren" else "Erkenntnis bearbeiten") },
             text = {
                 LazyColumn(
@@ -307,7 +321,8 @@ fun PersonalInsightsScreen(
             },
             confirmButton = {
                 TextButton(
-                    enabled = !state.busy && state.error == null && state.loaded &&
+                    enabled = !state.busy && !saving && state.error == null && state.loaded &&
+                        (editor != null || state.entries.size < UserInsight.MAX_INSIGHTS) &&
                         draft.trim().isNotEmpty() && draft.trim().length <= UserInsight.MAX_TEXT_LENGTH,
                     onClick = {
                         saving = true
@@ -317,9 +332,35 @@ fun PersonalInsightsScreen(
             },
             dismissButton = {
                 TextButton(
-                    enabled = !state.busy,
-                    onClick = { dismissEditor() }
+                    enabled = !state.busy && !saving,
+                    onClick = { requestEditorDismiss() }
                 ) { Text("Abbrechen") }
+            }
+        )
+    }
+
+    if (confirmDiscardDraft && showEditor) {
+        AlertDialog(
+            onDismissRequest = { confirmDiscardDraft = false },
+            title = { Text("Ungespeicherte Eingabe verwerfen?") },
+            text = {
+                Text(
+                    "Dein bisheriger Text ist noch nicht gespeichert. " +
+                        "Wenn du ihn verwirfst, geht nur diese Eingabe verloren. " +
+                        "Vorhandene Tagebucheinträge und Erkenntnisse bleiben erhalten."
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { dismissEditor() },
+                    modifier = Modifier.testTag("insight-confirm-discard")
+                ) { Text("Eingabe verwerfen") }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { confirmDiscardDraft = false },
+                    modifier = Modifier.testTag("insight-continue-editing")
+                ) { Text("Weiter bearbeiten") }
             }
         )
     }
