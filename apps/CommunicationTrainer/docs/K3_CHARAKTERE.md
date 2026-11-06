@@ -239,7 +239,7 @@ Diese Stufen ändern den **situativen Austausch**, nicht Jonas' Persönlichkeits
 
 ## 10. Konzeptionelle Vorbehalte
 
-Die Profilwerte in \`k3_personas_v1.json\` sind bewusst **nicht als empirisch validierte Big-Five-Testergebnisse** ausgezeichnet. Namen, Biografien, Stimmungspresets und Sliderwerte sind kreative Entwürfe zur späteren Prüfung. Eine hohe \`agreeableness\` zwingt Deniz nicht zur Zustimmung, eine niedrige \`extraversion\` macht Jonas nicht sozial unfähig, hohe \`directness\` macht Elena nicht rücksichtslos.
+Die Profilwerte in `k3_personas_v1.json` sind bewusst **nicht als empirisch validierte Big-Five-Testergebnisse** ausgezeichnet. Namen, Biografien, Stimmungspresets und Sliderwerte sind kreative Entwürfe zur späteren Prüfung. Eine hohe `agreeableness` zwingt Deniz nicht zur Zustimmung, eine niedrige `extraversion` macht Jonas nicht sozial unfähig, hohe `directness` macht Elena nicht rücksichtslos.
 
 Die Besetzung ist noch nicht hinsichtlich Altersvielfalt, kultureller Darstellungsqualität, Sprache, Behinderung oder unterschiedlicher Kommunikationsbedingungen umfassend pilotiert. Diese Vielfalt darf später **ohne stereotype Schwierigkeitszuordnung** ausgebaut werden.
 
