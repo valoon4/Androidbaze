@@ -127,10 +127,14 @@ fun PersonalReviewScreen(
     }
     // Selected observation wording is in-memory only, never rememberSaveable.
     var reflectionOriginLabel by remember { mutableStateOf<String?>(null) }
+    // This date-only week label is private session navigation, not an insight
+    // draft, journal link, persisted weekly reflection, or Android SavedState.
+    var weeklyReflectionContext by remember { mutableStateOf<String?>(null) }
     BackHandler(enabled = showInsightPage || showExperimentsPage) {
         showInsightPage = false
         showExperimentsPage = false
         reflectionOriginLabel = null
+        weeklyReflectionContext = null
     }
     val today = LocalDate.now()
     var startText by rememberSaveable { mutableStateOf(today.minusDays(29).toString()) }
@@ -149,6 +153,11 @@ fun PersonalReviewScreen(
             showMentionBars = false
             diaryCalendarState.resetPrivateState()
             weeklyState.resetPrivateState()
+            // A lock/import failure must never retain a weekly prompt context.
+            if (weeklyReflectionContext != null) {
+                weeklyReflectionContext = null
+                showInsightPage = false
+            }
         }
     }
     BackHandler(
@@ -272,6 +281,7 @@ fun PersonalReviewScreen(
                     showInsightPage = false
                     showExperimentsPage = false
                     reflectionOriginLabel = null
+                    weeklyReflectionContext = null
                 },
                 label = { Text("Übersicht & Muster") },
                 modifier = Modifier.testTag("review-tab-overview")
@@ -280,6 +290,7 @@ fun PersonalReviewScreen(
                 selected = showInsightPage,
                 onClick = {
                     reflectionOriginLabel = null
+                    weeklyReflectionContext = null
                     showExperimentsPage = false
                     showInsightPage = true
                 },
@@ -290,6 +301,7 @@ fun PersonalReviewScreen(
                 selected = showExperimentsPage,
                 onClick = {
                     reflectionOriginLabel = null
+                    weeklyReflectionContext = null
                     showInsightPage = false
                     showExperimentsPage = true
                 },
@@ -305,6 +317,7 @@ fun PersonalReviewScreen(
                     onBack = {
                         showInsightPage = false
                         reflectionOriginLabel = null
+                        weeklyReflectionContext = null
                     },
                     onReload = onReload,
                     onSave = onSaveInsight,
@@ -313,6 +326,12 @@ fun PersonalReviewScreen(
                     onUnlink = onUnlinkInsight,
                     onOpenJournal = onOpenJournalEntry,
                     reflectionOriginLabel = reflectionOriginLabel,
+                    weeklyReflectionContext = weeklyReflectionContext,
+                    onWeeklyReflectionDismissed = {
+                        // Return to the same expanded week and its evidence.
+                        weeklyReflectionContext = null
+                        showInsightPage = false
+                    },
                     showBackButton = false,
                     onConsiderIdeaFromInsight = { id ->
                         incomingIdeaInsightId = id
@@ -477,6 +496,17 @@ fun PersonalReviewScreen(
                             },
                             needName = { id ->
                                 needs.find(id)?.name ?: "Unbekanntes Bedürfnis"
+                            },
+                            canReflect = personalInsights.loaded &&
+                                !personalInsights.busy && personalInsights.error == null &&
+                                personalInsights.entries.size < PersonalInsight.MAX_INSIGHTS,
+                            onReflect = {
+                                reflectionOriginLabel = null
+                                weeklyReflectionContext =
+                                    "${week.firstDay.format(dayFormatter)} – " +
+                                    week.lastDayInclusive.format(dayFormatter)
+                                showExperimentsPage = false
+                                showInsightPage = true
                             }
                         )
                     }
