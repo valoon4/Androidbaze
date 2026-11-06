@@ -339,6 +339,9 @@ fun InnerWaveSplashScreen() {
         }
         // Capture BoxWithConstraints values before entering ColumnScope.
         val splashWidth = maxWidth
+        // Splash has no controls; keep the wordmark inside narrow screens even
+        // when Android requests 200%+ text scaling.
+        val wordmarkScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
         Column(
             modifier = Modifier.fillMaxWidth().offset(y = maxHeight * 0.015f),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -354,7 +357,7 @@ fun InnerWaveSplashScreen() {
                 "InnerWave",
                 style = MaterialTheme.typography.headlineLarge,
                 color = Color(0xFFFFE9C8),
-                fontSize = if (splashWidth < 380.dp) 46.sp else 55.sp,
+                fontSize = ((if (splashWidth < 380.dp) 46f else 55f) / wordmarkScale).sp,
                 fontWeight = FontWeight.Normal,
                 maxLines = 1,
                 textAlign = TextAlign.Center
