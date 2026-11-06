@@ -17,6 +17,12 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [K2 Kommunikationscoach und Feedbacksystem](docs/K2_KOMMUNIKATIONSCOACH.md) – Beobachtungslogik, Feedbackvarianten, Priorisierung, Lernprofil und Qualitätsanforderungen.
 - [K2 Test- und Annotationsplan](docs/K2_FEEDBACK_QUALITAET_TESTPLAN.md) – konkrete Kontrastfälle, Fehlerklassen, menschliche Prüfungen und Sicherheitsgates.
 
+- [K3 Charakterporträts](docs/K3_CHARAKTERE.md) – fünf fiktive erwachsene Personas mit Verhalten, Grenzen und Dialogen.
+- [K3 Simulations- und Zustandsregeln](docs/K3_SIMULATIONSREGELN.md) – Persona, Zustände, Memory, Gesprächsaktionen und Schwierigkeitsdynamik.
+- [K3 Simulationstestplan](docs/K3_SIMULATION_TESTPLAN.md) – 36 Fälle, menschliche Ratings und Sicherheitskriterien.
+- [K3 Persona-Fixtures (JSON)](specs/k3_personas_v1.json) – versionierte Konfigurationsdaten aller fünf Charaktere.
+- [K3 Szenario-Fixtures (JSON)](specs/k3_scenarios_v1.json) – sechs konkrete Alltagsszenarien mit Lernzielen.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. Eine spätere eigene Build-Struktur wird vor einer Umsetzung konzipiert und überprüft.
