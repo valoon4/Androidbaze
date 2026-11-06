@@ -12,8 +12,8 @@ android {
         applicationId = "com.valoon4.emotionskompass"
         minSdk = 26
         targetSdk = 35
-        versionCode = 34
-        versionName = "0.7.5-m7.5.2c-reflection-preview"
+        versionCode = 35
+        versionName = "0.7.5-m7.5.2d-quality-preview"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
