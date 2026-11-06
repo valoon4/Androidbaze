@@ -423,6 +423,12 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithTag("insight-editor")
             .performTextInput("Dieser Text wird verworfen.")
         rule.onNodeWithText("Abbrechen").performClick()
+        rule.onNodeWithText("Ungespeicherte Eingabe verwerfen?").assertExists()
+        rule.onNodeWithTag("insight-continue-editing").performClick()
+        rule.onNodeWithTag("insight-editor")
+            .assertTextContains("Dieser Text wird verworfen.", substring = true)
+        rule.onNodeWithText("Abbrechen").performClick()
+        rule.onNodeWithTag("insight-confirm-discard").performClick()
         rule.runOnIdle {
             assertEquals(0, saves)
             assertTrue(navigation.expanded)
@@ -711,6 +717,129 @@ class PersonalReviewEmulatorTest {
             assertEquals(null, state.selectedWeekStart)
             assertFalse(state.showEvidence)
         }
+    }
+
+    @Test fun qualityCalendarCanJumpBackToCurrentMonthWithoutLosingEntries() {
+        val now = YearMonth.now()
+        val navigation = DiaryCalendarUiState().apply {
+            month = now.minusMonths(7)
+        }
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = JournalSnapshot.fromEntries(calendarJournal(now)),
+                    busy = false, error = null, emotions = emotions, needs = needs,
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), calendarUiState = navigation
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(hasTestTag("diary-calendar-toggle"))
+        rule.onNodeWithTag("diary-calendar-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-current-month"))
+        rule.onNodeWithTag("diary-calendar-current-month")
+            .assertHeightIsAtLeast(48.dp).performClick()
+        rule.runOnIdle {
+            assertEquals(now, navigation.month)
+            assertEquals(null, navigation.selectedDate)
+        }
+        rule.onNodeWithTag("diary-calendar-current-month").assertDoesNotExist()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-day-${now.atDay(4)}"))
+        rule.onNodeWithTag("diary-calendar-day-${now.atDay(4)}").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("diary-calendar-selected-count"))
+        rule.onNodeWithTag("diary-calendar-selected-count")
+            .assertTextContains("2 gespeicherte Einträge", substring = true)
+    }
+
+    @Test fun qualityWeeksCanJumpToCurrentMonthAndRetainAccurateEvidence() {
+        val now = YearMonth.now()
+        val navigation = WeeklyReviewUiState().apply {
+            month = now.minusMonths(7)
+        }
+        val selectedWeekStart = now.atDay(4).with(
+            TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalReviewScreen(
+                    snapshot = JournalSnapshot.fromEntries(weeklyJournal(now)),
+                    busy = false, error = null, emotions = emotions, needs = needs,
+                    onReload = {}, onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(), weeklyUiState = navigation
+                )
+            }
+        }
+        val scroller = hasScrollToIndexAction() and
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        rule.onNode(scroller).performScrollToNode(hasTestTag("weekly-review-toggle"))
+        rule.onNodeWithTag("weekly-review-toggle").performClick()
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-current-month"))
+        rule.onNodeWithTag("weekly-review-current-month")
+            .assertHeightIsAtLeast(48.dp).performClick()
+        rule.runOnIdle {
+            assertEquals(now, navigation.month)
+            assertEquals(null, navigation.selectedWeekStart)
+        }
+        rule.onNode(scroller).performScrollToNode(
+            hasTestTag("weekly-review-week-$selectedWeekStart"))
+        rule.onNodeWithTag("weekly-review-week-$selectedWeekStart")
+            .assertTextContains("2 gespeicherte Einträge", substring = true)
+            .performClick()
+        rule.runOnIdle { assertEquals(selectedWeekStart, navigation.selectedWeekStart) }
+    }
+
+    @Test fun qualityLockedJournalClearsBothOptionalSurfacesAndTheirSelections() {
+        val now = YearMonth.now()
+        val zone = ZoneId.systemDefault()
+        val firstDay = now.atDay(4)
+        val monday = firstDay.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val calendar = DiaryCalendarUiState().apply {
+            expanded = true
+            month = now
+            selectedDate = firstDay
+        }
+        val weekly = WeeklyReviewUiState().apply {
+            expanded = true
+            month = now
+            selectedWeekStart = monday
+            showEvidence = true
+        }
+        var lock: (() -> Unit)? = null
+        rule.setContent {
+            EmotionskompassTheme {
+                var secured by remember { mutableStateOf(false) }
+                lock = { secured = true }
+                PersonalReviewScreen(
+                    snapshot = if (secured) null else
+                        JournalSnapshot.fromEntries(calendarJournal(now)),
+                    busy = false,
+                    error = if (secured) "Test: gesperrt" else null,
+                    emotions = emotions, needs = needs, onReload = {},
+                    onOpenJournalEntry = {}, onStartCheckIn = {},
+                    selectedTerm = null, onSelectTerm = {},
+                    listState = rememberLazyListState(),
+                    calendarUiState = calendar, weeklyUiState = weekly
+                )
+            }
+        }
+        rule.runOnIdle { lock?.invoke() }
+        rule.waitForIdle()
+        rule.runOnIdle {
+            assertFalse(calendar.expanded)
+            assertEquals(null, calendar.selectedDate)
+            assertFalse(weekly.expanded)
+            assertEquals(null, weekly.selectedWeekStart)
+            assertFalse(weekly.showEvidence)
+        }
+        rule.onNodeWithTag("diary-calendar-panel").assertDoesNotExist()
+        rule.onNodeWithTag("weekly-review-panel").assertDoesNotExist()
     }
 
     private fun calendarJournal(month: YearMonth): List<JournalEntry> {

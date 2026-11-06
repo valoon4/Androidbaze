@@ -128,6 +128,15 @@ fun WeeklyReviewHeader(month: WeeklyReviewMonth, state: WeeklyReviewUiState) {
             modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                 .testTag("weekly-review-next-month")
         ) { Text("Nächster Monat") }
+        if (state.month != YearMonth.now()) {
+            OutlinedButton(
+                onClick = { state.chooseMonth(YearMonth.now()) },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                    .testTag("weekly-review-current-month")
+            ) {
+                Text("Zum aktuellen Monat")
+            }
+        }
         Text(
             "Gezeigt werden die vollständigen Wochen von Montag bis Sonntag, " +
                 "die diesen Monat berühren. Randwochen enthalten auch Tage aus " +
