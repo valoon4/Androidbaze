@@ -34,6 +34,8 @@ Verpflichtende JSON-Prüfungen vor einem Implementierungsstart:
 
 **Hinweis:** JSON kann strukturell korrekt sein, ohne brauchbare Personaqualität zu garantieren. Die eigentliche Verhaltensprüfung ist erforderlich.
 
+**Szenariofixtures:** Die sechs Dateieninträge S01–S06 aus [k3_scenarios_v1.json](../specs/k3_scenarios_v1.json) sind gegen existierende Persona-IDs, gültige K1-Unterkompetenzen und zugelassene Schwierigkeits-Presets zu prüfen. Ihre möglichen Gesprächsausgänge dürfen nicht als einzig richtige Antwort interpretiert werden.
+
 ## 3. Fachliche Testmatrix – 36 Kernfälle
 
 | Test-ID | Variante | Erwarteter Ausgang |
