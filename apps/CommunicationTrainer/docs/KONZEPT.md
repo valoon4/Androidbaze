@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.3 – M2-Detailkonzept zur Prüfung in separatem PR (06.11.2026); ursprüngliche Produktvision v0.2 bereits bestätigt  
+**Status:** Konzeptstand 0.4 – K1 Lern- und Kompetenzsystem zur Prüfung in PR (06.11.2026); M2-Detailkonzept durch PR #45 auf main übernommen  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -312,13 +312,25 @@ Die bisherige Charaktervision ist nun in zwei **separaten, ausführlichen Arbeit
 
 **Status:** Die M2-Vertiefung ist eine neue Ausarbeitung zur Prüfung, keine bereits abgenommene Code-Implementierung. Sie ersetzt die grundsätzlichen Produktentscheidungen aus v0.2 nicht, sondern präzisiert sie.
 
+### 18.12 K1: Lern- und Kompetenzsystem (Konzeptabschlussphase)
+
+Auf Basis der bisher vereinbarten sechs Kompetenzfelder wurde das didaktische Fundament für den Kommunikationscoach **detailliert konkretisiert**:
+- **[K1_LERN_KOMPETENZSYSTEM.md](K1_LERN_KOMPETENZSYSTEM.md)**: sechs Kompetenzfelder mit je vier Unterkompetenzen; beobachtbare, kontextbezogene Anker; Lernkreislauf; Übungsformen; zwölf Beispiellektionen; Progression und Alltagstransfer; qualitative Bewertungsregeln; gerechte Interpretation unterschiedlicher Kommunikationsstile; fachliche Übergabeschnittstelle an K2.
+- **[K1_KOMPETENZ_PRUEFFELLE.md](K1_KOMPETENZ_PRUEFFELLE.md)**: neun ausformulierte Dialogkontraste, 24 Prüffälle, Testregeln zu Mehrdeutigkeit, Grenzen und nicht beurteilbaren Nachrichten.
+
+**Wesentliche Ergänzung:** Ein „gutes Gespräch“ wird nicht aus Länge, Anzahl der Rückfragen, Zustimmung oder Sympathie der simulierten Figur abgeleitet. Der Coach betrachtet die tatsächlich sichtbare Gesprächshandlung, den Anlass und mehrere plausible Deutungen. Mehrere verschiedene Antworten können gut sein; ausdrückliches Nein und Privatsphäre haben Vorrang. Es gibt keine globalen Sozialkompetenzwerte.
+
+**Projektsequenz nach K1:** K2 Coach-/Feedbacksystem → K3 Persona-Konkretisierung (vormals M2.1) → K4 UX → K5 Technik/Datenschutz/Betrieb → K6 Gesamtkonzept-Qualitätsrunde. Die frühere Etappenübersicht M1–M5 bleibt als **Umsetzungsvorschlag nach dem Konzeptabschluss** erhalten; die K-Bezeichnungen sind eine vorgelagerte Konzeptphase.
+
+**Status:** K1 ist zur Prüfung ausgearbeitet, noch keine freigegebene Implementierung oder abschließende Wirksamkeitsvalidierung. Fachliche Messschwellen und Feedbackausgabe werden in K2 und späteren Tests präzisiert.
+
 ## 19. Status offener Entscheidungen
 
 **Bereits abgestimmt:** Fokus auf Alltagskommunikation und soziale Kontakte; freier Chat plus Übung und Wiederholung; unterschiedliche KI-Charaktere und Stimmungen; Feedback, Lernbeobachtungen und Spielmotivation; getrennte Projektablage; PR-Freigabe vor Merge.
 
 **Grundsätzlich befürwortete konzeptionelle Vorschläge:** Kompetenzatlas, drei verbundene Modi, mehrschichtige Charaktere, differenzierte Schwierigkeitsdynamiken, lernorientierter Coach, freiwillige Mini-Lektionen, nachvollziehbarer Fortschritt, Alltagstransfer, vierteilige Navigation und stufenweiser MVP. Die konkrete Zahl der Inhalte, exakte Parameter, technische Wahl und Ausgestaltung sind weiterhin vor Implementierung zu prüfen.
 
-**Noch zu entscheiden:** endgültiger App-Name; genauer Onboarding-Ablauf; Datenhaltung und KI-Dienste; Preismodell; Details des Charaktereditors; Gesprächslänge und Pausen; konkrete Test- und Erfolgskriterien.
+**Noch zu entscheiden:** endgültiger App-Name; genauer Onboarding-Ablauf; Datenhaltung und KI-Dienste; Preismodell; konkrete Charakterprofile und Editor-Defaults; Gesprächslänge und Pausen; Coach-Auswahl und -Priorisierung; Mess- und Qualitätsschwellen; detaillierte Datenschutz- und Teststrategie.
 
 ## 20. Weiterführung und Änderungsprozess
 
