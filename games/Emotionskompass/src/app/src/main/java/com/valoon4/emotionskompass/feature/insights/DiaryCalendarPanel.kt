@@ -176,6 +176,15 @@ fun DiaryCalendarPanel(
                     .testTag("diary-calendar-next-month")
             ) { Text("Nächster Monat ›") }
         }
+        if (state.month != YearMonth.now()) {
+            OutlinedButton(
+                onClick = { state.chooseMonth(YearMonth.now()) },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
+                    .testTag("diary-calendar-current-month")
+            ) {
+                Text("Zum aktuellen Monat")
+            }
+        }
         Text(
             "Alle sicher geladenen Tagebucheinträge im gewählten Monat – " +
                 "unabhängig vom 7-, 30- oder 90-Tage-Filter oben. " +
