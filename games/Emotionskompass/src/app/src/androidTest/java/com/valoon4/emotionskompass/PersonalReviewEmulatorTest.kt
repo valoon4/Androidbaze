@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.performTextInput
@@ -43,6 +42,7 @@ import java.time.ZoneId
 import java.time.DayOfWeek
 import java.time.temporal.TemporalAdjusters
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.AnnotatedString
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -386,7 +386,11 @@ class PersonalReviewEmulatorTest {
             .assertTextContains("Nov", substring = true)
         rule.onNodeWithTag("insight-editor-list").performScrollToNode(
             hasTestTag("insight-editor"))
-        rule.onNodeWithTag("insight-editor").assertTextEquals("")
+        rule.onNodeWithTag("insight-editor").assert(
+            SemanticsMatcher.expectValue(
+                SemanticsProperties.EditableText, AnnotatedString("")
+            )
+        )
         rule.onNodeWithText("Ausdrücklich speichern").assertIsNotEnabled()
         rule.runOnIdle { assertEquals(0, saves) }
     }
@@ -430,7 +434,11 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithTag("weekly-review-reflection-$week").performClick()
         rule.onNodeWithTag("insight-editor-list").performScrollToNode(
             hasTestTag("insight-editor"))
-        rule.onNodeWithTag("insight-editor").assertTextEquals("")
+        rule.onNodeWithTag("insight-editor").assert(
+            SemanticsMatcher.expectValue(
+                SemanticsProperties.EditableText, AnnotatedString("")
+            )
+        )
         rule.runOnIdle { assertEquals(0, saves) }
     }
 
@@ -525,7 +533,7 @@ class PersonalReviewEmulatorTest {
         rule.onNodeWithTag("weekly-review-reflection-$week").assertIsNotEnabled()
         rule.runOnIdle { enableInsights?.invoke() }
         rule.onNodeWithTag("weekly-review-reflection-$week").assertIsEnabled()
-        val emptyWeek = LocalDate.of(2026, 11, 9)
+        val emptyWeek = LocalDate.of(2026, 11, 16)
         rule.onNode(scroller).performScrollToNode(
             hasTestTag("weekly-review-week-$emptyWeek"))
         rule.onNodeWithTag("weekly-review-week-$emptyWeek").performClick()
