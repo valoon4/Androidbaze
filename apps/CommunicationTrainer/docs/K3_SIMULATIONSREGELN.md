@@ -2,7 +2,7 @@
 
 **Version:** 1.0 · **Datum:** 06.11.2026 · **Status:** Konzept zur Prüfung, keine laufende Engine  
 **Produktbereich:** `apps/CommunicationTrainer/`  
-**Bezug:** [M2 Basiskonzept](CHARAKTER_SIMULATION.md) · [K1 Lernmodell](K1_LERN_KOMPETENZSYSTEM.md) · [K2 Coach](K2_KOMMUNIKATIONSCOACH.md) · [K3 Personas](../specs/k3_personas_v1.json) · [K3 Testplan](K3_SIMULATION_TESTPLAN.md)
+**Bezug:** [M2 Basiskonzept](CHARAKTER_SIMULATION.md) · [K1 Lernmodell](K1_LERN_KOMPETENZSYSTEM.md) · [K2 Coach](K2_KOMMUNIKATIONSCOACH.md) · [K3 Personas](../specs/k3_personas_v1.json) · [K3 Szenario-Fixtures](../specs/k3_scenarios_v1.json) · [K3 Testplan](K3_SIMULATION_TESTPLAN.md)
 
 ## 0. Abgrenzung und Grundentscheidungen
 
@@ -228,6 +228,8 @@ MVP-Effizienz: Mehrere logische Schritte können in einem Modellaufruf mit klar 
 
 ### 7.1 Szenariovertrag
 `scenario_id`, Titel, Kanal (realer Textchat oder textbasierte **Simulation** mündlicher Begegnung), Startrolle, Bekanntheitsgrad, Anlass/Ort, Nutzerlernziel (C01–C06), passende Persona-IDs, Start-Preset, Themenangebot, Zeit-/Verfügbarkeitslage, erwartete mögliche Ausgänge, Sicherheitsschranken und Textanker für K2.
+
+**Maschinenlesbare Szenarien:** Die sechs ersten kuratierten Szenarien S01–S06 einschließlich Ausgangslage, Beispiel-Einstieg, K1-Lernzielen, Grenzen und möglichen Gesprächsausgängen stehen in [k3_scenarios_v1.json](../specs/k3_scenarios_v1.json). Die Tabelle unten zeigt auch weitere vorgeschlagene Ausbauideen S07–S10. Eine einzelne Musterantwort ist bewusst nicht gespeichert.
 
 ### 7.2 Schwierigkeit verändert Situation, nicht Persönlichkeit
 Die Profile basieren auf:
