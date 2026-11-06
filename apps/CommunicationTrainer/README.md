@@ -8,6 +8,8 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 
 - [Produktkonzept](docs/KONZEPT.md) – aktuelle gemeinsame Arbeitsgrundlage mit Vision, Funktionen, Charaktermodell, Feedback, UX, MVP, Risiken und Meilensteinen.
 - [Entscheidungen und Änderungen](docs/ENTSCHEIDUNGEN.md) – nachvollziehbare Festlegungen und Konzeptversionen.
+- [Charakter- und Simulationssystem](docs/CHARAKTER_SIMULATION.md) – M2-Detailkonzept für Persona, Zustände, Erinnerung, Gesprächsregie und Editor.
+- [Charakter-Qualität & Testplan](docs/CHARAKTER_SIMULATION_TESTPLAN.md) – Evaluationsfälle, Qualitätskriterien und Regressionstests.
 
 ## Projektgrenzen
 
