@@ -49,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.valoon4.emotionskompass.core.checkin.LifeArea
 import com.valoon4.emotionskompass.core.insights.DiaryCalendar
+import com.valoon4.emotionskompass.core.insights.WeeklyReview
 import com.valoon4.emotionskompass.core.insights.CalculateOverview
 import com.valoon4.emotionskompass.core.insights.DiscoverPatterns
 import com.valoon4.emotionskompass.core.insights.PatternObservation
@@ -109,7 +110,8 @@ fun PersonalReviewScreen(
     onCatalogProposalConsumed: () -> Unit = {},
     onBrowseStrategyAtlas: () -> Unit = {},
     onOpenStrategyCard: (String) -> Unit = {},
-    calendarUiState: DiaryCalendarUiState? = null
+    calendarUiState: DiaryCalendarUiState? = null,
+    weeklyUiState: WeeklyReviewUiState? = null
 ) {
     // Non-personal calendar selections may survive tab navigation/rotation.
     var preset by rememberSaveable { mutableStateOf("30") }
@@ -140,11 +142,13 @@ fun PersonalReviewScreen(
     // All calendar navigation remains outside Android SavedState and encrypted stores.
     // The app shell supplies its instance to survive journal detail navigation.
     val diaryCalendarState = calendarUiState ?: remember { DiaryCalendarUiState() }
+    val weeklyState = weeklyUiState ?: remember { WeeklyReviewUiState() }
     var showMentionBars by remember { mutableStateOf(false) }
     LaunchedEffect(snapshot, busy, error) {
         if (snapshot == null || busy || error != null) {
             showMentionBars = false
             diaryCalendarState.resetPrivateState()
+            weeklyState.resetPrivateState()
         }
     }
     BackHandler(
@@ -152,6 +156,17 @@ fun PersonalReviewScreen(
             diaryCalendarState.expanded && diaryCalendarState.selectedDate != null
     ) {
         diaryCalendarState.selectedDate = null
+    }
+    // Back returns from a selected week evidence list to its card, then to
+    // the month overview. This does not affect other journal navigation.
+    BackHandler(
+        enabled = !showInsightPage && !showExperimentsPage && selectedTerm == null &&
+            weeklyState.expanded && weeklyState.selectedWeekStart != null
+    ) {
+        if (weeklyState.showEvidence) {
+            weeklyState.showEvidence = false
+            weeklyState.evidenceTerm = null
+        } else weeklyState.clearWeekSelection()
     }
     val scope = rememberCoroutineScope()
     // The evidence list replaces the overview's lazy items. Always reveal
@@ -179,6 +194,11 @@ fun PersonalReviewScreen(
     }
     val diaryById = remember(snapshot) {
         snapshot?.entries?.associateBy { it.journalId }.orEmpty()
+    }
+    // Weekly cards are independent of the statistics filter and do not
+    // inspect diary narrative text, insight drafts, or strategy ideas.
+    val weeklyMonth = remember(snapshot, weeklyState.month, zone) {
+        snapshot?.let { WeeklyReview.month(it, weeklyState.month, zone) }
     }
     val overview = remember(snapshot, window) {
         if (snapshot != null && window != null) CalculateOverview.calculate(snapshot, window)
@@ -441,6 +461,108 @@ fun PersonalReviewScreen(
                 }
             }
         }
+        if (selectedTerm == null && error == null && !busy && snapshot != null &&
+            weeklyMonth != null) {
+            item(key = "weekly-review-header") {
+                WeeklyReviewHeader(weeklyMonth, weeklyState)
+            }
+            if (weeklyState.expanded) {
+                weeklyMonth.weeks.forEach { week ->
+                    item(key = "weekly-review-week-item-${week.firstDay}") {
+                        WeeklyReviewCard(
+                            week = week,
+                            state = weeklyState,
+                            emotionName = { id ->
+                                emotions.find(id)?.name ?: "Unbekannter Gefühlsbegriff"
+                            },
+                            needName = { id ->
+                                needs.find(id)?.name ?: "Unbekanntes Bedürfnis"
+                            }
+                        )
+                    }
+                    if (weeklyState.selectedWeekStart == week.firstDay) {
+                        if (weeklyState.showAllTerms) {
+                            items(
+                                week.emotionCounts,
+                                key = { "weekly-all-emotion-${week.firstDay}-${it.termId}" }
+                            ) { term ->
+                                WeeklyReviewFullTerm(
+                                    kind = "emotion", term = term,
+                                    name = emotions.find(term.termId)?.name
+                                        ?: "Unbekannter Gefühlsbegriff",
+                                    state = weeklyState
+                                )
+                            }
+                            items(
+                                week.needCounts,
+                                key = { "weekly-all-need-${week.firstDay}-${it.termId}" }
+                            ) { term ->
+                                WeeklyReviewFullTerm(
+                                    kind = "need", term = term,
+                                    name = needs.find(term.termId)?.name
+                                        ?: "Unbekanntes Bedürfnis",
+                                    state = weeklyState
+                                )
+                            }
+                        }
+                        if (weeklyState.showEvidence && week.entryCount > 0) {
+                            val term = weeklyState.evidenceTerm
+                            val ids = when (term?.first) {
+                                "emotion" -> week.emotionCounts.firstOrNull {
+                                    it.termId == term.second
+                                }?.journalIds.orEmpty()
+                                "need" -> week.needCounts.firstOrNull {
+                                    it.termId == term.second
+                                }?.journalIds.orEmpty()
+                                else -> week.journalIds
+                            }
+                            item(key = "weekly-evidence-heading-${week.firstDay}") {
+                                Text(
+                                    if (term == null) "Einträge dieser Woche"
+                                    else {
+                                        val name = when (term.first) {
+                                            "emotion" -> emotions.find(term.second)?.name
+                                                ?: "Unbekannter Gefühlsbegriff"
+                                            "need" -> needs.find(term.second)?.name
+                                                ?: "Unbekanntes Bedürfnis"
+                                            else -> "Begriff"
+                                        }
+                                        "Einträge mit „$name“ in dieser Woche"
+                                    },
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.semantics { heading() }
+                                        .testTag("weekly-review-evidence-heading")
+                                )
+                            }
+                            items(ids, key = { "weekly-entry-${week.firstDay}-$it" }) { id ->
+                                val entry = diaryById[id]
+                                if (entry != null) {
+                                    Card(
+                                        onClick = { onOpenJournalEntry(id) },
+                                        modifier = Modifier.fillMaxWidth()
+                                            .testTag("weekly-review-entry-$id")
+                                    ) {
+                                        Column(
+                                            Modifier.fillMaxWidth().padding(16.dp),
+                                            verticalArrangement = Arrangement.spacedBy(5.dp)
+                                        ) {
+                                            Text(
+                                                formatTime(entry.createdAtUtcMillis, zone),
+                                                style = MaterialTheme.typography.titleMedium
+                                            )
+                                            Text(
+                                                "Tagebucheintrag ansehen",
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         if (error != null) {
             item {
                 Card(colors = CardDefaults.cardColors(
@@ -552,7 +674,50 @@ fun PersonalReviewScreen(
                             Text("Ein Eintrag kann mehrere Wörter enthalten. Gezählt wird nur, was du selbst ausgewählt hast – nicht, wie oft du etwas erlebt hast.",
                                 style = MaterialTheme.typography.bodySmall)
                             OutlinedButton(
-                                onClick = { scope.launch { listState.animateScrollToItem(4) } },
+                                onClick = {
+                                    // The optional calendar/weekly list can insert
+                                    // extra lazy items ahead of the pattern section.
+                                    // Jump to the real heading, not a fixed index.
+                                    val calendarExtras = if (diaryCalendarState.expanded) {
+                                        if (diaryCalendarState.selectedDate != null)
+                                            diaryCalendarState.selectedDate?.let {
+                                                diaryCalendarMonth?.day(it)?.entryCount
+                                            } ?: 0
+                                        else if (!supportsCalendarGrid ||
+                                            diaryCalendarState.listRequested)
+                                            diaryCalendarMonth?.days?.size ?: 0
+                                        else 0
+                                    } else 0
+                                    val weeklyExtras = if (weeklyState.expanded &&
+                                        weeklyMonth != null) {
+                                        val selected = weeklyState.selectedWeekStart?.let {
+                                            weeklyMonth.week(it)
+                                        }
+                                        val termItems = if (selected != null &&
+                                            weeklyState.showAllTerms)
+                                            selected.emotionCounts.size + selected.needCounts.size
+                                        else 0
+                                        val evidenceItems = if (selected != null &&
+                                            weeklyState.showEvidence && selected.entryCount > 0) {
+                                            val term = weeklyState.evidenceTerm
+                                            1 + when (term?.first) {
+                                                "emotion" -> selected.emotionCounts.firstOrNull {
+                                                    it.termId == term.second
+                                                }?.journalIds?.size ?: 0
+                                                "need" -> selected.needCounts.firstOrNull {
+                                                    it.termId == term.second
+                                                }?.journalIds?.size ?: 0
+                                                else -> selected.entryCount
+                                            }
+                                        } else 0
+                                        weeklyMonth.weeks.size + termItems + evidenceItems
+                                    } else 0
+                                    scope.launch {
+                                        listState.animateScrollToItem(
+                                            5 + calendarExtras + weeklyExtras
+                                        )
+                                    }
+                                },
                                 modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)
                                     .testTag("review-jump-patterns")
                             ) { Text("Zu gemeinsam ausgewählten Begriffen") }
