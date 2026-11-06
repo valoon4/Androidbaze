@@ -59,6 +59,9 @@ fun PersonalInsightsScreen(
     onUnlink: (String, String) -> Unit,
     onOpenJournal: (String) -> Unit,
     reflectionOriginLabel: String? = null,
+    // Transient navigation context, never stored in a PersonalInsight.
+    weeklyReflectionContext: String? = null,
+    onWeeklyReflectionDismissed: () -> Unit = {},
     showBackButton: Boolean = true,
     onConsiderIdeaFromInsight: (String) -> Unit = {}
 ) {
@@ -76,6 +79,8 @@ fun PersonalInsightsScreen(
     var showGuide by remember { mutableStateOf(false) }
     var guideRoute by remember { mutableStateOf(ReflectionRoute.OPEN) }
     var initialGuideHandled by remember(reflectionOriginLabel) { mutableStateOf(false) }
+    var initialWeekHandled by remember(weeklyReflectionContext) { mutableStateOf(false) }
+    var fromWeeklyReflection by remember { mutableStateOf(false) }
 
     LaunchedEffect(reflectionOriginLabel, state.loaded, state.error) {
         if (!initialGuideHandled && reflectionOriginLabel != null &&
@@ -97,6 +102,7 @@ fun PersonalInsightsScreen(
             selectedJournalId = null
             pendingDelete = null
             saving = false
+            fromWeeklyReflection = false
         }
     }
 
@@ -107,6 +113,7 @@ fun PersonalInsightsScreen(
             editor = null
             selectedJournalId = null
             saving = false
+            fromWeeklyReflection = false
         }
     }
 
@@ -117,7 +124,31 @@ fun PersonalInsightsScreen(
         showAllJournalEntries = false
         journalDateQuery = ""
         saving = false
+        fromWeeklyReflection = false
         showEditor = true
+    }
+
+    // The weekly route bypasses the guided questions deliberately: it opens
+    // the existing EMPTY editor, never a pre-populated insight or weekly record.
+    LaunchedEffect(weeklyReflectionContext, state.loaded, state.error, state.busy) {
+        if (!initialWeekHandled && weeklyReflectionContext != null &&
+            state.loaded && !state.busy && state.error == null &&
+            state.entries.size < UserInsight.MAX_INSIGHTS) {
+            initialWeekHandled = true
+            openEditor(null)
+            fromWeeklyReflection = true
+        }
+    }
+
+    fun dismissEditor() {
+        val returnToWeek = fromWeeklyReflection
+        showEditor = false
+        draft = ""
+        editor = null
+        selectedJournalId = null
+        saving = false
+        fromWeeklyReflection = false
+        if (returnToWeek) onWeeklyReflectionDismissed()
     }
 
     if (showGuide && state.loaded && state.error == null) {
@@ -154,13 +185,7 @@ fun PersonalInsightsScreen(
 
     if (showEditor) {
         AlertDialog(
-            onDismissRequest = {
-                if (!state.busy) {
-                    showEditor = false
-                    draft = ""
-                    editor = null
-                }
-            },
+            onDismissRequest = { if (!state.busy) dismissEditor() },
             title = { Text(if (editor == null) "Eigene Erkenntnis notieren" else "Erkenntnis bearbeiten") },
             text = {
                 LazyColumn(
@@ -168,6 +193,28 @@ fun PersonalInsightsScreen(
                         .testTag("insight-editor-list"),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
+                    if (fromWeeklyReflection && weeklyReflectionContext != null) {
+                        item {
+                            Text(
+                                "Freiwilliger Rückblick: $weeklyReflectionContext",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.testTag("weekly-reflection-context")
+                            )
+                            Text(
+                                "Was ist mir rückblickend an dieser Woche aufgefallen?",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.testTag("weekly-reflection-question")
+                            )
+                            Text(
+                                "Du kannst die Frage überspringen oder ohne Speichern " +
+                                    "zur Woche zurückkehren. Der Zeitraum wird nicht " +
+                                    "automatisch Teil deiner Erkenntnis.",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
                     item {
                         Text("Schreibe nur auf, was du selbst festhalten möchtest. Die App speichert nichts automatisch.")
                     }
@@ -271,7 +318,7 @@ fun PersonalInsightsScreen(
             dismissButton = {
                 TextButton(
                     enabled = !state.busy,
-                    onClick = { showEditor = false; draft = ""; editor = null; saving = false }
+                    onClick = { dismissEditor() }
                 ) { Text("Abbrechen") }
             }
         )
@@ -286,7 +333,15 @@ fun PersonalInsightsScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            if (showBackButton) {
+            if (weeklyReflectionContext != null && !showEditor) {
+                TextButton(
+                    onClick = onBack,
+                    modifier = Modifier.fillMaxWidth()
+                        .testTag("weekly-reflection-back-to-week")
+                ) {
+                    Text("Zurück zur ausgewählten Woche")
+                }
+            } else if (showBackButton) {
                 TextButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
                     Text("Zurück zur Rückblick-Übersicht")
                 }
