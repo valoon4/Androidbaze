@@ -176,7 +176,7 @@ fun JournalSecurityPanel(
                     pickerError = null
                     onSystemPicker(true)
                     try {
-                        exportPicker.launch("Emotionskompass-Gesamtsicherung-EKB3.ekbackup")
+                        exportPicker.launch("InnerWave-Gesamtsicherung-EKB3.ekbackup")
                     } catch (e: Exception) {
                         // A missing/disabled document picker must never leave the
                         // background relock bypass enabled indefinitely.
