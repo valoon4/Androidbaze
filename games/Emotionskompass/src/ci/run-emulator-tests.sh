@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# M7.5.2d: run real instrumented tests on the Emotionskompass emulator.
+# M7.6: run real instrumented tests on the Emotionskompass emulator.
 # Bypass the AGP/UTP ddmlib multi-APK installer, which can falsely report
 # "API level=35. Cannot install split APKs with API level < 21".
 set -euo pipefail
@@ -116,4 +116,4 @@ adb shell wm size
 adb shell wm density
 run_suite "narrow-320dp-200-percent" "2.0"
 
-echo "M7.5.2d: 104 Compose UI executions plus 3 EKB2 and 9 EKB3 KeyStore tests passed."
+echo "M7.6: 104 Compose UI executions plus 3 EKB2 and 9 EKB3 KeyStore tests passed."
