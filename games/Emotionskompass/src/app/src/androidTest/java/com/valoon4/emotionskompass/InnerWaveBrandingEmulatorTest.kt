@@ -3,7 +3,6 @@ package com.valoon4.emotionskompass
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -35,7 +34,7 @@ class InnerWaveBrandingEmulatorTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         for (res in listOf(
             R.mipmap.ic_launcher, R.drawable.innerwave_launcher_foreground,
-            R.drawable.innerwave_splash
+            R.drawable.innerwave_monochrome
         )) {
             val drawable: Drawable? = context.getDrawable(res)
             assertNotNull("Required brand drawable $res missing", drawable)
