@@ -6,6 +6,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -20,6 +22,7 @@ import com.valoon4.emotionskompass.core.designsystem.EmotionskompassTheme
 import com.valoon4.emotionskompass.core.insights.PersonalInsight
 import com.valoon4.emotionskompass.core.navigation.InsightUiState
 import com.valoon4.emotionskompass.feature.insights.PersonalInsightsScreen
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -147,6 +150,62 @@ class PersonalInsightsEmulatorTest {
         )
         rule.onNodeWithTag("insight-journal-date-search").assertExists()
         rule.onNodeWithText("Abbrechen").performClick()
+    }
+
+    @Test fun normalInsightEditorAsksBeforeDiscardingAnUnsavedNote() {
+        var saves = 0
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalInsightsScreen(
+                    state = InsightUiState(loaded = true), journalEntries = emptyList(),
+                    onBack = {}, onReload = {},
+                    onSave = { _, _, _ -> saves++ },
+                    onArchive = { _, _ -> }, onDelete = {}, onUnlink = { _, _ -> },
+                    onOpenJournal = {}
+                )
+            }
+        }
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("insight-create"))
+        rule.onNodeWithTag("insight-create").performClick()
+        rule.onNodeWithTag("insight-editor-list").performScrollToNode(
+            hasTestTag("insight-editor"))
+        rule.onNodeWithTag("insight-editor")
+            .performTextInput("Ein Gedanke, den ich noch nicht speichern möchte.")
+        rule.onNodeWithText("Abbrechen").performClick()
+        rule.onNodeWithText("Ungespeicherte Eingabe verwerfen?").assertExists()
+        rule.onNodeWithTag("insight-continue-editing").performClick()
+        rule.onNodeWithTag("insight-editor").assertTextContains(
+            "Ein Gedanke, den ich noch nicht speichern möchte.", substring = true)
+        rule.onNodeWithText("Abbrechen").performClick()
+        rule.onNodeWithTag("insight-confirm-discard").performClick()
+        rule.onNodeWithTag("insight-editor").assertDoesNotExist()
+        rule.runOnIdle { assertEquals(0, saves) }
+    }
+
+    @Test fun repeatedSaveIsDisabledUntilTheFirstSaveIsAcknowledged() {
+        var saves = 0
+        rule.setContent {
+            EmotionskompassTheme {
+                PersonalInsightsScreen(
+                    state = InsightUiState(loaded = true), journalEntries = emptyList(),
+                    onBack = {}, onReload = {},
+                    onSave = { _, _, _ -> saves++ },
+                    onArchive = { _, _ -> }, onDelete = {}, onUnlink = { _, _ -> },
+                    onOpenJournal = {}
+                )
+            }
+        }
+        rule.onNode(hasScrollToIndexAction()).performScrollToNode(
+            hasTestTag("insight-create"))
+        rule.onNodeWithTag("insight-create").performClick()
+        rule.onNodeWithTag("insight-editor-list").performScrollToNode(
+            hasTestTag("insight-editor"))
+        rule.onNodeWithTag("insight-editor").performTextInput("Nur eine Erkenntnis.")
+        rule.onNodeWithText("Ausdrücklich speichern").performClick()
+        rule.onNodeWithText("Ausdrücklich speichern").assertIsNotEnabled()
+        rule.onNodeWithText("Abbrechen").assertIsNotEnabled()
+        rule.runOnIdle { assertEquals(1, saves) }
     }
 
     @Test fun unavailableInsightsNeverDisplayDecryptedTextOrCreationAction() {
