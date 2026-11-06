@@ -12,6 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -83,6 +85,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -133,6 +138,7 @@ import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
 import com.valoon4.emotionskompass.feature.strategies.StrategyAtlasScreen
 import java.time.LocalDate
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 /**
  * M5: Native offline emotions/needs atlas and explicitly saved AES-GCM journal.
@@ -142,7 +148,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Only a cold Activity start shows the approved brand composition.
+        // Rotation/process-state restoration never adds an artificial wait.
+        val coldStart = savedInstanceState == null
         setContent {
+            var introVisible by remember { mutableStateOf(coldStart) }
+            LaunchedEffect(coldStart) {
+                if (coldStart) {
+                    delay(650L)
+                    introVisible = false
+                }
+            }
+            if (introVisible) {
+                InnerWaveSplashScreen()
+            } else {
             EmotionskompassTheme {
                 val preferences = remember { OnboardingPreferences(applicationContext) }
                 val completed by preferences.completed.collectAsState(initial = false)
@@ -247,7 +266,29 @@ class MainActivity : ComponentActivity() {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
             }
+            }
         }
+    }
+}
+
+/**
+ * Exact approved visual composition. The platform Android 12 splash is an
+ * icon on a matching background; this short in-app brand frame contains the
+ * complete art and wordmark because the OS splash API cannot show a full image.
+ */
+@Composable
+fun InnerWaveSplashScreen() {
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize().background(Color(0xFF004C49)),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.innerwave_splash),
+            contentDescription = "InnerWave",
+            contentScale = if (maxWidth > maxHeight) ContentScale.Fit
+                else ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -261,7 +302,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(19.dp)) {
                 Spacer(Modifier.height(28.dp))
                 Mark()
-                Text("Willkommen bei\nEmotionskompass", style = MaterialTheme.typography.headlineLarge,
+                Text("Willkommen bei\nInnerWave", style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                 Text("Ein ruhiger Raum, um Gefühle zu entdecken, die richtigen Worte zu finden und dich selbst besser zu verstehen.",
                     style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -362,7 +403,7 @@ private fun EmotionskompassApp(
             credentialError = "Richte zuerst unter Android-Einstellungen eine Geräte-PIN, ein Muster oder ein Passwort ein."
         } else {
             val intent = manager.createConfirmDeviceCredentialIntent(
-                "Emotionskompass entsperren", "Bestätige die Geräteanmeldung zum Schutz deines Tagebuchs."
+                "InnerWave entsperren", "Bestätige die Geräteanmeldung zum Schutz deines Tagebuchs."
             )
             if (intent == null) {
                 credentialError = "Android konnte keine Gerätebestätigung öffnen."
@@ -502,7 +543,7 @@ private fun EmotionskompassApp(
             // reachable on small screens, in landscape and with TalkBack.
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(28.dp),
                 verticalArrangement = Arrangement.Center) {
-                Text("Emotionskompass ist gesperrt",
+                Text("InnerWave ist gesperrt",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(16.dp))
@@ -549,7 +590,7 @@ private fun EmotionskompassApp(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Emotionskompass", fontWeight = FontWeight.SemiBold, fontSize = 19.sp) },
+                title = { Text("InnerWave", fontWeight = FontWeight.SemiBold, fontSize = 19.sp) },
                 navigationIcon = {
                     if (state.destination != Destination.MAIN) {
                         IconButton(onClick = requestBack) {
@@ -980,14 +1021,15 @@ private fun EmotionskompassApp(
 @Composable
 private fun Mark(small: Boolean = false) {
     Surface(
-        color = MaterialTheme.colorScheme.primary,
+        color = Color(0xFF004C49),
         shape = RoundedCornerShape(if (small) 12.dp else 20.dp)
     ) {
-        Box(Modifier.size(if (small) 38.dp else 68.dp), contentAlignment = Alignment.Center) {
-            Icon(Icons.Outlined.AutoAwesome, contentDescription = "Emotionskompass-Logo",
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(if (small) 25.dp else 38.dp))
-        }
+        Image(
+            painter = painterResource(R.drawable.innerwave_launcher_foreground),
+            contentDescription = if (small) null else "InnerWave-Logo",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.size(if (small) 38.dp else 68.dp)
+        )
     }
 }
 
@@ -1001,7 +1043,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
         verticalArrangement = Arrangement.spacedBy(17.dp)
     ) {
         Spacer(Modifier.height(8.dp))
-        Text("DEIN EMOTIONSKOMPASS", style = MaterialTheme.typography.labelSmall,
+        Text("INNERWAVE", style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary, letterSpacing = 1.2.sp)
         Text("Gefühle verstehen. Eigene Wege finden.",
             style = MaterialTheme.typography.headlineLarge,
@@ -1774,10 +1816,10 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
             fontWeight = FontWeight.SemiBold)
         Text("Der Gefühlsatlas enthält ${catalog.emotions.size} Begriffe, der Bedürfnisatlas ${needs.needs.size}. Das Tagebuch bleibt mit Android Keystore verschlüsselt. Neu in M5 sind eine freiwillige App-Sperre mit Geräte-PIN/Muster/Passwort und ausdrücklich passphrasegeschützte Export-/Importdateien. Eine Sicherung kann nach Bestätigung auf einem anderen Gerät wiederhergestellt werden; ohne Sicherung können Deinstallation und Geräteverlust deine Einträge endgültig vernichten. Keine automatische Cloud-Synchronisation. Der Bedürfniskompass bleibt flüchtig.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
+        Text("InnerWave ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.6.2.1-m6.2.1", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.7.7 – InnerWave", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
