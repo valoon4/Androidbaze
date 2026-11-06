@@ -337,6 +337,8 @@ fun InnerWaveSplashScreen() {
                 alpha = 0.45f
             )
         }
+        // Capture BoxWithConstraints values before entering ColumnScope.
+        val splashWidth = maxWidth
         Column(
             modifier = Modifier.fillMaxWidth().offset(y = maxHeight * 0.015f),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -352,7 +354,7 @@ fun InnerWaveSplashScreen() {
                 "InnerWave",
                 style = MaterialTheme.typography.headlineLarge,
                 color = Color(0xFFFFE9C8),
-                fontSize = if (maxWidth < 380.dp) 46.sp else 55.sp,
+                fontSize = if (splashWidth < 380.dp) 46.sp else 55.sp,
                 fontWeight = FontWeight.Normal,
                 maxLines = 1,
                 textAlign = TextAlign.Center
