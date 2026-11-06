@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.4 – K1 Lern- und Kompetenzsystem zur Prüfung in PR (06.11.2026); M2-Detailkonzept durch PR #45 auf main übernommen  
+**Status:** Konzeptstand 0.5 – K2 Kommunikationscoach/Feedbacksystem im eigenen PR zur Prüfung (06.11.2026); K1 durch PR #47 auf main vorhanden  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -323,6 +323,16 @@ Auf Basis der bisher vereinbarten sechs Kompetenzfelder wurde das didaktische Fu
 **Projektsequenz nach K1:** K2 Coach-/Feedbacksystem → K3 Persona-Konkretisierung (vormals M2.1) → K4 UX → K5 Technik/Datenschutz/Betrieb → K6 Gesamtkonzept-Qualitätsrunde. Die frühere Etappenübersicht M1–M5 bleibt als **Umsetzungsvorschlag nach dem Konzeptabschluss** erhalten; die K-Bezeichnungen sind eine vorgelagerte Konzeptphase.
 
 **Status:** K1 ist zur Prüfung ausgearbeitet, noch keine freigegebene Implementierung oder abschließende Wirksamkeitsvalidierung. Fachliche Messschwellen und Feedbackausgabe werden in K2 und späteren Tests präzisiert.
+
+### 18.13 K2: Kommunikationscoach- und Feedbacksystem (Konzeptabschlussphase)
+
+Die zuvor formulierten Coaching-Leitlinien sind in zwei detaillierten Arbeitsdokumenten operationalisiert:
+- **[K2_KOMMUNIKATIONSCOACH.md](K2_KOMMUNIKATIONSCOACH.md):** Feedbackmodi, strukturierte Beobachtungen, Evidenzklassen, Interpretation und Unsicherheit, Priorisierung, Sicherheitsgates, getrennte Coach-Pipeline, Kurz-/Langfeedback, freiwillige Live-Tipps, Verbesserungsrunden, Nutzerwiderspruch, datensparsames Lernprofil, XP-Trennung, Fehlerfälle, MVP und K3–K6-Schnittstellen.
+- **[K2_FEEDBACK_QUALITAET_TESTPLAN.md](K2_FEEDBACK_QUALITAET_TESTPLAN.md):** unabhängige Annotation, 16 kontrastierende Beispielsituationen, 32 Prüffälle, Safety-Gates, Fairness, Lernprofil-Korrektur, Regression und Transparenz.
+
+**Fachliche Kernentscheidung:** Coach-Ausgaben müssen auf überprüfbaren sichtbaren Nachrichten beruhen und dürfen Gesprächsabsichten und Gefühle nur als mögliche Interpretation kennzeichnen. Die Auswertung darf „nur Stärke“, „nicht beurteilbar“, „optionale Reflexionsfrage“ und „Grenzhinweis“ ohne künstlichen Verbesserungspunkt ausgeben. Ein einzelnes Chatereignis erzeugt keine dauerhafte Schwächenetikette. Die Figur reagiert eigenständig; spätere positive Figurenreaktionen dürfen nicht allein als Beleg für gute Nutzerkommunikation zählen.
+
+**Einordnung:** Der Nutzer hat die Ausarbeitung von K2 beauftragt. Die Dokumente sind **Konzeptvorschläge zur Prüfung** und stellen weder eine implementierte noch wissenschaftlich validierte Bewertungsmaschine dar. K3 konkretisiert die Charakterprofile, K4 UI/Nutzerführung, K5 Datenschutz/Technik und K6 das Gesamtkonzept.
 
 ## 19. Status offener Entscheidungen
 
