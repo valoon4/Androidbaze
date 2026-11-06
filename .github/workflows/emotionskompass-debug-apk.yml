@@ -1,4 +1,4 @@
-name: Build Emotionskompass M7.5.2d Debug APK
+name: Build Emotionskompass M7.6 Debug APK
 
 on:
   push:
@@ -56,18 +56,20 @@ jobs:
           APK=app/build/outputs/apk/debug/app-debug.apk
           test -s "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
-          grep -q "package: name='com.valoon4.emotionskompass'" apk-badging.txt
+          grep -Fq "package: name='com.valoon4.emotionskompass'" apk-badging.txt
+          grep -Fq "versionCode='36'" apk-badging.txt
+          grep -Fq "versionName='0.7.6-m7-final-preview'" apk-badging.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee apk-signing.txt
           echo "DEBUG SIGNING NOTE: GitHub's default debug keystore is ephemeral; APK updates may have incompatible signer certificates."
-          cp "$APK" Emotionskompass-M752d-v0.7.5-debug.apk
-          sha256sum Emotionskompass-M752d-v0.7.5-debug.apk | tee Emotionskompass-M752d-v0.7.5-debug.apk.sha256
+          cp "$APK" Emotionskompass-M76-v0.7.6-debug.apk
+          sha256sum Emotionskompass-M76-v0.7.6-debug.apk | tee Emotionskompass-M76-v0.7.6-debug.apk.sha256
       - name: Upload installable Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: Emotionskompass-M752d-debug-apk
+          name: Emotionskompass-M76-debug-apk
           path: |
-            games/Emotionskompass/src/Emotionskompass-M752d-v0.7.5-debug.apk
-            games/Emotionskompass/src/Emotionskompass-M752d-v0.7.5-debug.apk.sha256
+            games/Emotionskompass/src/Emotionskompass-M76-v0.7.6-debug.apk
+            games/Emotionskompass/src/Emotionskompass-M76-v0.7.6-debug.apk.sha256
             games/Emotionskompass/src/apk-badging.txt
             games/Emotionskompass/src/apk-signing.txt
           if-no-files-found: error
