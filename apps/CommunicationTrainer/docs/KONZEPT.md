@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.1 – 06.11.2026  
+**Status:** Konzeptstand 0.2 – 06.11.2026 (inhaltliche Vorschläge grundsätzlich akzeptiert; Details noch zu validieren)  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -214,15 +214,103 @@ Offene Risiken:
 - laufende KI-Kosten und finanzierbare Nutzung;
 - Datenschutz, Einwilligung, Sicherheit und zukünftige regulatorische Anforderungen.
 
-## 18. Status offener Entscheidungen
+## 18. Konkretisierung der gemeinsam befürworteten Verbesserungen (0.2)
+
+Dieser Abschnitt hält die in den Konzeptgesprächen erläuterten Details fest. Die **produktstrategische Richtung ist befürwortet**; konkrete Parametrierung und technische Umsetzung sind nicht automatisch abgenommen.
+
+### 18.1 Charaktereditor und individuelles Erleben
+- Einsteiger wählen sofort aus klaren Charakterkarten und wenigen leicht verständlichen Eigenschaften (z. B. „gesprächig“, „nachdenklich“, „neugierig“). Charakterkarten dürfen Beispiele für Interessen und typische Gesprächsdynamik zeigen.
+- Der fortgeschrittene Editor bietet Slider für u. a. Extraversion, Offenheit, Kooperation/Verträglichkeit, emotionale Stabilität, Direktheit, Humor, Gesprächsinitiative, Antwortlänge, Vertrauen/Nähewunsch und aktuelle Energie bzw. Gesprächsinteresse. **Nicht alle Regler sind Persönlichkeitsdiagnosen:** Big-Five-Eigenschaften, Kommunikationsparameter und situative Zustände werden klar getrennt.
+- Einstellbare Charaktermerkmale umfassen auch thematische Interessen, Hintergrund, Werte, bevorzugte Kontaktintensität und persönliche Grenzen.
+- Für Charaktere gibt es Speichern, Wiederverwenden und Bearbeiten. Über gespeicherte Chats ist nachvollziehbar, welche Persona-Konfiguration zu welchem Chat gehört; spätere Änderungen dürfen den laufenden Verlauf nicht widersprüchlich umschreiben.
+- **Big Five vor MBTI als Modellbasis.** Ein optionales MBTI-inspiriertes Nutzerinterface wird erst nach Klärung des Nutzens, wissenschaftlicher Einschränkungen und Rechten angeboten. Kein automatischer Rückschluss von einer Typologie auf einzelnen Gesprächserfolg.
+- Stimmungen und Gesprächsbereitschaft werden explizit, zufällig oder über ein Szenario festgelegt. Ein zufälliger Zustand ist keine willkürliche Verhaltensänderung im laufenden Gespräch.
+- Beziehungskontext (fremd/bekannt/befreundet/vertraut) mit gemeinsamer, begrenzter Erinnerung; Nähe entsteht situativ und mit Gegenseitigkeit, nicht automatisch durch Nachrichtenzahl.
+
+### 18.2 Realismus und Charakterzustand
+- Zur Persona gehören wiedererkennbare Interessen, eigene Gesprächsziele, Grenzen und gelegentlich Initiative zu neuen Themen.
+- Verhalten muss kohärent sein: Ein ruhiger Charakter darf bei Lieblingsthemen ausführlich werden; eine gesprächige Person kann bei Müdigkeit kürzer reagieren.
+- Der Zustand (Energie, aktuelle Aufmerksamkeit, Thema, Gesprächsinteresse, Beziehung) wird strukturiert und nach begrenzten, testbaren Regeln aktualisiert. Keine abrupten Charakterwechsel ohne Anlass.
+- **Erlaubte natürliche Gesprächsausgänge:** angenehme Verbindung, schlichtes Auslaufen, höflicher Abbruch, inhaltliche Uneinigkeit, Missverständnis oder freiwilliger Themenwechsel. Nicht jedes Szenario muss „gewonnen“ werden.
+- Ein Charakter soll auf Grenzen und Desinteresse reagieren, ohne Nutzer künstlich zu beschämen oder durch künstliche Abweisung zu prüfen.
+- Testfälle umfassen lang andauernde Chats, Wiederaufnahme nach Pausen, Widerspruch, missverständliche Nachrichten, wechselnde Stimmung und ungeschickte Gesprächsführung.
+
+### 18.3 Beobachtbare Kompetenzsignale
+Für jede der sechs Kompetenzen sollen konkrete Indikatoren entwickelt werden; als Beispiel:
+- **Kontaktaufnahme:** angemessener Bezug zur Situation, einladender aber nicht aufdringlicher Gesprächseinstieg.
+- **Zuhören:** Gesagtes aufgreifen und Verständnis prüfen, ohne bloß die Aussage mechanisch zu wiederholen.
+- **Gesprächsgestaltung:** Balance aus Fragen, eigenem Beitrag und thematischer Weiterentwicklung.
+- **Verbindung:** echtes statt erzwungenes Teilen, situativ angemessene persönliche Tiefe, Respekt.
+- **Flexibilität:** mit knappen oder unerwarteten Reaktionen umgehen; eigene Annahmen korrigieren.
+- **Grenzen:** ein Nein akzeptieren, höflich abschließen und eigene Bedürfnisse angemessen benennen.
+
+**Bewertung:** keine pauschale „78 % Sozialkompetenz“. Bewertungen sind lokale, kontextuelle Übungsbeobachtungen; Entwicklungen basieren auf mehreren vergleichbaren Beispielen und sind als unsicher gekennzeichnet, wenn Evidenz fehlt.
+
+### 18.4 Verhaltensnaher Kommunikationscoach
+- Kurze Standardauswertung: **eine konkrete Stärke und ein konkret nutzbarer Verbesserungsgedanke**, nicht ein überladener Befund.
+- Erweiterte Analyse zeigt die relevante Stelle, erkennbare Gesprächsabsicht (wenn plausibel), mögliche Wirkungen, alternative Formulierungen und den jeweiligen Kontext.
+- Beispiel-Prinzip: Auf „Heute war es bei der Arbeit echt stressig“ mit unvermitteltem Themenwechsel zu reagieren ist **nicht automatisch falsch**, könnte aber ein übergangenes emotionales Signal sein. Eine Alternative könnte zunächst Anteilnahme zeigen oder fragen, ob Ablenkung erwünscht ist.
+- Tipps sollten ein eigenes Ausprobieren unterstützen; eine fertige Antwort ist nur optional. Live-Coach ist freiwillig, im freien Modus nicht aufdringlich.
+- Bewertung und Personaantwort werden technisch bzw. logisch voneinander getrennt. Der Coach erklärt Textbelege und nennt keine KI-internen simulierten Gefühle als gesicherte Tatsachen.
+- Feedback darf nicht länger = besser, mehr Fragen = besser oder Einverständnis = Erfolg annehmen.
+- Nutzer können Feedback als hilfreich, nicht passend oder missverständlich bewerten sowie eigene Interpretation ergänzen. Fehlbewertungen werden in Qualitätsprüfungen berücksichtigt.
+- Bibliothek menschlich geprüfter Dialoge mit positiven, ambivalenten und negativen Fällen; regelmäßige Kalibrierung und Regressionstests vor Releases.
+
+### 18.5 Mini-Lektionen, Übungen, Reflexion
+- Freiwillige, kurz lesbare Mini-Lektionen erklären z. B. offene vs. suggestive Fragen, Zuhören, angemessene Selbstoffenbarung, Gesprächspausen oder natürliche Themenwechsel. Bei Bedarf folgt direkt ein passendes Szenario.
+- Geführte Lernpfade sind optional. Nutzer dürfen jederzeit auch frei chatten und Lerninhalte überspringen.
+- Nach einer Übung erfolgt eine kleine optionale Reflexion oder Wiederholungsrunde; kein Feedbackzwang.
+- Alltagstransfer mit kleinen, freiwilligen Schritten (z. B. einmal eine eigene Erfahrung beitragen) und späterer Selbstreflexion. Keine Bewertung realer Personen.
+- Szenarien können unterschiedlich beginnen und enden; Nutzer sollen üben, Unterschiede statt starre Antwortskripte zu erkennen.
+
+### 18.6 Fortschrittsdarstellung und Gamification
+- Übersicht mit getrenntem **Spielerlevel** (Aktivität) und **Lernprofil** (kontextabhängige Beobachtungen).
+- Kompetenzpfade können eigene Lernstände und konkrete Übungsziele anzeigen, **nicht** objektive, allgemeinvergleichbare Fähigkeitsgrade.
+- XP werden vor allem für abgeschlossene Übung, erneuten Versuch, freiwillige Reflexion und das Ausprobieren neuer Kompetenzen vergeben.
+- Beispielwerte als ausschließlich illustratives Balancing: +20 abgeschlossene Kurzübung, +10 Reflexion, +15 alternative Antwort, +20 neue Fähigkeit, +30 persönliche Herausforderung.
+- Sammelbare Erfolge würdigen z. B. gutes Eingehen auf ein Gefühl, eigene Beiträge, höfliches Gesprächsende, respektvoll geklärtes Missverständnis.
+- Keine XP für Überreden, Zuneigung, künstlich verlängerte Chats, pausenloses Üben oder verpflichtende Streaks.
+- Langzeitbeobachtungen müssen in einer rückblickenden, datierten, korrigierbaren Form formuliert werden (z. B. „in sechs vergleichbaren Übungen häufiger eigene Erlebnisse eingebracht“), statt ein dauerhaftes Persönlichkeitsurteil abzugeben.
+
+### 18.7 Einfache UX und Start ohne Hürden
+- Vier Bereiche: **Chats**, **Entdecken & Üben**, **Fortschritt**, **Profil**.
+- Startfolge: **Was möchtest du üben? → passenden fertigen Charakter wählen → direkt chatten → freiwilliges Kurzfeedback**.
+- Im Gespräch: möglichst vertraute Chatoberfläche mit sichtbarer Möglichkeit für Tipps, Pause, Wiederholung und Abschlussreflexion; keine ständige Benotung.
+- Chats-Liste zeigt offene und zuletzt genutzte Unterhaltungen; Nutzer können erstellte Charaktere wiederfinden und verwalten.
+- Kein langer Pflichtfragebogen. Ein datensparsamer Demo-/Gastmodus vor einer verpflichtenden Registrierung ist anzustreben, soweit sicher und technisch vertretbar.
+- Der erweiterte Charaktereditor ist auffindbar, aber niemals Voraussetzung für die erste Übung.
+- Lern- und Spielanzeigen sollen motivieren, ohne Nutzer mit Zahlen oder Warnhinweisen zu überfordern; Zugänglichkeit und eindeutige Beschriftung sind Teil der UX-Qualitätsprüfung.
+
+### 18.8 Ergänzende System- und Sicherheitskriterien
+- Für Wiederholungsübungen wird der Ausgangskontext festgehalten. Folgeantworten zeigen plausible Varianten, keine angeblich deterministische sozialpsychologische Kausalität.
+- Datenschutz by design: möglichst getrennte Speicherung/Einwilligungssteuerung für Chatverlauf, Personaerinnerungen und Lernanalyse; transparente Löschung und Export, klare Aufbewahrungsfristen; konkrete DSGVO-Prüfung vor Release.
+- Keine therapeutischen Versprechen, keine psychologischen Diagnosen, keine versteckte menschliche Gegenstelle. Umgang mit emotional belastenden Inhalten und missbräuchlicher Nutzung ist zu planen.
+- Eine KI-Bindung darf nicht durch manipulative Erinnerungs-/Benachrichtigungsmechanismen maximiert werden; reale Kontakte bleiben das Ziel.
+- Technischer und wirtschaftlicher Rahmen: laufende Modell- und Auswertungskosten messen, kostengünstige Varianten testen, Preis- und Nutzungslimits erst datenbasiert festlegen.
+
+### 18.9 Pilotierung und Messung
+- Start mit einem **kleinen qualitativen Pilot** (als Richtwert ca. 15–25 Erwachsene; abhängig von Rekrutierung und Fragestellung), danach größere Tests.
+- Charaktertests: Unterschiedlichkeit, Kohärenz, Realismus, Varianz und Umgang mit Zurückweisung, über viele Nachrichten.
+- Coach-Tests: belegte Beobachtungen, hilfreiche Vorschläge, angemessene Unsicherheit, falsche Zuschreibungen, Benotungs-Bias und menschliche Übereinstimmung.
+- Lerntests: ähnliche Aufgaben vor/nach Training, unabhängige Bewertung wo möglich, Nutzerberichte zum realen Alltagstransfer. Eine gute App-Nutzungsdauer ersetzt keinen Wirksamkeitsnachweis.
+- Nutzung: freiwillige Wiederkehr, Szenarioabschluss, Coach-Hilfreichkeit, Wiederholungsmodus, subjektive Überforderung und Datenschutzverständnis.
+- Entscheidungen über zusätzliche Komplexität erfolgen anhand von Qualitäts- und Nutzersignalen, nicht nur Featureumfang.
+
+### 18.10 Einordnung von Ideen nach Verbindlichkeit
+- **Grundsätzlich akzeptierte Konzept-Richtung:** sämtliche hier beschriebenen Produktverbesserungen sollen als Designprinzipien und mögliche Ausbaustufen erhalten bleiben.
+- **Nicht bereits final festgelegt:** exakte Anzahl der Slider, Trainingsszenarien, Charaktere, Pfad-Level, XP, Schwellenwerte, technische Implementierungen, Datenschutzdetails und Pilotmethodik.
+- **MVP-Vorrang:** Zu Beginn eine überschaubare, gut getestete Version mit wenigen hervorragenden Charakteren und vertrauenswürdigem Feedback statt einer großen Anzahl unreifer Features.
+- **GitHub-Vorgabe:** Selbst ein inhaltlich begrüßter Vorschlag ist keine ausdrückliche Genehmigung eines GitHub-PR oder Merges.
+
+## 19. Status offener Entscheidungen
 
 **Bereits abgestimmt:** Fokus auf Alltagskommunikation und soziale Kontakte; freier Chat plus Übung und Wiederholung; unterschiedliche KI-Charaktere und Stimmungen; Feedback, Lernbeobachtungen und Spielmotivation; getrennte Projektablage; PR-Freigabe vor Merge.
 
-**Konzeptionelle Empfehlungen, noch nicht einzeln final freigegeben:** exakte Zahl der Kompetenzen, konkrete Stufen, Umfang der Szenariobibliothek, Standard-Feedbacklänge, technische Architektur, MVP-Schnitt, UX-Navigation und Entwicklungsreihenfolge.
+**Grundsätzlich befürwortete konzeptionelle Vorschläge:** Kompetenzatlas, drei verbundene Modi, mehrschichtige Charaktere, differenzierte Schwierigkeitsdynamiken, lernorientierter Coach, freiwillige Mini-Lektionen, nachvollziehbarer Fortschritt, Alltagstransfer, vierteilige Navigation und stufenweiser MVP. Die konkrete Zahl der Inhalte, exakte Parameter, technische Wahl und Ausgestaltung sind weiterhin vor Implementierung zu prüfen.
 
 **Noch zu entscheiden:** endgültiger App-Name; genauer Onboarding-Ablauf; Datenhaltung und KI-Dienste; Preismodell; Details des Charaktereditors; Gesprächslänge und Pausen; konkrete Test- und Erfolgskriterien.
 
-## 19. Weiterführung und Änderungsprozess
+## 20. Weiterführung und Änderungsprozess
 
 Dieses Dokument ist die **maßgebliche konzeptionelle Arbeitsgrundlage** im Projektbereich. Neue Besprechungen sollen hier konsistent eingearbeitet werden; relevante Entscheidungen werden im Änderungsprotokoll dokumentiert. Vorschläge und ausdrücklich beschlossene Festlegungen bleiben unterscheidbar.
 
