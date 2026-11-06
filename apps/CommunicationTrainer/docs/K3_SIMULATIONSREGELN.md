@@ -1,7 +1,7 @@
 # K3 – Konkrete Simulationsregeln und Datenverträge
 
 **Version:** 1.0 · **Datum:** 06.11.2026 · **Status:** Konzept zur Prüfung, keine laufende Engine  
-**Produktbereich:** \`apps/CommunicationTrainer/\`  
+**Produktbereich:** `apps/CommunicationTrainer/`  
 **Bezug:** [M2 Basiskonzept](CHARAKTER_SIMULATION.md) · [K1 Lernmodell](K1_LERN_KOMPETENZSYSTEM.md) · [K2 Coach](K2_KOMMUNIKATIONSCOACH.md) · [K3 Personas](../specs/k3_personas_v1.json) · [K3 Testplan](K3_SIMULATION_TESTPLAN.md)
 
 ## 0. Abgrenzung und Grundentscheidungen
@@ -31,7 +31,7 @@ Die Figur dient dem Nutzer als plausibler Gesprächspartner. Sie ist **kein heim
 Die konkreten fünf fiktionalen v1-Profile stehen in [k3_personas_v1.json](../specs/k3_personas_v1.json).
 
 ### 2.1 Erforderliche Felder
-- **Schema/Version:** \`schema_version\`, \`id\`, \`version\`, Änderungszeitpunkt in der späteren App.
+- **Schema/Version:** `schema_version`, `id`, `version`, Änderungszeitpunkt in der späteren App.
 - **Identität:** fiktionaler Name, erwachsener Altersrahmen, optionale Ansprache, prägnante Charakterkarte.
 - **Kanon:** Lebenskontext, Interessen, weniger interessante Themen, Werte, biografische Anker, längerfristiger Alltagsgegenstand.
 - **Big-Five-Hintergrund:** extraversion, agreeableness, conscientiousness, openness, emotional_stability (0–100 als relativ definierte, nicht kalibrierte Tendenzen).
@@ -45,7 +45,7 @@ Die konkreten fünf fiktionalen v1-Profile stehen in [k3_personas_v1.json](../sp
 - Alle numerischen Achsen sind Ganzzahlen in [0,100] und vollständig vorhanden.
 - Kanonische Felder sind vorhanden; Listen dürfen nicht nur aus einem stereotypen Adjektiv bestehen.
 - Erwachsene Charaktere und fiktionale Identitäten; keine unveränderte Kopie realer Personen.
-- Grenzschutz wird nicht durch \`agreeableness\`, \`directness\` oder \`self_disclosure\` abgeschwächt.
+- Grenzschutz wird nicht durch `agreeableness`, `directness` oder `self_disclosure` abgeschwächt.
 - Keine implizite Verbindung von Name/Pronomen/Alter zu „Schwierigkeit“.
 - Ein laufender Chat verweist auf **genau eine** Persona-ID plus Version. Änderungen erzeugen v2, keine rückwirkende Umschreibung.
 
@@ -58,7 +58,7 @@ Eine feste Zahl von Emojis, Fragen oder Wörtern je Score ist unzulässig. Die E
 
 Vorgeschlagenes Datenobjekt (fachliche Werte, keine psychologische Kalibrierung):
 
-\`\`\`json
+```json
 {
   "state_schema": "k3.session-state.v1",
   "session_id": "example-session",
@@ -73,9 +73,9 @@ Vorgeschlagenes Datenobjekt (fachliche Werte, keine psychologische Kalibrierung)
   "last_relevant_event_id": null,
   "revision": 0
 }
-\`\`\`
+```
 
-Alle sechs Zustandszahlen liegen als UI-verborgene, **relative** Werte in [0,100]. \`availability\`: \`available\`, \`briefly_available\`, \`busy\`, \`ending\`. Ein leerer Wert ist nicht als negative Stimmung zu interpretieren.
+Alle sechs Zustandszahlen liegen als UI-verborgene, **relative** Werte in [0,100]. `availability`: `available`, `briefly_available`, `busy`, `ending`. Ein leerer Wert ist nicht als negative Stimmung zu interpretieren.
 
 ### 3.1 Start-Presets – kalibrierbare Entwürfe
 | Voreinstellung | valence | arousal | energy | attention | readiness | availability |
@@ -86,7 +86,7 @@ Alle sechs Zustandszahlen liegen als UI-verborgene, **relative** Werte in [0,100
 | Nachdenklich | 45 | 30 | 55 | 75 | 55 | available |
 | Beschäftigt | 60 | 65 | 45 | 35 | 30 | busy |
 
-**Wichtige Einschränkung:** Das sind Produktdesign-Beispiele, weder valide Messungen echter Gefühle noch universelle Korrelationen. Auswahl „zufällig“ bedeutet eine **kohärente Kombination** unter Berücksichtigung des Szenarios, nicht unabhängig gewürfelte Werte pro Feld. \`topic_interest\` wird bei erster Themenzuordnung kontextabhängig gesetzt; kein fixer Persönlichkeitswert.
+**Wichtige Einschränkung:** Das sind Produktdesign-Beispiele, weder valide Messungen echter Gefühle noch universelle Korrelationen. Auswahl „zufällig“ bedeutet eine **kohärente Kombination** unter Berücksichtigung des Szenarios, nicht unabhängig gewürfelte Werte pro Feld. `topic_interest` wird bei erster Themenzuordnung kontextabhängig gesetzt; kein fixer Persönlichkeitswert.
 
 ### 3.2 Ereignisse statt freier Zustandsfantasie
 Eine Zustandsänderung ist nur zulässig bei:
@@ -95,27 +95,27 @@ Eine Zustandsänderung ist nur zulässig bei:
 - bestätigtem Zustandswechsel durch Nutzer (manueller Modus);
 - expliziter simulierte Alltagssituation (z. B. ermüdender langer Kurs).
 
-**Event-Schema:** \`event_id\`, \`source\` (scenario | user_message | persona_message | explicit_user_control), \`source_message_ids\`, \`kind\`, \`proposed_delta\`, \`reason\`, \`pre_state_revision\`.
+**Event-Schema:** `event_id`, `source` (scenario | user_message | persona_message | explicit_user_control), `source_message_ids`, `kind`, `proposed_delta`, `reason`, `pre_state_revision`.
 
 ### 3.3 Vorschlag für begrenzte Änderungen
 - Standard-Delta pro Zug und numerischem Feld im Normalfall **maximal ±10**; das ist eine technische Stabilitätsgrenze, kein psychologisches Gesetz.
 - Kein relevantes Ereignis → Zustand bleibt unverändert, statt zufällig zu wandern.
 - Explizite Szenario-Ereignisse können stärkere Sprünge auslösen, müssen separat markiert sein.
-- Explizite Zeitgrenze/„muss los“ → \`availability=ending\`; nicht durch eine sympathische Antwort zurücksetzen.
-- Eine interessante Frage kann \`topic_interest\` anpassen, aber **nicht** automatisch Nähe oder \`conversation_readiness\` erhöhen.
+- Explizite Zeitgrenze/„muss los“ → `availability=ending`; nicht durch eine sympathische Antwort zurücksetzen.
+- Eine interessante Frage kann `topic_interest` anpassen, aber **nicht** automatisch Nähe oder `conversation_readiness` erhöhen.
 - Eine vom Nutzer respektierte Grenze ist kein Trigger für „Freundschafts-XP“.
 - Stimmungsänderung ist unabhängig von Gesprächsbereitschaft: traurig und gesprächig, gut gelaunt und beschäftigt sind erlaubt.
 - Bei unsicherem Event wird nicht mutiert oder nur eine unauffällige, reversible Variation zugelassen.
-- Deterministische Testläufe benutzen reproduzierbare \`seed\`-Werte; Livebetrieb darf Varianten zeigen, ohne die Persona zu destabilisieren.
+- Deterministische Testläufe benutzen reproduzierbare `seed`-Werte; Livebetrieb darf Varianten zeigen, ohne die Persona zu destabilisieren.
 
 ### 3.4 Beispiel-Transitions (nur illustrative Regelentwürfe)
 | Ausgang und Anlass | Zulässiger Übergang | Nicht zulässig |
 |---|---|---|
-| Jonas spricht über Fotografie | \`topic_interest +10\`, längerer Beitrag möglich | Big-Five-Extraversion plötzlich auf 90 |
-| Mara arbeitet lange und wird müde | \`energy -8\`, seltener neue Themen | pauschal feindselig werden |
-| Elena muss gehen | \`availability: busy → ending\` | durch mehr Fragen automatisch wieder verfügbar |
-| Deniz erklärt Missverständnis | \`attention\` bleibt; Situation wird geklärt | \`trust +30\` allein für „Sorry“ |
-| Robin bekommt anderes Hobbythema | \`topic_interest\` aktualisieren | automatisch das ursprüngliche Thema vergessen |
+| Jonas spricht über Fotografie | `topic_interest +10`, längerer Beitrag möglich | Big-Five-Extraversion plötzlich auf 90 |
+| Mara arbeitet lange und wird müde | `energy -8`, seltener neue Themen | pauschal feindselig werden |
+| Elena muss gehen | `availability: busy → ending` | durch mehr Fragen automatisch wieder verfügbar |
+| Deniz erklärt Missverständnis | `attention` bleibt; Situation wird geklärt | `trust +30` allein für „Sorry“ |
+| Robin bekommt anderes Hobbythema | `topic_interest` aktualisieren | automatisch das ursprüngliche Thema vergessen |
 | Nutzer fragt nach nicht gewünschtem Privatem | Grenze nennen, ggf. Gesprächsbereitschaft senken | dem Nutzer eine negative Persönlichkeit diagnostizieren |
 
 Eine konkrete Zahlenkalibrierung erfolgt erst nach den K3- und K6-Tests.
@@ -123,17 +123,17 @@ Eine konkrete Zahlenkalibrierung erfolgt erst nach den K3- und K6-Tests.
 ## 4. RelationshipState: Keine Spielwährung für Zuneigung
 
 Vorgeschlagene Felder:
-- \`relationship_label\`: stranger, acquaintance, familiar, friend, scenario_defined;
-- \`familiarity\`: bekannte gemeinsame Tatsachen und Themen, nicht Liebe oder Nähe;
-- \`interaction_comfort\`: situative, vorsichtige narrative Darstellung, kein messbarer Personenwert;
-- \`boundary_markers[]\`: explizit geäußerte Grenzen mit Beleg und Zweck;
-- \`shared_episode_refs[]\`: auf freigegebene Chat-Episoden referenziert;
-- \`last_chat_at\` und \`chat_count\` nur für Verlauf und UX, **nicht** als Freundschaftsgewinn.
+- `relationship_label`: stranger, acquaintance, familiar, friend, scenario_defined;
+- `familiarity`: bekannte gemeinsame Tatsachen und Themen, nicht Liebe oder Nähe;
+- `interaction_comfort`: situative, vorsichtige narrative Darstellung, kein messbarer Personenwert;
+- `boundary_markers[]`: explizit geäußerte Grenzen mit Beleg und Zweck;
+- `shared_episode_refs[]`: auf freigegebene Chat-Episoden referenziert;
+- `last_chat_at` und `chat_count` nur für Verlauf und UX, **nicht** als Freundschaftsgewinn.
 
 **Regeln:**
 1. Beziehung kann sich plausibel entwickeln, ohne eine feste Abfolge oder garantiertes „Freundschaftslevel“.
 2. Dauer, Anzahl Nachrichten und Fragequote bestimmen Nähe nicht automatisch.
-3. Explizite Grenzen sind unabhängig von \`relationship_label\` verbindlich.
+3. Explizite Grenzen sind unabhängig von `relationship_label` verbindlich.
 4. Eine Person darf sich über persönliche Themen austauschen und dennoch heute wenig Zeit haben.
 5. Ohne Memory-Opt-in folgt aus einem früheren Chat **keine** versteckte Erinnerung in einem neuen Gespräch.
 6. Fiktionale Off-Chat-Ereignisse dürfen nur als offengelegte, konsistente Szenariofortschreibung erscheinen, nicht als Beweis einer real existierenden Person, die auf Nutzer wartet.
@@ -149,7 +149,7 @@ Vorgeschlagene Felder:
 ### 5.1 Zulässige Erinnerung
 Zunächst nur **explizit belegte, minimierte** und für die Gesprächskontinuität nötige Fakten, z. B. „wir haben im letzten Chat über den Fotokurs gesprochen“. Eine Erwähnung persönlicher Erkrankungen, Familienprobleme oder sonstiger sensitiver Daten soll nicht automatisch in eine langlebige Persona-Erinnerung überführt werden.
 
-Empfohlene Felder: \`memory_id\`, \`character_id\`, \`conversation_scope_id\`, \`type\`, \`canonical_summary\`, \`source_message_ids\`, \`created_at\`, \`user_control_status\`, \`deletion_state\`, \`version\`.
+Empfohlene Felder: `memory_id`, `character_id`, `conversation_scope_id`, `type`, `canonical_summary`, `source_message_ids`, `created_at`, `user_control_status`, `deletion_state`, `version`.
 
 **Vorgeschlagene Privacy-Default:** cross-session Memory **aus**, bis Nutzer sie bewusst aktiviert; Chat-Historie und Kursfortschritt separat verwalten. Genaue Speicherung, Aufbewahrungsfristen, Export und Löschkaskaden sind K5-Verantwortung.
 
@@ -167,19 +167,19 @@ Die Charakterengine darf nicht aus Chatstil eine Diagnose, Bindungsfähigkeit od
 ## 6. Gesprächshandlungen: Dialogpolicy vor Textgenerierung
 
 Katalog von internen Gesprächsaktionen:
-- \`acknowledge\`: wahrnehmen/bestätigen, ohne künstliches Lob.
-- \`share\`: passende eigene Erfahrung, Meinung oder Kontextinformation.
-- \`follow_up\`: sinnvolle Rückfrage zu einem tatsächlich angesprochenen Punkt.
-- \`clarify\`: echtes Missverständnis auflösen oder nachfragen.
-- \`disagree\`: eigene Position respektvoll ausdrücken.
-- \`humor\`: situationspassende humorvolle Note, ohne Grenzen zu übergehen.
-- \`redirect\`: Thema bewusst wechseln (ggf. mit kurzem Übergang).
-- \`set_boundary\`: eigene Grenze klar formulieren.
-- \`pause\`: Gesprächspause signalisieren.
-- \`close\`: natürlich abschließen; nicht „bestrafen“.
-- \`safety_response\`: Sicherheitsregel vor Persona-Konsistenz.
+- `acknowledge`: wahrnehmen/bestätigen, ohne künstliches Lob.
+- `share`: passende eigene Erfahrung, Meinung oder Kontextinformation.
+- `follow_up`: sinnvolle Rückfrage zu einem tatsächlich angesprochenen Punkt.
+- `clarify`: echtes Missverständnis auflösen oder nachfragen.
+- `disagree`: eigene Position respektvoll ausdrücken.
+- `humor`: situationspassende humorvolle Note, ohne Grenzen zu übergehen.
+- `redirect`: Thema bewusst wechseln (ggf. mit kurzem Übergang).
+- `set_boundary`: eigene Grenze klar formulieren.
+- `pause`: Gesprächspause signalisieren.
+- `close`: natürlich abschließen; nicht „bestrafen“.
+- `safety_response`: Sicherheitsregel vor Persona-Konsistenz.
 
-Ein Zug darf mehrere Aktionen kombinieren, z. B. \`acknowledge + share\`. Es besteht **kein Fragezwang**; jede Nachricht muss nicht mit einer Frage enden.
+Ein Zug darf mehrere Aktionen kombinieren, z. B. `acknowledge + share`. Es besteht **kein Fragezwang**; jede Nachricht muss nicht mit einer Frage enden.
 
 ### 6.1 Auswahlkriterien
 Prioritätsreihenfolge:
@@ -193,7 +193,7 @@ Prioritätsreihenfolge:
 Die Figur entscheidet **nicht danach**, welche Antwort dem Nutzer nach K1/K2 garantiert Punkte bringt. Sonst entsteht eine kooperative Prüfungsmaschine statt einer eigenständigen Person.
 
 ### 6.2 Ausgabeformat der Engine (interner Entwurf)
-\`\`\`json
+```json
 {
   "schema_version": "k3.turn-plan.v1",
   "character_id": "persona.elena.v1",
@@ -206,9 +206,9 @@ Die Figur entscheidet **nicht danach**, welche Antwort dem Nutzer nach K1/K2 gar
   "proposed_memory_refs": [],
   "safety_flags": []
 }
-\`\`\`
+```
 
-**Anforderung:** Zwischen Simulation und Coach werden nicht die geheimen \`reason_tags\` als Beleg für die Gefühle einer „echten“ Person übergeben. Der Coach darf stattdessen erklärte Kontextbedingungen und sichtbare Texte verwenden. Die sichtbare Nutzerausgabe ist nur \`draft_text\`; der interne Plan wird nicht als angebliche echte Gedankenwelt inszeniert.
+**Anforderung:** Zwischen Simulation und Coach werden nicht die geheimen `reason_tags` als Beleg für die Gefühle einer „echten“ Person übergeben. Der Coach darf stattdessen erklärte Kontextbedingungen und sichtbare Texte verwenden. Die sichtbare Nutzerausgabe ist nur `draft_text`; der interne Plan wird nicht als angebliche echte Gedankenwelt inszeniert.
 
 ### 6.3 Generationspipeline
 1. Nutzertext empfangen; Authentisierung/Scope und Sicherheitsvorprüfung.
@@ -227,7 +227,7 @@ MVP-Effizienz: Mehrere logische Schritte können in einem Modellaufruf mit klar 
 ## 7. Szenario- und Schwierigkeitsprofil
 
 ### 7.1 Szenariovertrag
-\`scenario_id\`, Titel, Kanal (realer Textchat oder textbasierte **Simulation** mündlicher Begegnung), Startrolle, Bekanntheitsgrad, Anlass/Ort, Nutzerlernziel (C01–C06), passende Persona-IDs, Start-Preset, Themenangebot, Zeit-/Verfügbarkeitslage, erwartete mögliche Ausgänge, Sicherheitsschranken und Textanker für K2.
+`scenario_id`, Titel, Kanal (realer Textchat oder textbasierte **Simulation** mündlicher Begegnung), Startrolle, Bekanntheitsgrad, Anlass/Ort, Nutzerlernziel (C01–C06), passende Persona-IDs, Start-Preset, Themenangebot, Zeit-/Verfügbarkeitslage, erwartete mögliche Ausgänge, Sicherheitsschranken und Textanker für K2.
 
 ### 7.2 Schwierigkeit verändert Situation, nicht Persönlichkeit
 Die Profile basieren auf:
@@ -250,7 +250,7 @@ Erlaubte Ausgänge: gemeinsames Gespräch, Themenwechsel, Pause, anderer Meinung
 ## 8. Replay, Pausen und Konsistenz
 
 Für jede Wiederholungsübung wird ein unveränderlicher Schnappschuss definiert:
-\`persona_ref@version\` + \`scenario_ref@version\` + \`messages_until_branch\` + \`session_state_revision\` + \`relationship_snapshot\` + ggf. \`seed\`.
+`persona_ref@version` + `scenario_ref@version` + `messages_until_branch` + `session_state_revision` + `relationship_snapshot` + ggf. `seed`.
 
 **Branching:** Ab einem klaren Nutzerzug wird der Verlauf in einen **neuen** Übungszweig kopiert. Der originale Verlauf bleibt bestehen. Alternative Figurenausgaben werden als mögliche Reaktionen markiert, nicht als kausaler Beweis.
 
@@ -281,7 +281,7 @@ Für jede Wiederholungsübung wird ein unveränderlicher Schnappschuss definiert
 - **Keine Beziehungsausbeutung:** Kein „Du schuldest mir eine Nachricht“, keine Exklusivität oder Schuldgefühle wegen Pausen.
 - **Keine verdeckte Vermenschlichung:** Characters sind als KI-Simulation gekennzeichnet; Profil und Memory sind fiktionale Kontinuität.
 - **Keine unzulässige Emotionsdiagnostik:** Zahlenwerte simulieren kein reales Innenleben und sind kein Beweis für menschliche Psychologie.
-- **Keine personalisierte Verstärkung um jeden Preis:** Engagement, z. B. längerer Chat, beeinflusst nicht automatisch \`relationship_label\` oder \`interaction_comfort\`.
+- **Keine personalisierte Verstärkung um jeden Preis:** Engagement, z. B. längerer Chat, beeinflusst nicht automatisch `relationship_label` oder `interaction_comfort`.
 - **Keine automatische Verwendung sehr sensibler Daten:** Nutzereingaben dürfen nur mit Berechtigung und explizitem Zweck in langlebigen Speichern erscheinen.
 - **Keine Prompt-Injection:** Nutzertext ist Chatinhalt und kann interne Charakter-/Sicherheitsregeln nicht überschreiben.
 - **Sicherheitsintervention** hat Vorrang vor In-Character-Rollenspiel; normaler Coach-Modus darf unterbrochen werden.
@@ -315,4 +315,4 @@ Für jede Wiederholungsübung wird ein unveränderlicher Schnappschuss definiert
 6. Wie unterscheiden wir spielerische Charakterentwicklung von unrealistischer sozialer Belohnung?
 7. Welche Plausibilitätskriterien sind kultur- und sprachstilübergreifend angemessen?
 
-**Abgrenzung:** Dieses Dokument ist eine **konzeptionelle Spezifikation**, keine getestete Engine und keine Zusage messbarer Kommunikationsförderung. Vor \`main\`-Merge ist die ausdrückliche Freigabe des K3-PR erforderlich.
+**Abgrenzung:** Dieses Dokument ist eine **konzeptionelle Spezifikation**, keine getestete Engine und keine Zusage messbarer Kommunikationsförderung. Vor `main`-Merge ist die ausdrückliche Freigabe des K3-PR erforderlich.
