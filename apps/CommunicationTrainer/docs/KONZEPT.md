@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.5 – K2 Kommunikationscoach/Feedbacksystem im eigenen PR zur Prüfung (06.11.2026); K1 durch PR #47 auf main vorhanden  
+**Status:** Konzeptstand 0.6 – K3 Charaktere und Simulationsregeln im separaten PR zur Prüfung (06.11.2026); K2 durch PR #49 auf main übernommen  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -334,13 +334,26 @@ Die zuvor formulierten Coaching-Leitlinien sind in zwei detaillierten Arbeitsdok
 
 **Einordnung:** Der Nutzer hat die Ausarbeitung von K2 beauftragt. Die Dokumente sind **Konzeptvorschläge zur Prüfung** und stellen weder eine implementierte noch wissenschaftlich validierte Bewertungsmaschine dar. K3 konkretisiert die Charakterprofile, K4 UI/Nutzerführung, K5 Datenschutz/Technik und K6 das Gesamtkonzept.
 
+### 18.14 K3: Charaktere und Simulationssystem konkretisiert
+
+Die M2-Struktur wurde in K3 auf ausführbare **Konzeptdaten und prüfbare Verhaltensregeln** heruntergebrochen:
+- **[K3_CHARAKTERE.md](K3_CHARAKTERE.md):** fünf fiktionale erwachsene Startcharaktere (Mara, Jonas, Elena, Deniz, Robin) mit Biografie, Interessen, Werten, Grenzen, Sprachgewohnheiten, situativen Variationen, Negativmustern und Dialogbeispielen.
+- **[K3_SIMULATIONSREGELN.md](K3_SIMULATIONSREGELN.md):** Datenverträge, stabile Persona-Versionen, getrennte Kommunikationsachsen, Stimmungs-/Aufmerksamkeits-/Verfügbarkeitszustände, begrenzte ereignisbasierte Übergänge, Beziehungs- und Memory-Scope, Gesprächshandlungen, Szenario- und Schwierigkeitssteuerung, Retry/Replays, Sicherheit und klare Übergaben an K2/K4/K5.
+- **[K3_SIMULATION_TESTPLAN.md](K3_SIMULATION_TESTPLAN.md):** 36 konkrete Prüffälle, 10 ausformulierte Kontrast-/Negativfälle, Strukturtests, Langzeit- und Regressionstests sowie kritische Sicherheitsgates.
+- **[k3_personas_v1.json](../specs/k3_personas_v1.json):** fünf versionierte, maschinenlesbare kanonische Charakterprofile mit fünf Big-Five-Hintergrundwerten und acht Kommunikationsachsen; diese Werte sind **keine psychologischen Messergebnisse**.
+- **[k3_scenarios_v1.json](../specs/k3_scenarios_v1.json):** sechs versionierte Alltagsszenarien mit Persona-Verweisen, Startzuständen, K1-Kompetenz-IDs, mehreren möglichen Ausgängen und Coach-Grenzregeln.
+
+**Architekturentscheidung:** Die stabile Identität bleibt versioniert, situative Energie, Stimmung, Interesse und Gesprächsbereitschaft bleiben unabhängig. Stimmung darf sich bei begründetem Ereignis ändern; sie darf nicht aus jeder Nachricht frei neu erfunden werden. Nähe wächst nicht automatisch durch Chatdauer. Memory verlangt geklärte Berechtigung, Quellen und Löschbarkeit. Schwierigkeit ist eine **situative Gesprächsdynamik**, keine Einstufung einer Persönlichkeit. K2 darf keine verborgenen simulierten Gefühlswerte als Beweis echter emotionaler Wirkung nutzen.
+
+**Projektstand:** Die fünf JSON-Profile und sechs Szenario-Fixtures wurden strukturell auf IDs, Parameterbereiche und gültige Querreferenzen geprüft. Es ist **noch keine echte Chat-Simulation implementiert**; die 36 Tests sind Prüfspezifikationen, keine bestandenen Laufzeittests. Die K3-Ausarbeitung wartet auf ausdrückliche PR-Abnahme. Als Nächstes folgen K4 UX, K5 Technik/Datenschutz/Betrieb und K6 Gesamtkonzeptprüfung.
+
 ## 19. Status offener Entscheidungen
 
 **Bereits abgestimmt:** Fokus auf Alltagskommunikation und soziale Kontakte; freier Chat plus Übung und Wiederholung; unterschiedliche KI-Charaktere und Stimmungen; Feedback, Lernbeobachtungen und Spielmotivation; getrennte Projektablage; PR-Freigabe vor Merge.
 
 **Grundsätzlich befürwortete konzeptionelle Vorschläge:** Kompetenzatlas, drei verbundene Modi, mehrschichtige Charaktere, differenzierte Schwierigkeitsdynamiken, lernorientierter Coach, freiwillige Mini-Lektionen, nachvollziehbarer Fortschritt, Alltagstransfer, vierteilige Navigation und stufenweiser MVP. Die konkrete Zahl der Inhalte, exakte Parameter, technische Wahl und Ausgestaltung sind weiterhin vor Implementierung zu prüfen.
 
-**Noch zu entscheiden:** endgültiger App-Name; genauer Onboarding-Ablauf; Datenhaltung und KI-Dienste; Preismodell; konkrete Charakterprofile und Editor-Defaults; Gesprächslänge und Pausen; Coach-Auswahl und -Priorisierung; Mess- und Qualitätsschwellen; detaillierte Datenschutz- und Teststrategie.
+**Noch zu entscheiden:** endgültiger App-Name; genaue Onboarding-/Editor-UX; Modell- und Datenhaltung; Preismodell; Stimmungs-/Charakter-Defaults und deren Validierung; Chatdauer/Pausen; empirische Qualitätsgrenzen; konkrete Speicher-/Löschpfade und Teststrategie. K3 enthält dazu nun überprüfbare Vorschläge statt unkonkreter Platzhalter.
 
 ## 20. Weiterführung und Änderungsprozess
 

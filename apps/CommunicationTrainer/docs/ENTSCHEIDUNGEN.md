@@ -1,6 +1,30 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
-## 2026-11-06 – Konzeptstand 0.5 (PR ausstehend): K2 Kommunikationscoach und Feedback
+## 2026-11-06 – Konzeptstand 0.6 (K3-PR offen): Fünf Personas und konkretes Simulationsmodell
+
+**Auftrag:** Der Nutzer hat PR #49 ausdrücklich freigegeben und K3 beauftragt. Der Merge wurde verifiziert. K3 wird in einem eigenständigen Entwicklungsbranch vorgelegt.
+
+**Neue Unterlagen:**
+- [K3_CHARAKTERE.md](K3_CHARAKTERE.md): detaillierte Beschreibungen von Mara, Jonas, Elena, Deniz und Robin, einschließlich Dialogen, Grenzen, Gegenbeispielen und typischen Zustandsvariationen.
+- [K3_SIMULATIONSREGELN.md](K3_SIMULATIONSREGELN.md): Persona-, Zustands-, Beziehungs- und Gedächtnisregeln, Übergänge, Dialogaktionen, Replay, Sicherheit und Kopplung an K1/K2.
+- [K3_SIMULATION_TESTPLAN.md](K3_SIMULATION_TESTPLAN.md): 36 Prüffälle und 10 ausformulierte Negativ-/Kontrastfälle.
+- [k3_personas_v1.json](../specs/k3_personas_v1.json): fünf versionierte kanonische Personas als spätere App-Fixtures.
+- [k3_scenarios_v1.json](../specs/k3_scenarios_v1.json): sechs Szenarien mit Kompetenzen, Startzustand, möglichen Ausgängen und Coaching-Grenzen.
+
+**Vorgeschlagene verbindliche Gestaltungsprinzipien:**
+- Kein Persönlichkeitswert determiniert einzelne Nachrichten. Ruhige Figuren dürfen bei Interesse lebhaft sein; direkte Figuren bleiben respektvoll; verträgliche Figuren dürfen widersprechen.
+- Szenario-Schwierigkeit verändert Gesprächsbedingungen, nicht die zugrunde liegende Person oder ihre Moral.
+- Persona-Version bleibt pro Chat stabil. Kurzfristige Zustände ändern sich nur mit begründetem Ereignis. Beziehung ist keine Nachrichtenzahl-Zuneigungsleiste.
+- Erinnerungen sind quellenbelegt, scope-begrenzt, berechtigt und löschbar; Lernprofil und Charaktergedächtnis bleiben getrennt.
+- Figuren haben eigene Meinungen, Interessen, Grenzen und dürfen Gespräche beenden. Keine künstliche Bindungsmaximierung.
+- K2 erhält sichtbare Texte und deklarierte Bedingungen, nicht vermeintlich „echte“ emotionale Innenzustände.
+- Charakter-JSON und Szenario-JSON wurden auf Grundstruktur, Wertebereiche und Querverweise geprüft; **noch kein Modell-/Dialogtest ausgeführt**.
+
+**Offen:** genaue KI-Modellwahl, Validierung der numerischen Designparameter, konkreter Editor, Speicher-/Löschtechnologie, betriebswirtschaftliche Parameter, reale Pilotqualität.
+
+**Status:** Alle K3-Neuerungen liegen nur auf dem neuen Branch. **Der konkrete K3-PR braucht vor dem Merge nach main eine erneute ausdrückliche Genehmigung.** Bestehende Apps werden nicht verändert.
+
+## 2026-11-06 – Konzeptstand 0.5 (PR #49 gemergt): K2 Kommunikationscoach und Feedback
 
 **Auftrag:** Der Nutzer hat PR #47 ausdrücklich genehmigt und die professionelle, sorgfältige Ausarbeitung von K2 beauftragt. PR #47 wurde im Repository als bereits gemergt verifiziert; kein zweiter Merge ausgeführt.
 
@@ -19,7 +43,7 @@
 
 **Noch offen:** faktische Implementierung, Modellentscheidung, kalibrierte Schwellen aus menschlichen Tests, exakte Onboarding-/Opt-in-Texte, technische Löschpfade und MVP-Balancing.
 
-**Status:** Die Ausarbeitung liegt zunächst ausschließlich im K2-Entwicklungsbranch. **Kein Merge ohne explizite Genehmigung des neuen PR.** Andere Apps bleiben unberührt.
+**Statusaktualisierung:** PR #49 wurde vom Nutzer ausdrücklich freigegeben und am 06.11.2026 erfolgreich nach main gemergt. K2 ist damit als Konzept aufgenommen; eine KI-Implementierung liegt weiterhin nicht vor.
 
 ## 2026-11-06 – Konzeptstand 0.4 (PR #47 gemergt): K1 Lern- und Kompetenzsystem
 
