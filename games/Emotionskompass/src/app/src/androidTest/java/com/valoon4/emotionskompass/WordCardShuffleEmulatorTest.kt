@@ -62,8 +62,11 @@ class WordCardShuffleEmulatorTest {
         rule.onNodeWithText("Nächste Karte").performScrollTo().performClick()
         val family = catalog.familyNames.first()
         val filtered = catalog.search("", family)
-        rule.onNodeWithText(family).performClick()
-        rule.onNodeWithText("KARTE 1 VON ${filtered.size}").assertExists()
+        // At 320dp/200% the filter row can be off-screen after "Nächste Karte".
+        // Scroll to the actual chip before clicking, just as a user would.
+        rule.onNodeWithText(family).performScrollTo().performClick()
+        rule.waitForIdle()
+        rule.onNodeWithText("KARTE 1 VON ${filtered.size}").performScrollTo().assertExists()
         val shown = revealName()
         assertTrue(filtered.any { it.name == shown })
     }
