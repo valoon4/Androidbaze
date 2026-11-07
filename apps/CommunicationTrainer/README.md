@@ -59,6 +59,12 @@ Weder die Root-Gradle-Konfiguration noch Kabelsalat, InnerWave, TimeFlow oder ih
 
 **D01-Build- und Testanleitung:** [android/README.md](android/README.md). Nach erfolgreichem Workflow-Lauf liegt die Debug-APK als GitHub-Artefakt vor; D01 ist **keine** freigegebene Veröffentlichung.
 
+## D02 – Lokale Gespräche und Entwürfe (PR #59 zur Freigabe)
+
+Die erste tatsächlich nutzbare lokale Speicherung ist unter [android/](android/) umgesetzt: Room mit Gesprächen/Nachrichten/Entwürfen/Replay-Referenzen und DataStore für den System-/Hell-/Dunkelmodus sowie die zuletzt ausgewählte Unterhaltung. Der Chat versendet weiterhin **keine** Nachrichten; echte KI folgt nicht vor der späteren expliziten Modellfreigabe.
+
+[D02-Speicherarchitektur, Grenzen und Testmatrix](docs/D02_LOKALE_PERSISTENZ.md). Der eigene GitHub-Workflow baut die D02-Debug-APK nach erfolgreichem Test; **keine andere App oder ihr Workflow wird verändert**.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. D00 hat die eigenständige Android-Gradle-Wurzel unter `apps/CommunicationTrainer/android/` als D01-Ziel empfohlen. Eine neue CI-Workflow-Datei außerhalb des Projektordners erfordert vor Erstellung eine ausdrückliche, eng begrenzte Ausnahmefreigabe.

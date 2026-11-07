@@ -1,4 +1,29 @@
-# CommunicationTrainer – Android-Grundgerüst D01
+# CommunicationTrainer – D02 lokale Speicherung mit Aurora Pulse
+
+**Aktueller Entwicklungsstand:** D02 stellt Room-gespeicherte Gesprächsentwürfe, DataStore-Darstellungseinstellungen und lokale Löschfunktionen bereit. Die App verschickt weiterhin keine Nachrichten und verwendet keine KI. PR #59 benötigt vor dem Merge nach main eine eigene Freigabe.
+
+## D02 ausprobieren
+
+1. Unter **Chats** auf **„Neuen Entwurf anlegen“** tippen.
+2. Einen längeren Text schreiben und warten, bis **„Auf diesem Gerät gespeichert“** sichtbar ist.
+3. Zur Übersicht zurückkehren, Entwurf erneut öffnen; den gespeicherten Text prüfen.
+4. App im Task-Switcher schließen oder per `adb shell am force-stop com.valoon4.communicationtrainer` beenden und erneut starten; der zuletzt geöffnete Entwurf soll wieder erscheinen (bei persistierter Auswahl).
+5. Zwei Entwürfe erstellen und prüfen, ob beide unabhängig voneinander bestehen bleiben.
+6. Einen Entwurf über **„Löschen“** mit Bestätigung entfernen; nur dieser darf verschwinden.
+7. Unter **Üben** die Darstellung System/Hell/Dunkel wechseln, App neu starten und Einstellung prüfen.
+8. Test: Drehen, lange Texte, größere Schrift, Offline-Modus. Keine Netzwerkberechtigung erforderlich.
+
+**Wichtig:** Nur ein mit SQLite bestätigter Entwurf („Auf diesem Gerät gespeichert“) kann bei einem sofortigen Prozessabbruch als dauerhaft zugesichert werden. Die Anzeige „Wird gespeichert …“ ist **keine** Speicherbestätigung.
+
+[D02-Datenschutz-/Testmatrix](../docs/D02_LOKALE_PERSISTENZ.md). Die bisherige D01-Dokumentation bleibt unten als Historie erhalten.
+
+## Wichtiger Hinweis zu Debug-Updates
+
+Die GitHub-Actions-Debug-APK verwendet derzeit **keinen dauerhaft hinterlegten Signing-Key**. Zwischen Build-Läufen kann daher die Debug-Signatur wechseln. Android kann dann ein APK-Update über eine bereits installierte Version verweigern. Eine vorherige Deinstallation entfernt auch lokale Room-Entwürfe und DataStore-Einstellungen, weil Android-Backup deaktiviert ist. **Für den D02-Neustarttest die APK installiert lassen** und nur den Prozess beenden bzw. die App neu öffnen.
+
+**Vor Tests über mehrere APK-Versionen mit wichtigen Nutzerdaten** müssen wir einen stabilen, sicher verwalteten Debug-Signing-Key bzw. einen getrennten Migrations-/Update-Testpfad einrichten. Keine privaten Texte in einer Debuginstallation ablegen, deren Update- und Wiederherstellungsweg noch nicht abgesichert ist.
+
+## Historie: D01
 
 **Status:** installierbares Kotlin-/Jetpack-Compose-Grundgerüst als vorgeschlagener PR, noch **keine echte KI**, keine Chattexte, keine lokale Chatpersistenz oder Authentifizierung.
 

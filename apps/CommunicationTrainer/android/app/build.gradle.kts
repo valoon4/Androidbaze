@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -12,15 +13,19 @@ android {
         applicationId = "com.valoon4.communicationtrainer"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0-d01"
+        versionCode = 2
+        versionName = "0.2.0-d02"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        // D02 test builds install independently of D01 (whose ephemeral debug
+        // signing certificate differs). Release identity stays unchanged.
+        getByName("debug") {
+            applicationIdSuffix = ".d02preview"
+            versionNameSuffix = "-preview"
         }
+        release { isMinifyEnabled = false }
     }
 
     compileOptions {
@@ -28,15 +33,19 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    buildFeatures {
-        compose = true
+    buildFeatures { compose = true }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
 kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
+    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -46,7 +55,14 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)
     implementation(libs.compose.tooling.preview)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.datastore.preferences)
+    implementation(libs.lifecycle.viewmodel.ktx)
 
     debugImplementation(libs.compose.tooling)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
 }

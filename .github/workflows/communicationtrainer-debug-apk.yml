@@ -51,8 +51,17 @@ jobs:
           test -n "$SDKMGR"
           yes | "$SDKMGR" --licenses > /dev/null || true
           "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
-      - name: Test navigation model
+      - name: Unit tests (D02 persistence, preferences, navigation and contrast)
         run: gradle :app:testDebugUnitTest --no-daemon --stacktrace
+      - name: Verify exported Room v1 schema
+        run: |
+          set -euo pipefail
+          SCHEMA="$(find app/schemas -type f -name '1.json' -print -quit)"
+          test -s "$SCHEMA"
+          jq -e '.database.version == 1' "$SCHEMA" > /dev/null
+          # Generated schema must match the checked-in baseline exactly.
+          # Schema changes require an explicit version bump + migration test.
+          git diff --exit-code -- "$SCHEMA"
       - name: Assemble debug APK
         run: gradle :app:assembleDebug --no-daemon --stacktrace
       - name: Verify APK identity, target API and signature
@@ -63,20 +72,21 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
           "$AAPT" dump badging "$APK" | tee apk-badging.txt
-          grep -Fq "package: name='com.valoon4.communicationtrainer'" apk-badging.txt
-          grep -Fq "application-label:'CommunicationTrainer'" apk-badging.txt
+          grep -Fq "package: name='com.valoon4.communicationtrainer.d02preview'" apk-badging.txt
+          grep -Fq "application-label:'CommunicationTrainer D02 Test'" apk-badging.txt
           grep -Fq "targetSdkVersion:'36'" apk-badging.txt
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee apk-signing.txt
-          cp "$APK" CommunicationTrainer-D01-debug.apk
-          sha256sum CommunicationTrainer-D01-debug.apk | tee CommunicationTrainer-D01-debug.apk.sha256
+          cp "$APK" CommunicationTrainer-D02-debug.apk
+          sha256sum CommunicationTrainer-D02-debug.apk | tee CommunicationTrainer-D02-debug.apk.sha256
       - name: Upload installable debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: CommunicationTrainer-D01-debug-apk
+          name: CommunicationTrainer-D02-debug-apk
           path: |
-            apps/CommunicationTrainer/android/CommunicationTrainer-D01-debug.apk
-            apps/CommunicationTrainer/android/CommunicationTrainer-D01-debug.apk.sha256
+            apps/CommunicationTrainer/android/CommunicationTrainer-D02-debug.apk
+            apps/CommunicationTrainer/android/CommunicationTrainer-D02-debug.apk.sha256
             apps/CommunicationTrainer/android/apk-badging.txt
             apps/CommunicationTrainer/android/apk-signing.txt
+            apps/CommunicationTrainer/android/app/schemas/**/1.json
           if-no-files-found: error
           retention-days: 30

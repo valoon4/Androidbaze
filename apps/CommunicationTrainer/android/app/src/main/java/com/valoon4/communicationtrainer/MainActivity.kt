@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +16,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +37,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,23 +52,31 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.valoon4.communicationtrainer.data.ChatUiState
+import com.valoon4.communicationtrainer.data.ChatViewModel
+import com.valoon4.communicationtrainer.data.ThemeMode
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseAccent
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseTheme
 
 class MainActivity : ComponentActivity() {
+    private val storageViewModel: ChatViewModel by viewModels {
+        ChatViewModel.Factory(applicationContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        setContent { CommunicationTrainerApp() }
+        setContent { CommunicationTrainerApp(storageViewModel) }
     }
 }
 
 @Composable
-fun CommunicationTrainerApp() {
+fun CommunicationTrainerApp(viewModel: ChatViewModel) {
+    val storageState by viewModel.state.collectAsState()
     var selectedSection by rememberSaveable { mutableStateOf(MainSection.CHATS.name) }
     val activeSection = MainSection.valueOf(selectedSection)
 
-    AuroraPulseTheme {
+    AuroraPulseTheme(mode = storageState.themeMode) {
         val scheme = MaterialTheme.colorScheme
         Scaffold(
             containerColor = scheme.background,
@@ -91,19 +108,25 @@ fun CommunicationTrainerApp() {
                 }
             }
         ) { innerPadding ->
-            SectionContent(activeSection, innerPadding)
+            SectionContent(activeSection, innerPadding, storageState, viewModel)
         }
     }
 }
 
 @Composable
-private fun SectionContent(section: MainSection, innerPadding: PaddingValues) {
+private fun SectionContent(
+    section: MainSection,
+    innerPadding: PaddingValues,
+    storageState: ChatUiState,
+    viewModel: ChatViewModel
+) {
     val scheme = MaterialTheme.colorScheme
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
+            .imePadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
@@ -142,29 +165,12 @@ private fun SectionContent(section: MainSection, innerPadding: PaddingValues) {
         )
 
         if (section == MainSection.CHATS) {
-            InfoCard(
-                eyebrow = "CHATBEREICH",
-                heading = "Deine Unterhaltungen",
-                description = "Noch keine Gespräche vorhanden. Chatverläufe und Texteingabe folgen in D02 und D03.",
-                symbol = "◉",
-                accent = scheme.secondary,
-                accentContainer = scheme.secondaryContainer,
-                accentOnContainer = scheme.onSecondaryContainer
-            )
-            InfoCard(
-                eyebrow = "CHARAKTERE",
-                heading = "Fiktive Personen, neue Perspektiven",
-                description = "Später übst du mit fünf simulierten Charakteren. Das sind keine echten Menschen.",
-                symbol = "✧",
-                accent = scheme.tertiary,
-                accentContainer = scheme.tertiaryContainer,
-                accentOnContainer = scheme.onTertiaryContainer
-            )
+            DraftWorkspace(storageState, viewModel)
         } else {
             InfoCard(
                 eyebrow = "ÜBUNGSSITUATIONEN",
                 heading = "Alltag entspannt ausprobieren",
-                description = "Wir starten später mit zwei Situationen und erweitern dann auf sechs.",
+                description = "Ab D03 kommen die ersten real benutzbaren Übungsgespräche hinzu.",
                 symbol = "✦",
                 accent = scheme.secondary,
                 accentContainer = scheme.secondaryContainer,
@@ -179,6 +185,7 @@ private fun SectionContent(section: MainSection, innerPadding: PaddingValues) {
                 accentContainer = scheme.tertiaryContainer,
                 accentOnContainer = scheme.onTertiaryContainer
             )
+            ThemeControl(storageState.themeMode, viewModel::setThemeMode)
         }
 
         Surface(
@@ -186,7 +193,7 @@ private fun SectionContent(section: MainSection, innerPadding: PaddingValues) {
             shape = RoundedCornerShape(18.dp)
         ) {
             Text(
-                text = "Bereits ausprobierbar: die Navigation. Nachrichten, Speichern und KI-Antworten sind in dieser Demo noch nicht enthalten.",
+                text = "D02: Gesprächsentwürfe und Darstellung werden lokal gespeichert. Nachrichten versenden und KI-Antworten sind noch nicht enthalten.",
                 style = MaterialTheme.typography.bodySmall,
                 color = scheme.onSurfaceVariant,
                 modifier = Modifier.padding(16.dp)
@@ -223,7 +230,7 @@ private fun AuroraHero(section: MainSection) {
                     color = AuroraPulseAccent.HeroStart
                 ) {
                     Text(
-                        text = "D01 · DEMO OHNE KI",
+                        text = "D02 · LOKAL OHNE KI",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White,
@@ -319,6 +326,169 @@ private fun InfoCard(
                     style = MaterialTheme.typography.bodyMedium,
                     color = scheme.onSurfaceVariant
                 )
+            }
+        }
+    }
+}
+
+/**
+ * D02 deliberately exposes real, local draft storage without pretending that a message
+ * can already be sent. D03 adds a full chat composer and send/response states.
+ */
+@Composable
+private fun DraftWorkspace(state: ChatUiState, viewModel: ChatViewModel) {
+    val scheme = MaterialTheme.colorScheme
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    val activeId = state.selectedConversationId
+
+    if (activeId == null) {
+        Text(
+            text = "Deine lokalen Entwürfe",
+            style = MaterialTheme.typography.titleLarge,
+            color = scheme.onBackground,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            text = "Du kannst schon jetzt einen Gesprächsentwurf notieren. Er bleibt auf diesem Gerät erhalten.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = scheme.onSurfaceVariant
+        )
+        Button(
+            onClick = viewModel::createConversation,
+            enabled = !state.isBusy,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Neuen Entwurf anlegen")
+        }
+        if (state.conversations.isEmpty()) {
+            Surface(color = scheme.primaryContainer, shape = RoundedCornerShape(20.dp)) {
+                Text(
+                    "Noch keine Entwürfe. Starte mit einer Idee für dein nächstes Gespräch.",
+                    color = scheme.onPrimaryContainer,
+                    modifier = Modifier.padding(18.dp)
+                )
+            }
+        }
+        state.conversations.forEach { conversation ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(containerColor = scheme.surface)
+            ) {
+                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(conversation.title, color = scheme.onSurface, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "Nur auf diesem Gerät · Noch nicht gesendet",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = scheme.onSurfaceVariant
+                    )
+                    TextButton(onClick = { viewModel.openConversation(conversation.id) }) {
+                        Text("Entwurf öffnen")
+                    }
+                }
+            }
+        }
+    } else {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextButton(onClick = viewModel::closeConversation, enabled = !state.isBusy) {
+                Text("‹ Alle Entwürfe")
+            }
+            TextButton(onClick = { showDeleteDialog = true }, enabled = !state.isBusy) {
+                Text("Löschen", color = scheme.error)
+            }
+        }
+        Text(
+            "Dein Gesprächsentwurf",
+            style = MaterialTheme.typography.titleLarge,
+            color = scheme.onBackground,
+            fontWeight = FontWeight.SemiBold
+        )
+        OutlinedTextField(
+            value = state.draftText,
+            onValueChange = viewModel::editDraft,
+            label = { Text("Was möchtest du sagen?") },
+            placeholder = { Text("Schreib deine Gedanken auf …") },
+            minLines = 4,
+            maxLines = 10,
+            enabled = !state.isLoadingDraft && !state.isBusy,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp)
+        )
+        Text(
+            text = when {
+                state.isLoadingDraft -> "Entwurf wird geladen …"
+                state.error != null -> state.error
+                state.isDraftSaved -> "Auf diesem Gerät gespeichert"
+                else -> "Wird gespeichert … Bitte vor dem Verlassen auf die Bestätigung achten."
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = if (state.error != null) scheme.error else scheme.onSurfaceVariant
+        )
+        Surface(color = scheme.tertiaryContainer, shape = RoundedCornerShape(18.dp)) {
+            Text(
+                "Noch kein Chat: Dieser Text bleibt ein Entwurf und wird nicht an eine KI gesendet.",
+                color = scheme.onTertiaryContainer,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+
+    if (state.error != null && activeId == null) {
+        Text(state.error, color = scheme.error, style = MaterialTheme.typography.bodySmall)
+    }
+    if (showDeleteDialog && activeId != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Entwurf wirklich löschen?") },
+            text = { Text("Der Entwurf sowie zugehörige lokale Nachrichten und Replay-Zweige werden von diesem Gerät entfernt. Das kann nicht rückgängig gemacht werden.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    viewModel.deleteConversation()
+                }) { Text("Endgültig löschen", color = scheme.error) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Abbrechen") }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ThemeControl(current: ThemeMode, onSelect: (ThemeMode) -> Unit) {
+    val scheme = MaterialTheme.colorScheme
+    Surface(color = scheme.surface, shape = RoundedCornerShape(20.dp)) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                "Darstellung",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                "Die Einstellung wird mit DataStore dauerhaft auf deinem Gerät gespeichert.",
+                style = MaterialTheme.typography.bodySmall,
+                color = scheme.onSurfaceVariant
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ThemeMode.entries.forEach { mode ->
+                    if (mode == current) {
+                        Button(onClick = { onSelect(mode) }, modifier = Modifier.weight(1f)) {
+                            Text(mode.label)
+                        }
+                    } else {
+                        OutlinedButton(onClick = { onSelect(mode) }, modifier = Modifier.weight(1f)) {
+                            Text(mode.label)
+                        }
+                    }
+                }
             }
         }
     }
