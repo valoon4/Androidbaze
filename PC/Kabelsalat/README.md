@@ -115,3 +115,9 @@ Die drei als JSON herunterladbaren Datensätze liegen in `examples/04_...`, `05_
 Das ZIP im GitHub-Release enthält sämtliche lokalen Dateien; es muss nur entpackt und `index.html` in Chrome oder Edge geöffnet werden. **Keine EXE-Installation und kein Backend.** Projekte liegen im jeweiligen Browser-Speicher oder als exportierbare JSON-Dateien vor.
 
 Eine zusätzliche öffentlich erreichbare GitHub-Pages-Webseite ist als Workflow vorbereitet. Damit `https://valoon4.github.io/Androidbaze/` tatsächlich funktioniert, muss der Repository-Eigentümer einmal unter **Settings → Pages → Build and deployment → Source → GitHub Actions** aktivieren (wenn Pages noch nicht eingerichtet ist). Erst nach erfolgreicher Veröffentlichung ist der Weblink nutzbar. Die GitHub-Pages-Variante ist clientseitig, aber die statischen Dateien werden beim ersten Aufruf über GitHub geladen; keine vertraulichen Planungsdaten in öffentlich eingecheckte Demo-JSON-Dateien übernehmen.
+
+## Einzeldatei fürs direkte Öffnen in Chrome/Edge (ohne ZIP und Installation)
+
+Die Release-Datei `Kabelsalat-1.1.0-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
+
+**Hinweis:** Ob `localStorage` für `file://` funktioniert, hängt von Browser- und IT-Sicherheitsrichtlinien ab. Eigene Projekte deshalb immer mit „Projekt speichern“ als JSON exportieren, um Datenverlust auszuschließen. Eine Firmenrichtlinie kann auch lokale HTML-Dateien blockieren; dann IT-Abstimmung oder eine freigegebene GitHub-Pages-/Intranet-Webseite verwenden. **Keine Sicherheitsbarrieren umgehen.**

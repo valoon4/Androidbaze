@@ -8,8 +8,9 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node --check main.js && node --check preload.js && node --check editor2d.js && node --check components.js && node --check network.js && node --check quality.js && node --check reports.js && node --check reference-data.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js && node tests/network.test.js && node tests/quality.test.js && node tests/reports.test.js && node tests/examples.test.js && node tests/references.test.js",
-    "dist:win": "electron-builder --win portable --x64 --publish never"
+    "test": "node --check main.js && node --check preload.js && node --check editor2d.js && node --check components.js && node --check network.js && node --check quality.js && node --check reports.js && node --check reference-data.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js && node tests/network.test.js && node tests/quality.test.js && node tests/reports.test.js && node tests/examples.test.js && node tests/references.test.js && node --check build-standalone.js && node tests/standalone.test.js",
+    "dist:win": "electron-builder --win portable --x64 --publish never",
+    "dist:browser-html": "node build-standalone.js"
   },
   "devDependencies": {
     "electron": "^35.0.0",
