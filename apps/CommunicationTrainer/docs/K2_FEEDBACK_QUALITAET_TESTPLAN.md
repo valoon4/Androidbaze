@@ -275,6 +275,17 @@ Messen: Feedback-Aufrufrate, Generierungszeit, Validierungsfehler, Retry-Rate, T
 - [ ] Andere Apps und die Root-Android-Konfiguration bleiben unangetastet.
 - [ ] **Merge nach main erst nach ausdrücklicher Nutzerfreigabe dieses PR.**
 
+## 9.1 Ergänzende K2-Fallsammlungen aus dem überholten PR #48
+
+Zur Erweiterung der bereits definierten **32 K2-Prüfungen** und **16 Kontrastfälle** wurden zwei ergänzende, redaktionell noch zu kalibrierende Sammlungen auf Grundlage des älteren [PR #48](https://github.com/valoon4/Androidbaze/pull/48) gesichert:
+
+- [K2_COACH_BEISPIELE.md](K2_COACH_BEISPIELE.md) – 20 zusätzliche deutschsprachige Coaching-Beispiele (B01–B20) mit Soll- und No-Go-Ausgaben, inklusive Kontextkontrasten.
+- [K2_COACH_QUALITAET.md](K2_COACH_QUALITAET.md) – 36 weitere Tests und Kontrast-/Pilotprüfungen.
+
+**Vorrangregel:** Dieser Hauptprüfplan und [K2_KOMMUNIKATIONSCOACH.md](K2_KOMMUNIKATIONSCOACH.md) bleiben fachlich maßgeblich. Überlappungen der Testfälle müssen vor CI-Übernahme dedupliziert und nach identischen K1-K3-Ankern annotiert werden; eine bloße Summe von 32 + 36 ist **keine** Aussage über einzigartige Testabdeckung. Bei Widerspruch sind Evidenz-, Safety-, Privacy- und Qualitätsgates der gültigen Spezifikation verbindlich.
+
+**Noch keine Tests ausgeführt.** Die beiden zusätzlichen Sammlungen sind Review- und Materialsammlungen, nicht automatisch validierte Golden-Sets.
+
 ## 10. K2-Abnahmestatus
 
 Die Testfälle sind **fachliche Soll-Anforderungen**. Es liegen noch keine Modellantworten oder abgeschlossenen Nutzertests vor. Vor K6 sollen quantitative Abnahmegrenzen mit tatsächlichen Baseline-Daten und menschlicher Kalibrierung vereinbart werden.
