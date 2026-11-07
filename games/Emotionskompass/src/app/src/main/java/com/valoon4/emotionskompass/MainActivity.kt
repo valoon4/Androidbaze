@@ -549,11 +549,17 @@ private fun EmotionskompassApp(
     var returnCaseId by rememberSaveable { mutableStateOf<String?>(null) }
     var requestedNeedId by rememberSaveable { mutableStateOf<String?>(null) }
     var needReturnToStrategy by rememberSaveable { mutableStateOf(false) }
+    // Navigation-only source marker; no personal data is stored.
+    var needReturnToHome by rememberSaveable { mutableStateOf(false) }
     var requestedCaseId by rememberSaveable { mutableStateOf<String?>(null) }
     var requestedKnowledgeArticleId by rememberSaveable { mutableStateOf<String?>(null) }
     var discoveryAtlas by rememberSaveable { mutableStateOf(DiscoveryAtlas.GEFUEHLE) }
     val mainScreenStates = rememberSaveableStateHolder()
     val atlasStates = rememberSaveableStateHolder()
+    LaunchedEffect(state.section) {
+        // Leaving Entdecken makes the daily-need return target obsolete.
+        if (state.section != MainSection.ENTDECKEN) needReturnToHome = false
+    }
     val strategyTitles = remember(strategyCatalog) {
         strategyCatalog?.strategies?.associate { it.id to it.title } ?: emptyMap()
     }
@@ -730,9 +736,22 @@ private fun EmotionskompassApp(
                         },
                         onNeeds = {
                             strategyReturnTarget = null
+                            requestedNeedId = null
                             needReturnToStrategy = false
+                            needReturnToHome = false
                             discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
                             vm.selectSection(MainSection.ENTDECKEN)
+                        },
+                        onDailyNeed = { needId ->
+                            if (needCatalog.find(needId) != null) {
+                                // Only a valid editorial catalog ID is used.
+                                strategyReturnTarget = null
+                                needReturnToStrategy = false
+                                needReturnToHome = true
+                                requestedNeedId = needId
+                                discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
+                                vm.selectSection(MainSection.ENTDECKEN)
+                            }
                         },
                         onStrategies = openStrategyOverview,
                         onCheckin = vm::openCheckin,
@@ -751,7 +770,10 @@ private fun EmotionskompassApp(
                                             onClick = {
                                                 discoveryAtlas = atlas
                                                 if (atlas != DiscoveryAtlas.STRATEGIEN) strategyReturnTarget = null
-                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) needReturnToStrategy = false
+                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) {
+                                                    needReturnToStrategy = false
+                                                    needReturnToHome = false
+                                                }
                                             },
                                             label = { Text(atlas.label) },
                                             modifier = Modifier.fillMaxWidth()
@@ -814,6 +836,12 @@ private fun EmotionskompassApp(
                                         },
                                         requestedNeedId = requestedNeedId,
                                         onRequestConsumed = { requestedNeedId = null },
+                                        onReturnToHome = if (needReturnToHome) {
+                                            {
+                                                needReturnToHome = false
+                                                vm.selectSection(MainSection.START)
+                                            }
+                                        } else null,
                                         onReturnToStrategy = if (needReturnToStrategy) {
                                             {
                                                 needReturnToStrategy = false
@@ -1124,8 +1152,9 @@ private fun Mark(small: Boolean = false) {
 }
 
 @Composable
-private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
-    onExplore: () -> Unit, onNeeds: () -> Unit, onStrategies: () -> Unit,
+internal fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
+    onExplore: () -> Unit, onNeeds: () -> Unit,
+    onDailyNeed: (String) -> Unit, onStrategies: () -> Unit,
     onCheckin: () -> Unit, onWord: () -> Unit, onKnowledge: () -> Unit,
     daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
     Column(
@@ -1204,8 +1233,11 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Card(onClick = onNeeds, modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        Card(
+            onClick = { onDailyNeed(daily.need.id) },
+            modifier = Modifier.fillMaxWidth().testTag("daily-need-card"),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
             Column(Modifier.padding(17.dp)) {
                 Text("Bedürfnis des Tages: ${daily.need.name}",
                     style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
