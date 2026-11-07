@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.7 – K4 UX und Nutzererlebnis im separaten PR zur Prüfung (07.11.2026); K3 durch PR #50 auf main übernommen  
+**Status:** Konzeptstand 0.8 – K5 Technik, Datenschutz und Betrieb im separaten PR zur Prüfung (07.11.2026); K4 durch PR #52 und K2-Ergänzungen durch PR #53 auf main übernommen  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -363,13 +363,31 @@ Die vorhandenen Produktentscheidungen sind in vier **implementierungsnahe, noch 
 
 **Weiterer Konzeptfahrplan:** K5 Technik/Datenschutz/Betrieb und K6 Gesamtqualität/MVP-Entscheidung; nach diesen Etappen zunächst Prototypen mit überprüfbaren qualitativen und technischen Kriterien.
 
+### 18.16 K5: Technik, Datenschutz, Sicherheit und Betrieb
+
+Die aus K1–K4 abgeleitete Anwendung wurde technisch und organisatorisch als **prüfbares Architekturkonzept** spezifiziert:
+
+- **[K5_TECHNISCHE_ARCHITEKTUR.md](K5_TECHNISCHE_ARCHITEKTUR.md):** Android in Kotlin/Compose, lokale Persistenz von Chats/Entwürfen, eigener schlanker KI-Broker statt API-Keys in der APK, serverseitige Berechtigungen/Budgets, modellunabhängige K2/K3-Verträge, Idempotenz, Streaming, Wiederaufnahme, Replay und Offlinegrenzen. Vergleicht direkte API, On-Device-Inferenz und Backend-Broker.
+- **[K5_DATENSCHUTZ_SICHERHEIT.md](K5_DATENSCHUTZ_SICHERHEIT.md):** Dateninventar und Zwecke, EU-/Google-Play-Anforderungen, Privacy-Defaults, Consent und Widerruf, Export-/Löschkaskade, 18-teilige Bedrohungsmatrix, Moderation/Reporting und Grenzen von E2EE-/Backupaussagen.
+- **[K5_BETRIEB_KOSTEN.md](K5_BETRIEB_KOSTEN.md):** transparente Kostenformel mit ausschließlich hypothetischer Beispielrechnung, Budget/Rate/Abuse-Gates, Providerbewertung, Latenz-/Ausfallkonzept, Betriebsmetrik, Runbooks, Release- und Kontingentstrategie.
+- **[K5_TESTPLAN.md](K5_TESTPLAN.md):** 42 präzise technische/Security-/Privacy-/Betriebsprüffälle mit P0/P1-Gates, Datenverlust-, Lösch-, Provider-, Android- und Usability-Prüfwegen.
+- **[k5_system_contracts_v1.json](../specs/k5_system_contracts_v1.json):** versionierte fachliche Entwürfe für acht Daten-/API-Typen, acht Endpunkte, fünf Datengruppen, Zustandsmaschinen und Invarianten.
+
+**Präferierter, noch nicht final gewählter Ansatz:** Ein kleiner, vor Missbrauch und Kosten geschützter Broker mit austauschbarem KI-Anbieter; Android-App mit dauerhaft lokal lesbarem Verlauf und Entwürfen. Keine Provider-Schlüssel in Client/Repo. Keine unbeschränkte anonyme KI-Nutzung, keine ungeprüfte Ende-zu-Ende-Verschlüsselung, keine falschen Provider-Löschversprechen. Cross-Session-Memory und langfristiges Lernprofil zunächst deaktiviert oder bis zur validierten technischen Umsetzung verschoben. Provider, Hosting, Budget und echte Retention sind **offen**.
+
+**Erkannte K4-Lücke und K5-Korrektur:** Google Play verlangt bei KI-generierten Inhalten eine In-App-Möglichkeit, problematische Ausgaben zu melden. Die K4-Unterlagen erhielten den zusätzlichen Ablauf F13, die Aufgaben U37/U38 und den Screen `safety_report` mit Vorschau und kontrollierter Datenübermittlung. Der konzeptionelle Screenkatalog umfasst deshalb jetzt **30 Ansichten**, nicht mehr 29. Keine dieser Ansichten ist implementiert.
+
+**Rechts-/Policy-Einordnung:** DSGVO-Datensparsamkeit, Art. 50 EU-KI-Verordnung zur Transparenz, Google-Play-User-Data-/AI-Content-Policies sind dokumentierte Prüfpflichten, keine automatisch durch K5 erfüllte Compliance. Vor Beta/Release sind rechtliche und technische Nachweise erforderlich.
+
+**Anschluss:** K6 – konsistenter Konzeptabschluss, verbindlicher MVP-Freeze mit offenen Architektur-/Produktentscheidungen und präziser Implementierungsreihenfolge.
+
 ## 19. Status offener Entscheidungen
 
 **Bereits abgestimmt:** Fokus auf Alltagskommunikation und soziale Kontakte; freier Chat plus Übung und Wiederholung; unterschiedliche KI-Charaktere und Stimmungen; Feedback, Lernbeobachtungen und Spielmotivation; getrennte Projektablage; PR-Freigabe vor Merge.
 
 **Grundsätzlich befürwortete konzeptionelle Vorschläge:** Kompetenzatlas, drei verbundene Modi, mehrschichtige Charaktere, differenzierte Schwierigkeitsdynamiken, lernorientierter Coach, freiwillige Mini-Lektionen, nachvollziehbarer Fortschritt, Alltagstransfer, vierteilige Navigation und stufenweiser MVP. Die konkrete Zahl der Inhalte, exakte Parameter, technische Wahl und Ausgestaltung sind weiterhin vor Implementierung zu prüfen.
 
-**Noch zu entscheiden:** endgültiger App-Name und visuelle Identität; UX-Details anhand realer Nutzertests; KI-Modell-/Backend-Architektur, Gastmodus und tatsächliche Datenhaltung; Preismodell und Kosten; empirische Qualitätsgrenzen; konkrete Speicher-/Löschpfade und MVP-Freeze. K4 hat die Bedienstruktur beschrieben, ersetzt aber keine technische oder nutzerseitige Validierung.
+**Noch zu entscheiden:** endgültiger App-Name und visuelle Identität; tatsächliche App-/Server-/KI-Dienstleisterwahl und Verträge; Gäste-/Kontenmodell; Chat-/Memory-/Profil-Speicher- und Löschfristen; Budgets und Monetarisierung; belastbare Messwerte aus Prototyp/Pilot; rechtliche Compliance-Prüfung; MVP-Freeze und Freigaben. K5 liefert einen begründeten technischen Entwurf, aber noch keine implementierte oder betrieblich geprüfte Architektur.
 
 ## 20. Weiterführung und Änderungsprozess
 
