@@ -19,6 +19,12 @@ android {
     }
 
     buildTypes {
+        // D02 test builds install independently of D01 (whose ephemeral debug
+        // signing certificate differs). Release identity stays unchanged.
+        getByName("debug") {
+            applicationIdSuffix = ".d02preview"
+            versionNameSuffix = "-preview"
+        }
         release { isMinifyEnabled = false }
     }
 
