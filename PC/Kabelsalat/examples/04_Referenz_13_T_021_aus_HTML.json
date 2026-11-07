@@ -1,0 +1,2820 @@
+{
+  "version": 5,
+  "name": "13_T_021 · aus HTML-Referenz (schematisch)",
+  "dims": {
+    "w": 2750,
+    "d": 2350,
+    "h": 1850
+  },
+  "walls": [
+    {
+      "id": "SW1",
+      "name": "SW1",
+      "visible": true,
+      "rows": 5,
+      "cols": 5,
+      "thickness": 130,
+      "dn": 100,
+      "holes": [
+        {
+          "id": "SW1_T1_LR1",
+          "row": 1,
+          "col": 0,
+          "u": 0.81915,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW1/T1/LR1",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "LST",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_T1_LR2",
+          "row": 1,
+          "col": 0,
+          "u": 0.60638,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW1/T1/LR2",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_T1_LR3",
+          "row": 1,
+          "col": 0,
+          "u": 0.39362,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW1/T1/LR3",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_T1_LR4",
+          "row": 1,
+          "col": 0,
+          "u": 0.18085,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW1/T1/LR4",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    },
+    {
+      "id": "SW2",
+      "name": "SW2",
+      "visible": true,
+      "rows": 5,
+      "cols": 5,
+      "thickness": 130,
+      "dn": 122,
+      "holes": [
+        {
+          "id": "SW2_T1_LR1",
+          "row": 1,
+          "col": 0,
+          "u": 0.12545,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR1",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR2",
+          "row": 1,
+          "col": 0,
+          "u": 0.27455,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR2",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR3",
+          "row": 1,
+          "col": 0,
+          "u": 0.42364,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR3",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR4",
+          "row": 1,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR4",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR5",
+          "row": 1,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR5",
+          "sourcePage": 1420,
+          "sourceCount": 5,
+          "sourceCategory": "LST/LWL",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR6",
+          "row": 1,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR6",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "Weitere",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR7",
+          "row": 2,
+          "col": 0,
+          "u": 0.12545,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR7",
+          "sourcePage": 1420,
+          "sourceCount": 3,
+          "sourceCategory": "LWL",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR8",
+          "row": 2,
+          "col": 0,
+          "u": 0.27455,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR8",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "TK",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR9",
+          "row": 2,
+          "col": 0,
+          "u": 0.42364,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR9",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "Weitere",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR10",
+          "row": 2,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR10",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR11",
+          "row": 2,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR11",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR12",
+          "row": 2,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR12",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR13",
+          "row": 3,
+          "col": 0,
+          "u": 0.12545,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR13",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "MS",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR14",
+          "row": 3,
+          "col": 0,
+          "u": 0.27455,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR14",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "MS",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR15",
+          "row": 3,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR15",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR16",
+          "row": 3,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR16",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR17",
+          "row": 3,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR17",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR18",
+          "row": 4,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.14865,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR18",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "OLA",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR19",
+          "row": 4,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.14865,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR19",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "OLA",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_T1_LR20",
+          "row": 4,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.14865,
+          "dn": 122,
+          "sourceAddress": "SW2/T1/LR20",
+          "sourcePage": 1420,
+          "sourceCount": 1,
+          "sourceCategory": "OLA",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    },
+    {
+      "id": "SW3",
+      "name": "SW3",
+      "visible": true,
+      "rows": 5,
+      "cols": 5,
+      "thickness": 130,
+      "dn": 100,
+      "holes": [
+        {
+          "id": "SW3_T1_LR1",
+          "row": 1,
+          "col": 0,
+          "u": 0.81915,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW3/T1/LR1",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_T1_LR2",
+          "row": 1,
+          "col": 0,
+          "u": 0.60638,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW3/T1/LR2",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_T1_LR3",
+          "row": 1,
+          "col": 0,
+          "u": 0.39362,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW3/T1/LR3",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_T1_LR4",
+          "row": 1,
+          "col": 0,
+          "u": 0.18085,
+          "v": 0.52703,
+          "dn": 100,
+          "sourceAddress": "SW3/T1/LR4",
+          "sourcePage": 1420,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    },
+    {
+      "id": "SW4",
+      "name": "SW4",
+      "visible": true,
+      "rows": 5,
+      "cols": 5,
+      "thickness": 130,
+      "dn": 122,
+      "holes": [
+        {
+          "id": "SW4_T1_LR1",
+          "row": 1,
+          "col": 0,
+          "u": 0.12545,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR1",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR2",
+          "row": 1,
+          "col": 0,
+          "u": 0.27455,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR2",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR3",
+          "row": 1,
+          "col": 0,
+          "u": 0.42364,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR3",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR4",
+          "row": 1,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR4",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR5",
+          "row": 1,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR5",
+          "sourcePage": 1421,
+          "sourceCount": 4,
+          "sourceCategory": "LWL",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR6",
+          "row": 1,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.82432,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR6",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "Weitere",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR7",
+          "row": 2,
+          "col": 0,
+          "u": 0.12545,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR7",
+          "sourcePage": 1421,
+          "sourceCount": 3,
+          "sourceCategory": "LWL",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR8",
+          "row": 2,
+          "col": 0,
+          "u": 0.27455,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR8",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "TK",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR9",
+          "row": 2,
+          "col": 0,
+          "u": 0.42364,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR9",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "Weitere",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR10",
+          "row": 2,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR10",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR11",
+          "row": 2,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR11",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR12",
+          "row": 2,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.63514,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR12",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR13",
+          "row": 3,
+          "col": 0,
+          "u": 0.12545,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR13",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "MS",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR14",
+          "row": 3,
+          "col": 0,
+          "u": 0.27455,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR14",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "MS",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR15",
+          "row": 3,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR15",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR16",
+          "row": 3,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR16",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR17",
+          "row": 3,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.35946,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR17",
+          "sourcePage": 1421,
+          "sourceCount": 0,
+          "sourceCategory": "leer",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR18",
+          "row": 4,
+          "col": 0,
+          "u": 0.57273,
+          "v": 0.14865,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR18",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "OLA",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR19",
+          "row": 4,
+          "col": 0,
+          "u": 0.72182,
+          "v": 0.14865,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR19",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "OLA",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_T1_LR20",
+          "row": 4,
+          "col": 0,
+          "u": 0.87091,
+          "v": 0.14865,
+          "dn": 122,
+          "sourceAddress": "SW4/T1/LR20",
+          "sourcePage": 1421,
+          "sourceCount": 1,
+          "sourceCategory": "OLA",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    }
+  ],
+  "cables": [
+    {
+      "id": "13_T_021-ola-18",
+      "name": "OLA · LR18",
+      "color": "#df323c",
+      "group": "OLA",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR18"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR18"
+      },
+      "referenceGroup": "OLA",
+      "sourceCableId": "ola-18",
+      "sourceOriginalA": "SW2_T1_LR18",
+      "sourceOriginalB": "SW4_T1_LR18",
+      "sourceA": "SW2/T1/LR18",
+      "sourceB": "SW4/T1/LR18",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-ola-19",
+      "name": "OLA · LR19",
+      "color": "#df323c",
+      "group": "OLA",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR19"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR19"
+      },
+      "referenceGroup": "OLA",
+      "sourceCableId": "ola-19",
+      "sourceOriginalA": "SW2_T1_LR19",
+      "sourceOriginalB": "SW4_T1_LR19",
+      "sourceA": "SW2/T1/LR19",
+      "sourceB": "SW4/T1/LR19",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-ola-20",
+      "name": "OLA · LR20",
+      "color": "#df323c",
+      "group": "OLA",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR20"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR20"
+      },
+      "referenceGroup": "OLA",
+      "sourceCableId": "ola-20",
+      "sourceOriginalA": "SW2_T1_LR20",
+      "sourceOriginalB": "SW4_T1_LR20",
+      "sourceA": "SW2/T1/LR20",
+      "sourceB": "SW4/T1/LR20",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-ms-13",
+      "name": "MS · LR13",
+      "color": "#147ec1",
+      "group": "MS",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR13"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR13"
+      },
+      "referenceGroup": "MS",
+      "sourceCableId": "ms-13",
+      "sourceOriginalA": "SW2_T1_LR13",
+      "sourceOriginalB": "SW4_T1_LR13",
+      "sourceA": "SW2/T1/LR13",
+      "sourceB": "SW4/T1/LR13",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-ms-14",
+      "name": "MS · LR14",
+      "color": "#147ec1",
+      "group": "MS",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR14"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR14"
+      },
+      "referenceGroup": "MS",
+      "sourceCableId": "ms-14",
+      "sourceOriginalA": "SW2_T1_LR14",
+      "sourceOriginalB": "SW4_T1_LR14",
+      "sourceA": "SW2/T1/LR14",
+      "sourceB": "SW4/T1/LR14",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lst-h10b",
+      "name": "S01AZ-H10.b",
+      "color": "#e49319",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR5"
+      },
+      "b": {
+        "wall": "SW1",
+        "hole": "SW1_T1_LR1"
+      },
+      "referenceGroup": "LST",
+      "sourceCableId": "lst-h10b",
+      "sourceOriginalA": "SW2_T1_LR5",
+      "sourceOriginalB": "SW1_T1_LR1",
+      "sourceA": "SW2/T1/LR5",
+      "sourceB": "SW1/T1/LR1",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420
+      ],
+      "mappingStatus": "shown",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lwl-5-1",
+      "name": "LWL · LR5 · 1",
+      "color": "#8a60b4",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR5"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR5"
+      },
+      "referenceGroup": "LWL",
+      "sourceCableId": "lwl-5-1",
+      "sourceOriginalA": "SW2_T1_LR5",
+      "sourceOriginalB": "SW4_T1_LR5",
+      "sourceA": "SW2/T1/LR5",
+      "sourceB": "SW4/T1/LR5",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lwl-5-2",
+      "name": "LWL · LR5 · 2",
+      "color": "#8a60b4",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR5"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR5"
+      },
+      "referenceGroup": "LWL",
+      "sourceCableId": "lwl-5-2",
+      "sourceOriginalA": "SW2_T1_LR5",
+      "sourceOriginalB": "SW4_T1_LR5",
+      "sourceA": "SW2/T1/LR5",
+      "sourceB": "SW4/T1/LR5",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lwl-5-3",
+      "name": "LWL · LR5 · 3",
+      "color": "#8a60b4",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR5"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR5"
+      },
+      "referenceGroup": "LWL",
+      "sourceCableId": "lwl-5-3",
+      "sourceOriginalA": "SW2_T1_LR5",
+      "sourceOriginalB": "SW4_T1_LR5",
+      "sourceA": "SW2/T1/LR5",
+      "sourceB": "SW4/T1/LR5",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lwl-5-4",
+      "name": "LWL · LR5 · 4",
+      "color": "#8a60b4",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR5"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR5"
+      },
+      "referenceGroup": "LWL",
+      "sourceCableId": "lwl-5-4",
+      "sourceOriginalA": "SW2_T1_LR5",
+      "sourceOriginalB": "SW4_T1_LR5",
+      "sourceA": "SW2/T1/LR5",
+      "sourceB": "SW4/T1/LR5",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lwl-7-1",
+      "name": "LWL · LR7 · 1",
+      "color": "#8a60b4",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR7"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR7"
+      },
+      "referenceGroup": "LWL",
+      "sourceCableId": "lwl-7-1",
+      "sourceOriginalA": "SW2_T1_LR7",
+      "sourceOriginalB": "SW4_T1_LR7",
+      "sourceA": "SW2/T1/LR7",
+      "sourceB": "SW4/T1/LR7",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lwl-7-2",
+      "name": "LWL · LR7 · 2",
+      "color": "#8a60b4",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR7"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR7"
+      },
+      "referenceGroup": "LWL",
+      "sourceCableId": "lwl-7-2",
+      "sourceOriginalA": "SW2_T1_LR7",
+      "sourceOriginalB": "SW4_T1_LR7",
+      "sourceA": "SW2/T1/LR7",
+      "sourceB": "SW4/T1/LR7",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-lwl-7-3",
+      "name": "LWL · LR7 · 3",
+      "color": "#8a60b4",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR7"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR7"
+      },
+      "referenceGroup": "LWL",
+      "sourceCableId": "lwl-7-3",
+      "sourceOriginalA": "SW2_T1_LR7",
+      "sourceOriginalB": "SW4_T1_LR7",
+      "sourceA": "SW2/T1/LR7",
+      "sourceB": "SW4/T1/LR7",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-tk-cu-8",
+      "name": "TK Cu · LR8",
+      "color": "#188f7d",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR8"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR8"
+      },
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-cu-8",
+      "sourceOriginalA": "SW2_T1_LR8",
+      "sourceOriginalB": "SW4_T1_LR8",
+      "sourceA": "SW2/T1/LR8",
+      "sourceB": "SW4/T1/LR8",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-other-6",
+      "name": "Weitere · LR6",
+      "color": "#96a3ae",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR6"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR6"
+      },
+      "referenceGroup": "Weitere",
+      "sourceCableId": "other-6",
+      "sourceOriginalA": "SW2_T1_LR6",
+      "sourceOriginalB": "SW4_T1_LR6",
+      "sourceA": "SW2/T1/LR6",
+      "sourceB": "SW4/T1/LR6",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_T_021-other-9",
+      "name": "Weitere · LR9",
+      "color": "#96a3ae",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_T1_LR9"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_T1_LR9"
+      },
+      "referenceGroup": "Weitere",
+      "sourceCableId": "other-9",
+      "sourceOriginalA": "SW2_T1_LR9",
+      "sourceOriginalB": "SW4_T1_LR9",
+      "sourceA": "SW2/T1/LR9",
+      "sourceB": "SW4/T1/LR9",
+      "source": "Angehängte Schachtbelegung 13_T_021",
+      "sourcePages": [
+        1420,
+        1421
+      ],
+      "mappingStatus": "schematic",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    }
+  ],
+  "opacity": 52,
+  "showBox": true,
+  "showLabels": true,
+  "splitEnabled": true,
+  "enclosures": {
+    "OLA": {
+      "visible": true,
+      "opacity": 38,
+      "bounds": {
+        "x": 0,
+        "y": 407,
+        "z": 259,
+        "w": 1980,
+        "h": 481,
+        "d": 1598
+      },
+      "panels": [
+        {
+          "id": "OLA-floor",
+          "face": "floor",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "OLA-roof",
+          "face": "roof",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "OLA-left",
+          "face": "left",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "OLA-right",
+          "face": "right",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "OLA-front",
+          "face": "front",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "OLA-back",
+          "face": "back",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        }
+      ]
+    },
+    "MS": {
+      "visible": true,
+      "opacity": 38,
+      "bounds": {
+        "x": 0,
+        "y": 1203,
+        "z": 259,
+        "w": 1980,
+        "h": 481,
+        "d": 1598
+      },
+      "panels": [
+        {
+          "id": "MS-floor",
+          "face": "floor",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "MS-roof",
+          "face": "roof",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "MS-left",
+          "face": "left",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "MS-right",
+          "face": "right",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "MS-front",
+          "face": "front",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "MS-back",
+          "face": "back",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        }
+      ]
+    }
+  },
+  "supports": [],
+  "variants": [],
+  "sourceInfo": {
+    "shaft": "13_T_021",
+    "sourceFile": "13_T_021_Kabeleditor_2026-11-05_09-05.html",
+    "savedAt": "2026-11-05T09:05:27.170Z",
+    "document": "13_T_021 Schachtbelegung und Trennung",
+    "sourceVersion": "Vorlage vom 05.11.2026",
+    "sourcePages": [
+      1420,
+      1421
+    ],
+    "geometryStatus": "schematic",
+    "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt.",
+    "originalNote": "{\"title\":\"13_T_021 Schachtbelegung und Trennung\",\"pages\":[1420,1421],\"image\":\"image(8).png\",\"dimensions\":\"Schematische Abmessungen; Rohbauquerschnitt fehlt\",\"diameters\":\"DN-Zuordnung in der Vorlage offen\",\"routing\":\"Kabelanzahl und belegte Rohre gemäß Bild. Durchgehende Einzelkabelpaare und Bögen schematisch. LST-Abgang S01AZ-H10.b ausdrücklich gezeigt.\"}",
+    "planAnchors": [],
+    "unmatchedEndpointCount": 0,
+    "originalCableCount": 16,
+    "originalPhysicalPortCount": 48
+  },
+  "network": {
+    "version": 1,
+    "shafts": [
+      {
+        "id": "13_T_021",
+        "name": "13_T_021 · aus HTML-Referenz (schematisch)",
+        "x": 0,
+        "z": 0,
+        "snapshot": {
+          "version": 3,
+          "name": "13_T_021 · aus HTML-Referenz (schematisch)",
+          "dims": {
+            "w": 2750,
+            "d": 2350,
+            "h": 1850
+          },
+          "walls": [
+            {
+              "id": "SW1",
+              "name": "SW1",
+              "visible": true,
+              "rows": 5,
+              "cols": 5,
+              "thickness": 130,
+              "dn": 100,
+              "holes": [
+                {
+                  "id": "SW1_T1_LR1",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.81915,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW1/T1/LR1",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "LST",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_T1_LR2",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.60638,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW1/T1/LR2",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_T1_LR3",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.39362,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW1/T1/LR3",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_T1_LR4",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.18085,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW1/T1/LR4",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            },
+            {
+              "id": "SW2",
+              "name": "SW2",
+              "visible": true,
+              "rows": 5,
+              "cols": 5,
+              "thickness": 130,
+              "dn": 122,
+              "holes": [
+                {
+                  "id": "SW2_T1_LR1",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.12545,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR1",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR2",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.27455,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR2",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR3",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.42364,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR3",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR4",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR4",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR5",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR5",
+                  "sourcePage": 1420,
+                  "sourceCount": 5,
+                  "sourceCategory": "LST/LWL",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR6",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR6",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "Weitere",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR7",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.12545,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR7",
+                  "sourcePage": 1420,
+                  "sourceCount": 3,
+                  "sourceCategory": "LWL",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR8",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.27455,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR8",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "TK",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR9",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.42364,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR9",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "Weitere",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR10",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR10",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR11",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR11",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR12",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR12",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR13",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.12545,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR13",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "MS",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR14",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.27455,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR14",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "MS",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR15",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR15",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR16",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR16",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR17",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR17",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR18",
+                  "row": 4,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.14865,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR18",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "OLA",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR19",
+                  "row": 4,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.14865,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR19",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "OLA",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_T1_LR20",
+                  "row": 4,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.14865,
+                  "dn": 122,
+                  "sourceAddress": "SW2/T1/LR20",
+                  "sourcePage": 1420,
+                  "sourceCount": 1,
+                  "sourceCategory": "OLA",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            },
+            {
+              "id": "SW3",
+              "name": "SW3",
+              "visible": true,
+              "rows": 5,
+              "cols": 5,
+              "thickness": 130,
+              "dn": 100,
+              "holes": [
+                {
+                  "id": "SW3_T1_LR1",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.81915,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW3/T1/LR1",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_T1_LR2",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.60638,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW3/T1/LR2",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_T1_LR3",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.39362,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW3/T1/LR3",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_T1_LR4",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.18085,
+                  "v": 0.52703,
+                  "dn": 100,
+                  "sourceAddress": "SW3/T1/LR4",
+                  "sourcePage": 1420,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            },
+            {
+              "id": "SW4",
+              "name": "SW4",
+              "visible": true,
+              "rows": 5,
+              "cols": 5,
+              "thickness": 130,
+              "dn": 122,
+              "holes": [
+                {
+                  "id": "SW4_T1_LR1",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.12545,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR1",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR2",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.27455,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR2",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR3",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.42364,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR3",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR4",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR4",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR5",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR5",
+                  "sourcePage": 1421,
+                  "sourceCount": 4,
+                  "sourceCategory": "LWL",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR6",
+                  "row": 1,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.82432,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR6",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "Weitere",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR7",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.12545,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR7",
+                  "sourcePage": 1421,
+                  "sourceCount": 3,
+                  "sourceCategory": "LWL",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR8",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.27455,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR8",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "TK",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR9",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.42364,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR9",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "Weitere",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR10",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR10",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR11",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR11",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR12",
+                  "row": 2,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.63514,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR12",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR13",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.12545,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR13",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "MS",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR14",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.27455,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR14",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "MS",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR15",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR15",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR16",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR16",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR17",
+                  "row": 3,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.35946,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR17",
+                  "sourcePage": 1421,
+                  "sourceCount": 0,
+                  "sourceCategory": "leer",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR18",
+                  "row": 4,
+                  "col": 0,
+                  "u": 0.57273,
+                  "v": 0.14865,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR18",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "OLA",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR19",
+                  "row": 4,
+                  "col": 0,
+                  "u": 0.72182,
+                  "v": 0.14865,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR19",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "OLA",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_T1_LR20",
+                  "row": 4,
+                  "col": 0,
+                  "u": 0.87091,
+                  "v": 0.14865,
+                  "dn": 122,
+                  "sourceAddress": "SW4/T1/LR20",
+                  "sourcePage": 1421,
+                  "sourceCount": 1,
+                  "sourceCategory": "OLA",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            }
+          ],
+          "cables": [
+            {
+              "id": "13_T_021-ola-18",
+              "name": "OLA · LR18",
+              "group": "OLA",
+              "color": "#df323c",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR18"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR18"
+              },
+              "referenceGroup": "OLA",
+              "sourceOriginalA": "SW2_T1_LR18",
+              "sourceOriginalB": "SW4_T1_LR18",
+              "sourceA": "SW2/T1/LR18",
+              "sourceB": "SW4/T1/LR18",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "ola-18",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-ola-19",
+              "name": "OLA · LR19",
+              "group": "OLA",
+              "color": "#df323c",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR19"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR19"
+              },
+              "referenceGroup": "OLA",
+              "sourceOriginalA": "SW2_T1_LR19",
+              "sourceOriginalB": "SW4_T1_LR19",
+              "sourceA": "SW2/T1/LR19",
+              "sourceB": "SW4/T1/LR19",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "ola-19",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-ola-20",
+              "name": "OLA · LR20",
+              "group": "OLA",
+              "color": "#df323c",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR20"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR20"
+              },
+              "referenceGroup": "OLA",
+              "sourceOriginalA": "SW2_T1_LR20",
+              "sourceOriginalB": "SW4_T1_LR20",
+              "sourceA": "SW2/T1/LR20",
+              "sourceB": "SW4/T1/LR20",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "ola-20",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-ms-13",
+              "name": "MS · LR13",
+              "group": "MS",
+              "color": "#147ec1",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR13"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR13"
+              },
+              "referenceGroup": "MS",
+              "sourceOriginalA": "SW2_T1_LR13",
+              "sourceOriginalB": "SW4_T1_LR13",
+              "sourceA": "SW2/T1/LR13",
+              "sourceB": "SW4/T1/LR13",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "ms-13",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-ms-14",
+              "name": "MS · LR14",
+              "group": "MS",
+              "color": "#147ec1",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR14"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR14"
+              },
+              "referenceGroup": "MS",
+              "sourceOriginalA": "SW2_T1_LR14",
+              "sourceOriginalB": "SW4_T1_LR14",
+              "sourceA": "SW2/T1/LR14",
+              "sourceB": "SW4/T1/LR14",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "ms-14",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lst-h10b",
+              "name": "S01AZ-H10.b",
+              "group": "Weitere",
+              "color": "#e49319",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR5"
+              },
+              "b": {
+                "wall": "SW1",
+                "hole": "SW1_T1_LR1"
+              },
+              "referenceGroup": "LST",
+              "sourceOriginalA": "SW2_T1_LR5",
+              "sourceOriginalB": "SW1_T1_LR1",
+              "sourceA": "SW2/T1/LR5",
+              "sourceB": "SW1/T1/LR1",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420
+              ],
+              "mappingStatus": "shown",
+              "sourceKind": "",
+              "sourceCableId": "lst-h10b",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lwl-5-1",
+              "name": "LWL · LR5 · 1",
+              "group": "Weitere",
+              "color": "#8a60b4",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR5"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR5"
+              },
+              "referenceGroup": "LWL",
+              "sourceOriginalA": "SW2_T1_LR5",
+              "sourceOriginalB": "SW4_T1_LR5",
+              "sourceA": "SW2/T1/LR5",
+              "sourceB": "SW4/T1/LR5",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "lwl-5-1",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lwl-5-2",
+              "name": "LWL · LR5 · 2",
+              "group": "Weitere",
+              "color": "#8a60b4",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR5"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR5"
+              },
+              "referenceGroup": "LWL",
+              "sourceOriginalA": "SW2_T1_LR5",
+              "sourceOriginalB": "SW4_T1_LR5",
+              "sourceA": "SW2/T1/LR5",
+              "sourceB": "SW4/T1/LR5",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "lwl-5-2",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lwl-5-3",
+              "name": "LWL · LR5 · 3",
+              "group": "Weitere",
+              "color": "#8a60b4",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR5"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR5"
+              },
+              "referenceGroup": "LWL",
+              "sourceOriginalA": "SW2_T1_LR5",
+              "sourceOriginalB": "SW4_T1_LR5",
+              "sourceA": "SW2/T1/LR5",
+              "sourceB": "SW4/T1/LR5",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "lwl-5-3",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lwl-5-4",
+              "name": "LWL · LR5 · 4",
+              "group": "Weitere",
+              "color": "#8a60b4",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR5"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR5"
+              },
+              "referenceGroup": "LWL",
+              "sourceOriginalA": "SW2_T1_LR5",
+              "sourceOriginalB": "SW4_T1_LR5",
+              "sourceA": "SW2/T1/LR5",
+              "sourceB": "SW4/T1/LR5",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "lwl-5-4",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lwl-7-1",
+              "name": "LWL · LR7 · 1",
+              "group": "Weitere",
+              "color": "#8a60b4",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR7"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR7"
+              },
+              "referenceGroup": "LWL",
+              "sourceOriginalA": "SW2_T1_LR7",
+              "sourceOriginalB": "SW4_T1_LR7",
+              "sourceA": "SW2/T1/LR7",
+              "sourceB": "SW4/T1/LR7",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "lwl-7-1",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lwl-7-2",
+              "name": "LWL · LR7 · 2",
+              "group": "Weitere",
+              "color": "#8a60b4",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR7"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR7"
+              },
+              "referenceGroup": "LWL",
+              "sourceOriginalA": "SW2_T1_LR7",
+              "sourceOriginalB": "SW4_T1_LR7",
+              "sourceA": "SW2/T1/LR7",
+              "sourceB": "SW4/T1/LR7",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "lwl-7-2",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-lwl-7-3",
+              "name": "LWL · LR7 · 3",
+              "group": "Weitere",
+              "color": "#8a60b4",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR7"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR7"
+              },
+              "referenceGroup": "LWL",
+              "sourceOriginalA": "SW2_T1_LR7",
+              "sourceOriginalB": "SW4_T1_LR7",
+              "sourceA": "SW2/T1/LR7",
+              "sourceB": "SW4/T1/LR7",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "lwl-7-3",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-tk-cu-8",
+              "name": "TK Cu · LR8",
+              "group": "Weitere",
+              "color": "#188f7d",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR8"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR8"
+              },
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW2_T1_LR8",
+              "sourceOriginalB": "SW4_T1_LR8",
+              "sourceA": "SW2/T1/LR8",
+              "sourceB": "SW4/T1/LR8",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "tk-cu-8",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-other-6",
+              "name": "Weitere · LR6",
+              "group": "Weitere",
+              "color": "#96a3ae",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR6"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR6"
+              },
+              "referenceGroup": "Weitere",
+              "sourceOriginalA": "SW2_T1_LR6",
+              "sourceOriginalB": "SW4_T1_LR6",
+              "sourceA": "SW2/T1/LR6",
+              "sourceB": "SW4/T1/LR6",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "other-6",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_T_021-other-9",
+              "name": "Weitere · LR9",
+              "group": "Weitere",
+              "color": "#96a3ae",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_T1_LR9"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_T1_LR9"
+              },
+              "referenceGroup": "Weitere",
+              "sourceOriginalA": "SW2_T1_LR9",
+              "sourceOriginalB": "SW4_T1_LR9",
+              "sourceA": "SW2/T1/LR9",
+              "sourceB": "SW4/T1/LR9",
+              "source": "Angehängte Schachtbelegung 13_T_021",
+              "sourcePages": [
+                1420,
+                1421
+              ],
+              "mappingStatus": "schematic",
+              "sourceKind": "",
+              "sourceCableId": "other-9",
+              "drawingDiameterOnly": true
+            }
+          ],
+          "enclosures": {
+            "OLA": {
+              "visible": true,
+              "opacity": 38,
+              "bounds": {
+                "x": 0,
+                "y": 407,
+                "z": 259,
+                "w": 1980,
+                "h": 481,
+                "d": 1598
+              },
+              "panels": [
+                {
+                  "id": "OLA-floor",
+                  "face": "floor",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-roof",
+                  "face": "roof",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-left",
+                  "face": "left",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-right",
+                  "face": "right",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-front",
+                  "face": "front",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-back",
+                  "face": "back",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                }
+              ]
+            },
+            "MS": {
+              "visible": true,
+              "opacity": 38,
+              "bounds": {
+                "x": 0,
+                "y": 1203,
+                "z": 259,
+                "w": 1980,
+                "h": 481,
+                "d": 1598
+              },
+              "panels": [
+                {
+                  "id": "MS-floor",
+                  "face": "floor",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-roof",
+                  "face": "roof",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-left",
+                  "face": "left",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-right",
+                  "face": "right",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-front",
+                  "face": "front",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-back",
+                  "face": "back",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                }
+              ]
+            }
+          },
+          "supports": [],
+          "variants": [],
+          "opacity": 52,
+          "showBox": true,
+          "showLabels": true,
+          "splitEnabled": true,
+          "sourceInfo": {
+            "shaft": "13_T_021",
+            "sourceFile": "13_T_021_Kabeleditor_2026-11-05_09-05.html",
+            "savedAt": "2026-11-05T09:05:27.170Z",
+            "document": "13_T_021 Schachtbelegung und Trennung",
+            "sourceVersion": "Vorlage vom 05.11.2026",
+            "sourcePages": [
+              1420,
+              1421
+            ],
+            "geometryStatus": "schematic",
+            "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt.",
+            "originalNote": "{\"title\":\"13_T_021 Schachtbelegung und Trennung\",\"pages\":[1420,1421],\"image\":\"image(8).png\",\"dimensions\":\"Schematische Abmessungen; Rohbauquerschnitt fehlt\",\"diameters\":\"DN-Zuordnung in der Vorlage offen\",\"routing\":\"Kabelanzahl und belegte Rohre gemäß Bild. Durchgehende Einzelkabelpaare und Bögen schematisch. LST-Abgang S01AZ-H10.b ausdrücklich gezeigt.\"}",
+            "planAnchors": [],
+            "unmatchedEndpointCount": 0,
+            "originalCableCount": 16,
+            "originalPhysicalPortCount": 48
+          }
+        }
+      }
+    ],
+    "links": [],
+    "routes": [],
+    "quality": {
+      "minPipeGapMm": null,
+      "minEdgeMm": null,
+      "minBendRadiusMm": null
+    },
+    "reviews": [
+      {
+        "shaftId": "13_T_021",
+        "entityType": "shaft",
+        "entityId": "13_T_021",
+        "status": "Zur Prüfung",
+        "source": "13_T_021_Kabeleditor_2026-11-05_09-05.html",
+        "note": "Übernommen aus schematischem HTML-Editor; Anschlüsse/Abmessungen vor Ort prüfen.",
+        "checkedBy": "Import (nicht geprüft)",
+        "checkedAt": "2026-11-05T09:05:27.170Z"
+      }
+    ],
+    "audit": []
+  },
+  "activeShaftId": "13_T_021"
+}

@@ -1,0 +1,4366 @@
+{
+  "version": 5,
+  "name": "13_U_028 · aus HTML-Referenz (schematisch)",
+  "dims": {
+    "w": 2750,
+    "d": 2350,
+    "h": 1850
+  },
+  "walls": [
+    {
+      "id": "SW1",
+      "name": "SW1",
+      "visible": true,
+      "rows": 5,
+      "cols": 5,
+      "thickness": 120,
+      "dn": 142,
+      "holes": [
+        {
+          "id": "SW1_R1_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.86877,
+          "v": 0.86282,
+          "dn": 142,
+          "sourceAddress": "SW1_R1_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R1_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.70842,
+          "v": 0.85864,
+          "dn": 142,
+          "sourceAddress": "SW1_R1_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R1_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.55806,
+          "v": 0.84011,
+          "dn": 142,
+          "sourceAddress": "SW1_R1_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R1_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.41299,
+          "v": 0.82105,
+          "dn": 142,
+          "sourceAddress": "SW1_R1_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R1_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.27541,
+          "v": 0.79787,
+          "dn": 142,
+          "sourceAddress": "SW1_R1_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R2_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.87107,
+          "v": 0.68998,
+          "dn": 142,
+          "sourceAddress": "SW1_R2_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R2_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.70842,
+          "v": 0.68771,
+          "dn": 142,
+          "sourceAddress": "SW1_R2_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R2_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.56033,
+          "v": 0.67914,
+          "dn": 142,
+          "sourceAddress": "SW1_R2_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R2_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.41526,
+          "v": 0.66702,
+          "dn": 142,
+          "sourceAddress": "SW1_R2_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R2_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.27541,
+          "v": 0.64997,
+          "dn": 142,
+          "sourceAddress": "SW1_R2_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R3_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.86877,
+          "v": 0.52438,
+          "dn": 142,
+          "sourceAddress": "SW1_R3_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R3_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.70842,
+          "v": 0.51457,
+          "dn": 142,
+          "sourceAddress": "SW1_R3_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R3_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.56033,
+          "v": 0.50864,
+          "dn": 142,
+          "sourceAddress": "SW1_R3_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R3_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.41751,
+          "v": 0.49336,
+          "dn": 142,
+          "sourceAddress": "SW1_R3_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R3_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.27766,
+          "v": 0.48543,
+          "dn": 142,
+          "sourceAddress": "SW1_R3_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R4_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.86877,
+          "v": 0.35736,
+          "dn": 142,
+          "sourceAddress": "SW1_R4_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R4_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.70842,
+          "v": 0.34802,
+          "dn": 142,
+          "sourceAddress": "SW1_R4_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R4_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.56033,
+          "v": 0.33814,
+          "dn": 142,
+          "sourceAddress": "SW1_R4_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R4_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.41751,
+          "v": 0.32546,
+          "dn": 142,
+          "sourceAddress": "SW1_R4_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R4_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.24393,
+          "v": 0.27624,
+          "dn": 300,
+          "sourceAddress": "SW1_R4_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "gross",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R5_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.86877,
+          "v": 0.18595,
+          "dn": 142,
+          "sourceAddress": "SW1_R5_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R5_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.70842,
+          "v": 0.1727,
+          "dn": 142,
+          "sourceAddress": "SW1_R5_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R5_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.55806,
+          "v": 0.16034,
+          "dn": 142,
+          "sourceAddress": "SW1_R5_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R5_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.41751,
+          "v": 0.14885,
+          "dn": 142,
+          "sourceAddress": "SW1_R5_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW1_R5_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.24393,
+          "v": 0.06755,
+          "dn": 300,
+          "sourceAddress": "SW1_R5_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "gross",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    },
+    {
+      "id": "SW2",
+      "name": "SW2",
+      "visible": true,
+      "rows": 5,
+      "cols": 5,
+      "thickness": 120,
+      "dn": 300,
+      "holes": [
+        {
+          "id": "SW2_Oeffnung_01",
+          "row": 0,
+          "col": 0,
+          "u": 0.22744,
+          "v": 0.63203,
+          "dn": 300,
+          "sourceAddress": "SW2_Oeffnung_01",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "gross",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_02",
+          "row": 0,
+          "col": 0,
+          "u": 0.42669,
+          "v": 0.66017,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_02",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_03",
+          "row": 0,
+          "col": 0,
+          "u": 0.5188,
+          "v": 0.65584,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_03",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_04",
+          "row": 0,
+          "col": 0,
+          "u": 0.60902,
+          "v": 0.65368,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_04",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_05",
+          "row": 0,
+          "col": 0,
+          "u": 0.42669,
+          "v": 0.55628,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_05",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_06",
+          "row": 0,
+          "col": 0,
+          "u": 0.51692,
+          "v": 0.55195,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_06",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_07",
+          "row": 0,
+          "col": 0,
+          "u": 0.6109,
+          "v": 0.54978,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_07",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_08",
+          "row": 0,
+          "col": 0,
+          "u": 0.42669,
+          "v": 0.45671,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_08",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_09",
+          "row": 0,
+          "col": 0,
+          "u": 0.51692,
+          "v": 0.45238,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_09",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_10",
+          "row": 0,
+          "col": 0,
+          "u": 0.61278,
+          "v": 0.45022,
+          "dn": 142,
+          "sourceAddress": "SW2_Oeffnung_10",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_11",
+          "row": 0,
+          "col": 0,
+          "u": 0.73872,
+          "v": 0.43939,
+          "dn": 102,
+          "sourceAddress": "SW2_Oeffnung_11",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "mini",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW2_Oeffnung_12",
+          "row": 0,
+          "col": 0,
+          "u": 0.81955,
+          "v": 0.43939,
+          "dn": 102,
+          "sourceAddress": "SW2_Oeffnung_12",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "mini",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    },
+    {
+      "id": "SW3",
+      "name": "SW3",
+      "visible": true,
+      "rows": 5,
+      "cols": 6,
+      "thickness": 120,
+      "dn": 142,
+      "holes": [
+        {
+          "id": "SW3_R1_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.30352,
+          "v": 0.80039,
+          "dn": 142,
+          "sourceAddress": "SW3_R1_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R1_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.42445,
+          "v": 0.79946,
+          "dn": 142,
+          "sourceAddress": "SW3_R1_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R1_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.54563,
+          "v": 0.80505,
+          "dn": 142,
+          "sourceAddress": "SW3_R1_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R1_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.67174,
+          "v": 0.81438,
+          "dn": 142,
+          "sourceAddress": "SW3_R1_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R1_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.80048,
+          "v": 0.81579,
+          "dn": 142,
+          "sourceAddress": "SW3_R1_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R1_C6",
+          "row": 0,
+          "col": 0,
+          "u": 0.9295,
+          "v": 0.82594,
+          "dn": 142,
+          "sourceAddress": "SW3_R1_C6",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R2_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.30352,
+          "v": 0.63545,
+          "dn": 142,
+          "sourceAddress": "SW3_R2_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R2_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.42445,
+          "v": 0.63652,
+          "dn": 142,
+          "sourceAddress": "SW3_R2_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R2_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.54563,
+          "v": 0.63324,
+          "dn": 142,
+          "sourceAddress": "SW3_R2_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R2_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.67174,
+          "v": 0.63803,
+          "dn": 142,
+          "sourceAddress": "SW3_R2_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R2_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.80048,
+          "v": 0.6436,
+          "dn": 142,
+          "sourceAddress": "SW3_R2_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R2_C6",
+          "row": 0,
+          "col": 0,
+          "u": 0.9295,
+          "v": 0.64919,
+          "dn": 142,
+          "sourceAddress": "SW3_R2_C6",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R3_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.30352,
+          "v": 0.47486,
+          "dn": 142,
+          "sourceAddress": "SW3_R3_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R3_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.42445,
+          "v": 0.47358,
+          "dn": 142,
+          "sourceAddress": "SW3_R3_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R3_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.54563,
+          "v": 0.47883,
+          "dn": 142,
+          "sourceAddress": "SW3_R3_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R3_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.67174,
+          "v": 0.47691,
+          "dn": 142,
+          "sourceAddress": "SW3_R3_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R3_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.80048,
+          "v": 0.48449,
+          "dn": 142,
+          "sourceAddress": "SW3_R3_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R3_C6",
+          "row": 0,
+          "col": 0,
+          "u": 0.9295,
+          "v": 0.49426,
+          "dn": 142,
+          "sourceAddress": "SW3_R3_C6",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R4_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.22691,
+          "v": 0.21529,
+          "dn": 300,
+          "sourceAddress": "SW3_R4_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "gross",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R4_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.42445,
+          "v": 0.31281,
+          "dn": 142,
+          "sourceAddress": "SW3_R4_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R4_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.54563,
+          "v": 0.31571,
+          "dn": 142,
+          "sourceAddress": "SW3_R4_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R4_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.66941,
+          "v": 0.31503,
+          "dn": 142,
+          "sourceAddress": "SW3_R4_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R4_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.79579,
+          "v": 0.31294,
+          "dn": 142,
+          "sourceAddress": "SW3_R4_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R4_C6",
+          "row": 0,
+          "col": 0,
+          "u": 0.9248,
+          "v": 0.3247,
+          "dn": 142,
+          "sourceAddress": "SW3_R4_C6",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R5_C1",
+          "row": 0,
+          "col": 0,
+          "u": 0.42677,
+          "v": 0.14846,
+          "dn": 142,
+          "sourceAddress": "SW3_R5_C1",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R5_C2",
+          "row": 0,
+          "col": 0,
+          "u": 0.5503,
+          "v": 0.14978,
+          "dn": 142,
+          "sourceAddress": "SW3_R5_C2",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R5_C3",
+          "row": 0,
+          "col": 0,
+          "u": 0.67174,
+          "v": 0.15034,
+          "dn": 142,
+          "sourceAddress": "SW3_R5_C3",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R5_C4",
+          "row": 0,
+          "col": 0,
+          "u": 0.79579,
+          "v": 0.15165,
+          "dn": 142,
+          "sourceAddress": "SW3_R5_C4",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW3_R5_C5",
+          "row": 0,
+          "col": 0,
+          "u": 0.9248,
+          "v": 0.15232,
+          "dn": 142,
+          "sourceAddress": "SW3_R5_C5",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    },
+    {
+      "id": "SW4",
+      "name": "SW4",
+      "visible": true,
+      "rows": 5,
+      "cols": 5,
+      "thickness": 120,
+      "dn": 300,
+      "holes": [
+        {
+          "id": "SW4_Oeffnung_01",
+          "row": 0,
+          "col": 0,
+          "u": 0.22744,
+          "v": 0.63203,
+          "dn": 300,
+          "sourceAddress": "SW4_Oeffnung_01",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "gross",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_02",
+          "row": 0,
+          "col": 0,
+          "u": 0.42669,
+          "v": 0.66017,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_02",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_03",
+          "row": 0,
+          "col": 0,
+          "u": 0.5188,
+          "v": 0.65584,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_03",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_04",
+          "row": 0,
+          "col": 0,
+          "u": 0.60902,
+          "v": 0.65368,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_04",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_05",
+          "row": 0,
+          "col": 0,
+          "u": 0.42669,
+          "v": 0.55628,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_05",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_06",
+          "row": 0,
+          "col": 0,
+          "u": 0.51692,
+          "v": 0.55195,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_06",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_07",
+          "row": 0,
+          "col": 0,
+          "u": 0.6109,
+          "v": 0.54978,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_07",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_08",
+          "row": 0,
+          "col": 0,
+          "u": 0.42669,
+          "v": 0.45671,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_08",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_09",
+          "row": 0,
+          "col": 0,
+          "u": 0.51692,
+          "v": 0.45238,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_09",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_10",
+          "row": 0,
+          "col": 0,
+          "u": 0.61278,
+          "v": 0.45022,
+          "dn": 142,
+          "sourceAddress": "SW4_Oeffnung_10",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "klein",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_11",
+          "row": 0,
+          "col": 0,
+          "u": 0.73872,
+          "v": 0.43939,
+          "dn": 102,
+          "sourceAddress": "SW4_Oeffnung_11",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "mini",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        },
+        {
+          "id": "SW4_Oeffnung_12",
+          "row": 0,
+          "col": 0,
+          "u": 0.81955,
+          "v": 0.43939,
+          "dn": 102,
+          "sourceAddress": "SW4_Oeffnung_12",
+          "sourcePage": null,
+          "sourceCount": null,
+          "sourceCategory": "mini",
+          "nominalDnConfirmed": false,
+          "origin": "uploaded-html-graphical-opening"
+        }
+      ]
+    }
+  ],
+  "cables": [
+    {
+      "id": "13_U_028-blue-1",
+      "name": "Blau 1",
+      "color": "#087be8",
+      "group": "MS",
+      "diameter": 12,
+      "route": [
+        [
+          -1262,
+          412,
+          -621
+        ],
+        [
+          -1113,
+          236,
+          -655
+        ],
+        [
+          -955,
+          160,
+          -673
+        ],
+        [
+          -809,
+          160,
+          -793
+        ],
+        [
+          -781,
+          236,
+          -965
+        ],
+        [
+          -784,
+          490,
+          -1019
+        ],
+        [
+          -784,
+          852,
+          -1037
+        ],
+        [
+          -784,
+          1119,
+          -1162
+        ]
+      ],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R5_C5"
+      },
+      "b": {
+        "wall": "SW2",
+        "hole": "SW2_Oeffnung_01"
+      },
+      "referenceGroup": "MS",
+      "sourceCableId": "blue-1",
+      "sourceOriginalA": "SW1_R5_C5",
+      "sourceOriginalB": "SW2_Oeffnung_01",
+      "sourceA": "",
+      "sourceB": "",
+      "source": "",
+      "sourcePages": [],
+      "mappingStatus": "Schematische Zuordnung",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-blue-2",
+      "name": "Blau 2",
+      "color": "#087be8",
+      "group": "MS",
+      "diameter": 12,
+      "route": [
+        [
+          -1246,
+          112,
+          -576
+        ],
+        [
+          -1046,
+          90,
+          -530
+        ],
+        [
+          -809,
+          80,
+          -510
+        ],
+        [
+          -134,
+          80,
+          -510
+        ],
+        [
+          560,
+          80,
+          -510
+        ],
+        [
+          1079,
+          89,
+          -513
+        ],
+        [
+          1205,
+          215,
+          -552
+        ],
+        [
+          1363,
+          365,
+          -598
+        ]
+      ],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R4_C5"
+      },
+      "b": {
+        "wall": "SW3",
+        "hole": "SW3_R4_C1"
+      },
+      "referenceGroup": "MS",
+      "sourceCableId": "blue-2",
+      "sourceOriginalA": "SW1_R4_C5",
+      "sourceOriginalB": "SW3_R4_C1",
+      "sourceA": "",
+      "sourceB": "",
+      "source": "",
+      "sourcePages": [],
+      "mappingStatus": "Schematische Zuordnung",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-blue-3",
+      "name": "Blau 3",
+      "color": "#087be8",
+      "group": "MS",
+      "diameter": 12,
+      "route": [
+        [
+          -716,
+          955,
+          -1066
+        ],
+        [
+          -716,
+          524,
+          -1029
+        ],
+        [
+          -680,
+          256,
+          -931
+        ],
+        [
+          -544,
+          167,
+          -716
+        ],
+        [
+          -69,
+          160,
+          -680
+        ],
+        [
+          571,
+          160,
+          -680
+        ],
+        [
+          1101,
+          174,
+          -680
+        ],
+        [
+          1265,
+          314,
+          -677
+        ]
+      ],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R4_C5"
+      },
+      "b": {
+        "wall": "SW3",
+        "hole": "SW3_R4_C1"
+      },
+      "referenceGroup": "MS",
+      "sourceCableId": "blue-3",
+      "sourceOriginalA": "SW1_R4_C5",
+      "sourceOriginalB": "SW3_R4_C1",
+      "sourceA": "",
+      "sourceB": "",
+      "source": "",
+      "sourcePages": [],
+      "mappingStatus": "Schematische Zuordnung",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-red-1",
+      "name": "Rot 1",
+      "color": "#e32525",
+      "group": "OLA",
+      "diameter": 12,
+      "route": [
+        [
+          -1260,
+          242,
+          538
+        ],
+        [
+          -1112,
+          104,
+          623
+        ],
+        [
+          -889,
+          45,
+          660
+        ],
+        [
+          -204,
+          45,
+          660
+        ],
+        [
+          505,
+          45,
+          660
+        ],
+        [
+          1030,
+          52,
+          661
+        ],
+        [
+          1170,
+          145,
+          675
+        ],
+        [
+          1351,
+          256,
+          691
+        ]
+      ],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R5_C2"
+      },
+      "b": {
+        "wall": "SW3",
+        "hole": "SW3_R5_C4"
+      },
+      "referenceGroup": "OLA",
+      "sourceCableId": "red-1",
+      "sourceOriginalA": "SW1_R5_C2",
+      "sourceOriginalB": "SW3_R5_C4",
+      "sourceA": "",
+      "sourceB": "",
+      "source": "",
+      "sourcePages": [],
+      "mappingStatus": "Schematische Zuordnung",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-red-2",
+      "name": "Rot 2",
+      "color": "#e32525",
+      "group": "OLA",
+      "diameter": 12,
+      "route": [
+        [
+          -1260,
+          226,
+          199
+        ],
+        [
+          -1112,
+          99,
+          312
+        ],
+        [
+          -889,
+          45,
+          360
+        ],
+        [
+          -204,
+          45,
+          360
+        ],
+        [
+          505,
+          45,
+          360
+        ],
+        [
+          1030,
+          52,
+          361
+        ],
+        [
+          1170,
+          144,
+          379
+        ],
+        [
+          1351,
+          254,
+          399
+        ]
+      ],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R5_C3"
+      },
+      "b": {
+        "wall": "SW3",
+        "hole": "SW3_R5_C3"
+      },
+      "referenceGroup": "OLA",
+      "sourceCableId": "red-2",
+      "sourceOriginalA": "SW1_R5_C3",
+      "sourceOriginalB": "SW3_R5_C3",
+      "sourceA": "",
+      "sourceB": "",
+      "source": "",
+      "sourcePages": [],
+      "mappingStatus": "Schematische Zuordnung",
+      "sourceKind": "",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-0",
+      "name": "Cu_F4734_20\"_03",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R3_C2"
+      },
+      "b": {
+        "wall": "SW2",
+        "hole": "SW2_Oeffnung_09"
+      },
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-0",
+      "sourceOriginalA": "SW1_R3_C2",
+      "sourceOriginalB": "SW2_Oeffnung_09",
+      "sourceA": "SW1/T1/LR12",
+      "sourceB": "SW2/T1/LR2",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1505
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_CU",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-3",
+      "name": "FB 420107 TS",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R4_C3"
+      },
+      "b": null,
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-3",
+      "sourceOriginalA": "SW1_R4_C3",
+      "sourceOriginalB": "PLAN_SW3_T1_LR3",
+      "sourceA": "SW1/T1/LR25",
+      "sourceB": "SW3/T1/LR3",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1505,
+        1506
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_CU",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-4",
+      "name": "LWL_F7279_96'_02",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": null,
+      "b": {
+        "wall": "SW2",
+        "hole": "SW2_Oeffnung_10"
+      },
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-4",
+      "sourceOriginalA": "PLAN_SW1_T1_LR14",
+      "sourceOriginalB": "SW2_Oeffnung_10",
+      "sourceA": "SW1/T1/LR14",
+      "sourceB": "SW2/T1/LR1",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1505
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_LWL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-5",
+      "name": "LWL_F772840_24 Hin",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_Oeffnung_10"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_Oeffnung_05"
+      },
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-5",
+      "sourceOriginalA": "SW2_Oeffnung_10",
+      "sourceOriginalB": "SW4_Oeffnung_05",
+      "sourceA": "SW2/T1/LR1",
+      "sourceB": "SW4/T1/LR9",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1505,
+        1507
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_LWL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-6",
+      "name": "LWL_F772863_60'_02",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": null,
+      "b": {
+        "wall": "SW2",
+        "hole": "SW2_Oeffnung_10"
+      },
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-6",
+      "sourceOriginalA": "PLAN_SW1_T1_LR14",
+      "sourceOriginalB": "SW2_Oeffnung_10",
+      "sourceA": "SW1/T1/LR14",
+      "sourceB": "SW2/T1/LR1",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1505
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_LWL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-7",
+      "name": "LWL_St1_F7279_96'",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R1_C2"
+      },
+      "b": null,
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-7",
+      "sourceOriginalA": "SW1_R1_C2",
+      "sourceOriginalB": "PLAN_SW3_T1_LR5",
+      "sourceA": "SW1/T1/LR3",
+      "sourceB": "SW3/T1/LR5",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1506
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_LWL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-8",
+      "name": "LWL_St1_F772835_96_02",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R1_C2"
+      },
+      "b": null,
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-8",
+      "sourceOriginalA": "SW1_R1_C2",
+      "sourceOriginalB": "PLAN_SW3_T1_LR5",
+      "sourceA": "SW1/T1/LR3",
+      "sourceB": "SW3/T1/LR5",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1506
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_LWL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-9",
+      "name": "LWL_St1_F772863_60'",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R1_C2"
+      },
+      "b": null,
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-9",
+      "sourceOriginalA": "SW1_R1_C2",
+      "sourceOriginalB": "PLAN_SW3_T1_LR7",
+      "sourceA": "SW1/T1/LR3",
+      "sourceB": "SW3/T1/LR7",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1506
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_LWL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-10",
+      "name": "LWL_St1_F772874_24'",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R3_C3"
+      },
+      "b": null,
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-10",
+      "sourceOriginalA": "SW1_R3_C3",
+      "sourceOriginalB": "PLAN_SW3_T1_LR5",
+      "sourceA": "SW1/T1/LR14",
+      "sourceB": "SW3/T1/LR5",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1506
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_LWL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-lst-11",
+      "name": "S01AZ-F15.a",
+      "color": "#e09922",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_Oeffnung_08"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_Oeffnung_11"
+      },
+      "referenceGroup": "LST",
+      "sourceCableId": "lst-11",
+      "sourceOriginalA": "SW2_Oeffnung_08",
+      "sourceOriginalB": "SW4_Oeffnung_11",
+      "sourceA": "SW2/T1/LR3",
+      "sourceB": "SW4/T1/LR11",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1505,
+        1507
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "LST_EL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-lst-12",
+      "name": "S01AZ-F15.f",
+      "color": "#e09922",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R4_C1"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_Oeffnung_11"
+      },
+      "referenceGroup": "LST",
+      "sourceCableId": "lst-12",
+      "sourceOriginalA": "SW1_R4_C1",
+      "sourceOriginalB": "SW4_Oeffnung_11",
+      "sourceA": "SW1/T1/LR16",
+      "sourceB": "SW4/T1/LR11",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1507
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "LST_EL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-lst-13",
+      "name": "S01AZ-F20.1",
+      "color": "#e09922",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW2",
+        "hole": "SW2_Oeffnung_08"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_Oeffnung_11"
+      },
+      "referenceGroup": "LST",
+      "sourceCableId": "lst-13",
+      "sourceOriginalA": "SW2_Oeffnung_08",
+      "sourceOriginalB": "SW4_Oeffnung_11",
+      "sourceA": "SW2/T1/LR3",
+      "sourceB": "SW4/T1/LR11",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1505,
+        1507
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "LST_EL",
+      "drawingDiameterOnly": true
+    },
+    {
+      "id": "13_U_028-tk-14",
+      "name": "Sek 6_SK_b",
+      "color": "#13936b",
+      "group": "Weitere",
+      "diameter": 12,
+      "route": [],
+      "a": {
+        "wall": "SW1",
+        "hole": "SW1_R4_C4"
+      },
+      "b": {
+        "wall": "SW4",
+        "hole": "SW4_Oeffnung_12"
+      },
+      "referenceGroup": "TK",
+      "sourceCableId": "tk-14",
+      "sourceOriginalA": "SW1_R4_C4",
+      "sourceOriginalB": "SW4_Oeffnung_12",
+      "sourceA": "SW1/T1/LR20",
+      "sourceB": "SW4/T1/LR5",
+      "source": "KD-001 j, 03.07.2026",
+      "sourcePages": [
+        1504,
+        1507
+      ],
+      "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+      "sourceKind": "TK_COAX",
+      "drawingDiameterOnly": true
+    }
+  ],
+  "opacity": 52,
+  "showBox": true,
+  "showLabels": true,
+  "splitEnabled": true,
+  "enclosures": {
+    "OLA": {
+      "visible": true,
+      "opacity": 25,
+      "bounds": {
+        "x": 0,
+        "y": 407,
+        "z": 259,
+        "w": 1980,
+        "h": 481,
+        "d": 1598
+      },
+      "panels": [
+        {
+          "id": "OLA-floor",
+          "face": "floor",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "OLA-roof",
+          "face": "roof",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "OLA-left",
+          "face": "left",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "OLA-right",
+          "face": "right",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "OLA-front",
+          "face": "front",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "OLA-back",
+          "face": "back",
+          "visible": true,
+          "opacity": 70,
+          "material": "Beton",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        }
+      ]
+    },
+    "MS": {
+      "visible": false,
+      "opacity": 38,
+      "bounds": {
+        "x": 0,
+        "y": 1203,
+        "z": 259,
+        "w": 1980,
+        "h": 481,
+        "d": 1598
+      },
+      "panels": [
+        {
+          "id": "MS-floor",
+          "face": "floor",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "MS-roof",
+          "face": "roof",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 1598,
+          "offset": 0
+        },
+        {
+          "id": "MS-left",
+          "face": "left",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "MS-right",
+          "face": "right",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1598,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "MS-front",
+          "face": "front",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        },
+        {
+          "id": "MS-back",
+          "face": "back",
+          "visible": true,
+          "opacity": 48,
+          "material": "Stahl",
+          "thickness": 24,
+          "width": 1980,
+          "height": 481,
+          "offset": 0
+        }
+      ]
+    }
+  },
+  "supports": [],
+  "variants": [],
+  "sourceInfo": {
+    "shaft": "13_U_028",
+    "sourceFile": "13_U_028_Kabeleditor_2026-11-05_08-19.html",
+    "savedAt": "2026-11-05T08:19:36.165Z",
+    "document": "A-01-17-B1N24-99-KD-001-j-26.pdf",
+    "sourceVersion": "Index j vom 03.07.2026",
+    "sourcePages": [
+      1504,
+      1505,
+      1506,
+      1507
+    ],
+    "geometryStatus": "schematic",
+    "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt.",
+    "originalNote": "{\"sourceDocument\":\"A-01-17-B1N24-99-KD-001-j-26.pdf\",\"sourceVersion\":\"Index j vom 03.07.2026\",\"sourcePages\":[1504,1505,1506,1507],\"crossCheck\":\"AVL0116_Schachtbewertung_Trennkonzept_2026-10-23.pdf, S. 19\",\"anchoring\":\"Plan-Marker auf der jeweiligen Schachtwand; keine bestätigte Zuordnung zu sichtbaren Bildöffnungen. Keine zusätzlichen physischen Leerrohre.\"}",
+    "planAnchors": [
+      {
+        "id": "PLAN_SW1_T1_LR12",
+        "wall": "SW1",
+        "sourceAddress": "SW1/T1/LR12",
+        "sourcePage": 1502,
+        "destination": "13_U_042",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW2_T1_LR2",
+        "wall": "SW2",
+        "sourceAddress": "SW2/T1/LR2",
+        "sourcePage": 1502,
+        "destination": "21_B_010",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW1_T1_LR25",
+        "wall": "SW1",
+        "sourceAddress": "SW1/T1/LR25",
+        "sourcePage": 1502,
+        "destination": "13_U_042",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW3_T1_LR3",
+        "wall": "SW3",
+        "sourceAddress": "SW3/T1/LR3",
+        "sourcePage": 1503,
+        "destination": "13_U_032",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW1_T1_LR14",
+        "wall": "SW1",
+        "sourceAddress": "SW1/T1/LR14",
+        "sourcePage": 1502,
+        "destination": "13_U_042",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW2_T1_LR1",
+        "wall": "SW2",
+        "sourceAddress": "SW2/T1/LR1",
+        "sourcePage": 1502,
+        "destination": "21_B_010",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW4_T1_LR9",
+        "wall": "SW4",
+        "sourceAddress": "SW4/T1/LR9",
+        "sourcePage": 1503,
+        "destination": "13_U_021",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW1_T1_LR3",
+        "wall": "SW1",
+        "sourceAddress": "SW1/T1/LR3",
+        "sourcePage": 1502,
+        "destination": "13_U_042",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW3_T1_LR5",
+        "wall": "SW3",
+        "sourceAddress": "SW3/T1/LR5",
+        "sourcePage": 1503,
+        "destination": "13_U_032",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW3_T1_LR7",
+        "wall": "SW3",
+        "sourceAddress": "SW3/T1/LR7",
+        "sourcePage": 1503,
+        "destination": "13_U_032",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW2_T1_LR3",
+        "wall": "SW2",
+        "sourceAddress": "SW2/T1/LR3",
+        "sourcePage": 1502,
+        "destination": "21_B_010",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW4_T1_LR11",
+        "wall": "SW4",
+        "sourceAddress": "SW4/T1/LR11",
+        "sourcePage": 1503,
+        "destination": "13_U_021",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW1_T1_LR16",
+        "wall": "SW1",
+        "sourceAddress": "SW1/T1/LR16",
+        "sourcePage": 1502,
+        "destination": "13_U_042",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW1_T1_LR20",
+        "wall": "SW1",
+        "sourceAddress": "SW1/T1/LR20",
+        "sourcePage": 1502,
+        "destination": "13_U_042",
+        "physicalHole": false
+      },
+      {
+        "id": "PLAN_SW4_T1_LR5",
+        "wall": "SW4",
+        "sourceAddress": "SW4/T1/LR5",
+        "sourcePage": 1503,
+        "destination": "13_U_021",
+        "physicalHole": false
+      }
+    ],
+    "unmatchedEndpointCount": 7,
+    "originalCableCount": 18,
+    "originalPhysicalPortCount": 78
+  },
+  "network": {
+    "version": 1,
+    "shafts": [
+      {
+        "id": "13_U_028",
+        "name": "13_U_028 · aus HTML-Referenz (schematisch)",
+        "x": 0,
+        "z": 0,
+        "snapshot": {
+          "version": 3,
+          "name": "13_U_028 · aus HTML-Referenz (schematisch)",
+          "dims": {
+            "w": 2750,
+            "d": 2350,
+            "h": 1850
+          },
+          "walls": [
+            {
+              "id": "SW1",
+              "name": "SW1",
+              "visible": true,
+              "rows": 5,
+              "cols": 5,
+              "thickness": 120,
+              "dn": 142,
+              "holes": [
+                {
+                  "id": "SW1_R1_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.86877,
+                  "v": 0.86282,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R1_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R1_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.70842,
+                  "v": 0.85864,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R1_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R1_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.55806,
+                  "v": 0.84011,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R1_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R1_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.41299,
+                  "v": 0.82105,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R1_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R1_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.27541,
+                  "v": 0.79787,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R1_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R2_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.87107,
+                  "v": 0.68998,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R2_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R2_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.70842,
+                  "v": 0.68771,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R2_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R2_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.56033,
+                  "v": 0.67914,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R2_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R2_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.41526,
+                  "v": 0.66702,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R2_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R2_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.27541,
+                  "v": 0.64997,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R2_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R3_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.86877,
+                  "v": 0.52438,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R3_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R3_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.70842,
+                  "v": 0.51457,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R3_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R3_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.56033,
+                  "v": 0.50864,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R3_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R3_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.41751,
+                  "v": 0.49336,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R3_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R3_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.27766,
+                  "v": 0.48543,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R3_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R4_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.86877,
+                  "v": 0.35736,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R4_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R4_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.70842,
+                  "v": 0.34802,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R4_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R4_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.56033,
+                  "v": 0.33814,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R4_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R4_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.41751,
+                  "v": 0.32546,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R4_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R4_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.24393,
+                  "v": 0.27624,
+                  "dn": 358,
+                  "sourceAddress": "SW1_R4_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "gross",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R5_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.86877,
+                  "v": 0.18595,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R5_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R5_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.70842,
+                  "v": 0.1727,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R5_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R5_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.55806,
+                  "v": 0.16034,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R5_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R5_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.41751,
+                  "v": 0.14885,
+                  "dn": 142,
+                  "sourceAddress": "SW1_R5_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW1_R5_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.24393,
+                  "v": 0.06755,
+                  "dn": 358,
+                  "sourceAddress": "SW1_R5_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "gross",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            },
+            {
+              "id": "SW2",
+              "name": "SW2",
+              "visible": true,
+              "rows": 5,
+              "cols": 5,
+              "thickness": 120,
+              "dn": 436,
+              "holes": [
+                {
+                  "id": "SW2_Oeffnung_01",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.22744,
+                  "v": 0.63203,
+                  "dn": 436,
+                  "sourceAddress": "SW2_Oeffnung_01",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "gross",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_02",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42669,
+                  "v": 0.66017,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_02",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_03",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.5188,
+                  "v": 0.65584,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_03",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_04",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.60902,
+                  "v": 0.65368,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_04",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_05",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42669,
+                  "v": 0.55628,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_05",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_06",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.51692,
+                  "v": 0.55195,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_06",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_07",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.6109,
+                  "v": 0.54978,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_07",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_08",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42669,
+                  "v": 0.45671,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_08",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_09",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.51692,
+                  "v": 0.45238,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_09",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_10",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.61278,
+                  "v": 0.45022,
+                  "dn": 142,
+                  "sourceAddress": "SW2_Oeffnung_10",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_11",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.73872,
+                  "v": 0.43939,
+                  "dn": 102,
+                  "sourceAddress": "SW2_Oeffnung_11",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "mini",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW2_Oeffnung_12",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.81955,
+                  "v": 0.43939,
+                  "dn": 102,
+                  "sourceAddress": "SW2_Oeffnung_12",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "mini",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            },
+            {
+              "id": "SW3",
+              "name": "SW3",
+              "visible": true,
+              "rows": 5,
+              "cols": 6,
+              "thickness": 120,
+              "dn": 142,
+              "holes": [
+                {
+                  "id": "SW3_R1_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.30352,
+                  "v": 0.80039,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R1_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R1_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42445,
+                  "v": 0.79946,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R1_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R1_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.54563,
+                  "v": 0.80505,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R1_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R1_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.67174,
+                  "v": 0.81438,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R1_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R1_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.80048,
+                  "v": 0.81579,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R1_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R1_C6",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.9295,
+                  "v": 0.82594,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R1_C6",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R2_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.30352,
+                  "v": 0.63545,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R2_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R2_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42445,
+                  "v": 0.63652,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R2_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R2_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.54563,
+                  "v": 0.63324,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R2_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R2_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.67174,
+                  "v": 0.63803,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R2_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R2_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.80048,
+                  "v": 0.6436,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R2_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R2_C6",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.9295,
+                  "v": 0.64919,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R2_C6",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R3_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.30352,
+                  "v": 0.47486,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R3_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R3_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42445,
+                  "v": 0.47358,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R3_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R3_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.54563,
+                  "v": 0.47883,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R3_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R3_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.67174,
+                  "v": 0.47691,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R3_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R3_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.80048,
+                  "v": 0.48449,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R3_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R3_C6",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.9295,
+                  "v": 0.49426,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R3_C6",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R4_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.22691,
+                  "v": 0.21529,
+                  "dn": 358,
+                  "sourceAddress": "SW3_R4_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "gross",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R4_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42445,
+                  "v": 0.31281,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R4_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R4_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.54563,
+                  "v": 0.31571,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R4_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R4_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.66941,
+                  "v": 0.31503,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R4_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R4_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.79579,
+                  "v": 0.31294,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R4_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R4_C6",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.9248,
+                  "v": 0.3247,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R4_C6",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R5_C1",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42677,
+                  "v": 0.14846,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R5_C1",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R5_C2",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.5503,
+                  "v": 0.14978,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R5_C2",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R5_C3",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.67174,
+                  "v": 0.15034,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R5_C3",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R5_C4",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.79579,
+                  "v": 0.15165,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R5_C4",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW3_R5_C5",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.9248,
+                  "v": 0.15232,
+                  "dn": 142,
+                  "sourceAddress": "SW3_R5_C5",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            },
+            {
+              "id": "SW4",
+              "name": "SW4",
+              "visible": true,
+              "rows": 5,
+              "cols": 5,
+              "thickness": 120,
+              "dn": 436,
+              "holes": [
+                {
+                  "id": "SW4_Oeffnung_01",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.22744,
+                  "v": 0.63203,
+                  "dn": 436,
+                  "sourceAddress": "SW4_Oeffnung_01",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "gross",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_02",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42669,
+                  "v": 0.66017,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_02",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_03",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.5188,
+                  "v": 0.65584,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_03",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_04",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.60902,
+                  "v": 0.65368,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_04",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_05",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42669,
+                  "v": 0.55628,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_05",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_06",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.51692,
+                  "v": 0.55195,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_06",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_07",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.6109,
+                  "v": 0.54978,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_07",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_08",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.42669,
+                  "v": 0.45671,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_08",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_09",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.51692,
+                  "v": 0.45238,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_09",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_10",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.61278,
+                  "v": 0.45022,
+                  "dn": 142,
+                  "sourceAddress": "SW4_Oeffnung_10",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "klein",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_11",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.73872,
+                  "v": 0.43939,
+                  "dn": 102,
+                  "sourceAddress": "SW4_Oeffnung_11",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "mini",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                },
+                {
+                  "id": "SW4_Oeffnung_12",
+                  "row": 0,
+                  "col": 0,
+                  "u": 0.81955,
+                  "v": 0.43939,
+                  "dn": 102,
+                  "sourceAddress": "SW4_Oeffnung_12",
+                  "sourcePage": null,
+                  "sourceCount": null,
+                  "sourceCategory": "mini",
+                  "nominalDnConfirmed": false,
+                  "origin": "uploaded-html-graphical-opening"
+                }
+              ]
+            }
+          ],
+          "cables": [
+            {
+              "id": "13_U_028-blue-1",
+              "name": "Blau 1",
+              "group": "MS",
+              "color": "#087be8",
+              "diameter": 12,
+              "route": [
+                [
+                  -1262,
+                  412,
+                  -621
+                ],
+                [
+                  -1113,
+                  236,
+                  -655
+                ],
+                [
+                  -955,
+                  160,
+                  -673
+                ],
+                [
+                  -809,
+                  160,
+                  -793
+                ],
+                [
+                  -781,
+                  236,
+                  -965
+                ],
+                [
+                  -784,
+                  490,
+                  -1019
+                ],
+                [
+                  -784,
+                  852,
+                  -1037
+                ],
+                [
+                  -784,
+                  1119,
+                  -1162
+                ]
+              ],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R5_C5"
+              },
+              "b": {
+                "wall": "SW2",
+                "hole": "SW2_Oeffnung_01"
+              },
+              "referenceGroup": "MS",
+              "sourceOriginalA": "SW1_R5_C5",
+              "sourceOriginalB": "SW2_Oeffnung_01",
+              "sourceA": "",
+              "sourceB": "",
+              "source": "",
+              "sourcePages": [],
+              "mappingStatus": "Schematische Zuordnung",
+              "sourceKind": "",
+              "sourceCableId": "blue-1",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-blue-2",
+              "name": "Blau 2",
+              "group": "MS",
+              "color": "#087be8",
+              "diameter": 12,
+              "route": [
+                [
+                  -1246,
+                  112,
+                  -576
+                ],
+                [
+                  -1046,
+                  90,
+                  -530
+                ],
+                [
+                  -809,
+                  80,
+                  -510
+                ],
+                [
+                  -134,
+                  80,
+                  -510
+                ],
+                [
+                  560,
+                  80,
+                  -510
+                ],
+                [
+                  1079,
+                  89,
+                  -513
+                ],
+                [
+                  1205,
+                  215,
+                  -552
+                ],
+                [
+                  1363,
+                  365,
+                  -598
+                ]
+              ],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R4_C5"
+              },
+              "b": {
+                "wall": "SW3",
+                "hole": "SW3_R4_C1"
+              },
+              "referenceGroup": "MS",
+              "sourceOriginalA": "SW1_R4_C5",
+              "sourceOriginalB": "SW3_R4_C1",
+              "sourceA": "",
+              "sourceB": "",
+              "source": "",
+              "sourcePages": [],
+              "mappingStatus": "Schematische Zuordnung",
+              "sourceKind": "",
+              "sourceCableId": "blue-2",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-blue-3",
+              "name": "Blau 3",
+              "group": "MS",
+              "color": "#087be8",
+              "diameter": 12,
+              "route": [
+                [
+                  -716,
+                  955,
+                  -1066
+                ],
+                [
+                  -716,
+                  524,
+                  -1029
+                ],
+                [
+                  -680,
+                  256,
+                  -931
+                ],
+                [
+                  -544,
+                  167,
+                  -716
+                ],
+                [
+                  -69,
+                  160,
+                  -680
+                ],
+                [
+                  571,
+                  160,
+                  -680
+                ],
+                [
+                  1101,
+                  174,
+                  -680
+                ],
+                [
+                  1265,
+                  314,
+                  -677
+                ]
+              ],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R4_C5"
+              },
+              "b": {
+                "wall": "SW3",
+                "hole": "SW3_R4_C1"
+              },
+              "referenceGroup": "MS",
+              "sourceOriginalA": "SW1_R4_C5",
+              "sourceOriginalB": "SW3_R4_C1",
+              "sourceA": "",
+              "sourceB": "",
+              "source": "",
+              "sourcePages": [],
+              "mappingStatus": "Schematische Zuordnung",
+              "sourceKind": "",
+              "sourceCableId": "blue-3",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-red-1",
+              "name": "Rot 1",
+              "group": "OLA",
+              "color": "#e32525",
+              "diameter": 12,
+              "route": [
+                [
+                  -1260,
+                  242,
+                  538
+                ],
+                [
+                  -1112,
+                  104,
+                  623
+                ],
+                [
+                  -889,
+                  45,
+                  660
+                ],
+                [
+                  -204,
+                  45,
+                  660
+                ],
+                [
+                  505,
+                  45,
+                  660
+                ],
+                [
+                  1030,
+                  52,
+                  661
+                ],
+                [
+                  1170,
+                  145,
+                  675
+                ],
+                [
+                  1351,
+                  256,
+                  691
+                ]
+              ],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R5_C2"
+              },
+              "b": {
+                "wall": "SW3",
+                "hole": "SW3_R5_C4"
+              },
+              "referenceGroup": "OLA",
+              "sourceOriginalA": "SW1_R5_C2",
+              "sourceOriginalB": "SW3_R5_C4",
+              "sourceA": "",
+              "sourceB": "",
+              "source": "",
+              "sourcePages": [],
+              "mappingStatus": "Schematische Zuordnung",
+              "sourceKind": "",
+              "sourceCableId": "red-1",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-red-2",
+              "name": "Rot 2",
+              "group": "OLA",
+              "color": "#e32525",
+              "diameter": 12,
+              "route": [
+                [
+                  -1260,
+                  226,
+                  199
+                ],
+                [
+                  -1112,
+                  99,
+                  312
+                ],
+                [
+                  -889,
+                  45,
+                  360
+                ],
+                [
+                  -204,
+                  45,
+                  360
+                ],
+                [
+                  505,
+                  45,
+                  360
+                ],
+                [
+                  1030,
+                  52,
+                  361
+                ],
+                [
+                  1170,
+                  144,
+                  379
+                ],
+                [
+                  1351,
+                  254,
+                  399
+                ]
+              ],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R5_C3"
+              },
+              "b": {
+                "wall": "SW3",
+                "hole": "SW3_R5_C3"
+              },
+              "referenceGroup": "OLA",
+              "sourceOriginalA": "SW1_R5_C3",
+              "sourceOriginalB": "SW3_R5_C3",
+              "sourceA": "",
+              "sourceB": "",
+              "source": "",
+              "sourcePages": [],
+              "mappingStatus": "Schematische Zuordnung",
+              "sourceKind": "",
+              "sourceCableId": "red-2",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-0",
+              "name": "Cu_F4734_20\"_03",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R3_C2"
+              },
+              "b": {
+                "wall": "SW2",
+                "hole": "SW2_Oeffnung_09"
+              },
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW1_R3_C2",
+              "sourceOriginalB": "SW2_Oeffnung_09",
+              "sourceA": "SW1/T1/LR12",
+              "sourceB": "SW2/T1/LR2",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1505
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_CU",
+              "sourceCableId": "tk-0",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-3",
+              "name": "FB 420107 TS",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R4_C3"
+              },
+              "b": null,
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW1_R4_C3",
+              "sourceOriginalB": "PLAN_SW3_T1_LR3",
+              "sourceA": "SW1/T1/LR25",
+              "sourceB": "SW3/T1/LR3",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1505,
+                1506
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_CU",
+              "sourceCableId": "tk-3",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-4",
+              "name": "LWL_F7279_96'_02",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": null,
+              "b": {
+                "wall": "SW2",
+                "hole": "SW2_Oeffnung_10"
+              },
+              "referenceGroup": "TK",
+              "sourceOriginalA": "PLAN_SW1_T1_LR14",
+              "sourceOriginalB": "SW2_Oeffnung_10",
+              "sourceA": "SW1/T1/LR14",
+              "sourceB": "SW2/T1/LR1",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1505
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_LWL",
+              "sourceCableId": "tk-4",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-5",
+              "name": "LWL_F772840_24 Hin",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_Oeffnung_10"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_Oeffnung_05"
+              },
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW2_Oeffnung_10",
+              "sourceOriginalB": "SW4_Oeffnung_05",
+              "sourceA": "SW2/T1/LR1",
+              "sourceB": "SW4/T1/LR9",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1505,
+                1507
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_LWL",
+              "sourceCableId": "tk-5",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-6",
+              "name": "LWL_F772863_60'_02",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": null,
+              "b": {
+                "wall": "SW2",
+                "hole": "SW2_Oeffnung_10"
+              },
+              "referenceGroup": "TK",
+              "sourceOriginalA": "PLAN_SW1_T1_LR14",
+              "sourceOriginalB": "SW2_Oeffnung_10",
+              "sourceA": "SW1/T1/LR14",
+              "sourceB": "SW2/T1/LR1",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1505
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_LWL",
+              "sourceCableId": "tk-6",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-7",
+              "name": "LWL_St1_F7279_96'",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R1_C2"
+              },
+              "b": null,
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW1_R1_C2",
+              "sourceOriginalB": "PLAN_SW3_T1_LR5",
+              "sourceA": "SW1/T1/LR3",
+              "sourceB": "SW3/T1/LR5",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1506
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_LWL",
+              "sourceCableId": "tk-7",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-8",
+              "name": "LWL_St1_F772835_96_02",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R1_C2"
+              },
+              "b": null,
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW1_R1_C2",
+              "sourceOriginalB": "PLAN_SW3_T1_LR5",
+              "sourceA": "SW1/T1/LR3",
+              "sourceB": "SW3/T1/LR5",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1506
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_LWL",
+              "sourceCableId": "tk-8",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-9",
+              "name": "LWL_St1_F772863_60'",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R1_C2"
+              },
+              "b": null,
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW1_R1_C2",
+              "sourceOriginalB": "PLAN_SW3_T1_LR7",
+              "sourceA": "SW1/T1/LR3",
+              "sourceB": "SW3/T1/LR7",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1506
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_LWL",
+              "sourceCableId": "tk-9",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-10",
+              "name": "LWL_St1_F772874_24'",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R3_C3"
+              },
+              "b": null,
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW1_R3_C3",
+              "sourceOriginalB": "PLAN_SW3_T1_LR5",
+              "sourceA": "SW1/T1/LR14",
+              "sourceB": "SW3/T1/LR5",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1506
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_LWL",
+              "sourceCableId": "tk-10",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-lst-11",
+              "name": "S01AZ-F15.a",
+              "group": "Weitere",
+              "color": "#e09922",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_Oeffnung_08"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_Oeffnung_11"
+              },
+              "referenceGroup": "LST",
+              "sourceOriginalA": "SW2_Oeffnung_08",
+              "sourceOriginalB": "SW4_Oeffnung_11",
+              "sourceA": "SW2/T1/LR3",
+              "sourceB": "SW4/T1/LR11",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1505,
+                1507
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "LST_EL",
+              "sourceCableId": "lst-11",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-lst-12",
+              "name": "S01AZ-F15.f",
+              "group": "Weitere",
+              "color": "#e09922",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R4_C1"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_Oeffnung_11"
+              },
+              "referenceGroup": "LST",
+              "sourceOriginalA": "SW1_R4_C1",
+              "sourceOriginalB": "SW4_Oeffnung_11",
+              "sourceA": "SW1/T1/LR16",
+              "sourceB": "SW4/T1/LR11",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1507
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "LST_EL",
+              "sourceCableId": "lst-12",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-lst-13",
+              "name": "S01AZ-F20.1",
+              "group": "Weitere",
+              "color": "#e09922",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW2",
+                "hole": "SW2_Oeffnung_08"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_Oeffnung_11"
+              },
+              "referenceGroup": "LST",
+              "sourceOriginalA": "SW2_Oeffnung_08",
+              "sourceOriginalB": "SW4_Oeffnung_11",
+              "sourceA": "SW2/T1/LR3",
+              "sourceB": "SW4/T1/LR11",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1505,
+                1507
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "LST_EL",
+              "sourceCableId": "lst-13",
+              "drawingDiameterOnly": true
+            },
+            {
+              "id": "13_U_028-tk-14",
+              "name": "Sek 6_SK_b",
+              "group": "Weitere",
+              "color": "#13936b",
+              "diameter": 12,
+              "route": [],
+              "a": {
+                "wall": "SW1",
+                "hole": "SW1_R4_C4"
+              },
+              "b": {
+                "wall": "SW4",
+                "hole": "SW4_Oeffnung_12"
+              },
+              "referenceGroup": "TK",
+              "sourceOriginalA": "SW1_R4_C4",
+              "sourceOriginalB": "SW4_Oeffnung_12",
+              "sourceA": "SW1/T1/LR20",
+              "sourceB": "SW4/T1/LR5",
+              "source": "KD-001 j, 03.07.2026",
+              "sourcePages": [
+                1504,
+                1507
+              ],
+              "mappingStatus": "Plananschlüsse; Zuordnung zum geänderten Lochbild offen",
+              "sourceKind": "TK_COAX",
+              "sourceCableId": "tk-14",
+              "drawingDiameterOnly": true
+            }
+          ],
+          "enclosures": {
+            "OLA": {
+              "visible": true,
+              "opacity": 25,
+              "bounds": {
+                "x": 0,
+                "y": 407,
+                "z": 259,
+                "w": 1980,
+                "h": 481,
+                "d": 1598
+              },
+              "panels": [
+                {
+                  "id": "OLA-floor",
+                  "face": "floor",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-roof",
+                  "face": "roof",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-left",
+                  "face": "left",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-right",
+                  "face": "right",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-front",
+                  "face": "front",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "OLA-back",
+                  "face": "back",
+                  "visible": true,
+                  "opacity": 70,
+                  "material": "Beton",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                }
+              ]
+            },
+            "MS": {
+              "visible": false,
+              "opacity": 38,
+              "bounds": {
+                "x": 0,
+                "y": 1203,
+                "z": 259,
+                "w": 1980,
+                "h": 481,
+                "d": 1598
+              },
+              "panels": [
+                {
+                  "id": "MS-floor",
+                  "face": "floor",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-roof",
+                  "face": "roof",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 1598,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-left",
+                  "face": "left",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-right",
+                  "face": "right",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1598,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-front",
+                  "face": "front",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                },
+                {
+                  "id": "MS-back",
+                  "face": "back",
+                  "visible": true,
+                  "opacity": 48,
+                  "material": "Stahl",
+                  "thickness": 24,
+                  "width": 1980,
+                  "height": 481,
+                  "offset": 0
+                }
+              ]
+            }
+          },
+          "supports": [],
+          "variants": [],
+          "opacity": 52,
+          "showBox": true,
+          "showLabels": true,
+          "splitEnabled": true,
+          "sourceInfo": {
+            "shaft": "13_U_028",
+            "sourceFile": "13_U_028_Kabeleditor_2026-11-05_08-19.html",
+            "savedAt": "2026-11-05T08:19:36.165Z",
+            "document": "A-01-17-B1N24-99-KD-001-j-26.pdf",
+            "sourceVersion": "Index j vom 03.07.2026",
+            "sourcePages": [
+              1504,
+              1505,
+              1506,
+              1507
+            ],
+            "geometryStatus": "schematic",
+            "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt.",
+            "originalNote": "{\"sourceDocument\":\"A-01-17-B1N24-99-KD-001-j-26.pdf\",\"sourceVersion\":\"Index j vom 03.07.2026\",\"sourcePages\":[1504,1505,1506,1507],\"crossCheck\":\"AVL0116_Schachtbewertung_Trennkonzept_2026-10-23.pdf, S. 19\",\"anchoring\":\"Plan-Marker auf der jeweiligen Schachtwand; keine bestätigte Zuordnung zu sichtbaren Bildöffnungen. Keine zusätzlichen physischen Leerrohre.\"}",
+            "planAnchors": [
+              {
+                "id": "PLAN_SW1_T1_LR12",
+                "wall": "SW1",
+                "sourceAddress": "SW1/T1/LR12",
+                "sourcePage": 1502,
+                "destination": "13_U_042",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW2_T1_LR2",
+                "wall": "SW2",
+                "sourceAddress": "SW2/T1/LR2",
+                "sourcePage": 1502,
+                "destination": "21_B_010",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW1_T1_LR25",
+                "wall": "SW1",
+                "sourceAddress": "SW1/T1/LR25",
+                "sourcePage": 1502,
+                "destination": "13_U_042",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW3_T1_LR3",
+                "wall": "SW3",
+                "sourceAddress": "SW3/T1/LR3",
+                "sourcePage": 1503,
+                "destination": "13_U_032",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW1_T1_LR14",
+                "wall": "SW1",
+                "sourceAddress": "SW1/T1/LR14",
+                "sourcePage": 1502,
+                "destination": "13_U_042",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW2_T1_LR1",
+                "wall": "SW2",
+                "sourceAddress": "SW2/T1/LR1",
+                "sourcePage": 1502,
+                "destination": "21_B_010",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW4_T1_LR9",
+                "wall": "SW4",
+                "sourceAddress": "SW4/T1/LR9",
+                "sourcePage": 1503,
+                "destination": "13_U_021",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW1_T1_LR3",
+                "wall": "SW1",
+                "sourceAddress": "SW1/T1/LR3",
+                "sourcePage": 1502,
+                "destination": "13_U_042",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW3_T1_LR5",
+                "wall": "SW3",
+                "sourceAddress": "SW3/T1/LR5",
+                "sourcePage": 1503,
+                "destination": "13_U_032",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW3_T1_LR7",
+                "wall": "SW3",
+                "sourceAddress": "SW3/T1/LR7",
+                "sourcePage": 1503,
+                "destination": "13_U_032",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW2_T1_LR3",
+                "wall": "SW2",
+                "sourceAddress": "SW2/T1/LR3",
+                "sourcePage": 1502,
+                "destination": "21_B_010",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW4_T1_LR11",
+                "wall": "SW4",
+                "sourceAddress": "SW4/T1/LR11",
+                "sourcePage": 1503,
+                "destination": "13_U_021",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW1_T1_LR16",
+                "wall": "SW1",
+                "sourceAddress": "SW1/T1/LR16",
+                "sourcePage": 1502,
+                "destination": "13_U_042",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW1_T1_LR20",
+                "wall": "SW1",
+                "sourceAddress": "SW1/T1/LR20",
+                "sourcePage": 1502,
+                "destination": "13_U_042",
+                "physicalHole": false
+              },
+              {
+                "id": "PLAN_SW4_T1_LR5",
+                "wall": "SW4",
+                "sourceAddress": "SW4/T1/LR5",
+                "sourcePage": 1503,
+                "destination": "13_U_021",
+                "physicalHole": false
+              }
+            ],
+            "unmatchedEndpointCount": 7,
+            "originalCableCount": 18,
+            "originalPhysicalPortCount": 78
+          }
+        }
+      }
+    ],
+    "links": [],
+    "routes": [],
+    "quality": {
+      "minPipeGapMm": null,
+      "minEdgeMm": null,
+      "minBendRadiusMm": null
+    },
+    "reviews": [
+      {
+        "shaftId": "13_U_028",
+        "entityType": "shaft",
+        "entityId": "13_U_028",
+        "status": "Zur Prüfung",
+        "source": "13_U_028_Kabeleditor_2026-11-05_08-19.html",
+        "note": "Übernommen aus schematischem HTML-Editor; Anschlüsse/Abmessungen vor Ort prüfen.",
+        "checkedBy": "Import (nicht geprüft)",
+        "checkedAt": "2026-11-05T08:19:36.165Z"
+      }
+    ],
+    "audit": []
+  },
+  "activeShaftId": "13_U_028"
+}
