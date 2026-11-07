@@ -353,5 +353,23 @@
     "privacy scope and data lineage required",
     "reports without exiting app",
     "raw chat content excluded from ordinary telemetry"
-  ]
+  ],
+  "inference_gateway": {
+    "provider_modes_ref": "k5_provider_modes_v1.json",
+    "operations": [
+      "generate_character_turn",
+      "generate_coach_feedback",
+      "generate_replay",
+      "cancel",
+      "get_request_status"
+    ],
+    "transport_semantics": "domain operations independent of transport/provider; not all modes share a server API",
+    "mode_selection": "explicit user selection with runtime capabilities and purpose-specific privacy",
+    "eligibility": "chatgpt_plan only when supported and officially authorized; native Android applicability not yet verified",
+    "local_qa": "device/ABI/runtime/model hash and license checked, K2/K3 quality gates required",
+    "fallback_policy": "no automatic local-to-cloud or ChatGPT-plan-to-billed-API fallback",
+    "privacy_policy": "do not transfer local conversations unless the user explicitly authorizes the external destination",
+    "feature_flags": "mode-specific; coach may be disabled while local chat enabled"
+  },
+  "external_provider_modes_status": "all design candidates, not implemented"
 }
