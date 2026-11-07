@@ -1893,7 +1893,7 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
         Text("InnerWave ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.7.7 – InnerWave", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.7.8 – InnerWave", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
