@@ -1,0 +1,163 @@
+{
+  "schema_version": "d00.repo-build-audit.v1",
+  "audit_date": "2026-11-07",
+  "repository": "valoon4/Androidbaze",
+  "audited_ref": "main",
+  "audited_commit": "830280455c51f7ab854c4476e5eec526a4213ad3",
+  "audit_method": "complete recursive Git tree and content read; static only",
+  "execution_status": {
+    "android_build": "not_run_no_project",
+    "emulator": "not_run",
+    "communicationtrainer_apk": "not_available",
+    "existing_workflow_runs": "not_verified"
+  },
+  "facts": {
+    "tree_entries": 547,
+    "tree_files": 409,
+    "workflows": 11,
+    "root_build_project": "Wormblade",
+    "root_build_module": ":app",
+    "root_build_settings_path": "settings.gradle.kts",
+    "root_toolchain": {
+      "android_gradle_plugin": "8.7.3",
+      "kotlin": "2.0.21",
+      "gradle": "8.9",
+      "jdk": "17",
+      "compile_sdk": 35,
+      "target_sdk": 35,
+      "min_sdk": 24,
+      "application_id": "com.valoon4.wormblade"
+    },
+    "communicationtrainer_files": 33,
+    "communicationtrainer_has_android_project": false,
+    "communicationtrainer_has_kotlin": false,
+    "communicationtrainer_has_manifest": false,
+    "communicationtrainer_has_gradle": false,
+    "communicationtrainer_has_workflow": false,
+    "independent_reference_projects": [
+      "games/TimeFlow/",
+      "games/ApeEconomics/",
+      "games/EugiDoors/",
+      "games/TrashJump/",
+      "games/Emotionskompass/src/"
+    ],
+    "innerwave_reference": {
+      "root": "games/Emotionskompass/src",
+      "agp": "8.13.2",
+      "kotlin": "2.4.21",
+      "gradle_in_ci": "8.13",
+      "jdk": "17",
+      "compile_sdk": 36,
+      "min_sdk": 26,
+      "target_sdk": 35,
+      "ci": "emotionskompass-debug-apk.yml"
+    }
+  },
+  "hazards": [
+    {
+      "id": "D00-R01",
+      "severity": "high",
+      "path": ".github/workflows/debug-apk.yml",
+      "observed": "push-main without paths, contents-write and conditional commit/push from Wormblade script",
+      "action": "separate approved root-workflow hardening; no changes in D00"
+    },
+    {
+      "id": "D00-R02",
+      "severity": "medium-high",
+      "path": ".github/workflows/communicationtrainer-debug-apk.yml",
+      "observed": "new CI workflow needs file outside allowed app folder",
+      "action": "separate explicit permission before creation"
+    },
+    {
+      "id": "D00-R03",
+      "severity": "medium",
+      "observed": "proposed toolchain not compiled",
+      "action": "D01 Gradle unit/debug build"
+    },
+    {
+      "id": "D00-R04",
+      "severity": "medium",
+      "observed": "root gitignore fails to cover all nested Gradle artifacts",
+      "action": "D01 project-level android/.gitignore"
+    },
+    {
+      "id": "D00-R05",
+      "severity": "medium",
+      "observed": "device coverage unverified",
+      "action": "D01 minSdk/device test"
+    },
+    {
+      "id": "D00-R06",
+      "severity": "medium",
+      "observed": "no CI/APK for new app",
+      "action": "D01 signing/identity/CI"
+    },
+    {
+      "id": "D00-R07",
+      "severity": "release_blocker",
+      "observed": "new Play apps must target at least API 36",
+      "action": "targetSdk >= 36"
+    },
+    {
+      "id": "D00-R08",
+      "severity": "medium",
+      "observed": "own Gradle wrapper and checksum missing",
+      "action": "D01 verified distribution"
+    },
+    {
+      "id": "D00-R09",
+      "severity": "medium",
+      "observed": "no AI/backend runtime",
+      "action": "D04/D05 experiment after D01–D03"
+    },
+    {
+      "id": "D00-R10",
+      "severity": "medium",
+      "observed": "workflows not executed or run statuses verified",
+      "action": "D01 executed build and tests"
+    }
+  ],
+  "proposed_d01": {
+    "android_root": "apps/CommunicationTrainer/android/",
+    "root_settings_modification": false,
+    "namespace": "com.valoon4.communicationtrainer",
+    "application_id": "com.valoon4.communicationtrainer",
+    "min_sdk_candidate": 26,
+    "compile_sdk_candidate": 36,
+    "target_sdk_minimum": 36,
+    "toolchain_candidate": {
+      "jdk": "17",
+      "gradle": "8.13",
+      "agp": "8.13.2",
+      "kotlin": "2.4.21",
+      "compose_compiler_plugin": "2.4.21",
+      "status": "needs_clean_build"
+    },
+    "screens": [
+      "Chats",
+      "Üben"
+    ],
+    "provider": "mock_only",
+    "expected_output": "apps/CommunicationTrainer/android/app/build/outputs/apk/debug/app-debug.apk",
+    "ci_workflow_location": "requires separate authorization for .github/workflows/communicationtrainer-debug-apk.yml",
+    "ci_permissions": "contents: read",
+    "ci_trigger_scope": [
+      "apps/CommunicationTrainer/android/**",
+      ".github/workflows/communicationtrainer-debug-apk.yml"
+    ],
+    "ci_working_directory": "apps/CommunicationTrainer/android",
+    "gradle_commands": [
+      ":app:testDebugUnitTest",
+      ":app:assembleDebug"
+    ],
+    "no_other_projects_modified": true
+  },
+  "official_sources": [
+    "https://developer.android.com/build/releases/agp-8-13-0-release-notes",
+    "https://kotlinlang.org/docs/gradle-configure-project.html",
+    "https://developer.android.com/develop/ui/compose/setup-compose-dependencies-and-compiler",
+    "https://developer.android.com/google/play/requirements/target-sdk"
+  ],
+  "document": "../docs/D00_REPO_BUILD_AUDIT.md",
+  "status": "static_audit_complete_D01_pending_explicit_approval"
+}
