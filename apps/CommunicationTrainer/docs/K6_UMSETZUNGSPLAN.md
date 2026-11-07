@@ -18,6 +18,16 @@ Jeder technische PR erhält:
 
 Vor dem ersten Android-Build den Ist-Zustand der Repo-Infrastruktur wirklich prüfen. Der Konzeptordner liefert noch keinen Nachweis für vorhandene Kotlin-/Compose-/Backend-Codebasis.
 
+### D00-Bericht (07.11.2026; statisch geprüft)
+
+Die angeforderte Repository-Bestandsaufnahme ist in [D00_REPO_BUILD_AUDIT.md](D00_REPO_BUILD_AUDIT.md) und [d00_build_audit_v1.json](../specs/d00_build_audit_v1.json) dokumentiert. **Keine Android-/CI-Tests wurden dabei ausgeführt.**
+
+- CommunicationTrainer besitzt bisher **kein Android-Buildprojekt**; D01 muss eine eigene Gradle-Wurzel unter `apps/CommunicationTrainer/android/` erstellen.
+- Bestehender Root-Build heißt **Androidbaze**, enthält nur `:app` (Wormblade) und darf nicht um unser Projekt erweitert werden.
+- Die existierende **Root-Wormblade-CI** reagiert derzeit auf **jeden** main-Push und kann eigenen Code committen; das ist ein identifiziertes CI-Scope-Risiko und verdient einen separat genehmigten Härtungs-PR.
+- Die App-eigene Debug-APK-CI benötigt künftig eine neue GitHub-Workflow-Datei unter `.github/workflows/` **außerhalb** des CommunicationTrainer-Ordners; vor jedem Schreiben dorthin ist eine konkrete Freigabe nötig.
+- Toolchain-Kandidat (D01 zu bauen/prüfen): JDK 17, Gradle 8.13, Android-Gradle-Plugin 8.13.2, Kotlin/Compose 2.4.21, compileSdk 36, **targetSdk mindestens 36** für die neue Play-App. Keine Versionskombination als bereits kompiliert ausgeben.
+
 ## 2. Umsetzungs-PRs (empfohlene Reihenfolge)
 
 | ID | Bereich | Liefergegenstand | Prüfung und Eintrittsgate |

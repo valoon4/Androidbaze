@@ -1,6 +1,22 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
-## 2026-11-07 – Konzeptstand 0.9 (K6-PR offen): Gesamtaudit, fokussiertes MVP und Umsetzungsgates
+## 2026-11-07 – D00 Repository-/Build-Audit durchgeführt (D00-PR zur Freigabe)
+
+**Auftrag:** Der Nutzer hat nach dem ausdrücklich genehmigten und verifiziert gemergten **PR #56** den Start der technischen Phase **D00** beauftragt.
+
+**Tatsächlich ermittelt:** GitHub-main-Snapshot `830280455c51f7ab854c4476e5eec526a4213ad3`; vollständiger Git-Tree mit 547 Einträgen/409 Dateien, 11 bestehenden GitHub-Actions-Workflows und 33 CommunicationTrainer-Dateien. **CommunicationTrainer hat noch kein Android-Projekt, kein Manifest, keine Kotlin-Dateien und keine APK.** Die Root-Gradle-Dateien bauen Wormblade (`:app`), während eigenständige Projekte wie InnerWave/TimeFlow unter `games/` liegen.
+
+**Dokumentiert:** [D00_REPO_BUILD_AUDIT.md](D00_REPO_BUILD_AUDIT.md) mit überprüften Gradle-/Java-/Android-Versionen, eigenständigem D01-Projektpfad, kompatiblem Toolchain-**Kandidaten**, aktueller Play-targetSdk-Anforderung (für neue Android-Apps mindestens API 36) sowie zehn technischen Risiken; [d00_build_audit_v1.json](../specs/d00_build_audit_v1.json) als maschinenlesbarer Prüfstand.
+
+**Kritisches CI-Risiko:** Der bestehende Root-Workflow `.github/workflows/debug-apk.yml` läuft bei allen main-Pushes und kann über das Wormblade-Skript Änderungen an fremdem Code zurück nach main pushen. **D00 verändert diesen Workflow nicht.** Eine Einschränkung auf Wormblade gehört in einen gesondert ausdrücklich genehmigten Sicherheits-PR.
+
+**Sonderfreigabe erforderlich:** Eine automatisch laufende CommunicationTrainer-Debug-APK-CI braucht künftig eine neue Datei unter `.github/workflows/`, außerhalb der vereinbarten `apps/CommunicationTrainer/`-Grenze. Eine Änderung erfolgt erst nach einer **konkreten, gezielten Genehmigung**. Bis dahin können app-eigene Gradle-/CI-Skripte innerhalb des Projektordners vorbereitet werden.
+
+**Empfehlung D01:** eigenständige Gradle-Wurzel `apps/CommunicationTrainer/android/`, eindeutiger vorgeschlagener Paketname `com.valoon4.communicationtrainer`, JDK 17, zunächst Gradle 8.13 / AGP 8.13.2 / Kotlin 2.4.21 / compileSdk 36 / targetSdk 36 (unter Vorbehalt des echten D01-Builds). Zwei Compose-Einstiege und Mock-Provider, keine echte KI.
+
+**Status:** D00 **statisch durchgeführt**, **kein** Build/Emulator/CI-Test der neuen App. D00-PR bleibt bis ausdrücklicher Freigabe offen; D01 wird in separatem PR angelegt.
+
+## 2026-11-07 – Konzeptstand 0.9 (PR #56 gemergt): Gesamtaudit, fokussiertes MVP und Umsetzungsgates
 
 **Nutzerauftrag:** Nach dem gemergten PR #54 mit K5 und drei KI-Betriebsarten hat der Nutzer die Ausarbeitung der letzten Konzeptetappe **K6** beauftragt. Die Arbeit erfolgt in einem gesonderten PR ohne automatische Mergefreigabe.
 
