@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.6 – K3 Charaktere und Simulationsregeln im separaten PR zur Prüfung (06.11.2026); K2 durch PR #49 auf main übernommen  
+**Status:** Konzeptstand 0.7 – K4 UX und Nutzererlebnis im separaten PR zur Prüfung (07.11.2026); K3 durch PR #50 auf main übernommen  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -347,13 +347,27 @@ Die M2-Struktur wurde in K3 auf ausführbare **Konzeptdaten und prüfbare Verhal
 
 **Projektstand:** Die fünf JSON-Profile und sechs Szenario-Fixtures wurden strukturell auf IDs, Parameterbereiche und gültige Querreferenzen geprüft. Es ist **noch keine echte Chat-Simulation implementiert**; die 36 Tests sind Prüfspezifikationen, keine bestandenen Laufzeittests. Die K3-Ausarbeitung wartet auf ausdrückliche PR-Abnahme. Als Nächstes folgen K4 UX, K5 Technik/Datenschutz/Betrieb und K6 Gesamtkonzeptprüfung.
 
+### 18.15 K4: Ganzheitliches UX- und Bedienkonzept
+
+Die vorhandenen Produktentscheidungen sind in vier **implementierungsnahe, noch nicht in Android umgesetzte** UX-Artefakte übersetzt:
+- **[K4_UX_KONZEPT.md](K4_UX_KONZEPT.md):** Produktziele, vier Haupttabs (Chats, Üben, Fortschritt, Profil), schneller erster Einstieg, freie Chats, Szenario-Übungen, freiwillige Coach-Unterstützung, verzweigtes Wiederholen, Charakterwahl und Editor, Lernfortschritt, Datenschutzbedienung, Fehlerfälle, Visual- und Accessibility-Grundsätze sowie MVP-Schnitt.
+- **[K4_NUTZERABLAEUFE.md](K4_NUTZERABLAEUFE.md):** zwölf vollständige Nutzerabläufe samt Abbruch-/Negativfällen und fünf textuellen Wireframes für Chatliste, freie Chats, Übung, Kurzfeedback und Charaktereditor.
+- **[K4_UX_TESTPLAN.md](K4_UX_TESTPLAN.md):** 36 konkrete UX-Aufgaben, Prüfkriterien für K1–K3-Integration, Android-Zugänglichkeit, Dark-Pattern-/Vertrauensrisiken und Priorität von Befunden.
+- **[k4_screens_v1.json](../specs/k4_screens_v1.json):** 29 konzeptionelle Ansichten, primäre und sekundäre Aktionen, Zustandsabdeckung und kontextuelle Navigationsregeln als maschinenlesbarer Entwurf.
+
+**Gestaltungsgrundsätze:** schneller Chatstart ohne komplexen Pflicht-Editor, eindeutige KI- und Moduskennzeichnung, getrennte freiwillige Coach-Auswertung, kein Skill-Gesamtscore, keine künstliche Beziehungsschuld, klare Original-/Replay-Trennung, prüfbare Memory- und Löschkontrollen sowie große Touchflächen, TalkBack, Schriftvergrößerung und Systemnavigation.
+
+**Wichtig:** Gastnutzung, lokal gespeicherte Daten, Löschgarantien und KI-Kosten sind K5-abhängig und werden in K4 ausdrücklich **nicht ohne technische Grundlage versprochen**. Die hier dokumentierten Screens und Tests sind Soll-Spezifikationen, keine tatsächlich implementierte oder mit Nutzern getestete App.
+
+**Weiterer Konzeptfahrplan:** K5 Technik/Datenschutz/Betrieb und K6 Gesamtqualität/MVP-Entscheidung; nach diesen Etappen zunächst Prototypen mit überprüfbaren qualitativen und technischen Kriterien.
+
 ## 19. Status offener Entscheidungen
 
 **Bereits abgestimmt:** Fokus auf Alltagskommunikation und soziale Kontakte; freier Chat plus Übung und Wiederholung; unterschiedliche KI-Charaktere und Stimmungen; Feedback, Lernbeobachtungen und Spielmotivation; getrennte Projektablage; PR-Freigabe vor Merge.
 
 **Grundsätzlich befürwortete konzeptionelle Vorschläge:** Kompetenzatlas, drei verbundene Modi, mehrschichtige Charaktere, differenzierte Schwierigkeitsdynamiken, lernorientierter Coach, freiwillige Mini-Lektionen, nachvollziehbarer Fortschritt, Alltagstransfer, vierteilige Navigation und stufenweiser MVP. Die konkrete Zahl der Inhalte, exakte Parameter, technische Wahl und Ausgestaltung sind weiterhin vor Implementierung zu prüfen.
 
-**Noch zu entscheiden:** endgültiger App-Name; genaue Onboarding-/Editor-UX; Modell- und Datenhaltung; Preismodell; Stimmungs-/Charakter-Defaults und deren Validierung; Chatdauer/Pausen; empirische Qualitätsgrenzen; konkrete Speicher-/Löschpfade und Teststrategie. K3 enthält dazu nun überprüfbare Vorschläge statt unkonkreter Platzhalter.
+**Noch zu entscheiden:** endgültiger App-Name und visuelle Identität; UX-Details anhand realer Nutzertests; KI-Modell-/Backend-Architektur, Gastmodus und tatsächliche Datenhaltung; Preismodell und Kosten; empirische Qualitätsgrenzen; konkrete Speicher-/Löschpfade und MVP-Freeze. K4 hat die Bedienstruktur beschrieben, ersetzt aber keine technische oder nutzerseitige Validierung.
 
 ## 20. Weiterführung und Änderungsprozess
 
