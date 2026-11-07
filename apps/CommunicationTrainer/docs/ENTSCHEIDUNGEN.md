@@ -1,5 +1,27 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
+## 2026-11-07 – Konzeptstand 0.9 (K6-PR offen): Gesamtaudit, fokussiertes MVP und Umsetzungsgates
+
+**Nutzerauftrag:** Nach dem gemergten PR #54 mit K5 und drei KI-Betriebsarten hat der Nutzer die Ausarbeitung der letzten Konzeptetappe **K6** beauftragt. Die Arbeit erfolgt in einem gesonderten PR ohne automatische Mergefreigabe.
+
+**Neue Dokumente:**
+- [K6_GESAMTAUDIT.md](K6_GESAMTAUDIT.md): 26 konkreten Konflikte/Risiken mit P0/P1 und Lösungsvorschlägen;
+- [K6_MVP_UMFANG.md](K6_MVP_UMFANG.md): technische Alpha (3 Personas/2 Szenarien), erste V1 nach echten Gates (5 Personas/6 Szenarien, Kurzcoach, ein Replay-Zweig, drei Lektionen, vier Tabs, Safety/Privacy);
+- [K6_UMSETZUNGSPLAN.md](K6_UMSETZUNGSPLAN.md): 13 isolierte PR-Stufen D00–D12 von Repo-/Buildprüfung und Mock-Chat bis zu Beta-/Releasegates;
+- [K6_ABNAHME_UND_ENTSCHEIDUNGEN.md](K6_ABNAHME_UND_ENTSCHEIDUNGEN.md): Definition of Ready, P0/P1-Gates, Konzeptabnahme und offene Entscheidungen;
+- [k6_mvp_scope_v1.json](../specs/k6_mvp_scope_v1.json): maschinenlesbar 17 V1-Funktionsbereiche, Alpha-/MVP-Scope, drei Release-Gates, Entscheidungs- und Aufgabenliste.
+
+**Wichtigste fachliche Vorschläge:**
+- Die K1–K5-Fachspezifikationen bleiben gültig; **K6 priorisiert** die Reihenfolge und das frühe UI-/Releasevolumen, statt frühere Detaildokumente zu löschen.
+- Konzepte nennen 8–12 Szenarien, K3 hat sechs kuratierte Szenario-Fixtures: **V1 zunächst sechs**, spätere Erweiterung bei Bedarf.
+- K1 hat zwölf Lernlektionen als vollständiges Curriculum; **V1 zunächst drei** geprüfte Mini-Lektionen.
+- Eigener Charaktereditor, dauerhaftes Persona-Memory, umfangreiche Live-Coach-Berichte und KI-Lernprofil **nach V1**, um vor der ersten Modellvalidierung Kosten, Privacy- und QA-Komplexität zu senken.
+- Eine positive KI-Figurenreaktion ist keine „Sozialkompetenznote“; weiterhin Belegpflicht/NOT_ASSESSABLE, Nein respektieren, keine Persönlichkeitsscores oder manipulative Bindung.
+- KI-Backend/Provider, offizieller ChatGPT-Android-OAuth, lokale Modellqualität, Konten/Gast, tatsächliche Kosten, Daten-/Löschfristen, rechtliche und öffentliche Releasefreigabe bleiben **offene, testabhängige Entscheidungen**.
+- Erster technischer Schritt nach K6-Freigabe: **D00 Repo-/Build-Bestandsprüfung**, danach D01 isolierter Android-Skeleton. Jeder einzelne Code-PR erfordert eigene ausdrückliche Genehmigung.
+
+**Status:** Fachliches Konzept zur Review, noch **keine** Android-App, kein Backend, keine Providerbenchmarks, keine Nutzerstudie und kein rechtlich abgenommener Betrieb. **Kein Merge dieses K6-PR ohne die ausdrückliche Nutzerfreigabe.**
+
 ## 2026-11-07 – K5-Kostenoptimierung und drei KI-Betriebsarten (PR #54)
 
 **Nutzerauftrag:** Es wurde gefragt, ob das eigene ChatGPT-Konto oder Open-Source-KI laufende Kosten sparen kann. Anschließend beauftragte der Nutzer ausdrücklich, diese Möglichkeiten **im offenen PR #54** als technische Optionen zu ergänzen. Während der Bearbeitung hat der Nutzer **PR #54 ausdrücklich für den Merge freigegeben**.
@@ -13,9 +35,9 @@
 
 **Fachliche Einschränkung:** Die offizielle OpenAI-Plan-Nutzung ist für berechtigte lokal gehostete Open-Source-Apps dokumentiert, nicht als ungeprüfte universelle Android-Funktion oder kostenlose API. Android-OAuth-Zulässigkeit/Redirect und Distributionsmodell müssen vor Umsetzung belegt werden. Open-Weight-Modelle haben unterschiedliche Lizenzen; lokale Leistung und Kosten sind noch **nicht gemessen**.
 
-**Status:** Konzeptänderungen im selben PR #54; die Freigabe gilt für den beauftragten K5-Nachtrag. Keine ChatGPT-Verbindung, Geräte-/Modellbenchmark oder KI-Backend-Implementierung erfolgt.
+**Statusaktualisierung:** PR #54 wurde nach ausdrücklicher Nutzerfreigabe mit dem K5-Kosten-/KI-Modi-Nachtrag nach main gemergt (Merge-Commit 80d34404be4761635a13c53693d71d1d20d4bbb0). Keine ChatGPT-Verbindung, Geräte-/Modellbenchmark oder Backend-Implementierung erfolgt.
 
-## 2026-11-07 – Konzeptstand 0.8 (K5-PR zur Freigabe): Architektur, Daten und Betrieb
+## 2026-11-07 – Konzeptstand 0.8 (PR #54 gemergt): Architektur, Daten und Betrieb
 
 **Auftrag:** Nutzer hat PR #53 ausdrücklich freigegeben und die Fortsetzung mit K5 beauftragt. Der Squash-Merge von PR #53 in main wurde bestätigt; K5 folgt als separater Entwicklungs-PR.
 
