@@ -26,7 +26,10 @@ data class ConversationEntity(
         childColumns = ["conversationId"],
         onDelete = ForeignKey.CASCADE
     )],
-    indices = [Index(value = ["conversationId"])]
+    indices = [
+        Index(value = ["conversationId"]),
+        Index(value = ["id", "conversationId"], unique = true)
+    ]
 )
 data class ReplayBranchEntity(
     @PrimaryKey val id: String,
@@ -48,14 +51,14 @@ data class ReplayBranchEntity(
         ),
         ForeignKey(
             entity = ReplayBranchEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["branchId"],
+            parentColumns = ["id", "conversationId"],
+            childColumns = ["branchId", "conversationId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
         Index(value = ["conversationId", "createdAt"]),
-        Index(value = ["branchId"]),
+        Index(value = ["branchId", "conversationId"]),
         Index(value = ["clientMessageId"], unique = true)
     ]
 )
@@ -82,12 +85,12 @@ data class MessageEntity(
         ),
         ForeignKey(
             entity = ReplayBranchEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["branchId"],
+            parentColumns = ["id", "conversationId"],
+            childColumns = ["branchId", "conversationId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["branchId"])]
+    indices = [Index(value = ["branchId", "conversationId"])]
 )
 data class DraftEntity(
     val conversationId: String,
