@@ -214,7 +214,7 @@ function renderUI(){
  const totalCables=project.network.shafts.reduce((n,s)=>n+s.snapshot.cables.length,0);
  $('exampleInfo').textContent=totalShafts+' Schächte · '+totalCables+
  ' Kabel im Projekt · aktuelle Ansicht: '+project.activeShaftId+
- (project.sourceInfo?' · HTML-Vorlage: alle Maße, DN und Kabelwege schematisch.':' · Fiktive Beispieldaten.');
+ (project.sourceInfo?' · Aus HTML-Referenz: Maße, DN und Wege nicht fachlich bestätigt.':' · Fiktive Beispieldaten.');
  $('projectName').value=project.name;$('width').value=project.dims.w;$('depth').value=project.dims.d;$('height').value=project.dims.h;
  $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallThickness').value=wall().thickness;$('wallDn').value=wall().dn;$('wallTitle').textContent=wallId+' · Konfiguration';
  $('copyHole').disabled=!hole();$('draftCopy').disabled=!hole();
@@ -234,11 +234,11 @@ function renderUI(){
  $('holeDn').value=h.dn;
  const occupied=project.cables.filter(c=>
   c.a?.wall===wallId&&c.a?.hole===h.id||c.b?.wall===wallId&&c.b?.hole===h.id);
- $('holeOccupancy').innerHTML=occupied.length?occupied.map(c=>
+ $('holeOccupancy').innerHTML=(project.sourceInfo&&h.nominalDnConfirmed!==true?'<div class="small" style="color:#995e36">⚠ Der angezeigte Rohrdurchmesser stammt aus der grafischen Öffnung; DN ist nicht bestätigt. '+esc(h.sourceAddress||'')+'</div>':'')+(occupied.length?occupied.map(c=>
   '<div class="search-hit" data-occupied-cable="'+esc(c.id)+'">'+
   '<span class="dot" style="background:'+c.color+'"></span>'+
   esc(c.name)+' ('+esc(c.group)+', '+c.diameter+' mm)</div>').join(''):
-  '<div class="small">Frei · keine Kabel zugeordnet</div>';
+  '<div class="small">Frei · keine Kabel zugeordnet</div>');
 }
  $('cableFilters').querySelectorAll('button').forEach(b=>{
  b.classList.toggle('active',b.dataset.filter===filter);
@@ -990,7 +990,7 @@ function renderExplorerUI(){
  if(c){
   target.innerHTML='<strong><span class="selected-color" style="background:'+esc(c.color)+'"></span>'+
   esc(c.name)+'</strong><div class="small">Gruppe: '+esc(c.group)+' · Kabeldurchmesser: '+
-  esc(c.diameter)+' mm</div><span class="endpoint"><b>Start A:</b> '+esc(describe(c.a))+
+  esc(c.diameter)+(c.drawingDiameterOnly?' mm · nur Darstellungswert (nicht gemessen)':' mm')+'</div><span class="endpoint"><b>Start A:</b> '+esc(describe(c.a))+
   '</span><span class="endpoint"><b>Ziel B:</b> '+esc(describe(c.b))+
   '</span><p class="small" style="margin:9px 0 0">Das ist eine schematische Planung, kein überprüfter Bauverlauf. Klick rechts ein anderes Kabel an.</p>'+
   (project.sourceInfo?'<div class="endpoint"><b>Quellgruppe:</b> '+esc(c.referenceGroup||c.group)+
