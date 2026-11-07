@@ -1,0 +1,14 @@
+# CommunicationTrainer-specific Android/Gradle outputs.
+.gradle/
+.gradle-dist/
+.kotlin/
+**/build/
+local.properties
+.idea/
+*.iml
+*.jks
+*.keystore
+*.apk
+*.aab
+*.hprof
+.DS_Store
