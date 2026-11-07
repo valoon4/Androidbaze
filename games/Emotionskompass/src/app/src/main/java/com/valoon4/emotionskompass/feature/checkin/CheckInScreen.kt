@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,7 +83,9 @@ fun CheckInScreen(
     onSave: () -> Unit,
     saveBusy: Boolean,
     saveError: String?,
-    isEditing: Boolean
+    isEditing: Boolean,
+    // Kept by the app shell across device-lock overlays (never persisted).
+    listState: LazyListState = rememberLazyListState()
 ) {
     // Search and family are UI-only, also intentionally not saveable into Android instance state.
     var query by remember { mutableStateOf("") }
@@ -140,6 +144,7 @@ fun CheckInScreen(
             }
         }
     LazyColumn(
+        state = listState,
         modifier = Modifier.weight(1f),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
