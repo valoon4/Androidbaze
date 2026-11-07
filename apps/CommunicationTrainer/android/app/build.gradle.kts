@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -38,7 +38,7 @@ kotlin {
     compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 
-kapt {
+ksp {
     arguments {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.compose.tooling.preview)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.datastore.preferences)
     implementation(libs.lifecycle.viewmodel.ktx)
 
