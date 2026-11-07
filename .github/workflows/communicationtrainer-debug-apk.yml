@@ -73,7 +73,7 @@ jobs:
           APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
           "$AAPT" dump badging "$APK" | tee apk-badging.txt
           grep -Fq "package: name='com.valoon4.communicationtrainer.d02preview'" apk-badging.txt
-          grep -Fq "application-label:'CommunicationTrainer'" apk-badging.txt
+          grep -Fq "application-label:'CommunicationTrainer D02 Test'" apk-badging.txt
           grep -Fq "targetSdkVersion:'36'" apk-badging.txt
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee apk-signing.txt
           cp "$APK" CommunicationTrainer-D02-debug.apk
