@@ -66,6 +66,20 @@ K5 prüft später, ob die in K1–K4 entworfenen Fähigkeiten nicht nur auf dem 
 
 **P0:** ohne Lösung keine Beta bzw. keine Veröffentlichung des betroffenen Features. **P1:** keine reguläre öffentliche Freigabe mit bekannt schwerem Fehler. Schwellwerte für gewöhnliche Sprach- und UX-Qualität erst nach Pilotkalibrierung festlegen.
 
+### 2.1 Zusätzliche Betriebsarten-Prüfungen
+
+Die neue [K5_MODELLVERGLEICH_TESTPLAN.md](K5_MODELLVERGLEICH_TESTPLAN.md) ergänzt die bestehenden **42 Architektur-/Sicherheitsprüfungen** um **28 gezielte KI-Betriebsarten- und Qualitätsfälle M01–M28**. Das sind zwei prüfbare Kataloge, kein statistischer Nachweis einer größeren unabhängigen Testabdeckung.
+
+Zusätzliche Release-Blocker:
+- unzulässiger/nicht unterstützter nativer ChatGPT-OAuth- oder Distributionsflow;
+- API-/ChatGPT-Tokenverlust, versteckte Nutzung einer kostenpflichtigen API, fehlende Scope-Prüfung;
+- stiller lokaler → Cloud-Transfer oder behauptete Offlinefähigkeit trotz Modell-/Hardwarefehler;
+- fehlende Modelllizenz/Hash/Quellvertrauen;
+- kritische K2-/K3-Safety-/Grounding-Verstöße beim gewählten lokalen Modell;
+- fehlende Messbarkeit von Speicher, Akkubelastung, Latenz und Nutzungsbudget.
+
+Der Testplan vergleicht lokale Modelle und Cloud **zuerst nach Sicherheit und Qualität, dann nach Kosten**. Keine hier beschriebenen Tests wurden bereits gegen eine implementierte App ausgeführt.
+
 ## 3. Komplette Testabfolge für den „Entwurf geht nicht verloren“-Fall
 
 **Ausgang:** S02 mit Jonas, Nutzer schreibt eine längere Nachricht, noch nicht gesendet.
