@@ -69,6 +69,17 @@ Zusammen: 0.06256 Einheiten pro Session,
 
 Nicht nur Durchschnittswerte betrachten. **p95/p99** für Turndauer, Tokenverbrauch und Kosten pro aktivem Account/Session beobachten. Volltexte brauchen dafür nicht geloggt zu werden.
 
+### 1.4 Betriebsarten statt bloß API-Tarifvergleich
+
+Der spätere Kostentest berücksichtigt nun ausdrücklich vier technische Inferenzvarianten in **drei nutzerseitigen Modi** (Details: [KI-Betriebsarten](K5_KI_BETRIEBSARTEN.md), [Modellvergleich](K5_MODELLVERGLEICH_TESTPLAN.md)):
+
+- **Lokal:** keine extern berechneten Inferenz-Tokens pro lokalem Turn; jedoch Akku, Geräte-RAM, Downloads, Modellvertrieb, QA und Support.
+- **ChatGPT-Plan bei berechtigter Nutzung:** mögliche Kontingentnutzung statt normaler Betreiber-API-Rechnung, jedoch geteilte Limits und OAuth-/Zulassungsaufwand. **Nicht** mit unbegrenzter kostenloser API verwechseln.
+- **Managed Cloud API:** Modell-/Tokengebühren, Broker, Moderation, Quotas und Support.
+- **Self-Hosted Open-Weight auf Cloud/GPU-Server:** keine notwendige fremde Inferenz-Tarifgebühr je Token, aber reale GPU-/Host-/Strom-/Betriebs-/Supportkosten; Nutzungsauslastung entscheidet den Break-even.
+
+**Wirtschaftlicher Prüfpunkt:** Durchschnittskosten allein reichen nicht. K2-Coachqualität, K3-Personatreue und niedrige Gerätelatenz sind Qualitäts-Gates, bevor der günstigste Modus gewählt wird. Selbsthosting ist bei kleiner Nutzerzahl **nicht automatisch** billiger als eine Managed API. Kein konkreter Break-even oder OpenAI-Plan-Vorteil wird ohne gemessene Last und ausdrückliche Berechtigung versprochen.
+
 ## 2. Kosten- und Missbrauchsschutz
 
 ### 2.1 Budget-Gates
