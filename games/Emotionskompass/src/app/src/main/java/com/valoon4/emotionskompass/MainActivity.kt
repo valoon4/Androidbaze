@@ -133,6 +133,7 @@ import com.valoon4.emotionskompass.core.navigation.Destination
 import com.valoon4.emotionskompass.core.navigation.DiscoveryAtlas
 import com.valoon4.emotionskompass.core.navigation.MainSection
 import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
+import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
@@ -501,6 +502,20 @@ private fun EmotionskompassApp(
     val state by vm.state.collectAsState()
     val filters by vm.filters.collectAsState()
     val checkIn by vm.checkIn.collectAsState()
+    // Keep the exact (non-sensitive) scroll position while an active check-in
+    // is hidden behind the device lock. Do not save it to Android's Bundle.
+    val checkInScrollState = rememberLazyListState()
+    var lastVisibleCheckInStep by remember { mutableStateOf<CheckInStep?>(null) }
+    LaunchedEffect(unlocked, state.destination, checkIn.step) {
+        if (!unlocked) return@LaunchedEffect
+        if (state.destination == Destination.CHECKIN) {
+            if (lastVisibleCheckInStep != checkIn.step) checkInScrollState.scrollToItem(0)
+            lastVisibleCheckInStep = checkIn.step
+        } else {
+            lastVisibleCheckInStep = null
+            checkInScrollState.scrollToItem(0)
+        }
+    }
     val diary by vm.journalState.collectAsState()
     // Keep only ephemeral calendar navigation across a journal detail deep link.
     // Never serialize a selected private date into Android SavedState.
@@ -1062,7 +1077,8 @@ private fun EmotionskompassApp(
                     onSave = vm::saveCheckIn,
                     saveBusy = diary.busy,
                     saveError = diary.error,
-                    isEditing = editingId != null
+                    isEditing = editingId != null,
+                    listState = checkInScrollState
                 )
                 Destination.SETTINGS -> SettingsScreen(catalog, needCatalog)
             }
