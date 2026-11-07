@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -62,11 +63,13 @@ class WordCardShuffleEmulatorTest {
         rule.onNodeWithText("Nächste Karte").performScrollTo().performClick()
         val family = catalog.familyNames.first()
         val filtered = catalog.search("", family)
-        // At 320dp/200% the filter row can be off-screen after "Nächste Karte".
-        // Scroll to the actual chip before clicking, just as a user would.
-        rule.onNodeWithText(family).performScrollTo().performClick()
+        // A family chip can lie outside the viewport at 320dp and 200% text.
+        // Assert its selection and the actual revealed catalog term, not
+        // a counter label whose visibility depends on scrolling/text scale.
+        val chip = rule.onNodeWithTag("word-card-family-$family")
+        chip.performScrollTo().performClick()
+        chip.assertIsSelected()
         rule.waitForIdle()
-        rule.onNodeWithText("KARTE 1 VON ${filtered.size}").performScrollTo().assertExists()
         val shown = revealName()
         assertTrue(filtered.any { it.name == shown })
     }
