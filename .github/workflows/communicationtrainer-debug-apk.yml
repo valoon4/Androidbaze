@@ -59,6 +59,9 @@ jobs:
           SCHEMA="$(find app/schemas -type f -name '1.json' -print -quit)"
           test -s "$SCHEMA"
           jq -e '.database.version == 1' "$SCHEMA" > /dev/null
+          # Generated schema must match the checked-in baseline exactly.
+          # Schema changes require an explicit version bump + migration test.
+          git diff --exit-code -- "$SCHEMA"
       - name: Assemble debug APK
         run: gradle :app:assembleDebug --no-daemon --stacktrace
       - name: Verify APK identity, target API and signature
