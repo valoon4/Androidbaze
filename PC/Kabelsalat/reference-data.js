@@ -41,7 +41,7 @@ function create(id){
   });
   return {id:wallId,name:wallId,visible:true,rows:5,
    cols:Math.min(20,Math.max(5,Math.ceil(ports.length/5))),
-   thickness:Math.round(wallThickness*1000),
+   thickness:Number.isFinite(wallThickness)?Math.round(wallThickness*1000):120,
    dn:Math.round((pick(ports)?.radius||.06)*2000),holes};
  });
  const present=new Map(original.ports.map(p=>[p.id,p]));

@@ -48,6 +48,24 @@ function demo(){
  dims:{w:2400,d:1900,h:2100},walls,cables,opacity:54,showBox:true,showLabels:true,splitEnabled:true,
  enclosures:components.defaults({w:2400,d:1900,h:2100}),supports:[],variants:[]};
 }
+const cleanReferenceText=(v,max=240)=>typeof v==='string'?v.slice(0,max):'';
+function normalizeSourceInfo(x){
+ if(!x||typeof x!=='object')return null;
+ return {shaft:cleanReferenceText(x.shaft,90),sourceFile:cleanReferenceText(x.sourceFile,220),
+ savedAt:cleanReferenceText(x.savedAt,70),document:cleanReferenceText(x.document,300),
+ sourceVersion:cleanReferenceText(x.sourceVersion,150),
+ sourcePages:(Array.isArray(x.sourcePages)?x.sourcePages:[]).slice(0,30).filter(Number.isFinite),
+ geometryStatus:'schematic',warning:cleanReferenceText(x.warning,650),
+ originalNote:cleanReferenceText(x.originalNote,1800),
+ planAnchors:(Array.isArray(x.planAnchors)?x.planAnchors:[]).slice(0,100).map(p=>({
+ id:cleanReferenceText(p.id,140),wall:cleanReferenceText(p.wall,10),
+ sourceAddress:cleanReferenceText(p.sourceAddress,150),
+ sourcePage:Number.isFinite(p.sourcePage)?p.sourcePage:null,
+ destination:cleanReferenceText(p.destination,140),physicalHole:false})),
+ unmatchedEndpointCount:Math.max(0,Math.min(800,Number(x.unmatchedEndpointCount)||0)),
+ originalCableCount:Math.max(0,Math.min(1000,Number(x.originalCableCount)||0)),
+ originalPhysicalPortCount:Math.max(0,Math.min(2400,Number(x.originalPhysicalPortCount)||0))};
+}
 function validProject(o){
  if(!o||typeof o!=='object'||!o.dims||!Array.isArray(o.walls)||!Array.isArray(o.cables))throw Error('Ungültige Projektdatei');
  const base=demo(),ids=['SW1','SW2','SW3','SW4'];
@@ -58,7 +76,14 @@ function validProject(o){
  const thickness=clamp(Number(w.thickness)||120,40,500),dn=clamp(Number(w.dn)||70,20,300);
  const holes=Array.isArray(w.holes)?w.holes.filter(h=>h&&typeof h.id==='string'&&Number.isFinite(+h.u)&&Number.isFinite(+h.v)).slice(0,600).map(h=>({
  id:h.id.slice(0,120),row:clamp(Number(h.row)||0,0,30),col:clamp(Number(h.col)||0,0,30),
- u:clamp(+h.u,0,1),v:clamp(+h.v,0,1),dn:clamp(Number(h.dn)||dn,20,300)})):grid(w);
+ u:clamp(+h.u,0,1),v:clamp(+h.v,0,1),dn:clamp(Number(h.dn)||dn,20,300),
+ sourceAddress:cleanReferenceText(h.sourceAddress,140),
+ sourcePage:Number.isFinite(h.sourcePage)?h.sourcePage:null,
+ sourceCount:Number.isFinite(h.sourceCount)?h.sourceCount:null,
+ sourceCategory:cleanReferenceText(h.sourceCategory,50),
+ nominalDnConfirmed:h.nominalDnConfirmed===true,
+ origin:cleanReferenceText(h.origin,70)
+ })):grid(w);
  return {id,name:id,visible:w.visible!==false,rows:clamp(Number(w.rows)||5,1,20),
  cols:clamp(Number(w.cols)||5,1,20),thickness,dn,holes};
  });
@@ -71,7 +96,17 @@ function validProject(o){
  route:Array.isArray(c.route)?c.route.filter(p=>Array.isArray(p)&&p.length===3&&p.every(n=>Number.isFinite(+n)))
  .slice(0,12).map(p=>[clamp(+p[0],-dims.w/2,dims.w/2),clamp(+p[1],0,dims.h),clamp(+p[2],-dims.d/2,dims.d/2)]):[],
  a:find(c.a)?{wall:c.a.wall,hole:c.a.hole}:null,
- b:find(c.b)?{wall:c.b.wall,hole:c.b.hole}:null
+ b:find(c.b)?{wall:c.b.wall,hole:c.b.hole}:null,
+ referenceGroup:cleanReferenceText(c.referenceGroup,50),
+ sourceCableId:cleanReferenceText(c.sourceCableId,120),
+ sourceOriginalA:cleanReferenceText(c.sourceOriginalA,140),
+ sourceOriginalB:cleanReferenceText(c.sourceOriginalB,140),
+ sourceA:cleanReferenceText(c.sourceA,140),sourceB:cleanReferenceText(c.sourceB,140),
+ source:cleanReferenceText(c.source,250),
+ sourcePages:(Array.isArray(c.sourcePages)?c.sourcePages:[]).slice(0,20).filter(Number.isFinite),
+ mappingStatus:cleanReferenceText(c.mappingStatus,200),
+ sourceKind:cleanReferenceText(c.sourceKind,80),
+ drawingDiameterOnly:c.drawingDiameterOnly===true
  }));
  const enclosures=components.normalizeEnclosures(o.enclosures,dims);
  const supports=components.normalizeSupports(o.supports,dims);
@@ -79,7 +114,7 @@ function validProject(o){
  const result={version:5,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
  opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
  showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
- enclosures,supports,variants};
+ enclosures,supports,variants,sourceInfo:normalizeSourceInfo(o.sourceInfo)};
  result.network=networkModel.normalizeNetwork(o.network,networkModel.snapshot(result));
  result.network.quality=qualityModel.normalizeSettings(o.network?.quality);
  result.network.reviews=qualityModel.normalizeReviews(o.network?.reviews,result.network.shafts);
@@ -179,7 +214,7 @@ function renderUI(){
  const totalCables=project.network.shafts.reduce((n,s)=>n+s.snapshot.cables.length,0);
  $('exampleInfo').textContent=totalShafts+' Schächte · '+totalCables+
  ' Kabel im Projekt · aktuelle Ansicht: '+project.activeShaftId+
- '. Die Beispieldaten sind fiktiv.';
+ (project.sourceInfo?' · HTML-Vorlage: alle Maße, DN und Kabelwege schematisch.':' · Fiktive Beispieldaten.');
  $('projectName').value=project.name;$('width').value=project.dims.w;$('depth').value=project.dims.d;$('height').value=project.dims.h;
  $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallThickness').value=wall().thickness;$('wallDn').value=wall().dn;$('wallTitle').textContent=wallId+' · Konfiguration';
  $('copyHole').disabled=!hole();$('draftCopy').disabled=!hole();
@@ -957,7 +992,13 @@ function renderExplorerUI(){
   esc(c.name)+'</strong><div class="small">Gruppe: '+esc(c.group)+' · Kabeldurchmesser: '+
   esc(c.diameter)+' mm</div><span class="endpoint"><b>Start A:</b> '+esc(describe(c.a))+
   '</span><span class="endpoint"><b>Ziel B:</b> '+esc(describe(c.b))+
-  '</span><p class="small" style="margin:9px 0 0">Das ist eine schematische Planung, kein überprüfter Bauverlauf. Klick rechts ein anderes Kabel an.</p>';
+  '</span><p class="small" style="margin:9px 0 0">Das ist eine schematische Planung, kein überprüfter Bauverlauf. Klick rechts ein anderes Kabel an.</p>'+
+  (project.sourceInfo?'<div class="endpoint"><b>Quellgruppe:</b> '+esc(c.referenceGroup||c.group)+
+  '<br><b>Quellanschluss A:</b> '+esc(c.sourceA||c.sourceOriginalA||'offen')+
+  '<br><b>Quellanschluss B:</b> '+esc(c.sourceB||c.sourceOriginalB||'offen')+
+  '<br><b>Zuordnung:</b> '+esc(c.mappingStatus||'schematisch')+
+  '<br><b>Quelle:</b> '+esc(project.sourceInfo.document)+
+  '</div>':'');
  }else{
   target.textContent='Noch kein Kabel ausgewählt. Klick rechts auf einen farbigen Eintrag.';
  }

@@ -11,7 +11,7 @@ const finite=(v,fallback=0,low=-100000000,high=100000000)=>{
  const n=Number(v);return Number.isFinite(n)?Math.max(low,Math.min(high,Math.round(n))):fallback;
 };
 const snapshot=p=>{
- const f=['name','dims','walls','cables','enclosures','supports','variants','opacity','showBox','showLabels','splitEnabled'];
+ const f=['name','dims','walls','cables','enclosures','supports','variants','opacity','showBox','showLabels','splitEnabled','sourceInfo'];
  const o={version:3};
  for(const key of f)if(Object.prototype.hasOwnProperty.call(p,key))o[key]=clone(p[key]);
  return o;

@@ -6,10 +6,12 @@
  if(root)root.KabelsalatSamples=api;
 })(typeof window!=='undefined'?window:null,function(components,network){
 'use strict';
+const referenceModule=typeof globalThis!=='undefined'?globalThis.KabelsalatReferences:null;
 const manifest=[
  {id:'reference',name:'1 · Referenzschacht 13_T_021 (DEMO)',description:'Vier Wände, 94 Leerrohre, 16 farbige Kabel, OLA/MS, Konsolen und Variante'},
  {id:'station',name:'2 · Bahnhofsnetz mit 4 Schächten (DEMO)',description:'Vier Schächte, 64 Kabel, Netzverbindungen und drei schachtübergreifende Kabelwege'},
- {id:'quality',name:'3 · Prüffall mit absichtlichen Fehlern (DEMO)',description:'Überschneidungen, unvollständiges Kabel und Geometriehinweise zum Nachvollziehen'}
+ {id:'quality',name:'3 · Prüffall mit absichtlichen Fehlern (DEMO)',description:'Überschneidungen, unvollständiges Kabel und Geometriehinweise zum Nachvollziehen'},
+ ...(referenceModule?.manifest||[])
 ];
 const groups=[
  ['OLA-001','OLA','#e84b60'],['OLA-002','OLA','#ff913e'],['OLA-003','OLA','#d85470'],
@@ -78,6 +80,10 @@ function assemble(project,shafts,links=[],routes=[],selected=shafts[0].id){
  return {...project,version:5,activeShaftId:selected,network:net};
 }
 function create(id){
+ if(id==='source-t021'||id==='source-u028'){
+  if(!referenceModule)throw Error('Referenzdaten fehlen: reference-data.js');
+  return referenceModule.create(id);
+ }
  if(!manifest.some(m=>m.id===id))throw Error('Unbekanntes Beispiel '+id);
  if(id==='reference'){
   const p=shaft('13_T_021');p.name='DEMO Referenzschacht 13_T_021 · KEINE REALDATEN';
