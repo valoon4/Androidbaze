@@ -219,6 +219,11 @@
           "label": "Übung beenden",
           "next_screen_id": "practice_end",
           "guard": "mode == practice"
+        },
+        {
+          "label": "Problematische KI-Antwort melden",
+          "next_screen_id": "safety_report",
+          "guard": "selected AI message exists"
         }
       ],
       "ui_states": [
@@ -231,7 +236,7 @@
         "offline",
         "ended"
       ],
-      "notes": "mode free|practice sichtbar; Chat-ID und Persona-Version fixiert. For practice origin, Back returns to scenario or practice_end depending lifecycle; no forced switch to Chats."
+      "notes": "mode free|practice sichtbar; Chat-ID und Persona-Version fixiert. For practice origin, Back returns to scenario or practice_end depending lifecycle; no forced switch to Chats. In-app report entry required for generative AI content; message context preview and privacy."
     },
     {
       "screen_id": "chat_options",
@@ -441,6 +446,11 @@
           "label": "Fertig",
           "next_screen_id": "practice_home",
           "guard": null
+        },
+        {
+          "label": "Problematische KI-Antwort melden",
+          "next_screen_id": "safety_report",
+          "guard": "selected AI message exists"
         }
       ],
       "ui_states": [
@@ -453,7 +463,7 @@
         "safety_notice",
         "error"
       ],
-      "notes": "Eine belegte Stärke; maximal eine freiwillige Idee; keine globale Note. Entry from free-chat evaluations returns to original chat on Finish; from practice returns to practice_home."
+      "notes": "Eine belegte Stärke; maximal eine freiwillige Idee; keine globale Note. Entry from free-chat evaluations returns to original chat on Finish; from practice returns to practice_home. In-app report entry required for generative AI content; message context preview and privacy."
     },
     {
       "screen_id": "feedback_detail",
@@ -931,6 +941,39 @@
         "error"
       ],
       "notes": "Simulierte Charaktere, technische Grenzen, mögliche Verarbeitung. Contextual Back returns to welcome or profile as opened."
+    },
+    {
+      "screen_id": "safety_report",
+      "title": "Problematische KI-Antwort melden",
+      "parent_tab": "chats",
+      "mode": "safety",
+      "actions": [
+        {
+          "label": "Meldung absenden",
+          "next_screen_id": "chat",
+          "guard": "user_confirmed_selected_context"
+        },
+        {
+          "label": "Abbrechen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Datenschutzhinweis ansehen",
+          "next_screen_id": "privacy_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "editing",
+        "submitting",
+        "success",
+        "send_error",
+        "offline",
+        "cancelled"
+      ],
+      "notes": "Origin-aware Back to invoking chat or feedback. Preview exactly which selected AI message and optional context are transmitted; never upload entire chat implicitly. Clear server acknowledgement; submit only on explicit action."
     }
   ],
   "navigation_rules": {
@@ -944,11 +987,17 @@
       "replay_edit",
       "replay_compare",
       "delete_confirm",
-      "character_editor"
+      "character_editor",
+      "safety_report"
     ],
     "chat_origin": "chat retains origin from chats_home or scenario_detail. Android Back returns to corresponding origin; practice_end is reachable only from a practice chat.",
     "delete_confirm_origin": "return to the invoking screen with no mutation on cancel; success only after confirmed deletion",
     "first_run_goal": "goal_optional is entirely optional; user may reach chat without selecting goals",
     "state_preservation": "unsent drafts, current chat, persona version, replay original and selected text are preserved across navigational interruptions where supported"
+  },
+  "prior_k5_change": {
+    "date": "2026-11-07",
+    "reason": "Google Play generative AI in-app reporting requirement; reflected as explicit UX workflow after K5 regulatory review.",
+    "description": "One additional safety report screen and entry actions; all other K4 flows unchanged."
   }
 }
