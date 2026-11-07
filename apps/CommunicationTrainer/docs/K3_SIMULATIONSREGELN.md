@@ -290,6 +290,10 @@ Für jede Wiederholungsübung wird ein unveränderlicher Schnappschuss definiert
 
 ## 11. MVP/Später, Verantwortlichkeiten und offene Punkte
 
+> **K6-Scope-Präzisierung (07.11.2026):** Technische Alpha testet Mara, Jonas und Elena mit S02/S03; die erste öffentliche V1 soll die fünf kuratierten Charaktere und sechs Szenarien vollständig abdecken. **Eigene Charaktereditoren, Cross-Session-Memory und umfangreiche Langzeitbeziehungen** werden nicht vorausgesetzt. Die K3-Fachregeln gelten für alle implementierten Figuren. Siehe [K6-MVP](K6_MVP_UMFANG.md).
+
+
+
 **MVP-Designziel:**
 - fünf versionierte Persona-Fixtures;
 - wenige sichtbare Charakterschieberegler plus kuratierte Presets;

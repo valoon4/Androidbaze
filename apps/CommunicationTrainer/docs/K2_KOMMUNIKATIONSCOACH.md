@@ -326,6 +326,10 @@ Begleitender [K2-Testplan](K2_FEEDBACK_QUALITAET_TESTPLAN.md) spezifiziert:
 
 ## 12. MVP-Schnitt
 
+> **K6-Scope-Präzisierung (07.11.2026):** Für die erste öffentliche V1 ist das **freiwillige, textbelegte Kurzfeedback** mit möglichen Ergebnissen „Stärke“, „Option“, „nicht beurteilbar“ und „Grenzhinweis“ prioritär. Umfangreiche Live-Hilfen, Detailanalysen und **dauerhaft aggregierte Lernprofile** folgen erst nach gesonderter Prüfung. Dieser Abschnitt beschreibt weiter fachliche Fähigkeiten, die nicht alle sofort implementiert werden. Siehe [K6-MVP](K6_MVP_UMFANG.md).
+
+
+
 **Im ersten ausbaubaren Produkt:**
 - Abschluss-Kurzfeedback zu ausgewählten Szenarien;
 - freiwillige „Mehr erfahren“-Ansicht mit sichtbaren Belegen;

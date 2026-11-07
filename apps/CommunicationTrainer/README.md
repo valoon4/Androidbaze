@@ -40,6 +40,12 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [K5 Modellvergleich und Kosten-Gates](docs/K5_MODELLVERGLEICH_TESTPLAN.md) – 28 zusätzliche Testfälle für die Auswahl einer zuverlässigen, wirtschaftlichen KI.
 - [K5 Provider-Modi (JSON)](specs/k5_provider_modes_v1.json) – vier technische Adapter, drei nutzerseitige Modusoptionen, Verfügbarkeit und Safety-/Privacy-Regeln.
 
+- [K6 Gesamtaudit](docs/K6_GESAMTAUDIT.md) – 26 Zielkonflikte, Risiken und nachvollziehbare Priorisierung.
+- [K6 MVP-Umfang](docs/K6_MVP_UMFANG.md) – getrennte technische Alpha und fokussierte V1 mit fünf Figuren/sechs Szenarien.
+- [K6 Umsetzungsfahrplan](docs/K6_UMSETZUNGSPLAN.md) – kleine, getrennt freizugebende Entwicklungsstufen D00–D12.
+- [K6 Abnahme und Entscheidungen](docs/K6_ABNAHME_UND_ENTSCHEIDUNGEN.md) – Safety-/Privacy-/Qualitätsgates und offene Architekturentscheidungen.
+- [K6 MVP-Scope (JSON)](specs/k6_mvp_scope_v1.json) – versionierte Features, Phasen, Tests und Freigabegates.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. Eine spätere eigene Build-Struktur wird vor einer Umsetzung konzipiert und überprüft.

@@ -1,0 +1,448 @@
+{
+  "schema_version": "k6.mvp-scope.v1",
+  "created_at": "2026-11-07",
+  "status": "proposal_not_implemented_or_approved",
+  "product": "CommunicationTrainer",
+  "repository_scope": "apps/CommunicationTrainer/",
+  "sources": [
+    "../docs/K6_GESAMTAUDIT.md",
+    "../docs/K6_MVP_UMFANG.md",
+    "../docs/K6_UMSETZUNGSPLAN.md",
+    "../docs/K6_ABNAHME_UND_ENTSCHEIDUNGEN.md"
+  ],
+  "alpha": {
+    "id": "alpha",
+    "audience": "internal_or_invited",
+    "status": "planned_not_implemented",
+    "character_ids": [
+      "persona.mara.v1",
+      "persona.jonas.v1",
+      "persona.elena.v1"
+    ],
+    "scenario_ids": [
+      "S02",
+      "S03"
+    ],
+    "primary_tabs": [
+      "chats",
+      "practice"
+    ],
+    "capabilities": [
+      "ai_identity_label",
+      "free_chat",
+      "practice",
+      "locally_persisted_drafts_and_history",
+      "mock_provider_first",
+      "network_and_process_death_recovery",
+      "single_request_idempotency"
+    ],
+    "not_yet": [
+      "live_long_term_learning_profile",
+      "custom_character_editor",
+      "cross_session_memory",
+      "public_account_free_tier",
+      "guaranteed_chatgpt_plan_access"
+    ],
+    "gate": "G-A"
+  },
+  "v1": {
+    "id": "v1_mvp",
+    "audience": "first_publicly_releasable_version_after_gates",
+    "status": "proposed_not_approved_for_implementation",
+    "character_ids": [
+      "persona.mara.v1",
+      "persona.jonas.v1",
+      "persona.elena.v1",
+      "persona.deniz.v1",
+      "persona.robin.v1"
+    ],
+    "scenario_ids": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06"
+    ],
+    "primary_tabs": [
+      "chats",
+      "practice",
+      "progress",
+      "profile"
+    ],
+    "lesson_count": 3,
+    "scenarios_expected": 6,
+    "chat_modes": [
+      "free",
+      "practice"
+    ],
+    "difficulty_levels": [
+      "einladend",
+      "ausgeglichen",
+      "zurueckhaltend"
+    ],
+    "provider_modes": "one_quality_privacy_security_approved_runtime_as_default_not_all",
+    "capabilities": [
+      "brief_opt_in_on_task_coach",
+      "single_replay_branch",
+      "evidence_referenced_feedback",
+      "not_assessable_outcome",
+      "feedback_dispute",
+      "local_draft_recovery",
+      "real_chat_deletion",
+      "safety_and_in_app_reporting",
+      "activity_only_xp",
+      "voluntary_personal_reflection",
+      "basic_accessibility",
+      "transparent_ai_data_processing"
+    ],
+    "gate": "G-C"
+  },
+  "future": [
+    {
+      "feature": "custom_character_editor",
+      "when": "v1.1",
+      "reason": "versioning, safety, test explosion"
+    },
+    {
+      "feature": "cross_session_character_memory",
+      "when": "post_v1",
+      "reason": "consent, provenance, deletion"
+    },
+    {
+      "feature": "aggregated_ai_learning_profile",
+      "when": "post_v1",
+      "reason": "qualified evidence, privacy, no diagnosis"
+    },
+    {
+      "feature": "multi_branch_replays",
+      "when": "post_v1",
+      "reason": "cost and comprehension"
+    },
+    {
+      "feature": "deep_coach_reports",
+      "when": "post_v1",
+      "reason": "evidence and ux load"
+    },
+    {
+      "feature": "all_twelve_lessons_and_learning_series",
+      "when": "post_v1",
+      "reason": "editorial quality"
+    },
+    {
+      "feature": "chatgpt_plan_sign_in",
+      "when": "separate_experiment",
+      "reason": "official eligibility/Android OAuth unverified"
+    },
+    {
+      "feature": "multiple_runtime_selector",
+      "when": "after_gate",
+      "reason": "no silent data transfer or quality regression"
+    },
+    {
+      "feature": "fully_offline_llm",
+      "when": "after_device_and_quality_gate",
+      "reason": "hardware compatibility unknown"
+    },
+    {
+      "feature": "self_hosted_gpu_provider",
+      "when": "after_measured_break_even",
+      "reason": "infrastructure costs"
+    },
+    {
+      "feature": "voice_video_group_chat",
+      "when": "separate_future_scope",
+      "reason": "new safety/privacy complexity"
+    }
+  ],
+  "features": [
+    {
+      "id": "F01",
+      "name": "transparent_onboarding",
+      "stage": "v1",
+      "priority": "P0"
+    },
+    {
+      "id": "F02",
+      "name": "four_tabs",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F03",
+      "name": "five_curated_personas",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F04",
+      "name": "free_text_chat",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F05",
+      "name": "durable_drafts",
+      "stage": "alpha",
+      "priority": "P0"
+    },
+    {
+      "id": "F06",
+      "name": "six_scenarios",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F07",
+      "name": "three_situational_difficulties",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F08",
+      "name": "grounded_short_feedback",
+      "stage": "v1",
+      "priority": "P0"
+    },
+    {
+      "id": "F09",
+      "name": "feedback_dispute",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F10",
+      "name": "one_replay_branch",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F11",
+      "name": "three_lesson_articles",
+      "stage": "v1",
+      "priority": "P2"
+    },
+    {
+      "id": "F12",
+      "name": "activity_xp_and_reflection",
+      "stage": "v1",
+      "priority": "P2"
+    },
+    {
+      "id": "F13",
+      "name": "honest_data_deletion",
+      "stage": "v1",
+      "priority": "P0"
+    },
+    {
+      "id": "F14",
+      "name": "ai_safety_and_reporting",
+      "stage": "v1",
+      "priority": "P0"
+    },
+    {
+      "id": "F15",
+      "name": "android_accessibility",
+      "stage": "v1",
+      "priority": "P1"
+    },
+    {
+      "id": "F16",
+      "name": "one_approved_inference_mode",
+      "stage": "v1",
+      "priority": "P0"
+    },
+    {
+      "id": "F17",
+      "name": "no_harmful_claims",
+      "stage": "v1",
+      "priority": "P0"
+    }
+  ],
+  "release_gates": [
+    {
+      "id": "G-A",
+      "name": "Before real AI",
+      "checks": [
+        "isolated_repo_build",
+        "durable_local_draft",
+        "mock_adapter",
+        "license_check",
+        "quality_test_data",
+        "cost_budget",
+        "data_transfer_notice",
+        "no_secrets_in_apk"
+      ]
+    },
+    {
+      "id": "G-B",
+      "name": "Before invited beta",
+      "checks": [
+        "end_to_end_idempotency",
+        "owner_scopes",
+        "qualified_model",
+        "explicit_boundaries",
+        "privacy_and_legal_review",
+        "in_app_report_flow",
+        "data_deletion_and_backup",
+        "rate_limits_and_costs",
+        "no_p0_defects"
+      ]
+    },
+    {
+      "id": "G-C",
+      "name": "Before public V1",
+      "checks": [
+        "five_personas_quality_approved",
+        "six_scenarios_quality_approved",
+        "brief_coach_grounding",
+        "single_replay_recovery",
+        "four_tab_navigation",
+        "accessibility",
+        "store_ai_disclosure",
+        "monitoring_and_incident_response",
+        "no_known_p0_or_p1",
+        "separate_manual_release_approval"
+      ]
+    }
+  ],
+  "development_tasks": [
+    {
+      "id": "D00",
+      "name": "repository_and_toolchain_audit",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D01",
+      "name": "isolated_android_compose_skeleton",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D02",
+      "name": "room_datastore_draft_persistence",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D03",
+      "name": "mock_provider_chat_vertical_slice",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D04",
+      "name": "local_vs_cloud_inference_poc",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D05",
+      "name": "broker_security_idempotency_if_cloud",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D06",
+      "name": "three_persona_two_scenario_alpha",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D07",
+      "name": "grounded_short_coach_alpha",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D08",
+      "name": "five_persona_six_scenario_three_lesson_content",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D09",
+      "name": "single_immutable_replay_branch",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D10",
+      "name": "four_tab_activity_and_reflection_ui",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D11",
+      "name": "privacy_safety_play_reporting_and_release_gates",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    },
+    {
+      "id": "D12",
+      "name": "invited_beta_pilot_and_v1_decision",
+      "status": "not_started",
+      "requires_explicit_pr_merge_approval": true
+    }
+  ],
+  "decisions": [
+    {
+      "code": "E01",
+      "topic": "alpha_v1_character_scenario_counts",
+      "proposal": "3/2 alpha; 5/6 V1",
+      "decision_status": "awaiting_k6_pr_review"
+    },
+    {
+      "code": "E02",
+      "topic": "coach_replay_depth",
+      "proposal": "brief grounded coach plus one immutable replay branch",
+      "decision_status": "awaiting_k6_pr_review"
+    },
+    {
+      "code": "E03",
+      "topic": "memory_editor_profile_scope",
+      "proposal": "after V1",
+      "decision_status": "awaiting_k6_pr_review"
+    },
+    {
+      "code": "E04",
+      "topic": "provider_modes",
+      "proposal": "one actually approved mode for V1; optional local and ChatGPT after validated eligibility",
+      "decision_status": "needs_real_benchmarks"
+    },
+    {
+      "code": "E05",
+      "topic": "navigation_progress",
+      "proposal": "4 tabs V1; no global skill scores",
+      "decision_status": "awaiting_k6_pr_review"
+    },
+    {
+      "code": "E06",
+      "topic": "starting_pr",
+      "proposal": "D00 repository audit then D01 mock Android skeleton",
+      "decision_status": "awaiting_k6_pr_review"
+    },
+    {
+      "code": "E07",
+      "topic": "privacy_and_safety",
+      "proposal": "never cut P0 gates",
+      "decision_status": "awaiting_k6_pr_review"
+    },
+    {
+      "code": "E08",
+      "topic": "monetization",
+      "proposal": "after measured costs; no relational manipulation",
+      "decision_status": "needs_real_data"
+    }
+  ],
+  "non_goals": [
+    "diagnostic_personality_scores",
+    "coerced_relationship_progression",
+    "infinite_unmetered_ai",
+    "unapproved_chatgpt_plan_integration",
+    "stealth_cloud_fallback",
+    "unverified_end_to_end_encryption_claims"
+  ],
+  "merge_policy": "each pull request requires express user approval, including K6 and each D00-D12 PR"
+}

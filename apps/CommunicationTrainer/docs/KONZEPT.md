@@ -1,6 +1,6 @@
 # Kommunikations-Trainer – Produktkonzept
 
-**Status:** Konzeptstand 0.8 – K5 Technik, Datenschutz und Betrieb im separaten PR zur Prüfung (07.11.2026); K4 durch PR #52 und K2-Ergänzungen durch PR #53 auf main übernommen  
+**Status:** Konzeptstand 0.9 – K6 Gesamtaudit und MVP-Festlegung im eigenen PR zur Prüfung (07.11.2026); K1–K5 einschließlich PR #54 auf main übernommen  
 **Produktname:** Arbeitstitel „CommunicationTrainer“, noch nicht festgelegt  
 **Zielplattform:** zunächst Android geplant; technische Umsetzung noch nicht festgelegt  
 **Produktphase:** Konzeption, noch keine App-Implementierung  
@@ -179,23 +179,21 @@ Für Charakterzustände sind strukturierte Daten statt ausschließlich unkontrol
 - Mögliche übermäßige Bindung an KI-Charaktere berücksichtigen; reale Kontakte nicht systematisch verdrängen.
 - Textchats trainieren zunächst primär schriftliche Kommunikationsentscheidungen; mündliche Fertigkeiten sind nur begrenzt abbildbar.
 
-## 15. MVP-Umfang (Vorschlag, vor Umsetzung zu validieren)
+## 15. MVP-Umfang – durch K6 priorisiert (Konzeptstand 0.9)
 
-**Enthalten:**
-- 4–5 überzeugende, unterschiedliche Charaktere;
-- frei zugängliche Textchats mit Chatübersicht und gespeicherten Verläufen;
-- 8–12 ausgewählte Alltagsszenarien;
-- 3 Schwierigkeitsstufen als Gesprächsdynamik;
-- einfache Stimmungsvoreinstellungen inkl. Zufallswahl;
-- einfacher Charaktereditor;
-- kurzes Feedback und optionaler vertiefter Coach;
-- eine Nachricht erneut versuchen und Folgen vergleichen;
-- XP, Übungsfortschritt, erste vorsichtige Kompetenzbeobachtungen;
-- ein gleichzeitig aktives persönliches Lernziel.
+**Maßgeblicher Priorisierungsvorschlag:** [K6_MVP_UMFANG.md](K6_MVP_UMFANG.md) und [k6_mvp_scope_v1.json](../specs/k6_mvp_scope_v1.json). Die ältere Liste mit 8–12 Szenarien, vollem Editor und breitem Coach war ein *früher Umfangsentwurf*, nicht ein implementiertes oder verbindlich freigegebenes Release.
 
-**Zurückgestellt:** komplexer Big-Five-/MBTI-Editor, Gruppenchats, Sprachanrufe, aufwendige adaptive Beziehungssimulation, umfangreiche Diagnostik-/Benchmark-Dashboards, berufsbezogene Spezialtrainings.
+**Technisches Alpha (kein öffentlicher Release):** zunächst drei kuratierte K3-Figuren, zwei Szenarien, freie Texteingabe, echte Android-Lokalspeicherung, Wiederaufnahme, Mock-Provider und kontrollierter erster Modellvergleich.
+
+**V1-MVP nach Qualitätstests:** fünf kuratierte Charaktere, sechs vorhandene Szenarien S01–S06, klare freie Chats und Übungen, ein Lernziel je Szene, freiwilliger **beleggebundener Kurzcoach**, ein Replay-Zweig, drei kurze Lektionen, vier Tabs, Aktivitäts-/XP-Fortschritt **ohne Persönlichkeitsscore**, verlässliche Datenkontrolle, In-App-Reporting und ein tatsächlich zugelassener KI-Betriebsmodus.
+
+**Bewusst nach V1:** eigener Charaktereditor, Cross-Session-Persona-Memory, langfristiges KI-Lernprofil, komplexe Coachberichte und Replay-Galerien, vollständige zwölf Lektionen sowie zusätzliche Szenarien.
+
+**Noch offen:** tatsächlicher Android-Build, Provider-/Hosting-/Gastmodell, rechtliche/Datenschutzprüfung, echte Kosten-/Qualitätsmessungen und Freigaben. K6 ist eine **Entscheidungsvorlage**, keine bereits erteilte Implementierungs-/Releasefreigabe.
 
 ## 16. Geplanter Entwicklungsfahrplan
+
+**Ab K6 priorisiert:** [K6_UMSETZUNGSPLAN.md](K6_UMSETZUNGSPLAN.md) beschreibt die eigentliche erste Implementierungsreihenfolge D00–D12 mit Mock-Provider, isoliertem Android-Skeleton und Sicherheitsgates. Der nachfolgende historische M-Plan bleibt als fachliche Orientierung erhalten, ist aber **nicht** die Freigabereihenfolge für neue PRs.
 
 - **M1 – Lernfundament:** Kompetenzen, Beobachtungskriterien, Feedbackstandards, Szenariospezifikation.
 - **M2 – KI-Charaktere:** Charaktermodell, Zustandslogik, Konsistenztests, Dynamiken.
@@ -392,6 +390,18 @@ Nach der K5-Konzeption hat der Nutzer ausdrücklich die Prüfung von **kostenred
 **Wesentliche Präzisierung:** Die Architektur soll einen providerunabhängigen InferenceGateway besitzen; bei fehlendem lokaler Modellqualität, ChatGPT-Plan-Kontingent oder Netzzugang wird **nicht still** auf externe oder separat berechnete KI gewechselt. Der normale ChatGPT-Plan ersetzt keine reguläre API-Abrechnung; die dokumentierte lokale Open-Source-Plan-Nutzung unterliegt Zulassungs- und Scopevoraussetzungen. Der für diese Anwendung erforderliche native Android-Flow ist **nicht bestätigt**. Lokale Modellinferenz benötigt passende Hardware, verifizierte Assets und Qualitätsprüfung. Eigenes Serverhosting verursacht Infrastrukturkosten.
 
 **MVP-Abgrenzung:** K6 soll ein qualitativ tragfähiges Referenzmodell wählen und zunächst nur einen sicheren, funktionsfähigen Inferenzpfad umsetzen. Die anderen Modi werden als spätere Erweiterungen vorbereitet. Dieser Konzeptnachtrag ist noch keine Geräte-/Modellbenchmark oder autorisierte ChatGPT-Kontoanbindung.
+
+### 18.18 K6: Gesamtkonzeptprüfung, realistischer MVP und Umsetzungsgates
+
+Die K1–K5-Dokumente wurden in [K6_GESAMTAUDIT.md](K6_GESAMTAUDIT.md) auf Zielkonflikte und Risiken geprüft: **26 konkrete Befunde** mit Priorität und dokumentiertem Lösungsvorschlag. Insbesondere wurden unterschiedliche Szenario- und Curriculumzahlen, zu breite frühe Anforderungen, KI-Qualitäts- und Privacy-Gates, ChatGPT-Konto-Voraussetzungen sowie die falsche Gleichsetzung von Konzept und bereits funktionierender App geklärt.
+
+Der neue priorisierte [K6-MVP](K6_MVP_UMFANG.md) trennt eine kleine **technische Alpha** mit drei Figuren/zwei Szenarien vom ersten **V1-Produkt** mit fünf Figuren/sechs Szenarien, freiwilligem Kurzfeedback, einem Replay-Zweig, drei Mini-Lektionen und ehrlicher Datenkontrolle. Große Editor-/Memory-/Lernprofilfunktionen werden nach V1 verschoben.
+
+Der [Umsetzungsplan](K6_UMSETZUNGSPLAN.md) definiert **D00–D12** in einzeln prüfbaren PRs: zuerst Ist-Analyse und isolierter Android-Build, dann sichere lokale Persistenz und Mock-Chat, echte KI-Modelltests, Kernsimulation/Coach, V1-Inhalte und Release-Gates.
+
+Das Dokument [K6_ABNAHME_UND_ENTSCHEIDUNGEN.md](K6_ABNAHME_UND_ENTSCHEIDUNGEN.md) trennt notwendige Belege vor echter KI, eingeladener Beta und öffentlichem V1 und hält alle offenen Modell-, Kosten-, Datenschutz- und Betreiberentscheidungen fest. [k6_mvp_scope_v1.json](../specs/k6_mvp_scope_v1.json) hält die Phasen, **17 Features**, **13 Umsetzungsstufen** und Gates maschinenlesbar fest.
+
+**Status:** Konzeptionelle Abschluss- und Priorisierungsvorlage zur ausdrücklichen PR-Freigabe; keine ausgeführte Android-App, keine Modellbenchmarks, keine Betriebs-/Rechts- oder UX-Abnahmen. Die K1–K5-Fachregeln gelten weiter; K6 priorisiert nur den Zeitpunkt ihrer Umsetzung.
 
 ## 19. Status offener Entscheidungen
 
