@@ -16,6 +16,8 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 
 - [K2 Kommunikationscoach und Feedbacksystem](docs/K2_KOMMUNIKATIONSCOACH.md) – Beobachtungslogik, Feedbackvarianten, Priorisierung, Lernprofil und Qualitätsanforderungen.
 - [K2 Test- und Annotationsplan](docs/K2_FEEDBACK_QUALITAET_TESTPLAN.md) – konkrete Kontrastfälle, Fehlerklassen, menschliche Prüfungen und Sicherheitsgates.
+- [K2 ergänzende Feedbackbeispiele](docs/K2_COACH_BEISPIELE.md) – 20 zusätzliche deutschsprachige Kontrast- und Coachingfälle aus PR #48.
+- [K2 ergänzende Qualitätsprüfungen](docs/K2_COACH_QUALITAET.md) – 36 weitere Prüffälle, ergänzend zum maßgeblichen K2-Testplan.
 
 - [K3 Charakterporträts](docs/K3_CHARAKTERE.md) – fünf fiktive erwachsene Personas mit Verhalten, Grenzen und Dialogen.
 - [K3 Simulations- und Zustandsregeln](docs/K3_SIMULATIONSREGELN.md) – Persona, Zustände, Memory, Gesprächsaktionen und Schwierigkeitsdynamik.

@@ -1,6 +1,20 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
-## 2026-11-07 – Konzeptstand 0.7 (K4-PR ausstehend): UX und Bedienkonzept
+## 2026-11-07 – Paralleles K2-Dokument aufgelöst: ergänzende Inhalte aus PR #48
+
+**Anlass:** Der Nutzer fragte nach den offenen PRs #48 und #52 und genehmigte, PR #52 zu mergen sowie aus #48 die noch wertvollen Inhalte gesondert zu sichern und #48 anschließend als überholt zu schließen.
+
+**Ergebnis:** PR #52 wurde nach `main` gemergt. Die aus PR #48 stammende abweichende **Hauptspezifikation** für K2 wird **nicht** in die bereits freigegebene [K2_KOMMUNIKATIONSCOACH.md](K2_KOMMUNIKATIONSCOACH.md) hineingemergt. Maßgeblich bleiben K2 aus PR #49 und der dazugehörige [K2_FEEDBACK_QUALITAET_TESTPLAN.md](K2_FEEDBACK_QUALITAET_TESTPLAN.md).
+
+**Als eigenständige, zusätzliche Konzeptanhänge im neuen PR gesichert:**
+- [K2_COACH_BEISPIELE.md](K2_COACH_BEISPIELE.md): 20 alternative deutschsprachige Beispiel- und Kontextfälle; einzelne Hobbys an K3-Personakanon angepasst.
+- [K2_COACH_QUALITAET.md](K2_COACH_QUALITAET.md): 36 ergänzende Prüfungen, Kontrast- und Evaluationsideen.
+
+**Redaktionelle Schutzregeln:** Beide Anhänge tragen einen ausdrücklichen Hinweis auf ihre ergänzende/nicht normative Rolle. Bestehende Beleg-, Safety-, Datenschutz- und Unsicherheitsregeln aus K1–K3 gelten weiterhin. Doppelungen in den Testplänen werden vor einer späteren CI-Umsetzung dedupliziert. Keine Tests werden als ausgeführt dargestellt.
+
+**Genehmigungslage:** Nutzer hat die *Sicherung* und das **Schließen des alten PR #48 nach Sicherung** genehmigt. Der neu angelegte Ergänzungs-PR erhält keine automatische Merge-Freigabe; er bleibt offen bis zu einer neuen ausdrücklichen Nutzerentscheidung.
+
+## 2026-11-07 – Konzeptstand 0.7 (PR #52 gemergt): UX und Bedienkonzept
 
 **Auftrag:** Der Nutzer hat PR #50 ausdrücklich freigegeben und die Fortsetzung mit K4 beauftragt. PR #50 wurde in main übernommen und anschließend verifiziert.
 
@@ -23,7 +37,7 @@
 
 **Offene Abhängigkeiten:** Gastmodus, server-/lokale Speicherung, Daten-/Löschgarantien, KI-Ausfallverhalten und Kostenmodell (K5); echte UX-/Nutzerprüfung und MVP-Freeze (K6).
 
-**Status:** K4 ist eine **konzeptionelle Spezifikation**, keine bereits gebaute UI und keine durchgeführten Usability-Tests. Änderungen verbleiben bis ausdrücklicher Genehmigung des K4-Pull-Requests auf dem Entwicklungsbranch; `main` bleibt unverändert.
+**Statusaktualisierung (07.11.2026):** PR #52 wurde vom Nutzer ausdrücklich freigegeben, per Squash-Merge nach `main` übernommen und die Dokumentation dort überprüft. K4 bleibt eine Konzept-/UX-Spezifikation; noch keine Android-UI oder Usability-Tests ausgeführt.
 
 ## 2026-11-06 – Konzeptstand 0.6 (PR #50 gemergt): Fünf Personas und konkretes Simulationsmodell
 
