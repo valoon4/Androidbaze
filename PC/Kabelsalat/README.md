@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v1.0.0-beta.3 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v1.1.0-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-1.0.0-beta.3-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-1.0.0-beta.3-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.1.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.1.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -97,3 +97,21 @@ Die drei separat ladbaren JSON-Dateien liegen in examples/. Hinweise und Prüfsc
 Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Auswahlmöglichkeiten; **eine medizinisch geprüfte ADHS-Wirksamkeit wird nicht behauptet**.
 
 **Abnahme:** Siehe [EUGI_MODE_ACCEPTANCE.md](./EUGI_MODE_ACCEPTANCE.md). Der echte Windows-GUI-Test einschließlich Lesbarkeit/Interaktionsweg steht noch aus.
+
+## Neu in 1.1: HTML-Referenzdaten statt nur erfundene Demo-Geometrie
+
+Die zwei beigefügten, eigenständigen **Original-HTML-Editoren** vom 05.11.2026 wurden mit ihren eingebetteten strukturierten Daten ausgewertet, ohne deren sehr große Bilder/Mesh-Base64-Daten in die Anwendung zu kopieren. Im Eugi-Modus stehen nun **sechs** Beispiele bereit:
+
+- 13_T_021 aus HTML: 48 physisch dargestellte Öffnungen, 16 Kabel, Originalöffnungs-IDs und Quellen-/Seitenangaben.
+- 13_U_028 aus HTML: 78 physisch dargestellte Öffnungen, 18 Kabel, dazu 15 **nur im Plan bezeichnete Marker**, die ausdrücklich nicht als reale Rohröffnungen angelegt werden. Sieben Kabelenden benötigen weiterhin eine bestätigte Zuordnung.
+- Vergleich beider Schachtmodelle: 2 Schächte, 126 dargestellte Öffnungen, 34 Kabel, **ohne** erfundene unterirdische Verbindung. Die Kartenkoordinaten dienen ausschließlich der Ansicht.
+
+Die ursprüngliche Schachtgeometrie ist **schematisch**, der zugehörige DN nicht bekannt. Im Editor dargestellte Rohrdurchmesser sind aus den grafischen Radien abgeleitet, Kabeldurchmesser sind Darstellungswerte. Das originale Quellsystem (LST, LWL, TK, OLA, MS usw.) bleibt als Provenienz erhalten, obwohl die vereinfachte interne Farbkategorie nur OLA/MS/Weitere kennt. Bei offener Plananschluss-Zuordnung bleibt das physische Kabelende im Modell absichtlich unbelegt. Die Originalanschlusskennung bleibt gespeichert. **Keine bautechnische Freigabe.**
+
+Die drei als JSON herunterladbaren Datensätze liegen in `examples/04_...`, `05_...` und `06_...`; Details: [SOURCE_DATA_AUDIT_1_1.md](./SOURCE_DATA_AUDIT_1_1.md).
+
+## Ohne Windows-Sicherheitsmeldung: Browser statt EXE
+
+Das ZIP im GitHub-Release enthält sämtliche lokalen Dateien; es muss nur entpackt und `index.html` in Chrome oder Edge geöffnet werden. **Keine EXE-Installation und kein Backend.** Projekte liegen im jeweiligen Browser-Speicher oder als exportierbare JSON-Dateien vor.
+
+Eine zusätzliche öffentlich erreichbare GitHub-Pages-Webseite ist als Workflow vorbereitet. Damit `https://valoon4.github.io/Androidbaze/` tatsächlich funktioniert, muss der Repository-Eigentümer einmal unter **Settings → Pages → Build and deployment → Source → GitHub Actions** aktivieren (wenn Pages noch nicht eingerichtet ist). Erst nach erfolgreicher Veröffentlichung ist der Weblink nutzbar. Die GitHub-Pages-Variante ist clientseitig, aber die statischen Dateien werden beim ersten Aufruf über GitHub geladen; keine vertraulichen Planungsdaten in öffentlich eingecheckte Demo-JSON-Dateien übernehmen.

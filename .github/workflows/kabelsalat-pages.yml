@@ -1,0 +1,50 @@
+name: Kabelsalat – Browser-Webseite (GitHub Pages)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PC/Kabelsalat/**'
+      - '.github/workflows/kabelsalat-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: kabelsalat-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Statische Browserdateien prüfen
+        working-directory: PC/Kabelsalat
+        run: npm test
+      - name: Browser-Seite ohne Backend zusammenstellen
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site/vendor _site/examples
+          cp PC/Kabelsalat/{index.html,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js} _site/
+          cp PC/Kabelsalat/vendor/{three.min.js,LICENSE.threejs} _site/vendor/
+          cp PC/Kabelsalat/examples/*.json _site/examples/
+          touch _site/.nojekyll
+      - name: GitHub Pages konfigurieren
+        uses: actions/configure-pages@v5
+      - name: Webseite hochladen
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Veröffentlichung
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -11,6 +11,7 @@ assert.ok(html.includes('src="network.js"'), 'Network module not loaded');
 assert.ok(html.includes('src="quality.js"'), 'Quality module not loaded');
 assert.ok(html.includes('src="reports.js"'), 'Report module not loaded');
 assert.ok(html.includes('src="examples.js"'), 'Examples module not loaded');
+assert.ok(html.includes('src="reference-data.js"'), 'Reference data module not loaded');
 assert.ok(html.includes('id="exampleSelect"'), 'Example selector missing');
 assert.ok(html.includes('id="loadExample"'), 'Example action missing');
 for(const id of ['toggleExpert','exploreGuide','questNetwork','questShaft','questCable',
@@ -45,6 +46,7 @@ globalThis.KabelsalatComponents=require('../components.js');
 globalThis.KabelsalatNetwork=require('../network.js');
 globalThis.KabelsalatQuality=require('../quality.js');
 globalThis.KabelsalatReports=require('../reports.js');
+globalThis.KabelsalatReferences=require('../reference-data.js').factory(globalThis.KabelsalatComponents,globalThis.KabelsalatNetwork);
 globalThis.KabelsalatSamples=require('../examples.js').factory(
  globalThis.KabelsalatComponents,globalThis.KabelsalatNetwork);
 const before=app.split('let project;')[0].replace(/^\(\(\) => \{\s*/, '');
