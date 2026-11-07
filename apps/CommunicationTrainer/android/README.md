@@ -2,6 +2,12 @@
 
 **Status:** installierbares Kotlin-/Jetpack-Compose-Grundgerüst als vorgeschlagener PR, noch **keine echte KI**, keine Chattexte, keine lokale Chatpersistenz oder Authentifizierung.
 
+## Ausgewähltes Design: Aurora Pulse
+
+Der Nutzer hat **Aurora Pulse** als endgültige Farb- und Stilrichtung ausgewählt. Das Design nutzt Indigo für Navigation/Hauptaktionen, Pink für menschliche Akzente, Mint für unterstützende Hinweise und Gold künftig sparsam für Lernaktivität. Beide System-Farbmodi sind in `ui/theme/AuroraPulseTheme.kt` zentral definiert. Kleine Texte auf gefüllten Schaltflächen verwenden **kontrastkorrigierte** Indigo-/Pink-Töne; D01 enthält ergänzende Farb-/Kontrast-Unit-Tests.
+
+[Gestaltungsentscheidung, Tokenwerte und Barrierefreiheit](../docs/D01_AURORA_PULSE_DESIGN.md).
+
 ## Abgrenzung
 
 Eigenständige Gradle-Root: `apps/CommunicationTrainer/android/`. Dieses Projekt ist **nicht** in den Root-Build von Androidbaze (Wormblade) eingebunden und verändert weder andere Apps noch deren Workflows. Die externe GitHub-Action `.github/workflows/communicationtrainer-debug-apk.yml` wird ausschließlich für dieses Projekt angelegt.

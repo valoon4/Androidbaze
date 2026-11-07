@@ -1,5 +1,15 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
+## 2026-11-07 – Aurora Pulse als endgültige Farbwelt für CommunicationTrainer
+
+**Nutzerentscheidung:** Nach vergleichender Bewertung von Playful Pulse, Aurora Flow und der Hybridvariante wurde **Aurora Pulse** ausdrücklich gewählt.
+
+**D01-Umsetzung in PR #58:** Zentralisierte Material-3-Theme-Tokens in `android/app/src/main/java/com/valoon4/communicationtrainer/ui/theme/AuroraPulseTheme.kt`; Indigo-Verlauf, warme Pink- und frische Mint-Akzente, ruhige Karten, kontrastbewusste Bottom Navigation und Dark Mode. Verbindliche Dokumentation in [D01_AURORA_PULSE_DESIGN.md](D01_AURORA_PULSE_DESIGN.md).
+
+**Kritischer Kontrastpunkt:** Die gewählten ursprünglichen Indigo-/Pink-Markenfarben liefern zu wenig Kontrast mit kleiner weißer Beschriftung. Deshalb gelten zugänglichere Interaktionsfarben `#5D50CF` und `#CB3470` für Light-Mode-Buttons; originale Farben bleiben Dekor. Automatisierte Tokenkontrasttests mit 4,5:1-Schwelle ergänzen die bestehenden Navigations-Unit-Tests. Vollständige Screenreader-/Schriftgrößen-/Gerätevalidierung bleibt erforderlich.
+
+**Keine Änderung außerhalb CommunicationTrainer und seines eigenen D01-CI-Workflows**, keine Erweiterung um KI oder Speicherung, kein Merge ohne ausdrückliche PR-Freigabe.
+
 ## 2026-11-07 – D01 Android-Skeleton und eigene Debug-APK-CI (PR zur Freigabe)
 
 **Nutzerauftrag:** Nach dem freigegebenen und gemergten PR #57 für D00 wurde der Beginn von **D01 inklusive eines eigenen CommunicationTrainer-GitHub-Actions-Workflows** ausdrücklich beauftragt. Damit ist **genau die neue Datei** unter `.github/workflows/communicationtrainer-debug-apk.yml` eine gezielt autorisierte Ausnahme von der sonstigen Projektordnergrenze.
