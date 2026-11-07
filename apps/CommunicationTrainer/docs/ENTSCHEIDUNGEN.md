@@ -1,6 +1,31 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
-## 2026-11-06 – Konzeptstand 0.6 (K3-PR offen): Fünf Personas und konkretes Simulationsmodell
+## 2026-11-07 – Konzeptstand 0.7 (K4-PR ausstehend): UX und Bedienkonzept
+
+**Auftrag:** Der Nutzer hat PR #50 ausdrücklich freigegeben und die Fortsetzung mit K4 beauftragt. PR #50 wurde in main übernommen und anschließend verifiziert.
+
+**Neu ausgearbeitet:**
+- [K4_UX_KONZEPT.md](K4_UX_KONZEPT.md): umfassende Informationsarchitektur mit vier Haupttabs, schneller Einstieg, freie Chats, Szenario-Training, Coach auf Wunsch, Replay, Charaktereditor, Fortschritt, Datenschutzbedienung, Android-Konventionen, Barrierefreiheit und Fehlerzustände.
+- [K4_NUTZERABLAEUFE.md](K4_NUTZERABLAEUFE.md): zwölf end-to-end Abläufe mit realistischen Negativfällen und fünf textuellen Wireframes.
+- [K4_UX_TESTPLAN.md](K4_UX_TESTPLAN.md): 36 UX-Prüfaufgaben, K1–K3-Integration, Bedienhilfen, Dark-Pattern-/Vertrauensrisiken und Priorisierung.
+- [k4_screens_v1.json](../specs/k4_screens_v1.json): 29 UX-Ansichten mit Aktionen, UI-Zuständen, Navigations- und Abbruchregeln.
+
+**Vorgeschlagene Leitentscheidungen:**
+- Vier primäre Tabs: Chats, Üben, Fortschritt, Profil; im zweiten Bereich lautet die Hauptüberschrift „Entdecken & Üben“.
+- Erster KI-Chat ohne langen Fragebogen oder Big-Five-Pflichtkonfiguration.
+- Chatmodus klar als frei oder Übung gekennzeichnet; KI-Charakter jederzeit erkennbar; Coach im freien Modus ausschließlich freiwillig.
+- Kurzfeedback evidenzbasiert und ggf. ohne Verbesserungspunkt; Fehler werden meldbar und korrigierbar.
+- Replay verzweigt den Verlauf, überschreibt niemals das Original und behauptet keine zuverlässige reale Wirkung.
+- Fortgeschrittener Charaktereditor und sehr komplexe Fortschrittsmetriken bleiben zunächst optional/später.
+- XP ist Übungsaktivität, kein globaler Sozialkompetenzwert. Ein höfliches Gesprächsende ist ein Erfolg.
+- Erinnerung, Chatverlauf und Lernprofil erhalten getrennte echte Kontrollen – sofern K5 ihre technische Wirkung sicherstellt.
+- Android-native Bedienung, TalkBack, dynamische Schriftgrößen, mindestens 48dp Touchziele, klare Fehlermeldungen und kontextbezogenes Zurück gehören zu den Qualitätsanforderungen.
+
+**Offene Abhängigkeiten:** Gastmodus, server-/lokale Speicherung, Daten-/Löschgarantien, KI-Ausfallverhalten und Kostenmodell (K5); echte UX-/Nutzerprüfung und MVP-Freeze (K6).
+
+**Status:** K4 ist eine **konzeptionelle Spezifikation**, keine bereits gebaute UI und keine durchgeführten Usability-Tests. Änderungen verbleiben bis ausdrücklicher Genehmigung des K4-Pull-Requests auf dem Entwicklungsbranch; `main` bleibt unverändert.
+
+## 2026-11-06 – Konzeptstand 0.6 (PR #50 gemergt): Fünf Personas und konkretes Simulationsmodell
 
 **Auftrag:** Der Nutzer hat PR #49 ausdrücklich freigegeben und K3 beauftragt. Der Merge wurde verifiziert. K3 wird in einem eigenständigen Entwicklungsbranch vorgelegt.
 
@@ -22,7 +47,7 @@
 
 **Offen:** genaue KI-Modellwahl, Validierung der numerischen Designparameter, konkreter Editor, Speicher-/Löschtechnologie, betriebswirtschaftliche Parameter, reale Pilotqualität.
 
-**Status:** Alle K3-Neuerungen liegen nur auf dem neuen Branch. **Der konkrete K3-PR braucht vor dem Merge nach main eine erneute ausdrückliche Genehmigung.** Bestehende Apps werden nicht verändert.
+**Statusaktualisierung (07.11.2026):** Der Nutzer hat PR #50 ausdrücklich genehmigt; der PR wurde nach main gemergt und die K3-Dokumente sind dort vorhanden. Keine andere App wurde durch diesen PR verändert; noch keine Simulationsengine implementiert.
 
 ## 2026-11-06 – Konzeptstand 0.5 (PR #49 gemergt): K2 Kommunikationscoach und Feedback
 
