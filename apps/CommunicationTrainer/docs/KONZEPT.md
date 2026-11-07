@@ -334,6 +334,8 @@ Die zuvor formulierten Coaching-Leitlinien sind in zwei detaillierten Arbeitsdok
 
 **Einordnung:** Der Nutzer hat die Ausarbeitung von K2 beauftragt. Die Dokumente sind **Konzeptvorschläge zur Prüfung** und stellen weder eine implementierte noch wissenschaftlich validierte Bewertungsmaschine dar. K3 konkretisiert die Charakterprofile, K4 UI/Nutzerführung, K5 Datenschutz/Technik und K6 das Gesamtkonzept.
 
+**K2-Materialergänzung (PR #48, redaktioneller Abgleich 07.11.2026):** Die ebenfalls ausgearbeiteten [20 Feedbackbeispiele](K2_COACH_BEISPIELE.md) und [36 ergänzenden Prüfungen](K2_COACH_QUALITAET.md) werden als **Zusatzmaterial zu K2** dokumentiert. Sie ersetzen ausdrücklich weder die gültige [K2-Architektur](K2_KOMMUNIKATIONSCOACH.md) noch den [maßgeblichen K2-Testplan](K2_FEEDBACK_QUALITAET_TESTPLAN.md). Überlappende Fälle werden vor der Umsetzung dedupliziert, fachliche Widersprüche anhand von K1–K3 und Sicherheitsregeln aufgelöst. Die frühere parallele K2-Hauptspezifikation in PR #48 wird nicht übernommen.
+
 ### 18.14 K3: Charaktere und Simulationssystem konkretisiert
 
 Die M2-Struktur wurde in K3 auf ausführbare **Konzeptdaten und prüfbare Verhaltensregeln** heruntergebrochen:
