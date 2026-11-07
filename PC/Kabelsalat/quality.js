@@ -89,6 +89,14 @@ function evaluate(net,settings){
  }
  for(const shaft of net.shafts||[]){
   const p=shaft.snapshot;
+  if(p.sourceInfo){
+   add('info','SCHEMATIC_REFERENCE',shaft.id,shaft.id,
+    'HTML-Referenz '+p.sourceInfo.shaft+': Abmessungen, nominale Rohr-DN und Kabelführung sind nicht bestätigt');
+   if(p.sourceInfo.planAnchors?.length){
+    add('info','PLAN_MARKERS_UNCONFIRMED',shaft.id,shaft.id,
+     p.sourceInfo.planAnchors.length+' Planmarker sind keine bestätigten physischen Leerrohre');
+   }
+  }
   for(const wall of p.walls||[]){
    const span=wall.id==='SW1'||wall.id==='SW3'?p.dims.d:p.dims.w;
    for(let i=0;i<wall.holes.length;i++){
