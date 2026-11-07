@@ -114,6 +114,21 @@ class AppViewModel(
     private val _unlocked = MutableStateFlow(!initialLockEnabled)
     val unlocked = _unlocked.asStateFlow()
 
+    /**
+     * A short app switch must not discard an unfinished check-in. Keep only
+     * a process-local navigation/draft snapshot while the device lock is
+     * covering the UI. Never put free text in SavedState, preferences, backups
+     * or Android recents. The snapshot dies with the process and can only be
+     * restored after fresh device authentication.
+     */
+    private data class PausedSession(
+        val screen: AppUiState,
+        val backStack: List<AppUiState>,
+        val draft: CheckInDraft?,
+        val editingEntryId: String?
+    )
+    private var pausedSession: PausedSession? = null
+
     /** Reject async reads/results that originated before the latest relock. */
     private var accessEpoch = 0L
     // Only counts/digest, never backup plaintext or passphrase in saved state.
@@ -132,12 +147,29 @@ class AppViewModel(
     fun unlockJournal() {
         accessEpoch++
         _unlocked.value = true
+        // The encrypted journal still has to be freshly decrypted. An unsaved
+        // draft is only restored in RAM *after* credential verification.
+        pausedSession?.let { previous ->
+            _state.value = previous.screen
+            history.clear()
+            previous.backStack.forEach(history::addLast)
+            _checkIn.value = previous.draft ?: CheckInDraft()
+            _editingEntryId.value = previous.editingEntryId
+        }
+        pausedSession = null
         reloadJournal()
     }
 
-    /** Clear decrypted journal and private draft whenever the app backgrounds. */
+    /** Lock the UI and clear active decrypted stores without losing an in-flight draft. */
     fun lockJournal() {
-        if (!_lockEnabled.value) return
+        if (!_lockEnabled.value || !_unlocked.value) return
+        pausedSession = PausedSession(
+            screen = _state.value,
+            backStack = history.toList(),
+            draft = _checkIn.value.takeIf { _state.value.destination == Destination.CHECKIN },
+            editingEntryId = _editingEntryId.value
+                .takeIf { _state.value.destination == Destination.CHECKIN }
+        )
         accessEpoch++
         _unlocked.value = false
         verifiedImportUri = null
