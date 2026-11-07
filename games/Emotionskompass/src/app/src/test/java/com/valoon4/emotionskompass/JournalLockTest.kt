@@ -152,8 +152,12 @@ class JournalLockTest {
         val vm = AppViewModel(atlas)
         assertFalse(vm.lockEnabled.value)
         assertTrue(vm.unlocked.value)
+        vm.openCheckin("angst")
+        vm.setCheckInSituation("Mein Entwurf ohne aktivierte Sperre")
         vm.onAppBackgrounded()
         assertTrue(vm.unlocked.value)
+        assertEquals(Destination.CHECKIN, vm.state.value.destination)
+        assertEquals("Mein Entwurf ohne aktivierte Sperre", vm.checkIn.value.situation)
     }
 
     @Test fun disableGateKeepsUnlockedState() {
