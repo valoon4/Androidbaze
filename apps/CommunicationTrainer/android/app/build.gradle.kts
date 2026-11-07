@@ -39,9 +39,7 @@ kotlin {
 }
 
 ksp {
-    arguments {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
