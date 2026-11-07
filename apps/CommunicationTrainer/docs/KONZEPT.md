@@ -381,6 +381,18 @@ Die aus K1–K4 abgeleitete Anwendung wurde technisch und organisatorisch als **
 
 **Anschluss:** K6 – konsistenter Konzeptabschluss, verbindlicher MVP-Freeze mit offenen Architektur-/Produktentscheidungen und präziser Implementierungsreihenfolge.
 
+### 18.17 K5-Ergänzung: Drei austauschbare KI-Betriebsarten
+
+Nach der K5-Konzeption hat der Nutzer ausdrücklich die Prüfung von **kostenreduzierenden Alternativen zur regulären KI-API** beauftragt: lokale Open-Weight-Modelle, Nutzung eines eigenen ChatGPT-Kontingents über offiziell erlaubte „Sign in with ChatGPT“-Integration und Cloud-Inferenz.
+
+- **[K5_KI_BETRIEBSARTEN.md](K5_KI_BETRIEBSARTEN.md):** drei nutzerseitige Betriebsarten mit klaren Zulassungs-/Datenschutz-/Kosten- und Hardwaregrenzen; Cloud kann über Managed API oder selbst gehostete offene Gewichte betrieben werden.
+- **[K5_MODELLVERGLEICH_TESTPLAN.md](K5_MODELLVERGLEICH_TESTPLAN.md):** 28 zusätzliche Gegenprüfungen M01–M28 und ein reproduzierbarer Modell-/Hardware-/Kostenvergleich anhand der freigegebenen K2/K3-Anforderungen.
+- **[k5_provider_modes_v1.json](../specs/k5_provider_modes_v1.json):** Capability- und Modusvertrag, vier Adaptervarianten innerhalb von drei Nutzeroptionen.
+
+**Wesentliche Präzisierung:** Die Architektur soll einen providerunabhängigen InferenceGateway besitzen; bei fehlendem lokaler Modellqualität, ChatGPT-Plan-Kontingent oder Netzzugang wird **nicht still** auf externe oder separat berechnete KI gewechselt. Der normale ChatGPT-Plan ersetzt keine reguläre API-Abrechnung; die dokumentierte lokale Open-Source-Plan-Nutzung unterliegt Zulassungs- und Scopevoraussetzungen. Der für diese Anwendung erforderliche native Android-Flow ist **nicht bestätigt**. Lokale Modellinferenz benötigt passende Hardware, verifizierte Assets und Qualitätsprüfung. Eigenes Serverhosting verursacht Infrastrukturkosten.
+
+**MVP-Abgrenzung:** K6 soll ein qualitativ tragfähiges Referenzmodell wählen und zunächst nur einen sicheren, funktionsfähigen Inferenzpfad umsetzen. Die anderen Modi werden als spätere Erweiterungen vorbereitet. Dieser Konzeptnachtrag ist noch keine Geräte-/Modellbenchmark oder autorisierte ChatGPT-Kontoanbindung.
+
 ## 19. Status offener Entscheidungen
 
 **Bereits abgestimmt:** Fokus auf Alltagskommunikation und soziale Kontakte; freier Chat plus Übung und Wiederholung; unterschiedliche KI-Charaktere und Stimmungen; Feedback, Lernbeobachtungen und Spielmotivation; getrennte Projektablage; PR-Freigabe vor Merge.
