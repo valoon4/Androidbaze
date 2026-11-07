@@ -95,6 +95,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -789,7 +790,10 @@ private fun EmotionskompassApp(
                                             onClick = {
                                                 discoveryAtlas = atlas
                                                 if (atlas != DiscoveryAtlas.STRATEGIEN) strategyReturnTarget = null
-                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) needReturnToStrategy = false
+                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) {
+                                            needReturnToStrategy = false
+                                            needReturnToHome = false
+                                        }
                                             },
                                             label = {
                                                 Text(atlas.label, textAlign = TextAlign.Center,
