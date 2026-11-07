@@ -55,6 +55,11 @@
           "label": "Mehr über KI erfahren",
           "next_screen_id": "about_ai",
           "guard": null
+        },
+        {
+          "label": "Optionales Lernziel wählen",
+          "next_screen_id": "goal_optional",
+          "guard": null
         }
       ],
       "ui_states": [
@@ -209,6 +214,11 @@
           "label": "Chatoptionen",
           "next_screen_id": "chat_options",
           "guard": null
+        },
+        {
+          "label": "Übung beenden",
+          "next_screen_id": "practice_end",
+          "guard": "mode == practice"
         }
       ],
       "ui_states": [
@@ -221,7 +231,7 @@
         "offline",
         "ended"
       ],
-      "notes": "mode free|practice sichtbar; Chat-ID und Persona-Version fixiert."
+      "notes": "mode free|practice sichtbar; Chat-ID und Persona-Version fixiert. For practice origin, Back returns to scenario or practice_end depending lifecycle; no forced switch to Chats."
     },
     {
       "screen_id": "chat_options",
@@ -443,7 +453,7 @@
         "safety_notice",
         "error"
       ],
-      "notes": "Eine belegte Stärke; maximal eine freiwillige Idee; keine globale Note."
+      "notes": "Eine belegte Stärke; maximal eine freiwillige Idee; keine globale Note. Entry from free-chat evaluations returns to original chat on Finish; from practice returns to practice_home."
     },
     {
       "screen_id": "feedback_detail",
@@ -747,7 +757,7 @@
         "save_error",
         "saved"
       ],
-      "notes": "Fünf einfache kommunikationsnahe Regler; Persona-Version."
+      "notes": "Fünf einfache kommunikationsnahe Regler; Persona-Version. Contextual Back returns to picker or character manager, based on entry route."
     },
     {
       "screen_id": "privacy_home",
@@ -873,7 +883,7 @@
         "partial_error",
         "error"
       ],
-      "notes": "Kontextabhängiger Rücksprung; niemals Erfolg vor bestätigter Löschung."
+      "notes": "Kontextabhängiger Rücksprung; niemals Erfolg vor bestätigter Löschung. Cancel action returns to the caller; only successful completion removes item and navigates appropriately."
     },
     {
       "screen_id": "preferences",
@@ -920,7 +930,25 @@
         "ready",
         "error"
       ],
-      "notes": "Simulierte Charaktere, technische Grenzen, mögliche Verarbeitung."
+      "notes": "Simulierte Charaktere, technische Grenzen, mögliche Verarbeitung. Contextual Back returns to welcome or profile as opened."
     }
-  ]
+  ],
+  "navigation_rules": {
+    "tab_navigation": "four primary destinations; maintain tab-specific back stacks where feasible",
+    "contextual_focus_screens": [
+      "chat",
+      "practice_end",
+      "feedback_summary",
+      "feedback_detail",
+      "feedback_dispute",
+      "replay_edit",
+      "replay_compare",
+      "delete_confirm",
+      "character_editor"
+    ],
+    "chat_origin": "chat retains origin from chats_home or scenario_detail. Android Back returns to corresponding origin; practice_end is reachable only from a practice chat.",
+    "delete_confirm_origin": "return to the invoking screen with no mutation on cancel; success only after confirmed deletion",
+    "first_run_goal": "goal_optional is entirely optional; user may reach chat without selecting goals",
+    "state_preservation": "unsent drafts, current chat, persona version, replay original and selected text are preserved across navigational interruptions where supported"
+  }
 }
