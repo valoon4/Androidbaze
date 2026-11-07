@@ -1,5 +1,45 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
+## 2026-11-07 – K5-Kostenoptimierung und drei KI-Betriebsarten (PR #54)
+
+**Nutzerauftrag:** Es wurde gefragt, ob das eigene ChatGPT-Konto oder Open-Source-KI laufende Kosten sparen kann. Anschließend beauftragte der Nutzer ausdrücklich, diese Möglichkeiten **im offenen PR #54** als technische Optionen zu ergänzen. Während der Bearbeitung hat der Nutzer **PR #54 ausdrücklich für den Merge freigegeben**.
+
+**Neue K5-Dokumente:**
+- [K5_KI_BETRIEBSARTEN.md](K5_KI_BETRIEBSARTEN.md): lokales Android-Modell, bedingte OpenAI-ChatGPT-Plan-Nutzung, Cloud mit Managed API oder eigenem Open-Weight-Server; Lizenz-, Hardware-, Datenschutz- und Kostengrenzen.
+- [K5_MODELLVERGLEICH_TESTPLAN.md](K5_MODELLVERGLEICH_TESTPLAN.md): 28 konkrete Betriebsarten-, Persona-, Coach-, Security- und Performancefälle; Modellkandidaten und faire Vergleichsmethodik.
+- [k5_provider_modes_v1.json](../specs/k5_provider_modes_v1.json): vier Adapterkonfigurationen in drei nutzerseitigen Modi mit Fähigkeits-/Verfügbarkeits-/Fehlerzuständen.
+
+**Neue Architekturregel:** Providerunabhängiges InferenceGateway, explizite Wahl des Verarbeitungsorts, keine stillen lokalen → externen Transfers und kein automatischer ChatGPT-Plan → kostenpflichtige API-Fallback. Modellgüte und Safety sind Gates vor Kostenoptimierung.
+
+**Fachliche Einschränkung:** Die offizielle OpenAI-Plan-Nutzung ist für berechtigte lokal gehostete Open-Source-Apps dokumentiert, nicht als ungeprüfte universelle Android-Funktion oder kostenlose API. Android-OAuth-Zulässigkeit/Redirect und Distributionsmodell müssen vor Umsetzung belegt werden. Open-Weight-Modelle haben unterschiedliche Lizenzen; lokale Leistung und Kosten sind noch **nicht gemessen**.
+
+**Status:** Konzeptänderungen im selben PR #54; die Freigabe gilt für den beauftragten K5-Nachtrag. Keine ChatGPT-Verbindung, Geräte-/Modellbenchmark oder KI-Backend-Implementierung erfolgt.
+
+## 2026-11-07 – Konzeptstand 0.8 (K5-PR zur Freigabe): Architektur, Daten und Betrieb
+
+**Auftrag:** Nutzer hat PR #53 ausdrücklich freigegeben und die Fortsetzung mit K5 beauftragt. Der Squash-Merge von PR #53 in main wurde bestätigt; K5 folgt als separater Entwicklungs-PR.
+
+**Neue Dokumente:**
+- [K5_TECHNISCHE_ARCHITEKTUR.md](K5_TECHNISCHE_ARCHITEKTUR.md) – Alternativen, Android-App/Repositorys, lokale Chat-/Entwurfspersistenz, gesicherter schlanker KI-Broker, idempotente Requests, getrennte K2-/K3-Policy, Replay und Offline-Design.
+- [K5_DATENSCHUTZ_SICHERHEIT.md](K5_DATENSCHUTZ_SICHERHEIT.md) – Daten- und Rechtsinventar, Bedrohungsmodell, Einwilligung, Privatsphäre, AI-Transparenz, Google-Play-KI-Reporting, Löschung, Kontrollen und Release-Gates.
+- [K5_BETRIEB_KOSTEN.md](K5_BETRIEB_KOSTEN.md) – Kostenrechnung als hypothetisches Modell, Budgets, Rate-/Abuse-Schutz, Betriebs-/Providerkriterien, Runbooks.
+- [K5_TESTPLAN.md](K5_TESTPLAN.md) – 42 technische, Datenschutz- und Betriebsfälle mit kritischen Abnahmeschranken.
+- [k5_system_contracts_v1.json](../specs/k5_system_contracts_v1.json) – acht entworfene API-/Datentypen, acht Endpunkte, fünf Datenklassen und Zustands-/Sicherheitsinvarianten.
+
+**Architekturempfehlung, noch nicht final beschlossen:** Kotlin/Compose und Room/DataStore auf Android; über Repositories gebundene, persistierte Chats/Entwürfe; abgesicherter minimaler KI-Broker mit serverseitigen Provider-Secrets, Auth/Quota/Idempotenz/Safety; austauschbare Modelle. Keine unbegrenzte Gast- oder Offline-KI-Nutzung versprechen. Keine End-to-End-Schutz-/Datenlöschgarantie, wenn Provider und Backups sie nicht tragen. Memory und langlebiges Lernprofil standardmäßig aus, bis rechtskonform/technisch verifiziert.
+
+**Wichtige Prüfung und gezielte K4-Korrektur:** Die offiziellen Google-Play-KI-Regeln verlangen einen In-App-Meldeweg für anstößige KI-Antworten. K4 wurde dafür im K5-Branch ergänzt: neuer Screen `safety_report`, neuer Nutzerablauf F13 und Tests U37/U38. Aktuelle K4-Planungszahlen: **30 Screens, 99 Aktionen, 115 definierte Zustände**.
+
+**Finanzen/Legal:** Preisbeispiel ist ausdrücklich hypothetisch; keine Marktpreise und keine gemessenen Qualitäts-/Latenzwerte. DSGVO, AI-Act-Transparenz, Play Data Safety und KI-Reporting sind Compliance-Prüfpunkte, keine vorweggenommene Erfüllung.
+
+**Entscheidungen an K6 übergeben:** Anbieter/Hosting/Region/Vertrag, Gast- vs. Kontoauth, Betreiberbudget, tatsächlich zu speichernde Daten, Opt-in/Löschung, Langzeitmemory und MVP-Schnitt, Release-/Pilotgates.
+
+**Status:** K5 ist ein prüfbarer **Konzeptentwurf**, keine Android- oder Backend-Implementierung. Neuer PR wartet auf ausdrückliche Freigabe. Alle Änderungen liegen innerhalb `apps/CommunicationTrainer/`.
+
+## 2026-11-07 – PR #53 gemergt: Ergänzende K2-Beispiele gesichert
+
+Der Nutzer genehmigte den Merge von PR #53 ausdrücklich. Der Merge nach `main` wurde am 07.11.2026 verifiziert. Die zusätzlichen 20 deutschsprachigen Beispiel- und 36 Prüffälle ergänzen K2, ohne die Hauptspezifikation aus PR #49 zu überschreiben. PR #48 bleibt geschlossen/ungemergt.
+
 ## 2026-11-07 – Paralleles K2-Dokument aufgelöst: ergänzende Inhalte aus PR #48
 
 **Anlass:** Der Nutzer fragte nach den offenen PRs #48 und #52 und genehmigte, PR #52 zu mergen sowie aus #48 die noch wertvollen Inhalte gesondert zu sichern und #48 anschließend als überholt zu schließen.

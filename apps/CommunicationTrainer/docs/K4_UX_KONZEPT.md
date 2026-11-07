@@ -249,6 +249,14 @@ Im Profil klar getrennte Karten:
 
 Löschung zeigt **vorher** verständlich die Auswirkungen und ggf. nicht rückgängig zu machende Datenarten. Bei verbundenen Daten wird die abhängige Entfernung erklärt, ohne Datenschutzdialoge als Hürde zu missbrauchen. Datensparsamkeit vor kosmetischer Einwilligungssteuerung.
 
+### 10.1 K5-Nachtrag: Problematische KI-Antworten melden
+
+Nach Prüfung der offiziellen Google-Play-Richtlinie für generative KI wurde eine **In-App-Meldung problematischer KI-Ausgaben** als verbindlicher UX-Anforderungspunkt ergänzt (siehe K5 Datenschutz/Sicherheit). Nutzer erreichen „Problematische KI-Antwort melden“ im Menü einer generierten Nachricht und aus der Feedbackansicht.
+
+Die Meldemaske zeigt den **konkret ausgewählten** KI-Text und optionalen, bewusst zur Übermittlung ausgewählten Kontext vor dem Absenden. Ohne aktive Nutzerentscheidung wird nicht das gesamte Gespräch als Moderationsbeleg versandt. Sie erlaubt eine Kategorie, optionalen Kommentar, Abbrechen und einen transparenten Erfolgs-/Fehlerzustand; die App darf keine erfolgreiche Zustellung vortäuschen. Der eigene Chat bleibt erhalten. Sie ist als neuer Screen `safety_report` im [K4-Screenkatalog](../specs/k4_screens_v1.json) aufgenommen.
+
+*Status:* Ergänzung des K4-Konzepts im K5-PR, noch keine Moderationsoberfläche implementiert. Quelle: https://support.google.com/googleplay/android-developer/answer/13985936?hl=de .
+
 ## 11. Fehler-, Lade- und Sonderzustände
 
 | Zustand | Nutzererlebnis | Verbindliche Funktion |

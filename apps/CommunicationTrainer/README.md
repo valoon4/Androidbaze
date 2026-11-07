@@ -2,7 +2,7 @@
 
 Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von **Alltagskommunikation und sozialen Kontakten**.
 
-**Stand:** Konzeption (06.11.2026). Hier existiert bisher **keine App-Implementierung**. Ein endgültiger App-Name steht noch aus.
+**Stand:** Konzeption (07.11.2026). Hier existiert bisher **keine App-Implementierung**. Ein endgültiger App-Name steht noch aus.
 
 ## Dokumentation
 
@@ -29,6 +29,16 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [K4 Nutzerabläufe & Wireframes](docs/K4_NUTZERABLAEUFE.md) – zwölf konkrete End-to-End-Flows und textuelle Bildschirmskizzen.
 - [K4 UX-Qualitätsplan](docs/K4_UX_TESTPLAN.md) – 36 Prüfaufgaben, A11y-/Vertrauens-Gates und Pilotmethodik.
 - [K4 Screen-Katalog (JSON)](specs/k4_screens_v1.json) – stabile UI-IDs, 29 Screens, Aktionen und Zustände als konzeptioneller Vertrag.
+
+- [K5 Technische Architektur](docs/K5_TECHNISCHE_ARCHITEKTUR.md) – Android-Schichten, lokaler Zustand, KI-Broker, Providerwahl, Idempotenz und Replay.
+- [K5 Datenschutz und Sicherheit](docs/K5_DATENSCHUTZ_SICHERHEIT.md) – Privacy-by-Design, DSGVO-/KI-/Play-Anforderungen, Bedrohungsmodell, Meldung und Löschung.
+- [K5 Betrieb und Kosten](docs/K5_BETRIEB_KOSTEN.md) – hypothetische Tokenkosten, Budgets, Quotas, Providerbetrieb, Monitoring und Runbooks.
+- [K5 Technik- und Sicherheitstestplan](docs/K5_TESTPLAN.md) – 42 Prüfungen, Privacy- und Release-Gates.
+- [K5 API- und Datenschnittstellen (JSON)](specs/k5_system_contracts_v1.json) – versionierte Verträge für acht Typen und acht API-Endpunkte.
+
+- [K5 KI-Betriebsarten](docs/K5_KI_BETRIEBSARTEN.md) – lokale Open-Weight-KI, bedingte ChatGPT-Plan-Anbindung und Cloud-Broker/Self-Hosting.
+- [K5 Modellvergleich und Kosten-Gates](docs/K5_MODELLVERGLEICH_TESTPLAN.md) – 28 zusätzliche Testfälle für die Auswahl einer zuverlässigen, wirtschaftlichen KI.
+- [K5 Provider-Modi (JSON)](specs/k5_provider_modes_v1.json) – vier technische Adapter, drei nutzerseitige Modusoptionen, Verfügbarkeit und Safety-/Privacy-Regeln.
 
 ## Projektgrenzen
 

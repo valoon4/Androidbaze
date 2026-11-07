@@ -1,0 +1,207 @@
+{
+  "schema_version": "k5.provider-modes.v1",
+  "status": "concept_not_available_in_app",
+  "date": "2026-11-07",
+  "architecture": "InferenceGateway with explicit operation-level capability checks; does not supersede k5_system_contracts_v1.json",
+  "modes": [
+    {
+      "id": "local_android",
+      "label": "Lokale KI auf diesem Gerät",
+      "state": "candidate",
+      "implementation": "runtime on Android; LiteRT-LM or llama.cpp after POC",
+      "data_destination": "device_only_for_inference",
+      "needs_internet_for_inference": false,
+      "prerequisites": [
+        "hardware_compatible",
+        "model_downloaded_verified",
+        "runtime_approved",
+        "model_licence_approved",
+        "persona_quality_passed"
+      ],
+      "capabilities": {
+        "chat": "test_required",
+        "coach": "separately_evaluate",
+        "replay": "test_required",
+        "streaming": "runtime_dependent"
+      },
+      "cost_narrative": "no provider token fee for on-device turns; device energy, storage and maintenance still cost",
+      "security": [
+        "model_hash_verify",
+        "local_privacy",
+        "no_silent_cloud_fallback",
+        "memory_scope_isolated"
+      ],
+      "unavailable_reasons": [
+        "DEVICE_INCOMPATIBLE",
+        "MODEL_NOT_INSTALLED",
+        "MODEL_CORRUPT",
+        "QUALITY_NOT_APPROVED"
+      ]
+    },
+    {
+      "id": "chatgpt_plan",
+      "label": "Mit ChatGPT-Konto verbinden",
+      "state": "experimental_permission_required",
+      "implementation": "official Sign in with ChatGPT local open source OAuth flow if native Android use allowed",
+      "data_destination": "openai_responses_service",
+      "needs_internet_for_inference": true,
+      "prerequisites": [
+        "official_use_case_eligible",
+        "native_android_redirect_supported",
+        "required_scope_granted",
+        "account_authorized",
+        "plan_capacity_available",
+        "model_quality_passed"
+      ],
+      "capabilities": {
+        "chat": "eligible_models_only",
+        "coach": "eligible_models_only_and_separately_evaluate",
+        "replay": "eligible_models_only",
+        "streaming": "follow_official_flow"
+      },
+      "cost_narrative": "eligible ChatGPT plan use can consume shared plan allowance; not ordinary free API; not unlimited",
+      "security": [
+        "system_browser_oauth_pkce_state_nonce",
+        "validate_id_token_scopes",
+        "secure_local_tokens",
+        "no_password_collection",
+        "no_private_web_endpoints",
+        "no_silent_paid_fallback"
+      ],
+      "unavailable_reasons": [
+        "UNSUPPORTED_PLATFORM",
+        "UNSUPPORTED_DISTRIBUTION",
+        "INELIGIBLE_ACCOUNT",
+        "SCOPE_DENIED",
+        "PLAN_LIMIT_REACHED",
+        "AUTH_REVOKED"
+      ]
+    },
+    {
+      "id": "cloud_broker",
+      "label": "Cloud-KI über geschütztes Backend",
+      "state": "recommended_baseline_for_poc",
+      "implementation": "server broker with selectable managed API or hosted open-weight model",
+      "data_destination": "own_broker_and_approved_provider_or_host",
+      "needs_internet_for_inference": true,
+      "prerequisites": [
+        "auth_or_budgeted_guest",
+        "backend_secure",
+        "consent_and_transparency",
+        "provider_contract_verified",
+        "quotas_active",
+        "quality_passed"
+      ],
+      "capabilities": {
+        "chat": "by_approved_model",
+        "coach": "by_approved_model",
+        "replay": "by_approved_model",
+        "streaming": "model_specific"
+      },
+      "cost_narrative": "managed API charges per usage or self-hosted GPU/infra plus moderation",
+      "security": [
+        "operator_secrets_server_only",
+        "owner_scope_checks",
+        "idempotency",
+        "rate_limit_budget",
+        "reporting",
+        "retention_and_deletion"
+      ],
+      "unavailable_reasons": [
+        "NETWORK_ERROR",
+        "BUDGET_EXCEEDED",
+        "PROVIDER_UNAVAILABLE",
+        "RATE_LIMITED"
+      ]
+    },
+    {
+      "id": "self_hosted_open_weight",
+      "label": "Open-Weight-KI auf eigenem Server",
+      "state": "cloud_broker_submode_candidate",
+      "parent_mode": "cloud_broker",
+      "implementation": "operator-operated runtime behind same broker",
+      "data_destination": "own_host_in_declared_region",
+      "needs_internet_for_inference": true,
+      "prerequisites": [
+        "licence_approved",
+        "gpu_capacity_adequate",
+        "security_and_ops_approved",
+        "break_even_measured",
+        "quality_passed"
+      ],
+      "capabilities": {
+        "chat": "test_required",
+        "coach": "separately_evaluate",
+        "replay": "test_required",
+        "streaming": "runtime_dependent"
+      },
+      "cost_narrative": "no per-token managed model fee where fully self-hosted, but GPU, electricity, hosting, safety and labor remain",
+      "security": [
+        "gpu_host_access_control",
+        "content_policy",
+        "logging_minimization",
+        "model_supply_chain",
+        "incident_runbooks"
+      ],
+      "unavailable_reasons": [
+        "HOST_CAPACITY_EXCEEDED",
+        "QUALITY_NOT_APPROVED",
+        "OPERATIONS_NOT_READY"
+      ]
+    }
+  ],
+  "mvp_policy": {
+    "default_mode": "undecided_until_device_provider_quality_and_privacy_tests",
+    "allowed_release_modes": "only variants that pass legal, quality, security and cost gates",
+    "chatgpt_integration": "feature_disabled_until_eligibility_and_android_oauth_supported",
+    "no_silent_fallback": true,
+    "operation_capabilities_checked_separately": true,
+    "no_unlimited_free_ai_promise": true
+  },
+  "gateway_operations": [
+    "generate_character_turn",
+    "generate_coach_feedback",
+    "generate_replay",
+    "cancel",
+    "get_request_status"
+  ],
+  "gateway_required_context": [
+    "request_id",
+    "conversation_id",
+    "branch_id",
+    "persona_ref",
+    "scenario_ref_if_practice",
+    "policy_version",
+    "model_version",
+    "privacy_purpose"
+  ],
+  "global_error_codes": [
+    "UNSUPPORTED_PLATFORM",
+    "UNSUPPORTED_DISTRIBUTION",
+    "INELIGIBLE_ACCOUNT",
+    "SCOPE_DENIED",
+    "PLAN_LIMIT_REACHED",
+    "AUTH_REVOKED",
+    "DEVICE_INCOMPATIBLE",
+    "MODEL_NOT_INSTALLED",
+    "MODEL_CORRUPT",
+    "QUALITY_NOT_APPROVED",
+    "NETWORK_ERROR",
+    "BUDGET_EXCEEDED",
+    "PROVIDER_UNAVAILABLE",
+    "RATE_LIMITED"
+  ],
+  "invariants": [
+    "no api key inside Android app",
+    "no user ChatGPT password collection",
+    "no unauthorized public ChatGPT endpoints",
+    "no silent local-to-cloud transfer",
+    "no automatic switch to paid API on plan limit",
+    "chat and coach may have different approved capabilities",
+    "local inference does not make other app features necessarily offline",
+    "no cross-user or cross-persona memory",
+    "K2 coach evidence and K3 safety gates remain applicable",
+    "model licence and artifact checks before distribution"
+  ],
+  "benchmark_suite_ref": "../docs/K5_MODELLVERGLEICH_TESTPLAN.md"
+}

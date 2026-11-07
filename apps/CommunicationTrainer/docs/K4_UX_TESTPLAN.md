@@ -71,6 +71,14 @@ Eine frühe UX-Runde kann mit 8–12 Personen als pragmatischem Richtwert starte
 
 Für jeden Test: Kontext, eingesetzte Builds/Prototypversion, Aufgabe, beobachtete Abfolge, Fehlversuche, Nutzerzitate nur mit Einwilligung, Kritikalität, Verbesserungsvorschlag und Nachtest dokumentieren.
 
+### K5-Nachtrag: KI-Reporting als zusätzliche UX-Pflicht
+
+**U37 – Anstößige KI-Antwort aus dem Chat melden:** Nutzer findet pro KI-Antwort eine barrierearm zugängliche Meldemöglichkeit, sieht den zu sendenden Ausschnitt, kann Kategorien und optionalen Kommentar wählen und erhält nur bei bestätigtem Empfang eine Erfolgsanzeige. Beim Abbruch erfolgt **keine** Übertragung; der Chat bleibt erhalten. Bei Netzwerkfehler bleibt die Meldung in einem kontrollierten Fehlerzustand, ohne Doppelversand.
+
+**U38 – Meldung mit Zusatzkontext:** Die Meldemaske versendet ohne aktive Wahl nicht das komplette Gespräch und hält Report-/Sicherheitsdaten getrennt vom normalen Lernprofil.
+
+Diese beiden Zusatzaufgaben ergänzen die ursprünglichen U01–U36, ohne frühere Messergebnisse zu behaupten. In-App-Reporting ist für KI-generierte Inhalte vor einer Google-Play-Veröffentlichung als aktuelles Plattform-Gate vorgesehen.
+
 ## 4. Fachliche Schnittstellen-Tests
 
 ### 4.1 K1 – Lernziele

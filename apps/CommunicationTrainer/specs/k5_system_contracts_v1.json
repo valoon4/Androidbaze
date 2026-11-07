@@ -1,0 +1,375 @@
+{
+  "schema_version": "k5.system-contracts.v1",
+  "date": "2026-11-07",
+  "status": "design-only-not-implemented",
+  "notes": [
+    "API paths are illustrative and may change at implementation.",
+    "No model provider or host selected.",
+    "Server is authoritative for owner, consent, rate/budget and request status.",
+    "Failure or cancellation never rendered as success.",
+    "No complete deletion confirmation before all required stages.",
+    "No end-to-end encryption promise when provider receives readable data."
+  ],
+  "types": {
+    "ChatTurn": {
+      "required": [
+        "request_id",
+        "conversation_id",
+        "branch_id",
+        "client_message_id",
+        "persona_ref",
+        "mode",
+        "message"
+      ],
+      "rules": [
+        "request_id scoped by owner and operation",
+        "persona_ref immutable version",
+        "message untrusted, never role instruction",
+        "mode free|practice"
+      ]
+    },
+    "ChatResult": {
+      "required": [
+        "request_id",
+        "conversation_id",
+        "branch_id",
+        "status",
+        "persona_ref"
+      ],
+      "rules": [
+        "status queued|processing|complete|failed|cancelled|unknown",
+        "output text only after validation",
+        "response_message_id on complete",
+        "no coach mixed into persona output"
+      ]
+    },
+    "CoachEvaluation": {
+      "required": [
+        "request_id",
+        "conversation_id",
+        "target_competency_ids",
+        "mode",
+        "evidence_refs"
+      ],
+      "rules": [
+        "server verifies evidence ownership",
+        "result_class STRENGTH_ONLY|STRENGTH_WITH_OPTION|REFLECTION|NOT_ASSESSABLE|BOUNDARY_NOTICE|SAFETY_HANDOFF",
+        "at most one next_option",
+        "opt-in for long-term profile; not needed for ephemeral feedback",
+        "may be NOT_ASSESSABLE"
+      ]
+    },
+    "ReplayBranch": {
+      "required": [
+        "request_id",
+        "conversation_id",
+        "source_branch_id",
+        "fork_message_id",
+        "replacement_text",
+        "persona_ref"
+      ],
+      "rules": [
+        "source and original immutable",
+        "new branch_id generated upon success",
+        "optional seed not proof of real-world effect"
+      ]
+    },
+    "MemoryRecord": {
+      "required": [
+        "memory_id",
+        "owner_id",
+        "character_id",
+        "source_message_ids",
+        "consent_version",
+        "purpose"
+      ],
+      "rules": [
+        "character and owner scope enforced",
+        "provenance required",
+        "deleted source invalidates memory"
+      ]
+    },
+    "DeletionJob": {
+      "required": [
+        "request_id",
+        "resource_type",
+        "resource_id",
+        "owner_scope"
+      ],
+      "rules": [
+        "states requested|local_complete|backend_pending|provider_pending|complete|partial_failure",
+        "server-side ownership",
+        "only confirm complete after relevant stage success",
+        "honor legal retention exceptions transparently"
+      ]
+    },
+    "SafetyReport": {
+      "required": [
+        "report_id",
+        "conversation_id",
+        "message_id",
+        "category",
+        "user_confirmed_submission"
+      ],
+      "rules": [
+        "user previews transmitted content",
+        "do not submit full conversation by default",
+        "report retention purpose separated",
+        "scope and rate limits"
+      ]
+    },
+    "UsageRecord": {
+      "required": [
+        "request_id",
+        "owner_scope_id",
+        "operation_type",
+        "status"
+      ],
+      "rules": [
+        "token count and model version when available",
+        "no raw chats in default logs",
+        "cost bucket + short validated retention"
+      ]
+    }
+  },
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/v1/chat/turns",
+      "input": "ChatTurn",
+      "output": "ChatResult",
+      "errors": [
+        "AUTH_REQUIRED",
+        "CONSENT_REQUIRED",
+        "BUDGET_EXCEEDED",
+        "RATE_LIMITED",
+        "MODEL_TIMEOUT",
+        "SAFETY_BLOCK",
+        "CONFLICT"
+      ],
+      "idempotent": true,
+      "auth": "owner or budgeted guest",
+      "scope": "conversation_id+branch_id"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/chat/requests/{request_id}",
+      "input": null,
+      "output": "ChatResult",
+      "errors": [
+        "AUTH_REQUIRED",
+        "NOT_FOUND"
+      ],
+      "idempotent": true,
+      "scope": "owner+request_id",
+      "purpose": "check unknown response before paid retry"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/coach/evaluations",
+      "input": "CoachEvaluation",
+      "output": "CoachEvaluation",
+      "errors": [
+        "AUTH_REQUIRED",
+        "CONSENT_REQUIRED",
+        "BUDGET_EXCEEDED",
+        "VALIDATION_REJECTED"
+      ],
+      "idempotent": true,
+      "scope": "owner+evidence_refs",
+      "purpose": "only on explicit user action or chosen practice flow"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/chat/replays",
+      "input": "ReplayBranch",
+      "output": "ChatResult",
+      "errors": [
+        "AUTH_REQUIRED",
+        "BUDGET_EXCEEDED",
+        "CONFLICT",
+        "MODEL_TIMEOUT"
+      ],
+      "idempotent": true,
+      "scope": "owner+original_snapshot",
+      "purpose": "never mutate original"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/privacy/status",
+      "input": null,
+      "output": "purpose consent/version flags",
+      "errors": [
+        "AUTH_REQUIRED"
+      ],
+      "idempotent": true,
+      "scope": "principal",
+      "purpose": "actual backend capabilities, never sham toggle"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/privacy/deletions",
+      "input": "DeletionJob",
+      "output": "DeletionJob",
+      "errors": [
+        "AUTH_REQUIRED",
+        "NOT_FOUND",
+        "RETRYABLE_ERROR"
+      ],
+      "idempotent": true,
+      "scope": "owner+resource",
+      "purpose": "authorized deletion with pending stages"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/privacy/deletions/{request_id}",
+      "input": null,
+      "output": "DeletionJob",
+      "errors": [
+        "AUTH_REQUIRED",
+        "NOT_FOUND"
+      ],
+      "idempotent": true,
+      "scope": "owner+job",
+      "purpose": "show stages and failure honesty"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/safety/reports",
+      "input": "SafetyReport",
+      "output": "report receipt",
+      "errors": [
+        "AUTH_REQUIRED",
+        "RATE_LIMITED",
+        "SCHEMA_INVALID"
+      ],
+      "idempotent": true,
+      "scope": "owner+message_id",
+      "purpose": "in-app reports of offensive generated content"
+    }
+  ],
+  "data_inventory": [
+    {
+      "id": "device-chat",
+      "data": [
+        "Conversation",
+        "Message",
+        "Draft",
+        "ReplayBranch"
+      ],
+      "default": "locally persisted",
+      "transfer": "only selected relevant snippets after transparency",
+      "cross_session": false
+    },
+    {
+      "id": "persona-memory",
+      "data": [
+        "MemoryRecord"
+      ],
+      "default": "OFF",
+      "transfer": "allowed scoped facts only",
+      "cross_session": true
+    },
+    {
+      "id": "learner-profile",
+      "data": [
+        "CoachEvaluation reviewed observations"
+      ],
+      "default": "OFF",
+      "transfer": "none needed for basic chat",
+      "cross_session": true
+    },
+    {
+      "id": "usage",
+      "data": [
+        "UsageRecord"
+      ],
+      "default": "server minimal",
+      "transfer": "server only",
+      "cross_session": false
+    },
+    {
+      "id": "safety-report",
+      "data": [
+        "SafetyReport"
+      ],
+      "default": "user-initiated",
+      "transfer": "selected and previewed report evidence",
+      "cross_session": false
+    }
+  ],
+  "state_machines": {
+    "message": [
+      "draft",
+      "queued",
+      "sending",
+      "sent",
+      "responding",
+      "complete",
+      "failed",
+      "cancelled"
+    ],
+    "response": [
+      "queued",
+      "processing",
+      "complete",
+      "failed",
+      "cancelled",
+      "unknown"
+    ],
+    "deletion": [
+      "requested",
+      "local_complete",
+      "backend_pending",
+      "provider_pending",
+      "complete",
+      "partial_failure"
+    ],
+    "observation": [
+      "draft",
+      "accepted",
+      "user_disputed",
+      "withdrawn"
+    ],
+    "safety_report": [
+      "received",
+      "review_pending",
+      "resolved",
+      "rejected"
+    ]
+  },
+  "global_invariants": [
+    "provider API secrets never in Android APK",
+    "only owner can read/update a conversation or memory",
+    "no cross-character memory",
+    "persona and scenario versions pinned to conversation",
+    "draft persisted before network send",
+    "replay branch never overwrites original",
+    "no forced coaching in free chat",
+    "no global social competence score",
+    "no affection for message count",
+    "safety/boundaries before engagement",
+    "long-term learner profile requires separate consent",
+    "privacy scope and data lineage required",
+    "reports without exiting app",
+    "raw chat content excluded from ordinary telemetry"
+  ],
+  "inference_gateway": {
+    "provider_modes_ref": "k5_provider_modes_v1.json",
+    "operations": [
+      "generate_character_turn",
+      "generate_coach_feedback",
+      "generate_replay",
+      "cancel",
+      "get_request_status"
+    ],
+    "transport_semantics": "domain operations independent of transport/provider; not all modes share a server API",
+    "mode_selection": "explicit user selection with runtime capabilities and purpose-specific privacy",
+    "eligibility": "chatgpt_plan only when supported and officially authorized; native Android applicability not yet verified",
+    "local_qa": "device/ABI/runtime/model hash and license checked, K2/K3 quality gates required",
+    "fallback_policy": "no automatic local-to-cloud or ChatGPT-plan-to-billed-API fallback",
+    "privacy_policy": "do not transfer local conversations unless the user explicitly authorizes the external destination",
+    "feature_flags": "mode-specific; coach may be disabled while local chat enabled"
+  },
+  "external_provider_modes_status": "all design candidates, not implemented"
+}
