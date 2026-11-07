@@ -1,5 +1,20 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
+## 2026-11-07 – K5-Kostenoptimierung und drei KI-Betriebsarten (PR #54)
+
+**Nutzerauftrag:** Es wurde gefragt, ob das eigene ChatGPT-Konto oder Open-Source-KI laufende Kosten sparen kann. Anschließend beauftragte der Nutzer ausdrücklich, diese Möglichkeiten **im offenen PR #54** als technische Optionen zu ergänzen. Während der Bearbeitung hat der Nutzer **PR #54 ausdrücklich für den Merge freigegeben**.
+
+**Neue K5-Dokumente:**
+- [K5_KI_BETRIEBSARTEN.md](K5_KI_BETRIEBSARTEN.md): lokales Android-Modell, bedingte OpenAI-ChatGPT-Plan-Nutzung, Cloud mit Managed API oder eigenem Open-Weight-Server; Lizenz-, Hardware-, Datenschutz- und Kostengrenzen.
+- [K5_MODELLVERGLEICH_TESTPLAN.md](K5_MODELLVERGLEICH_TESTPLAN.md): 28 konkrete Betriebsarten-, Persona-, Coach-, Security- und Performancefälle; Modellkandidaten und faire Vergleichsmethodik.
+- [k5_provider_modes_v1.json](../specs/k5_provider_modes_v1.json): vier Adapterkonfigurationen in drei nutzerseitigen Modi mit Fähigkeits-/Verfügbarkeits-/Fehlerzuständen.
+
+**Neue Architekturregel:** Providerunabhängiges InferenceGateway, explizite Wahl des Verarbeitungsorts, keine stillen lokalen → externen Transfers und kein automatischer ChatGPT-Plan → kostenpflichtige API-Fallback. Modellgüte und Safety sind Gates vor Kostenoptimierung.
+
+**Fachliche Einschränkung:** Die offizielle OpenAI-Plan-Nutzung ist für berechtigte lokal gehostete Open-Source-Apps dokumentiert, nicht als ungeprüfte universelle Android-Funktion oder kostenlose API. Android-OAuth-Zulässigkeit/Redirect und Distributionsmodell müssen vor Umsetzung belegt werden. Open-Weight-Modelle haben unterschiedliche Lizenzen; lokale Leistung und Kosten sind noch **nicht gemessen**.
+
+**Status:** Konzeptänderungen im selben PR #54; die Freigabe gilt für den beauftragten K5-Nachtrag. Keine ChatGPT-Verbindung, Geräte-/Modellbenchmark oder KI-Backend-Implementierung erfolgt.
+
 ## 2026-11-07 – Konzeptstand 0.8 (K5-PR zur Freigabe): Architektur, Daten und Betrieb
 
 **Auftrag:** Nutzer hat PR #53 ausdrücklich freigegeben und die Fortsetzung mit K5 beauftragt. Der Squash-Merge von PR #53 in main wurde bestätigt; K5 folgt als separater Entwicklungs-PR.
