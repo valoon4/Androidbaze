@@ -43,6 +43,16 @@ Die folgenden Quellen sind **Recherchegrundlagen**, keine pauschale Aussage, das
 
 **Offener Rechtscheck:** Sind Art.-9-Daten im vorgesehenen Chatverlauf wahrscheinlich? Welche Rechtsgrundlage und welchen Schutz benötigen wir dafür? Braucht das geplante Profiling oder das spezifische Risikobild eine Datenschutz-Folgenabschätzung? Diese Antworten dürfen nicht durch eine pauschale „wir holen Zustimmung ein“-Formel ersetzt werden.
 
+### 2.1 Datenschutz je KI-Betriebsart (K5-Nachtrag)
+
+- **Lokales Modell:** Chattext bleibt während der tatsächlichen lokalen Inferenz auf dem Gerät. Andere Netzfunktionen, Modell-Downloads, Backups, Reports und Absturzdiagnostik müssen weiterhin gesondert geprüft und erklärt werden.
+- **ChatGPT-Plan:** Ein offizieller berechtigter OAuth-/Responses-Flow verarbeitet zur Antwortgenerierung ausdrücklich freigegebene Inhalte bei OpenAI; Login/Planfreigabe sind **keine** Erlaubnis, Chats, Erinnerungen oder Lernprofile in unsere App auszulesen. OAuth-Tokens gehören geschützt auf das Gerät und **nicht** in Telemetrie/URLs.
+- **Cloud-Broker:** Chattext wird an den eigenen Broker und ggf. externen Modellanbieter oder selbst gehostete Infrastruktur übertragen. Region, Vertrag, Aufbewahrung, Löschung und Drittlandbezug je Konfiguration offenlegen; „lokal“ darf nicht als Etikett für Server-Inferenz benutzt werden.
+
+**Kritische zusätzliche Risiken:** unerlaubter stiller Fall-Back zu Cloud, OAuth-Fehlkonfiguration/Tokenabfluss, ChatGPT-Planlimits mit ungewolltem kostenpflichtigen API-Fallback, Modell-/Quantisierungsartefakte ohne Lizenz/Hash sowie Speicher-/Thermal-Überlast auf Android. Die in [K5_KI_BETRIEBSARTEN.md](K5_KI_BETRIEBSARTEN.md) und [K5_MODELLVERGLEICH_TESTPLAN.md](K5_MODELLVERGLEICH_TESTPLAN.md) definierten Schutzprüfungen gelten zusätzlich zu T01–T18.
+
+**Vor jeder Modusumschaltung:** Datenziel, Nutzen, Limit/Kosten und aktive Lernprofil-/Memory-Einstellungen nachvollziehbar zeigen. Kein automatischer Transfer vollständiger vergangener Chatverläufe aus dem lokalen Modus zur Cloud.
+
 ## 3. Bedrohungsmodell (STRIDE-orientiert)
 
 | ID | Gefahr | Angriff / Fehler | Maßnahmen | Prüfklasse |
