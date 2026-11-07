@@ -1,84 +1,49 @@
-# CommunicationTrainer – D02 lokale Speicherung mit Aurora Pulse
+# CommunicationTrainer – D03 Mock-Chats mit Aurora Pulse
 
-**Aktueller Entwicklungsstand:** D02 stellt Room-gespeicherte Gesprächsentwürfe, DataStore-Darstellungseinstellungen und lokale Löschfunktionen bereit. Die App verschickt weiterhin keine Nachrichten und verwendet keine KI. PR #59 benötigt vor dem Merge nach main eine eigene Freigabe.
+**Stand: PR #60 zur Freigabe.** In D03 kannst du erstmals Textnachrichten lokal senden und feste, deterministische Testantworten erhalten. **Es ist keine echte KI angeschlossen**, keine Kommunikation wird an einen Server übertragen, und die Antworten stammen nicht von einer echten Person.
 
-## D02 ausprobieren
+## D03-Test-APK: sicher neben D02
 
-1. Unter **Chats** auf **„Neuen Entwurf anlegen“** tippen.
-2. Einen längeren Text schreiben und warten, bis **„Auf diesem Gerät gespeichert“** sichtbar ist.
-3. Zur Übersicht zurückkehren, Entwurf erneut öffnen; den gespeicherten Text prüfen.
-4. App im Task-Switcher schließen oder per `adb shell am force-stop com.valoon4.communicationtrainer` beenden und erneut starten; der zuletzt geöffnete Entwurf soll wieder erscheinen (bei persistierter Auswahl).
-5. Zwei Entwürfe erstellen und prüfen, ob beide unabhängig voneinander bestehen bleiben.
-6. Einen Entwurf über **„Löschen“** mit Bestätigung entfernen; nur dieser darf verschwinden.
-7. Unter **Üben** die Darstellung System/Hell/Dunkel wechseln, App neu starten und Einstellung prüfen.
-8. Test: Drehen, lange Texte, größere Schrift, Offline-Modus. Keine Netzwerkberechtigung erforderlich.
+Der D03-Debug-Build hat absichtlich die eigene Paketkennung `com.valoon4.communicationtrainer.d03preview` und den sichtbaren App-Namen **CommunicationTrainer D03 Test**. Du musst **D02 nicht deinstallieren**. Beide Testversionen besitzen eigene Daten und **übernehmen keine Chats oder Entwürfe voneinander**.
 
-**Wichtig:** Nur ein mit SQLite bestätigter Entwurf („Auf diesem Gerät gespeichert“) kann bei einem sofortigen Prozessabbruch als dauerhaft zugesichert werden. Die Anzeige „Wird gespeichert …“ ist **keine** Speicherbestätigung.
+Grund: GitHub verwendet ohne dauerhaft verwalteten Signing-Key unterschiedliche Debug-Signaturen; normale In-Place-Updates funktionieren dadurch nicht zuverlässig. Das Preview-Suffix verhindert die erneute Installationskollision, **ersetzt aber keine stabile Debug-Signing-Lösung** für künftige Upgrades mit erhaltenen Nutzerdaten. Bitte nur Testtexte verwenden.
 
-[D02-Datenschutz-/Testmatrix](../docs/D02_LOKALE_PERSISTENZ.md). Die bisherige D01-Dokumentation bleibt unten als Historie erhalten.
+## D03 – So testest du die App
 
-## Wichtiger Hinweis zu Debug-Updates
+1. Unter **Chats → Neues Testgespräch** öffnen und z. B. „Hallo, wie geht es dir?“ eingeben.
+2. Warten, bis **„Entwurf gespeichert“** erscheint, dann **Senden** tippen. Die eigene Nachricht sollte genau einmal sichtbar werden.
+3. Nach kurzer Zeit muss eine als **„Testpartner · Simulation“** markierte Antwort erscheinen. Kein KI-Modell ist beteiligt.
+4. Mehrmals sehr schnell **Senden** tippen. Es darf keine zweite eigene Nachricht für dieselbe Eingabe entstehen.
+5. Unter dem Composer die Checkbox **„Nächste Testantwort absichtlich scheitern lassen“** aktivieren. Eine neue Nachricht senden; die Antwort muss den Fehlerstatus anzeigen. **„Testantwort erneut versuchen“** anklicken: genau eine Testantwort muss ergänzt werden, ohne eine zweite eigene Nachricht zu erzeugen.
+6. Ein zweites Gespräch anlegen, unterschiedliche Texte senden, zwischen den Gesprächen wechseln.
+7. App schließen und neu starten. Gespräche und Entwürfe müssen weiterhin vorhanden sein; wenn ein Testantwort-Auftrag unterbrochen wurde, bleibt dieser als wartend sichtbar und lässt sich explizit wiederholen.
+8. Einen Testchat mit Bestätigung löschen. Nur der betroffene Chat darf verschwinden.
+9. Mit geöffneter Tastatur, langen Texten, größerer Systemschrift, Rotation sowie System/Hell/Dunkel prüfen.
 
-Die GitHub-Actions-Debug-APK verwendet derzeit **keinen dauerhaft hinterlegten Signing-Key**. Zwischen Build-Läufen kann daher die Debug-Signatur wechseln. Android kann dann ein APK-Update über eine bereits installierte Version verweigern. Eine vorherige Deinstallation entfernt auch lokale Room-Entwürfe und DataStore-Einstellungen, weil Android-Backup deaktiviert ist. **Für den D02-Neustarttest die APK installiert lassen** und nur den Prozess beenden bzw. die App neu öffnen.
+**Wichtige Grenzen:** Unbestätigte Tastendrücke sind vor dem SQLite-Commit nicht garantiert dauerhaft gespeichert. Deshalb wird der Senden-Button erst nach der Speicherbestätigung aktiviert. Android-Backup bleibt deaktiviert. Keine KI, keine Netz-/Cloud-Anbindung, keine echte Persona-Simulation.
 
-**Vor Tests über mehrere APK-Versionen mit wichtigen Nutzerdaten** müssen wir einen stabilen, sicher verwalteten Debug-Signing-Key bzw. einen getrennten Migrations-/Update-Testpfad einrichten. Keine privaten Texte in einer Debuginstallation ablegen, deren Update- und Wiederherstellungsweg noch nicht abgesichert ist.
+[Technik und Abnahmematrix D03](../docs/D03_MOCK_CHAT.md) · [D02-Datenarchitektur](../docs/D02_LOKALE_PERSISTENZ.md)
 
-## Historie: D01
+## Reproduzierbarer Android-Build
 
-**Status:** installierbares Kotlin-/Jetpack-Compose-Grundgerüst als vorgeschlagener PR, noch **keine echte KI**, keine Chattexte, keine lokale Chatpersistenz oder Authentifizierung.
+JDK 17, Gradle 8.13, AGP 8.13.2, Kotlin/Compose-Compiler 2.4.21, compileSdk/targetSdk 36, minSdk 26.
 
-## Ausgewähltes Design: Aurora Pulse
-
-Der Nutzer hat **Aurora Pulse** als endgültige Farb- und Stilrichtung ausgewählt. Das Design nutzt Indigo für Navigation/Hauptaktionen, Pink für menschliche Akzente, Mint für unterstützende Hinweise und Gold künftig sparsam für Lernaktivität. Beide System-Farbmodi sind in `ui/theme/AuroraPulseTheme.kt` zentral definiert. Kleine Texte auf gefüllten Schaltflächen verwenden **kontrastkorrigierte** Indigo-/Pink-Töne; D01 enthält ergänzende Farb-/Kontrast-Unit-Tests.
-
-[Gestaltungsentscheidung, Tokenwerte und Barrierefreiheit](../docs/D01_AURORA_PULSE_DESIGN.md).
-
-## Abgrenzung
-
-Eigenständige Gradle-Root: `apps/CommunicationTrainer/android/`. Dieses Projekt ist **nicht** in den Root-Build von Androidbaze (Wormblade) eingebunden und verändert weder andere Apps noch deren Workflows. Die externe GitHub-Action `.github/workflows/communicationtrainer-debug-apk.yml` wird ausschließlich für dieses Projekt angelegt.
-
-Bereits funktional vorgesehen:
-- Zwei navigierbare Hauptbereiche **Chats** und **Üben**, inkl. Zustandswiederherstellung der Tab-Auswahl bei Android-Konfigurationswechsel bzw. gespeichertem Zustand.
-- Klare Kennzeichnung **„Technische Demo ohne KI“**.
-- Hell-/Dunkeldesign, Material3, lesbare Texte, Android-Edge-to-Edge.
-- Kein INTERNET-Permission, keine API-Schlüssel, keine Datenübertragung, keine Datenspeicherung.
-- Zwei einfache JVM-Unit-Tests zur Navigation und Bezeichnung.
-
-**Nicht** enthalten: sendbare Chats, Testcharaktere, echte Szenarien, KI-Provider, Coach, Replay, Entwurfspersistenz und Produktrelease. D02/D03 folgen separat.
-
-## Reproduzierbarer Build
-
-JDK **17**, Android SDK Plattform **36**, Build Tools **36.0.0**, Gradle **8.13**, AGP **8.13.2**, Kotlin/Compose-Compiler **2.4.21**.
-
-Arbeitsverzeichnis: `apps/CommunicationTrainer/android/`.
-
-Mit installiertem Gradle 8.13:
+Im Verzeichnis `apps/CommunicationTrainer/android/`:
 
 ```bash
 gradle :app:testDebugUnitTest --no-daemon
 gradle :app:assembleDebug --no-daemon
 ```
 
-Alternativ auf Linux/macOS mit geprüftem Gradle-Download (offizieller SHA-256 von https://gradle.org/release-checksums/):
+Alternativ `bash ci/build-debug.sh :app:testDebugUnitTest :app:assembleDebug --no-daemon`. Der Script-Bootstrapper ist **kein offizieller Gradle-Wrapper**, aber prüft den Gradle-Download per SHA-256. Der eigene Workflow `.github/workflows/communicationtrainer-debug-apk.yml` führt Tests, Room-Schema-Check, APK-Identitäts- und Signaturprüfung sowie Artifact-Upload aus.
 
-```bash
-bash ci/build-debug.sh :app:testDebugUnitTest :app:assembleDebug --no-daemon
-```
+## Projektgrenzen
 
-**Wichtig:** `ci/build-debug.sh` ist ein transparenter, per SHA-256 verifizierender Bootstrapper und **kein offizieller Gradle-Wrapper**. Ein offizieller Gradle-Wrapper-JAR ist in D01 noch nicht versioniert; in GitHub Actions wird stattdessen das offizielle `gradle/actions/setup-gradle@v4` mit exakt Version 8.13 verwendet. Ein echter Wrapper kann in einem späteren eigenen PR durch `gradle wrapper` generiert und geprüft werden.
+Eigenständiger Gradle-Root unter `apps/CommunicationTrainer/android/`, **nicht** mit dem Root-Wormblade-Build verknüpft. Keine anderen Apps oder deren Workflows wurden geändert. Es erfolgt kein Merge ohne ausdrückliche PR-Freigabe.
 
-APK-Pfad nach erfolgreichem Build: `app/build/outputs/apk/debug/app-debug.apk`.
+---
+## Vorherige Meilensteine
 
-GitHub Actions: Workflow **CommunicationTrainer Debug APK** für PRs/Änderungen an `apps/CommunicationTrainer/android/**`, manuell über `workflow_dispatch`, sowie Pushes auf `main` nur bei relevanten Dateien. Der Workflow führt den Unit-Test aus, erzeugt die Debug-APK, prüft Paketkennung, SDK-Ziel, Signatur und SHA-256 und lädt ein Build-Artefakt hoch. Ein Debug-Artefakt ist kein Play-Release und seine Signatur kann zwischen GitHub-Runs wechseln.
-
-## D01 manuelle Abnahme
-
-1. APK herunterladen und installieren; App-Bezeichnung muss **CommunicationTrainer** lauten.
-2. **Chats** und **Üben** mehrfach wechseln: Überschriften und Inhalte passen sich an.
-3. Gerät drehen/App kurz verlassen: die Navigation bleibt benutzbar.
-4. Große Schrift/System-Dark-Mode: Inhalte lesbar und scrollbar, untere Navigation bedienbar.
-5. Keine Chat-Eingabe und keine KI-Behauptungen; korrekt als Demo erkennbar.
-6. Von diesem Projekt aus bauen: Root-Wormblade und alle `games/**`-Apps unverändert.
-7. Einen fehlgeschlagenen CI-Run nicht als erfolgreiche APK-Freigabe ausgeben.
-
-Für das nächste Feature: [K6-Fahrplan](../docs/K6_UMSETZUNGSPLAN.md), danach D02 für die Persistenz und D03 für die Mock-Unterhaltung.
+- D00: technisches Repo-Audit
+- D01: eigenständiges Compose-Grundgerüst mit Aurora Pulse
+- D02: Room-Datenbank, lokale Entwürfe, DataStore-Einstellungen, Löschung, wiederherstellbare lokale Daten

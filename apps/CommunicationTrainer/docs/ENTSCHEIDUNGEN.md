@@ -1,5 +1,19 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
+## 2026-11-08 – D03: echte lokale Chatnachrichten und feste Simulation (PR #60)
+
+**Nutzerauftrag:** Nach erfolgreicher D02-Abnahme und Merge von PR #59 wurde D03 ausdrücklich beauftragt.
+
+**Produktentscheidung:** Die Android-App zeigt echte, persistierte Nachrichtensendungen und ein lokales Gespräch mit **festen Beispielsätzen**. Jeder Chat und jede Antwort ist eindeutig als **Testpartner/Simulation, keine echte KI** gekennzeichnet. Es werden keine Daten an einen Server gesendet; Android hat keine Internet-Berechtigung.
+
+**Datensicherheit:** `Room` v1 bleibt unverändert; Nachrichten-Insert und Leeren des **bestätigten** Drafts geschehen atomar, `clientMessageId` erzwingt Deduplizierung. Ein fester `mock:`-Antwortschlüssel verhindert wiederholte Testantworten. `queued` / `failed` bleiben über Neustart erhalten, Wiederholung ist explizit. Der automatische Entwurfs-Sendestatus bedeutet nur lokalen SQLite-Commit, nicht Netzwerkzustellung.
+
+**Qualität:** Neue Robolectric-/JUnit-Tests für Draft-/Nachrichten-Transaktion, Doppelversand, Fehler/Retry, Prozesswiederöffnung und lokale Löschung. Bestehende D02-Tests laufen weiterhin. Dokumentierte Gerätetestmatrix in [D03_MOCK_CHAT.md](D03_MOCK_CHAT.md).
+
+**Installationsgrenze:** Aufgrund wechselnder CI-Debugsignaturen wird D03 als eigene `.d03preview`-App ausgeliefert, die parallel zu D02 installiert werden kann. Keine Datenübernahme und kein behaupteter Updatepfad. Dauerhafte sicher verwaltete Debug-Testsignatur vor echten Upgrade-Tests noch erforderlich.
+
+**Scope:** Ausschließlich `apps/CommunicationTrainer/` sowie sein eigener Debug-APK-CI-Workflow. Keine fremden Apps oder deren Workflows, kein Merge ohne separate Nutzerfreigabe.
+
 ## 2026-11-07 – D02: lokale Persistenz ohne KI (PR #59 zur Freigabe)
 
 Der Nutzer hat nach dem erfolgreichen Merge von PR #58 ausdrücklich mit **D02** beauftragt. Room 2.8.5 und DataStore 1.2.0 bilden die nächsten isolierten Schichten. Ein UI erlaubt bereits mehrere lokale Gesprächsentwürfe, deren Wiederöffnung und bestätigte Löschung. Die Darstellungsauswahl wird persistent.
