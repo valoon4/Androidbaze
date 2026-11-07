@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -116,7 +117,7 @@ class DailyNeedNavigationEmulatorTest {
                 }
             }
         }
-        rule.onNodeWithText("Bedürfnisse").performClick()
+        rule.onNodeWithText("Bedürfnisse").performScrollTo().performClick()
         rule.onNodeWithText("Bedürfnisse verstehen").assertExists()
         rule.onNodeWithText("Atlas").assertExists()
         rule.onNodeWithText("← Zur Startseite").assertDoesNotExist()
