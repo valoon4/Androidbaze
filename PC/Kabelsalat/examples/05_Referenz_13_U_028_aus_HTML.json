@@ -2036,7 +2036,7 @@
       1507
     ],
     "geometryStatus": "schematic",
-    "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt.",
+    "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt. Wandstärke (120 mm) nur Software-Standardwert, kein Quellenmaß.",
     "originalNote": "{\"sourceDocument\":\"A-01-17-B1N24-99-KD-001-j-26.pdf\",\"sourceVersion\":\"Index j vom 03.07.2026\",\"sourcePages\":[1504,1505,1506,1507],\"crossCheck\":\"AVL0116_Schachtbewertung_Trennkonzept_2026-10-23.pdf, S. 19\",\"anchoring\":\"Plan-Marker auf der jeweiligen Schachtwand; keine bestätigte Zuordnung zu sichtbaren Bildöffnungen. Keine zusätzlichen physischen Leerrohre.\"}",
     "planAnchors": [
       {
@@ -4210,7 +4210,7 @@
               1507
             ],
             "geometryStatus": "schematic",
-            "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt.",
+            "warning": "Rohrdurchmesser aus grafischen Radien abgeleitet; echte DN, Baugeometrie und physische Kabelwege nicht bestätigt. Wandstärke (120 mm) nur Software-Standardwert, kein Quellenmaß.",
             "originalNote": "{\"sourceDocument\":\"A-01-17-B1N24-99-KD-001-j-26.pdf\",\"sourceVersion\":\"Index j vom 03.07.2026\",\"sourcePages\":[1504,1505,1506,1507],\"crossCheck\":\"AVL0116_Schachtbewertung_Trennkonzept_2026-10-23.pdf, S. 19\",\"anchoring\":\"Plan-Marker auf der jeweiligen Schachtwand; keine bestätigte Zuordnung zu sichtbaren Bildöffnungen. Keine zusätzlichen physischen Leerrohre.\"}",
             "planAnchors": [
               {
