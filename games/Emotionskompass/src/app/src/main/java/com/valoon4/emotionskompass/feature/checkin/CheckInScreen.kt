@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -115,7 +116,10 @@ fun CheckInScreen(
         FeelingDiscovery.contrasts(catalog, draft.emotions.keys)
     }
 
-    Column(Modifier.fillMaxSize()) {
+    // The window draws edge-to-edge; `adjustResize` alone does not always
+    // reserve space for the Android keyboard. Apply IME insets to the whole
+    // check-in and let the nested lazy content scroll above the keyboard.
+    Column(Modifier.fillMaxSize().imePadding()) {
         // Selected terms remain visible while scrolling through the catalog.
         if (stage == CheckInStep.BENENNEN && draft.emotions.isNotEmpty()) {
             Surface(color = MaterialTheme.colorScheme.secondaryContainer) {
