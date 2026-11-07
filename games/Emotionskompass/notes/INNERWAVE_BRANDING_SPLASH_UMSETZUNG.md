@@ -23,14 +23,14 @@ Stand: 06.11.2026. Umsetzung des vom Nutzer ausgewählten Namens „InnerWave“
 | `src/app/src/main/res/values/styles.xml` | Fensterstartfarben auf Petrol (ältere Android-Versionen). |
 | `src/app/src/main/res/values-v31/styles.xml` | Android-12+-System-Splash mit App-Symbol und Hintergrund; **nicht** versuchsweise ein Vollbildbild in `windowSplashScreenAnimatedIcon` setzen, das die OS-Maske abschneiden würde. |
 | `src/app/src/androidTest/java/com/valoon4/emotionskompass/InnerWaveBrandingEmulatorTest.kt` | Prüft Name, unveränderte Paketidentität, decodierbare Icon-/Splash-Ressourcen, sichtbaren Splash und Zugänglichkeit der Wortmarke. |
-| `src/app/build.gradle.kts` | Version Code 38, `0.7.8-innerwave-ux-preview` als technischer Teststand. |
+| `src/app/build.gradle.kts` | Version Code 39, `0.7.9-innerwave-daily-need-preview` als technischer Teststand. |
 | `src/ci/run-emulator-tests.sh`, `.github/workflows/emotionskompass-debug-apk.yml` | Vier neue UI-Tests (drei Branding- plus ein Tastaturtest) bei normaler und 200 % Schrift, APK-Signatur, Paket-ID, Label und Version prüfen; Debug-Artefakt unter InnerWave-Namen. |
 
 **Gestaltung:** Die freigegebene statische Splash-Illustration wird als **native, responsiv nachgezeichnete Umsetzung** realisiert, nicht als gestreckter Screenshot. Dadurch bleiben Logo und Wortmarke scharf und für Android-/Displaygrößen anpassbar. Das eigentliche Android-12-Startfenster zeigt technisch bedingt nur einen kurzen, einfachen System-Splash mit identischem Logo/Petrol; direkt danach ist der vollständige Kompositionsscreen für **650 ms bei kaltem Start** sichtbar. Kein künstlicher Ladefortschritt und kein Splash bei normaler Rotation.
 
 ## Tests und Abnahme
 
-Automatisierte Gates: erfolgreiche Kotlin-JVM-Domänentests; Android-Debug- und AndroidTest-Assemblierung; **56 UI-Tests bei 100 % plus 56 bei 200 %** Schrift; 3 EKB2 und 9 EKB3 reale AndroidKeyStore-Backup-Tests; `aapt`-Paket-ID/Label/Version; `apksigner verify` und APK-SHA256.
+Automatisierte Gates: erfolgreiche Kotlin-JVM-Domänentests; Android-Debug- und AndroidTest-Assemblierung; **58 UI-Tests bei 100 % plus 58 bei 200 %** Schrift; 3 EKB2 und 9 EKB3 reale AndroidKeyStore-Backup-Tests; `aapt`-Paket-ID/Label/Version; `apksigner verify` und APK-SHA256.
 
 **Zusätzliche manuelle Gates vor Produktfreigabe (nicht automatisch „bestanden“):**
 1. Auf echtem Android-Gerät nach dem Installieren den **Launcher-Namen „InnerWave“** und das neue Logo in runder und abgerundeter Maske ansehen.
@@ -46,7 +46,7 @@ Kein Rename der Android-Paket-ID, kein ungetesteter Datenmigrationscode, kein ko
 
 ## Testfeedback 07.11.2026 – zwei kritische UX-Korrekturen
 
-Der Nutzer hat zwei konkrete Fehler in der InnerWave-Preview gemeldet. Sie werden **im noch nicht freigegebenen PR #51** korrigiert. Die technische Preview heißt deshalb nun `0.7.8-innerwave-ux-preview` (`versionCode=38`); der Anzeige-/Paketname bleibt InnerWave bzw. `com.valoon4.emotionskompass`.
+Der Nutzer hat zwei konkrete Fehler in der InnerWave-Preview gemeldet. Sie werden **im noch nicht freigegebenen PR #51** korrigiert. Die technische Preview heißt deshalb nun `0.7.9-innerwave-daily-need-preview` (`versionCode=38`); der Anzeige-/Paketname bleibt InnerWave bzw. `com.valoon4.emotionskompass`.
 
 **(1) Softwaretastatur verdeckt Reflexionsfelder:** `CheckInScreen.kt` berücksichtigt die Android-IME-Inset am äußersten Check-in-Container, statt sich beim Edge-to-Edge-Scaffold auf `adjustResize` allein zu verlassen. `DeepReflectionStep.kt` fordert nach Öffnen der Tastatur und Fokuswechsel für jedes freie Eingabefeld ausdrücklich Sichtbarkeit im umgebenden Scroll-Container an (Situation, Interpretation, Erkenntnis, eigener nächster Schritt und Bedürfnissuche). Neue Emulatorprobe: in mehreren weit auseinanderliegenden Feldern tippen, Inhalt unter der offenen Tastatur sichtbar behalten, bei normaler und 200-%-Schrift.
 
@@ -54,8 +54,21 @@ Der Nutzer hat zwei konkrete Fehler in der InnerWave-Preview gemeldet. Sie werde
 
 **Datenschutzzusage und Grenze:** Es wird **kein** Text als `rememberSaveable`, SavedState, DataStore, Klartextdatei oder Export zwischengespeichert, und ein Entwurf wird nicht automatisch dauerhaft gespeichert. Bewusstes `Verwerfen` löscht ihn weiterhin. Ein Android-Prozessabbruch, das Erzwingen des Schließens oder Neustart kann einen rein flüchtigen Entwurf verlieren; eine **separat genehmigte** verschlüsselte Entwurfspeicherung mit klaren Aufbewahrungs-/Löschregeln wäre hierfür eine mögliche Folgeetappe. Bis dahin niemals versprechen, dass ungespeicherter Text Prozessabbruch oder Neuinstallation übersteht.
 
-**Zusätzliche Tests:** `JournalLockTest` kontrolliert wiederhergestellte aktuelle Sektion samt Zurück-Verlauf, Wiederherstellung von Situation/Erkenntnis nach Geräteentsperrung, absichtliches Verwerfen, wiederholten Background-Lock, neuen Prozess ohne Entwurfsrest und deaktivierte App-Sperre. `DeepReflectionKeyboardEmulatorTest` kontrolliert das reale Scrollen/Fokussieren und Tippen in mehreren Feldern; Emulatorziel **56 UI-Tests je Schriftgröße, insgesamt 112**, plus bisherige 3 EKB2 + 9 EKB3-Backup-Integrationstests. **CI-Ergebnisse gelten erst nach Nachweis für den letzten PR-Commit als bestanden.**
+**Zusätzliche Tests:** `JournalLockTest` kontrolliert wiederhergestellte aktuelle Sektion samt Zurück-Verlauf, Wiederherstellung von Situation/Erkenntnis nach Geräteentsperrung, absichtliches Verwerfen, wiederholten Background-Lock, neuen Prozess ohne Entwurfsrest und deaktivierte App-Sperre. `DeepReflectionKeyboardEmulatorTest` kontrolliert das reale Scrollen/Fokussieren und Tippen in mehreren Feldern; Emulatorziel **58 UI-Tests je Schriftgröße, insgesamt 116**, plus bisherige 3 EKB2 + 9 EKB3-Backup-Integrationstests. **CI-Ergebnisse gelten erst nach Nachweis für den letzten PR-Commit als bestanden.**
 
 **Zusätzliche manuelle Gates:** physische Android-Geräte mit Gboard und weiteren Tastaturen, Split-Screen/Landscape, Hardware-Zurück bei eingeblendeter Tastatur, Android 12+, 320 dp / 200 % Schrift; Geräte-PIN-Reauth nach kurzem App-Wechsel bei begonnener sowie bearbeiteter Tagebuchnotiz; kein privater Text in Recents, kein Fokus auf alte Inhalte ohne erfolgreiche Gerätebestätigung.
+
+
+## Nutzerfeedback 07.11.2026 – Bedürfnis des Tages direkt öffnen
+
+**Ursache:** In `HomeScreen` war die Karte **„Bedürfnis des Tages“** fälschlich mit derselben `onNeeds`-Aktion wie der allgemeine „Bedürfnisse“-Atlas verknüpft. Der vorhandene `NeedsScreen` kann per `requestedNeedId` schon gezielt einen Eintrag zeigen; diese Funktion wurde nur vom Tageseinstieg nicht genutzt.
+
+**Änderung:** Die Tageskarte löst `onDailyNeed(daily.need.id)` aus. Die App-Shell prüft die ID gegen den redaktionellen `NeedCatalog`, wählt den Bedürfnisse-Atlas und reicht die ID an den vorhandenen Detailbildschirm weiter. Die Detailseite zeigt den ausgewählten Namen, Definition, Beispiele, Fragen, verwandte Bedürfnisse und mögliche Strategien. Die Ziel-Herkunft der Tageskarte wird nur als `rememberSaveable`-Boolean verwaltet; private Inhalte werden nicht übertragen. **Zur Startseite** führt aus der Tagesdetailansicht zurück nach Home; Standard-Atlas und Strategie-Rücksprung behalten ihre bisherigen Ziele. Wechsel in andere Bereiche oder ein anderes Atlas-Tab verwirft den nur flüchtigen Herkunftshinweis.
+
+**Automatisierte Regressionen:** `DailyNeedNavigationEmulatorTest` prüft (1) Klick auf Tageskarte führt zum exakt passenden `need.id` mit Definition und zurück zur Startseite; (2) allgemeiner Bedürfnisse-Einstieg bleibt die Atlasübersicht. Neuer Sollstand: **58 Compose-Tests bei 100 % und 58 bei 320 dp/200 % Schrift (= 116 UI-Ausführungen)**, plus 3 EKB2- und 9 EKB3-Backup-Tests. Alle CI-Ergebnisse sind bis zum erfolgreichen Ende des aktuellen PR-Commits vorläufig.
+
+**Manuelle Abnahme:** Tageskarte anklicken, richtige Definition prüfen, zurück zur Startseite, allgemeine „Bedürfnisse“-Kachel weiterhin zum Atlas; andere Atlas-Pfade und verwandte Begriffe sowie Zurück-Verhalten bei 200 % prüfen.
+
+**PR #51 bleibt ungemergt bis zur ausdrücklichen Genehmigung.**
 
 **Branch:** `feature/innerwave-branding-splash`. **Kein Merge ohne ausdrückliche Nutzerfreigabe.**
