@@ -49,6 +49,16 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [D00 Repository- und Build-Audit](docs/D00_REPO_BUILD_AUDIT.md) – tatsächlicher Ist-Zustand, bestehende CI-Risiken, Android-Toolchain-Vorschlag und D01-Startbedingungen.
 - [D00 Maschinenlesbares Build-Audit](specs/d00_build_audit_v1.json) – inventarisierter Git-Snapshot, zehn Risiken und klare Isolationsregeln für D01.
 
+## D01 – Erstes eigenständiges Android-Projekt (PR zur Prüfung)
+
+Der D01-Branch ergänzt unter [android/](android/) ein **eigenes Kotlin-/Jetpack-Compose-Projekt** mit zwei umschaltbaren Bereichen **Chats** und **Üben**, eindeutiger Kennzeichnung als technische Demo und ersten Unit-Tests. Es gibt **noch keine echten Chats, keine KI, kein Backend und keine persistenten Nutzerdaten**. Die tatsächliche APK-Verfügbarkeit hängt von einem erfolgreichen Build ab.
+
+Der **ausdrücklich beauftragte** neue GitHub-Actions-Workflow [communicationtrainer-debug-apk.yml](../../.github/workflows/communicationtrainer-debug-apk.yml) liegt technisch außerhalb dieses App-Verzeichnisses und ist strikt auf `apps/CommunicationTrainer/android/**` sowie die eigene Workflow-Datei gefiltert; `contents: read`, keine Schreib-/Merge-Rechte.
+
+Weder die Root-Gradle-Konfiguration noch Kabelsalat, InnerWave, TimeFlow oder ihre CI-Dateien werden verändert. Die bereits in D00 identifizierte Root-Wormblade-Automatisierung bleibt **unverändert** und ein getrenntes Risikothema.
+
+**D01-Build- und Testanleitung:** [android/README.md](android/README.md). Nach erfolgreichem Workflow-Lauf liegt die Debug-APK als GitHub-Artefakt vor; D01 ist **keine** freigegebene Veröffentlichung.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. D00 hat die eigenständige Android-Gradle-Wurzel unter `apps/CommunicationTrainer/android/` als D01-Ziel empfohlen. Eine neue CI-Workflow-Datei außerhalb des Projektordners erfordert vor Erstellung eine ausdrückliche, eng begrenzte Ausnahmefreigabe.
