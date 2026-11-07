@@ -71,7 +71,8 @@ fun NeedsScreen(
     onOpenStrategyAtlas: () -> Unit = {},
     requestedNeedId: String? = null,
     onRequestConsumed: () -> Unit = {},
-    onReturnToStrategy: (() -> Unit)? = null
+    onReturnToStrategy: (() -> Unit)? = null,
+    onReturnToHome: (() -> Unit)? = null
 ) {
     var tab by rememberSaveable { mutableStateOf("Atlas") }
     var detailId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -87,7 +88,10 @@ fun NeedsScreen(
     }
     val closeDetail: () -> Unit = {
         detailId = null
-        if (onReturnToStrategy != null) onReturnToStrategy()
+        when {
+            onReturnToStrategy != null -> onReturnToStrategy()
+            onReturnToHome != null -> onReturnToHome()
+        }
     }
     BackHandler(enabled = detailId != null || pathId != null || comparison != null) {
         when {
@@ -116,7 +120,11 @@ fun NeedsScreen(
             NeedDetailScreen(need, catalog,
                 onBack = closeDetail,
                 onRelated = { detailId = it },
-                backLabel = if (onReturnToStrategy != null) "Zur Strategie" else "Zum Bedürfnisatlas",
+                backLabel = when {
+                    onReturnToStrategy != null -> "Zur Strategie"
+                    onReturnToHome != null -> "Zur Startseite"
+                    else -> "Zum Bedürfnisatlas"
+                },
                 strategyCatalog = strategyCatalog,
                 needStrategyLinks = needStrategyLinks,
                 onStrategy = onStrategy,

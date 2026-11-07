@@ -2,7 +2,11 @@ package com.valoon4.emotionskompass.feature.checkin
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -15,13 +19,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import com.valoon4.emotionskompass.core.checkin.CheckInDraft
 import com.valoon4.emotionskompass.core.checkin.NextStepIdea
 import com.valoon4.emotionskompass.core.model.NeedCatalog
@@ -49,6 +58,7 @@ fun DeepReflectionStep(
                 value = draft.situation,
                 onChange = onSituation,
                 label = "Die Situation in meinen Worten",
+                tag = "reflection-situation",
                 limit = CheckInDraft.MAX_CONTEXT_LENGTH
             )
         }
@@ -58,6 +68,7 @@ fun DeepReflectionStep(
                 value = draft.interpretation,
                 onChange = onInterpretation,
                 label = "Meine persönliche Sicht (optional)",
+                tag = "reflection-interpretation",
                 limit = CheckInDraft.MAX_CONTEXT_LENGTH
             )
         }
@@ -82,7 +93,7 @@ fun DeepReflectionStep(
             OutlinedTextField(
                 value = needQuery,
                 onValueChange = { needQuery = it },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = keyboardVisibleInputModifier("reflection-need-search"),
                 label = { Text("Bedürfnis oder Synonym suchen") },
                 singleLine = true
             )
@@ -155,6 +166,7 @@ fun DeepReflectionStep(
                 value = draft.insight,
                 onChange = onInsight,
                 label = "Meine eigene Erkenntnis (optional)",
+                tag = "reflection-insight",
                 limit = CheckInDraft.MAX_INSIGHT_LENGTH
             )
         }
@@ -177,6 +189,7 @@ fun DeepReflectionStep(
                 value = draft.nextStepNote,
                 onChange = onNextStepNote,
                 label = "Mein nächster Schritt in eigenen Worten (optional)",
+                tag = "reflection-next-step",
                 limit = CheckInDraft.MAX_CONTEXT_LENGTH
             )
         }
@@ -216,15 +229,46 @@ private fun ReflectionField(
     value: String,
     onChange: (String) -> Unit,
     label: String,
+    tag: String,
     limit: Int
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = keyboardVisibleInputModifier(tag),
         label = { Text(label) },
         minLines = 2,
         maxLines = 4,
         supportingText = { Text("${value.length} / $limit · nur während dieses Check-ins") }
     )
+}
+
+/**
+ * The reflection questions are inside ONE large LazyColumn item. The default
+ * focus scroll can stop at that item's bounds, leaving a deeply nested field
+ * behind the soft keyboard. Explicitly request visibility when the IME opens
+ * and whenever the user focuses another question while it is already open.
+ */
+@Composable
+private fun keyboardVisibleInputModifier(tag: String): Modifier {
+    val requester = remember { BringIntoViewRequester() }
+    var focused by remember { mutableStateOf(false) }
+    val keyboardVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+    LaunchedEffect(focused, keyboardVisible) {
+        if (focused) {
+            // Some Android IMEs report zero inset until the window has been
+            // resized; other IMEs animate their final height in several steps.
+            // React to focus independently, then repeat through that resize.
+            // The text field itself stays the request target, not the entire
+            // deep-reflection screen (which is one very tall LazyColumn item).
+            repeat(3) {
+                delay(150L)
+                requester.bringIntoView()
+            }
+        }
+    }
+    return Modifier.fillMaxWidth()
+        .testTag(tag)
+        .bringIntoViewRequester(requester)
+        .onFocusChanged { focused = it.isFocused }
 }

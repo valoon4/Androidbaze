@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -80,7 +83,9 @@ fun CheckInScreen(
     onSave: () -> Unit,
     saveBusy: Boolean,
     saveError: String?,
-    isEditing: Boolean
+    isEditing: Boolean,
+    // Kept by the app shell across device-lock overlays (never persisted).
+    listState: LazyListState = rememberLazyListState()
 ) {
     // Search and family are UI-only, also intentionally not saveable into Android instance state.
     var query by remember { mutableStateOf("") }
@@ -115,7 +120,10 @@ fun CheckInScreen(
         FeelingDiscovery.contrasts(catalog, draft.emotions.keys)
     }
 
-    Column(Modifier.fillMaxSize()) {
+    // The window draws edge-to-edge; `adjustResize` alone does not always
+    // reserve space for the Android keyboard. Apply IME insets to the whole
+    // check-in and let the nested lazy content scroll above the keyboard.
+    Column(Modifier.fillMaxSize().imePadding()) {
         // Selected terms remain visible while scrolling through the catalog.
         if (stage == CheckInStep.BENENNEN && draft.emotions.isNotEmpty()) {
             Surface(color = MaterialTheme.colorScheme.secondaryContainer) {
@@ -136,6 +144,7 @@ fun CheckInScreen(
             }
         }
     LazyColumn(
+        state = listState,
         modifier = Modifier.weight(1f),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)

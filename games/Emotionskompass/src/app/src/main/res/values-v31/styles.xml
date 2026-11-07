@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ shows the platform splash without a fake loading spinner. -->
+    <style name="Theme.Emotionskompass" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#004C49</item>
+        <item name="android:navigationBarColor">#004C49</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowSplashScreenBackground">@color/launcher_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/innerwave_launcher_foreground</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/launcher_background</item>
+    </style>
+</resources>

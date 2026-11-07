@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# M7.6: run real instrumented tests on the Emotionskompass emulator.
+# InnerWave M7.9: run real instrumented tests on the Emotionskompass emulator.
 # Bypass the AGP/UTP ddmlib multi-APK installer, which can falsely report
 # "API level=35. Cannot install split APKs with API level < 21".
 set -euo pipefail
 
 APP_ROOT="games/Emotionskompass/src"
 REPORT_DIR="$APP_ROOT/app/build/outputs/androidTest-results/manual"
-TEST_CLASS="com.valoon4.emotionskompass.StrategyNavigationEmulatorTest,com.valoon4.emotionskompass.PersonalReviewEmulatorTest,com.valoon4.emotionskompass.PersonalInsightsEmulatorTest,com.valoon4.emotionskompass.GuidedReflectionEmulatorTest,com.valoon4.emotionskompass.StrategyExperimentsEmulatorTest"
+TEST_CLASS="com.valoon4.emotionskompass.StrategyNavigationEmulatorTest,com.valoon4.emotionskompass.PersonalReviewEmulatorTest,com.valoon4.emotionskompass.PersonalInsightsEmulatorTest,com.valoon4.emotionskompass.GuidedReflectionEmulatorTest,com.valoon4.emotionskompass.StrategyExperimentsEmulatorTest,com.valoon4.emotionskompass.InnerWaveBrandingEmulatorTest,com.valoon4.emotionskompass.DeepReflectionKeyboardEmulatorTest,com.valoon4.emotionskompass.DailyNeedNavigationEmulatorTest"
 RUNNER="com.valoon4.emotionskompass.test/androidx.test.runner.AndroidJUnitRunner"
 
 mkdir -p "$REPORT_DIR"
@@ -59,7 +59,7 @@ echo "::endgroup::"
 
 run_suite() {
   local label="$1" scale="$2" out="$REPORT_DIR/$1.log"
-  echo "::group::Run all fifty-two Compose tests: $label (font_scale=$scale)"
+  echo "::group::Run all fifty-eight Compose tests: $label (font_scale=$scale)"
   adb shell settings put system font_scale "$scale"
   local current_scale
   current_scale="$(adb shell settings get system font_scale | tr -d '\r')"
@@ -72,10 +72,10 @@ run_suite() {
   adb shell am instrument -w -r -e class "$TEST_CLASS" "$RUNNER" | tee "$out"
   # am instrument often exits 0 even for failed/zero tests: explicitly assert
   # the instrumentation result and exact count.
-  if ! grep -Eq 'OK \(52 tests\)' "$out" \
+  if ! grep -Eq 'OK \(58 tests\)' "$out" \
       || ! grep -q 'INSTRUMENTATION_CODE: -1' "$out" \
       || grep -Eq 'FAILURES!!!|INSTRUMENTATION_FAILED|shortMsg=|Error in ' "$out"; then
-    echo "::error::Expected fifty-two passing instrumented tests at $label; see $out"
+    echo "::error::Expected fifty-eight passing instrumented tests at $label; see $out"
     return 1
   fi
   echo "::endgroup::"
@@ -116,4 +116,4 @@ adb shell wm size
 adb shell wm density
 run_suite "narrow-320dp-200-percent" "2.0"
 
-echo "M7.6: 104 Compose UI executions plus 3 EKB2 and 9 EKB3 KeyStore tests passed."
+echo "InnerWave M7.9: 116 Compose UI executions plus 3 EKB2 and 9 EKB3 KeyStore tests passed."

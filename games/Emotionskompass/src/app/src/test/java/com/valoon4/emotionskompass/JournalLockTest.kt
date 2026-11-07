@@ -1,6 +1,7 @@
 package com.valoon4.emotionskompass
 
 import com.valoon4.emotionskompass.core.checkin.CheckInDraft
+import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.navigation.AppViewModel
 import com.valoon4.emotionskompass.core.navigation.MainSection
@@ -35,7 +36,7 @@ class JournalLockTest {
         assertNull(vm.insightsSnapshotIfAvailable())
     }
 
-    @Test fun backgroundLockWipesPersonalDraftAndNavigation() {
+    @Test fun backgroundLockHidesPersonalDraftUntilFreshUnlock() {
         val vm = AppViewModel(atlas, initialLockEnabled = true)
         vm.unlockJournal()
         vm.openCheckin("angst")
@@ -48,6 +49,70 @@ class JournalLockTest {
         assertEquals(CheckInDraft(), vm.checkIn.value)
         assertEquals(Destination.MAIN, vm.state.value.destination)
         assertEquals(MainSection.START, vm.state.value.section)
+        // A successful device credential reopens exactly the previously
+        // visible editor and its unfinished draft, never an empty start tab.
+        vm.unlockJournal()
+        assertTrue(vm.unlocked.value)
+        assertEquals(Destination.CHECKIN, vm.state.value.destination)
+        assertEquals("Ein vertraulicher Moment", vm.checkIn.value.situation)
+        assertEquals("Mein eigener Gedanke", vm.checkIn.value.insight)
+        assertEquals("angst", vm.checkIn.value.emotions.keys.single())
+        vm.closeCheckIn()
+        assertEquals(CheckInDraft(), vm.checkIn.value)
+        vm.openCheckin()
+        assertEquals("", vm.checkIn.value.insight)
+    }
+
+    @Test fun appReturnsToPreviouslyVisitedMainSectionAfterBackgroundCredential() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.unlockJournal()
+        vm.selectSection(MainSection.WISSEN)
+        vm.openKnowledgeWorld()
+        assertEquals(Destination.WISSENSWELT, vm.state.value.destination)
+        vm.onAppBackgrounded()
+        // Navigation is hidden from unverified callers.
+        assertEquals(Destination.MAIN, vm.state.value.destination)
+        assertEquals(MainSection.START, vm.state.value.section)
+        // A second background event while already locked must not overwrite
+        // the parked navigation snapshot with the temporary lock-screen route.
+        vm.onAppBackgrounded()
+        vm.unlockJournal()
+        assertEquals(Destination.WISSENSWELT, vm.state.value.destination)
+        assertEquals(MainSection.WISSEN, vm.state.value.section)
+        vm.back()
+        assertEquals(Destination.MAIN, vm.state.value.destination)
+        assertEquals(MainSection.WISSEN, vm.state.value.section)
+    }
+
+    @Test fun intentionalDiscardAfterBackgroundRemovesRestorableTextPermanently() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.unlockJournal()
+        vm.openCheckin()
+        repeat(3) { vm.nextCheckInStep() }
+        vm.setCheckInInterpretation("Mein privater Entwurf")
+        vm.onAppBackgrounded()
+        assertFalse(vm.unlocked.value)
+        assertEquals(CheckInDraft(), vm.checkIn.value)
+        vm.unlockJournal()
+        assertEquals(CheckInStep.VERSTEHEN, vm.checkIn.value.step)
+        assertEquals("Mein privater Entwurf", vm.checkIn.value.interpretation)
+        vm.closeCheckIn()
+        vm.onAppBackgrounded()
+        vm.unlockJournal()
+        assertEquals(CheckInDraft(), vm.checkIn.value)
+        assertNotEquals(Destination.CHECKIN, vm.state.value.destination)
+    }
+
+    @Test fun newProcessNeverResurrectsAnUnsavedDraftFromSavedState() {
+        val vm = AppViewModel(atlas, initialLockEnabled = true)
+        vm.unlockJournal()
+        vm.openCheckin()
+        vm.setCheckInSituation("Nur in der laufenden Sitzung")
+        vm.onAppBackgrounded()
+        val freshProcess = AppViewModel(atlas, initialLockEnabled = true)
+        freshProcess.unlockJournal()
+        assertEquals(CheckInDraft(), freshProcess.checkIn.value)
+        assertEquals(Destination.MAIN, freshProcess.state.value.destination)
     }
 
     @Test fun systemPickerDoesNotCancelAnExplicitDocumentTransfer() {
@@ -87,8 +152,12 @@ class JournalLockTest {
         val vm = AppViewModel(atlas)
         assertFalse(vm.lockEnabled.value)
         assertTrue(vm.unlocked.value)
+        vm.openCheckin("angst")
+        vm.setCheckInSituation("Mein Entwurf ohne aktivierte Sperre")
         vm.onAppBackgrounded()
         assertTrue(vm.unlocked.value)
+        assertEquals(Destination.CHECKIN, vm.state.value.destination)
+        assertEquals("Mein Entwurf ohne aktivierte Sperre", vm.checkIn.value.situation)
     }
 
     @Test fun disableGateKeepsUnlockedState() {

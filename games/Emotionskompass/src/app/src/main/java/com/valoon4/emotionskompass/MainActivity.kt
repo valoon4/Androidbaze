@@ -12,7 +12,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -83,7 +88,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -122,6 +134,7 @@ import com.valoon4.emotionskompass.core.navigation.Destination
 import com.valoon4.emotionskompass.core.navigation.DiscoveryAtlas
 import com.valoon4.emotionskompass.core.navigation.MainSection
 import com.valoon4.emotionskompass.core.preferences.OnboardingPreferences
+import com.valoon4.emotionskompass.core.checkin.CheckInStep
 import com.valoon4.emotionskompass.feature.checkin.CheckInScreen
 import com.valoon4.emotionskompass.feature.needs.NeedsScreen
 import com.valoon4.emotionskompass.feature.journal.JournalScreen
@@ -133,6 +146,7 @@ import com.valoon4.emotionskompass.feature.learning.KnowledgeWorldScreen
 import com.valoon4.emotionskompass.feature.strategies.StrategyAtlasScreen
 import java.time.LocalDate
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 /**
  * M5: Native offline emotions/needs atlas and explicitly saved AES-GCM journal.
@@ -142,7 +156,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Only a cold Activity start shows the approved brand composition.
+        // Rotation/process-state restoration never adds an artificial wait.
+        val coldStart = savedInstanceState == null
         setContent {
+            var introVisible by remember { mutableStateOf(coldStart) }
+            LaunchedEffect(coldStart) {
+                if (coldStart) {
+                    delay(650L)
+                    introVisible = false
+                }
+            }
+            if (introVisible) {
+                InnerWaveSplashScreen()
+            } else {
             EmotionskompassTheme {
                 val preferences = remember { OnboardingPreferences(applicationContext) }
                 val completed by preferences.completed.collectAsState(initial = false)
@@ -247,6 +274,96 @@ class MainActivity : ComponentActivity() {
                     WelcomeScreen(onContinue = { scope.launch { preferences.complete() } })
                 }
             }
+            }
+        }
+    }
+}
+
+/**
+ * Native, resolution-independent adaptation of the approved InnerWave design:
+ * a deep teal glow, soft corner waves, the vector logo and its wordmark.
+ * Android 12+ also uses the same logo on the matching system splash background.
+ * No networking, logging, sensitive data or new persistent state.
+ */
+@Composable
+fun InnerWaveSplashScreen() {
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize().background(
+            Brush.radialGradient(
+                colors = listOf(Color(0xFF13735F), Color(0xFF005D55),
+                    Color(0xFF004A47), Color(0xFF003E3D))
+            )
+        ),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(Modifier.fillMaxSize()) {
+            val w = size.width
+            val h = size.height
+            val upper = Path().apply {
+                moveTo(0f, 0f)
+                lineTo(w, 0f)
+                cubicTo(w * 0.78f, h * 0.035f, w * 0.76f, h * 0.09f,
+                    w * 0.59f, h * 0.115f)
+                cubicTo(w * 0.39f, h * 0.16f, w * 0.27f, h * 0.08f,
+                    0f, h * 0.18f)
+                close()
+            }
+            drawPath(
+                upper,
+                brush = Brush.linearGradient(
+                    colors = listOf(Color(0xFF00655A), Color(0xFF399B77),
+                        Color(0xFF004A46)),
+                    start = Offset(w * 0.75f, 0f),
+                    end = Offset(w * 0.3f, h * 0.21f)
+                ),
+                alpha = 0.68f
+            )
+            val lower = Path().apply {
+                moveTo(0f, h * 0.88f)
+                cubicTo(w * 0.18f, h * 0.85f, w * 0.29f, h * 0.96f,
+                    w * 0.49f, h * 0.86f)
+                cubicTo(w * 0.75f, h * 0.73f, w * 0.83f, h * 0.82f,
+                    w, h * 0.75f)
+                lineTo(w, h)
+                lineTo(0f, h)
+                close()
+            }
+            drawPath(
+                lower,
+                brush = Brush.linearGradient(
+                    listOf(Color(0xFF006254), Color(0xFF3B9C76),
+                        Color(0xFF005044)),
+                    start = Offset(w * 0.55f, h * 0.79f),
+                    end = Offset(w * 0.30f, h)
+                ),
+                alpha = 0.45f
+            )
+        }
+        // Capture BoxWithConstraints values before entering ColumnScope.
+        val splashWidth = maxWidth
+        // Splash has no controls; keep the wordmark inside narrow screens even
+        // when Android requests 200%+ text scaling.
+        val wordmarkScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
+        Column(
+            modifier = Modifier.fillMaxWidth().offset(y = maxHeight * 0.015f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(0.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.innerwave_launcher_foreground),
+                contentDescription = "InnerWave-Logo",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f)
+            )
+            Text(
+                "InnerWave",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color(0xFFFFE9C8),
+                fontSize = ((if (splashWidth < 380.dp) 46f else 55f) / wordmarkScale).sp,
+                fontWeight = FontWeight.Normal,
+                maxLines = 1,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -261,7 +378,7 @@ private fun WelcomeScreen(onContinue: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(19.dp)) {
                 Spacer(Modifier.height(28.dp))
                 Mark()
-                Text("Willkommen bei\nEmotionskompass", style = MaterialTheme.typography.headlineLarge,
+                Text("Willkommen bei\nInnerWave", style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                 Text("Ein ruhiger Raum, um Gefühle zu entdecken, die richtigen Worte zu finden und dich selbst besser zu verstehen.",
                     style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -362,7 +479,7 @@ private fun EmotionskompassApp(
             credentialError = "Richte zuerst unter Android-Einstellungen eine Geräte-PIN, ein Muster oder ein Passwort ein."
         } else {
             val intent = manager.createConfirmDeviceCredentialIntent(
-                "Emotionskompass entsperren", "Bestätige die Geräteanmeldung zum Schutz deines Tagebuchs."
+                "InnerWave entsperren", "Bestätige die Geräteanmeldung zum Schutz deines Tagebuchs."
             )
             if (intent == null) {
                 credentialError = "Android konnte keine Gerätebestätigung öffnen."
@@ -386,6 +503,20 @@ private fun EmotionskompassApp(
     val state by vm.state.collectAsState()
     val filters by vm.filters.collectAsState()
     val checkIn by vm.checkIn.collectAsState()
+    // Keep the exact (non-sensitive) scroll position while an active check-in
+    // is hidden behind the device lock. Do not save it to Android's Bundle.
+    val checkInScrollState = rememberLazyListState()
+    var lastVisibleCheckInStep by remember { mutableStateOf<CheckInStep?>(null) }
+    LaunchedEffect(unlocked, state.destination, checkIn.step) {
+        if (!unlocked) return@LaunchedEffect
+        if (state.destination == Destination.CHECKIN) {
+            if (lastVisibleCheckInStep != checkIn.step) checkInScrollState.scrollToItem(0)
+            lastVisibleCheckInStep = checkIn.step
+        } else {
+            lastVisibleCheckInStep = null
+            checkInScrollState.scrollToItem(0)
+        }
+    }
     val diary by vm.journalState.collectAsState()
     // Keep only ephemeral calendar navigation across a journal detail deep link.
     // Never serialize a selected private date into Android SavedState.
@@ -419,11 +550,17 @@ private fun EmotionskompassApp(
     var returnCaseId by rememberSaveable { mutableStateOf<String?>(null) }
     var requestedNeedId by rememberSaveable { mutableStateOf<String?>(null) }
     var needReturnToStrategy by rememberSaveable { mutableStateOf(false) }
+    // Navigation-only source marker; no personal data is stored.
+    var needReturnToHome by rememberSaveable { mutableStateOf(false) }
     var requestedCaseId by rememberSaveable { mutableStateOf<String?>(null) }
     var requestedKnowledgeArticleId by rememberSaveable { mutableStateOf<String?>(null) }
     var discoveryAtlas by rememberSaveable { mutableStateOf(DiscoveryAtlas.GEFUEHLE) }
     val mainScreenStates = rememberSaveableStateHolder()
     val atlasStates = rememberSaveableStateHolder()
+    LaunchedEffect(state.section) {
+        // Leaving Entdecken makes the daily-need return target obsolete.
+        if (state.section != MainSection.ENTDECKEN) needReturnToHome = false
+    }
     val strategyTitles = remember(strategyCatalog) {
         strategyCatalog?.strategies?.associate { it.id to it.title } ?: emptyMap()
     }
@@ -502,7 +639,7 @@ private fun EmotionskompassApp(
             // reachable on small screens, in landscape and with TalkBack.
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(28.dp),
                 verticalArrangement = Arrangement.Center) {
-                Text("Emotionskompass ist gesperrt",
+                Text("InnerWave ist gesperrt",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(16.dp))
@@ -549,7 +686,7 @@ private fun EmotionskompassApp(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Emotionskompass", fontWeight = FontWeight.SemiBold, fontSize = 19.sp) },
+                title = { Text("InnerWave", fontWeight = FontWeight.SemiBold, fontSize = 19.sp) },
                 navigationIcon = {
                     if (state.destination != Destination.MAIN) {
                         IconButton(onClick = requestBack) {
@@ -600,9 +737,22 @@ private fun EmotionskompassApp(
                         },
                         onNeeds = {
                             strategyReturnTarget = null
+                            requestedNeedId = null
                             needReturnToStrategy = false
+                            needReturnToHome = false
                             discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
                             vm.selectSection(MainSection.ENTDECKEN)
+                        },
+                        onDailyNeed = { needId ->
+                            if (needCatalog.find(needId) != null) {
+                                // Only a valid editorial catalog ID is used.
+                                strategyReturnTarget = null
+                                needReturnToStrategy = false
+                                needReturnToHome = true
+                                requestedNeedId = needId
+                                discoveryAtlas = DiscoveryAtlas.BEDUERFNISSE
+                                vm.selectSection(MainSection.ENTDECKEN)
+                            }
                         },
                         onStrategies = openStrategyOverview,
                         onCheckin = vm::openCheckin,
@@ -621,7 +771,10 @@ private fun EmotionskompassApp(
                                             onClick = {
                                                 discoveryAtlas = atlas
                                                 if (atlas != DiscoveryAtlas.STRATEGIEN) strategyReturnTarget = null
-                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) needReturnToStrategy = false
+                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) {
+                                                    needReturnToStrategy = false
+                                                    needReturnToHome = false
+                                                }
                                             },
                                             label = { Text(atlas.label) },
                                             modifier = Modifier.fillMaxWidth()
@@ -637,7 +790,10 @@ private fun EmotionskompassApp(
                                             onClick = {
                                                 discoveryAtlas = atlas
                                                 if (atlas != DiscoveryAtlas.STRATEGIEN) strategyReturnTarget = null
-                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) needReturnToStrategy = false
+                                                if (atlas != DiscoveryAtlas.BEDUERFNISSE) {
+                                            needReturnToStrategy = false
+                                            needReturnToHome = false
+                                        }
                                             },
                                             label = {
                                                 Text(atlas.label, textAlign = TextAlign.Center,
@@ -684,6 +840,12 @@ private fun EmotionskompassApp(
                                         },
                                         requestedNeedId = requestedNeedId,
                                         onRequestConsumed = { requestedNeedId = null },
+                                        onReturnToHome = if (needReturnToHome) {
+                                            {
+                                                needReturnToHome = false
+                                                vm.selectSection(MainSection.START)
+                                            }
+                                        } else null,
                                         onReturnToStrategy = if (needReturnToStrategy) {
                                             {
                                                 needReturnToStrategy = false
@@ -947,7 +1109,8 @@ private fun EmotionskompassApp(
                     onSave = vm::saveCheckIn,
                     saveBusy = diary.busy,
                     saveError = diary.error,
-                    isEditing = editingId != null
+                    isEditing = editingId != null,
+                    listState = checkInScrollState
                 )
                 Destination.SETTINGS -> SettingsScreen(catalog, needCatalog)
             }
@@ -980,20 +1143,22 @@ private fun EmotionskompassApp(
 @Composable
 private fun Mark(small: Boolean = false) {
     Surface(
-        color = MaterialTheme.colorScheme.primary,
+        color = Color(0xFF004C49),
         shape = RoundedCornerShape(if (small) 12.dp else 20.dp)
     ) {
-        Box(Modifier.size(if (small) 38.dp else 68.dp), contentAlignment = Alignment.Center) {
-            Icon(Icons.Outlined.AutoAwesome, contentDescription = "Emotionskompass-Logo",
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(if (small) 25.dp else 38.dp))
-        }
+        Image(
+            painter = painterResource(R.drawable.innerwave_launcher_foreground),
+            contentDescription = if (small) null else "InnerWave-Logo",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.size(if (small) 38.dp else 68.dp)
+        )
     }
 }
 
 @Composable
-private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
-    onExplore: () -> Unit, onNeeds: () -> Unit, onStrategies: () -> Unit,
+internal fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
+    onExplore: () -> Unit, onNeeds: () -> Unit,
+    onDailyNeed: (String) -> Unit, onStrategies: () -> Unit,
     onCheckin: () -> Unit, onWord: () -> Unit, onKnowledge: () -> Unit,
     daily: com.valoon4.emotionskompass.core.learning.DailyWords) {
     Column(
@@ -1001,7 +1166,7 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
         verticalArrangement = Arrangement.spacedBy(17.dp)
     ) {
         Spacer(Modifier.height(8.dp))
-        Text("DEIN EMOTIONSKOMPASS", style = MaterialTheme.typography.labelSmall,
+        Text("INNERWAVE", style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary, letterSpacing = 1.2.sp)
         Text("Gefühle verstehen. Eigene Wege finden.",
             style = MaterialTheme.typography.headlineLarge,
@@ -1072,8 +1237,11 @@ private fun HomeScreen(termsCount: Int, needsCount: Int, strategyCount: Int,
                 Icon(Icons.Outlined.ChevronRight, contentDescription = null)
             }
         }
-        Card(onClick = onNeeds, modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+        Card(
+            onClick = { onDailyNeed(daily.need.id) },
+            modifier = Modifier.fillMaxWidth().testTag("daily-need-card"),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
             Column(Modifier.padding(17.dp)) {
                 Text("Bedürfnis des Tages: ${daily.need.name}",
                     style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -1774,10 +1942,10 @@ private fun SettingsScreen(catalog: EmotionCatalog, needs: NeedCatalog) {
             fontWeight = FontWeight.SemiBold)
         Text("Der Gefühlsatlas enthält ${catalog.emotions.size} Begriffe, der Bedürfnisatlas ${needs.needs.size}. Das Tagebuch bleibt mit Android Keystore verschlüsselt. Neu in M5 sind eine freiwillige App-Sperre mit Geräte-PIN/Muster/Passwort und ausdrücklich passphrasegeschützte Export-/Importdateien. Eine Sicherung kann nach Bestätigung auf einem anderen Gerät wiederhergestellt werden; ohne Sicherung können Deinstallation und Geräteverlust deine Einträge endgültig vernichten. Keine automatische Cloud-Synchronisation. Der Bedürfniskompass bleibt flüchtig.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text("Emotionskompass ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
+        Text("InnerWave ist ein Lern- und Reflexionswerkzeug, keine Therapie und keine medizinische Diagnose.",
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
-        Text("Version 0.6.2.1-m6.2.1", style = MaterialTheme.typography.bodySmall,
+        Text("Version 0.7.9 – InnerWave", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
