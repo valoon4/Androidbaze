@@ -12,35 +12,38 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,6 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valoon4.communicationtrainer.data.ChatUiState
 import com.valoon4.communicationtrainer.data.ChatViewModel
+import com.valoon4.communicationtrainer.data.ConversationEntity
+import com.valoon4.communicationtrainer.data.MessageEntity
 import com.valoon4.communicationtrainer.data.ThemeMode
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseAccent
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseTheme
@@ -72,29 +77,28 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CommunicationTrainerApp(viewModel: ChatViewModel) {
-    val storageState by viewModel.state.collectAsState()
-    var selectedSection by rememberSaveable { mutableStateOf(MainSection.CHATS.name) }
-    val activeSection = MainSection.valueOf(selectedSection)
+    val state by viewModel.state.collectAsState()
+    var selectedTab by rememberSaveable { mutableStateOf(MainSection.CHATS.name) }
+    val section = MainSection.valueOf(selectedTab)
 
-    AuroraPulseTheme(mode = storageState.themeMode) {
+    AuroraPulseTheme(mode = state.themeMode) {
         val scheme = MaterialTheme.colorScheme
         Scaffold(
             containerColor = scheme.background,
             bottomBar = {
                 NavigationBar(containerColor = scheme.surface, tonalElevation = 0.dp) {
-                    MainSection.entries.forEach { section ->
-                        val isSelected = section == activeSection
+                    MainSection.entries.forEach { tab ->
                         NavigationBarItem(
-                            selected = isSelected,
-                            onClick = { selectedSection = section.name },
+                            selected = tab == section,
+                            onClick = { selectedTab = tab.name },
                             icon = {
                                 Text(
-                                    text = if (section == MainSection.CHATS) "◉" else "✦",
-                                    fontSize = 23.sp,
+                                    if (tab == MainSection.CHATS) "◉" else "✦",
+                                    fontSize = 22.sp,
                                     modifier = Modifier.clearAndSetSemantics {}
                                 )
                             },
-                            label = { Text(section.title) },
+                            label = { Text(tab.title) },
                             alwaysShowLabel = true,
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = scheme.primary,
@@ -107,385 +111,423 @@ fun CommunicationTrainerApp(viewModel: ChatViewModel) {
                     }
                 }
             }
-        ) { innerPadding ->
-            SectionContent(activeSection, innerPadding, storageState, viewModel)
-        }
-    }
-}
-
-@Composable
-private fun SectionContent(
-    section: MainSection,
-    innerPadding: PaddingValues,
-    storageState: ChatUiState,
-    viewModel: ChatViewModel
-) {
-    val scheme = MaterialTheme.colorScheme
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "CommunicationTrainer",
-                style = MaterialTheme.typography.titleMedium,
-                color = scheme.onBackground,
-                fontWeight = FontWeight.Bold
-            )
-            Surface(
-                shape = RoundedCornerShape(50),
-                color = scheme.secondaryContainer
-            ) {
-                Text(
-                    text = "✦ Aurora Pulse",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = scheme.onSecondaryContainer,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                )
+        ) { padding ->
+            when (section) {
+                MainSection.CHATS -> {
+                    if (state.selectedConversationId == null) {
+                        ChatOverview(state, viewModel, padding)
+                    } else {
+                        ChatConversation(state, viewModel, padding)
+                    }
+                }
+                MainSection.PRACTICE -> PracticeOverview(state, viewModel, padding)
             }
         }
+    }
+}
 
-        AuroraHero(section)
-
+@Composable
+private fun BrandHeader() {
+    val scheme = MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Text(
-            text = if (section == MainSection.CHATS) "Ein Ort für neue Gespräche" else "Schritt für Schritt sicherer werden",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
+            "CommunicationTrainer",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
             color = scheme.onBackground
         )
-
-        if (section == MainSection.CHATS) {
-            DraftWorkspace(storageState, viewModel)
-        } else {
-            InfoCard(
-                eyebrow = "ÜBUNGSSITUATIONEN",
-                heading = "Alltag entspannt ausprobieren",
-                description = "Ab D03 kommen die ersten real benutzbaren Übungsgespräche hinzu.",
-                symbol = "✦",
-                accent = scheme.secondary,
-                accentContainer = scheme.secondaryContainer,
-                accentOnContainer = scheme.onSecondaryContainer
-            )
-            InfoCard(
-                eyebrow = "DEIN TEMPO",
-                heading = "Lernen ohne Leistungsdruck",
-                description = "Hier gibt es keine Persönlichkeitspunkte und keinen Zwang, besonders lange zu chatten.",
-                symbol = "◌",
-                accent = scheme.tertiary,
-                accentContainer = scheme.tertiaryContainer,
-                accentOnContainer = scheme.onTertiaryContainer
-            )
-            ThemeControl(storageState.themeMode, viewModel::setThemeMode)
-        }
-
         Surface(
-            color = scheme.surfaceVariant,
-            shape = RoundedCornerShape(18.dp)
+            color = scheme.secondaryContainer,
+            shape = RoundedCornerShape(30.dp)
         ) {
             Text(
-                text = "D02: Gesprächsentwürfe und Darstellung werden lokal gespeichert. Nachrichten versenden und KI-Antworten sind noch nicht enthalten.",
-                style = MaterialTheme.typography.bodySmall,
-                color = scheme.onSurfaceVariant,
-                modifier = Modifier.padding(16.dp)
+                "✦ Aurora Pulse",
+                style = MaterialTheme.typography.labelMedium,
+                color = scheme.onSecondaryContainer,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
             )
         }
     }
 }
 
 @Composable
-private fun AuroraHero(section: MainSection) {
+private fun DemoHero(title: String, description: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
+            .clip(RoundedCornerShape(26.dp))
             .background(
                 Brush.linearGradient(
-                    colors = listOf(
+                    listOf(
                         AuroraPulseAccent.HeroStart,
                         AuroraPulseAccent.HeroMiddle,
                         AuroraPulseAccent.HeroEnd
                     )
                 )
             )
-            .padding(24.dp)
+            .padding(22.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(50),
-                    color = AuroraPulseAccent.HeroStart
-                ) {
-                    Text(
-                        text = "D02 · LOKAL OHNE KI",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                    )
-                }
+            Surface(color = AuroraPulseAccent.HeroStart, shape = RoundedCornerShape(30.dp)) {
                 Text(
-                    text = "✦",
-                    fontSize = 32.sp,
-                    color = AuroraPulseAccent.HeroMint,
-                    modifier = Modifier.clearAndSetSemantics {}
+                    "D03 · LOKALE SIMULATION",
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
                 )
             }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
             Text(
-                text = section.headline,
+                title,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+            Text(description, color = Color.White, style = MaterialTheme.typography.bodyMedium)
             Text(
-                text = section.intro,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
-            )
-            Text(
-                text = "Entdecken  ·  Ausprobieren  ·  Wachsen",
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Medium,
-                color = AuroraPulseAccent.HeroMint
+                "Keine KI · Keine Netzwerkübertragung",
+                color = AuroraPulseAccent.HeroMint,
+                style = MaterialTheme.typography.labelLarge
             )
         }
     }
 }
 
 @Composable
-private fun InfoCard(
-    eyebrow: String,
-    heading: String,
-    description: String,
-    symbol: String,
-    accent: Color,
-    accentContainer: Color,
-    accentOnContainer: Color
-) {
+private fun ChatOverview(state: ChatUiState, viewModel: ChatViewModel, padding: PaddingValues) {
     val scheme = MaterialTheme.colorScheme
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        border = BorderStroke(1.dp, scheme.outline.copy(alpha = 0.55f)),
-        colors = CardDefaults.cardColors(containerColor = scheme.surface)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(18.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(46.dp)
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(accentContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = symbol,
-                    fontSize = 25.sp,
-                    color = accentOnContainer,
-                    modifier = Modifier.clearAndSetSemantics {}
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(7.dp)
-            ) {
-                Text(
-                    text = eyebrow,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = accent,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = heading,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = scheme.onSurface,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = scheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
-
-/**
- * D02 deliberately exposes real, local draft storage without pretending that a message
- * can already be sent. D03 adds a full chat composer and send/response states.
- */
-@Composable
-private fun DraftWorkspace(state: ChatUiState, viewModel: ChatViewModel) {
-    val scheme = MaterialTheme.colorScheme
-    var showDeleteDialog by remember { mutableStateOf(false) }
-    val activeId = state.selectedConversationId
-
-    if (activeId == null) {
-        Text(
-            text = "Deine lokalen Entwürfe",
-            style = MaterialTheme.typography.titleLarge,
-            color = scheme.onBackground,
-            fontWeight = FontWeight.SemiBold
+        BrandHeader()
+        DemoHero(
+            "Gespräche ausprobieren",
+            "Starte einen lokalen Testchat. Der Testpartner antwortet mit festen Textbausteinen – nicht mit KI."
         )
         Text(
-            text = "Du kannst schon jetzt einen Gesprächsentwurf notieren. Er bleibt auf diesem Gerät erhalten.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = scheme.onSurfaceVariant
+            "Deine Gespräche",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = scheme.onBackground
         )
         Button(
             onClick = viewModel::createConversation,
             enabled = !state.isBusy,
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Neuen Entwurf anlegen")
-        }
+        ) { Text("Neues Testgespräch") }
+
         if (state.conversations.isEmpty()) {
-            Surface(color = scheme.primaryContainer, shape = RoundedCornerShape(20.dp)) {
+            Surface(
+                color = scheme.primaryContainer,
+                shape = RoundedCornerShape(18.dp)
+            ) {
                 Text(
-                    "Noch keine Entwürfe. Starte mit einer Idee für dein nächstes Gespräch.",
+                    "Noch kein Gespräch vorhanden. Starte mit deiner ersten Nachricht.",
                     color = scheme.onPrimaryContainer,
                     modifier = Modifier.padding(18.dp)
                 )
             }
         }
         state.conversations.forEach { conversation ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = scheme.surface)
-            ) {
-                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(conversation.title, color = scheme.onSurface, fontWeight = FontWeight.SemiBold)
-                    Text(
-                        "Nur auf diesem Gerät · Noch nicht gesendet",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = scheme.onSurfaceVariant
-                    )
-                    TextButton(onClick = { viewModel.openConversation(conversation.id) }) {
-                        Text("Entwurf öffnen")
-                    }
-                }
-            }
+            ConversationCard(conversation, { viewModel.openConversation(conversation.id) })
         }
-    } else {
+        if (state.error != null) {
+            Text(state.error, style = MaterialTheme.typography.bodySmall, color = scheme.error)
+        }
+    }
+}
+
+@Composable
+private fun ConversationCard(conversation: ConversationEntity, open: () -> Unit) {
+    val scheme = MaterialTheme.colorScheme
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(19.dp),
+        colors = CardDefaults.cardColors(containerColor = scheme.surface),
+        border = BorderStroke(1.dp, scheme.outline.copy(alpha = 0.45f))
+    ) {
+        Column(
+            modifier = Modifier.padding(17.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(conversation.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text(
+                "Freies Testgespräch · Simulierter Gesprächspartner",
+                style = MaterialTheme.typography.bodySmall,
+                color = scheme.onSurfaceVariant
+            )
+            TextButton(onClick = open) { Text("Gespräch öffnen") }
+        }
+    }
+}
+
+@Composable
+private fun ChatConversation(state: ChatUiState, viewModel: ChatViewModel, padding: PaddingValues) {
+    val scheme = MaterialTheme.colorScheme
+    val activeId = state.selectedConversationId
+    var confirmDelete by remember(activeId) { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    LaunchedEffect(activeId, state.messages.size) {
+        if (state.messages.isNotEmpty()) listState.animateScrollToItem(state.messages.lastIndex)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .imePadding()
+            .padding(horizontal = 14.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextButton(onClick = viewModel::closeConversation, enabled = !state.isBusy) {
-                Text("‹ Alle Entwürfe")
+            TextButton(onClick = viewModel::closeConversation, enabled = !state.isSending) {
+                Text("‹ Alle Gespräche")
             }
-            TextButton(onClick = { showDeleteDialog = true }, enabled = !state.isBusy) {
+            TextButton(onClick = { confirmDelete = true }, enabled = !state.isSending) {
                 Text("Löschen", color = scheme.error)
             }
         }
         Text(
-            "Dein Gesprächsentwurf",
+            "Testpartner · Simulation",
             style = MaterialTheme.typography.titleLarge,
             color = scheme.onBackground,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.Bold
         )
+        Surface(
+            color = scheme.tertiaryContainer,
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                "Feste Demo-Antworten, keine echte KI und keine reale Person.",
+                style = MaterialTheme.typography.bodySmall,
+                color = scheme.onTertiaryContainer,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
+            )
+        }
+        if (state.isLoadingDraft) {
+            Text("Gespräch wird geladen …", color = scheme.onSurfaceVariant)
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(vertical = 12.dp)
+            ) {
+                if (state.messages.isEmpty()) {
+                    item(key = "empty") {
+                        Text(
+                            "Beginne mit einer Nachricht. Das Gespräch bleibt lokal gespeichert.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = scheme.onSurfaceVariant,
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
+                }
+                items(state.messages, key = { it.id }) { message ->
+                    MessageBubble(
+                        message = message,
+                        isProcessing = state.respondingMessageId == message.id,
+                        retry = { viewModel.retryMockReply(message.id) }
+                    )
+                }
+            }
+        }
+
+        if (state.error != null) {
+            Text(
+                state.error,
+                style = MaterialTheme.typography.bodySmall,
+                color = scheme.error
+            )
+        }
+        val hasPending = state.messages.any {
+            it.role == "user" && it.status in setOf("queued", "failed")
+        }
+        val canSend = !state.isLoadingDraft && !state.isBusy && !state.isSending &&
+            state.isDraftSaved && state.draftText.isNotBlank() && !hasPending &&
+            state.respondingMessageId == null && state.error == null
+
         OutlinedTextField(
             value = state.draftText,
             onValueChange = viewModel::editDraft,
-            label = { Text("Was möchtest du sagen?") },
-            placeholder = { Text("Schreib deine Gedanken auf …") },
-            minLines = 4,
-            maxLines = 10,
-            enabled = !state.isLoadingDraft && !state.isBusy,
+            enabled = !state.isBusy && !state.isSending && !state.isLoadingDraft,
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp)
+            minLines = 2,
+            maxLines = 4,
+            shape = RoundedCornerShape(18.dp),
+            label = { Text("Deine Nachricht") },
+            placeholder = { Text("Schreib, was du sagen möchtest …") }
         )
-        Text(
-            text = when {
-                state.isLoadingDraft -> "Entwurf wird geladen …"
-                state.error != null -> state.error
-                state.isDraftSaved -> "Auf diesem Gerät gespeichert"
-                else -> "Wird gespeichert … Bitte vor dem Verlassen auf die Bestätigung achten."
-            },
-            style = MaterialTheme.typography.bodySmall,
-            color = if (state.error != null) scheme.error else scheme.onSurfaceVariant
-        )
-        Surface(color = scheme.tertiaryContainer, shape = RoundedCornerShape(18.dp)) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
             Text(
-                "Noch kein Chat: Dieser Text bleibt ein Entwurf und wird nicht an eine KI gesendet.",
-                color = scheme.onTertiaryContainer,
+                when {
+                    state.isLoadingDraft -> "Lade Entwurf …"
+                    state.isSending -> "Wird gesendet …"
+                    state.error != null -> "Bitte Fehler beachten"
+                    state.isDraftSaved -> "Entwurf gespeichert"
+                    else -> "Wird lokal gespeichert …"
+                },
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(16.dp)
+                color = scheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f)
+            )
+            Button(onClick = viewModel::sendMessage, enabled = canSend) {
+                Text("Senden")
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = state.failNextMockReply,
+                onCheckedChange = viewModel::setFailNextMockReply
+            )
+            Text(
+                "Nächste Testantwort absichtlich scheitern lassen",
+                style = MaterialTheme.typography.bodySmall,
+                color = scheme.onSurfaceVariant
             )
         }
     }
 
-    if (state.error != null && activeId == null) {
-        Text(state.error, color = scheme.error, style = MaterialTheme.typography.bodySmall)
-    }
-    if (showDeleteDialog && activeId != null) {
+    if (confirmDelete && activeId != null) {
         AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Entwurf wirklich löschen?") },
-            text = { Text("Der Entwurf sowie zugehörige lokale Nachrichten und Replay-Zweige werden von diesem Gerät entfernt. Das kann nicht rückgängig gemacht werden.") },
+            onDismissRequest = { confirmDelete = false },
+            title = { Text("Gespräch löschen?") },
+            text = {
+                Text(
+                    "Dieses Testgespräch, alle Nachrichten und sein Entwurf werden nur " +
+                        "aus dem lokalen App-Speicher entfernt. Die Aktion lässt sich nicht rückgängig machen."
+                )
+            },
             confirmButton = {
                 TextButton(onClick = {
-                    showDeleteDialog = false
+                    confirmDelete = false
                     viewModel.deleteConversation()
                 }) { Text("Endgültig löschen", color = scheme.error) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Abbrechen") }
+                TextButton(onClick = { confirmDelete = false }) { Text("Abbrechen") }
             }
         )
     }
 }
 
 @Composable
-private fun ThemeControl(current: ThemeMode, onSelect: (ThemeMode) -> Unit) {
+private fun MessageBubble(message: MessageEntity, isProcessing: Boolean, retry: () -> Unit) {
     val scheme = MaterialTheme.colorScheme
-    Surface(color = scheme.surface, shape = RoundedCornerShape(20.dp)) {
+    val isMine = message.role == "user"
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = if (isMine) Arrangement.End else Arrangement.Start
+    ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.widthIn(max = 340.dp),
+            horizontalAlignment = if (isMine) Alignment.End else Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                "Darstellung",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                if (isMine) "DU" else "TESTPARTNER · SIMULATION",
+                color = scheme.onSurfaceVariant,
+                style = MaterialTheme.typography.labelSmall
             )
+            Surface(
+                color = if (isMine) scheme.primaryContainer else scheme.surface,
+                shape = RoundedCornerShape(19.dp),
+                border = if (isMine) null else BorderStroke(1.dp, scheme.outline.copy(alpha = 0.45f))
+            ) {
+                Text(
+                    message.content,
+                    color = if (isMine) scheme.onPrimaryContainer else scheme.onSurface,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(14.dp)
+                )
+            }
+            if (isMine) {
+                val statusLabel = when {
+                    isProcessing -> "Testantwort wird erstellt …"
+                    message.status == "queued" -> "Testantwort steht noch aus"
+                    message.status == "failed" -> "Testantwort fehlgeschlagen"
+                    message.status == "sent" -> "Gespeichert · Testantwort vorhanden"
+                    else -> "Lokal gespeichert"
+                }
+                Text(
+                    statusLabel,
+                    color = if (message.status == "failed") scheme.error else scheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                if (!isProcessing && message.status in setOf("queued", "failed")) {
+                    TextButton(onClick = retry) { Text("Testantwort erneut versuchen") }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PracticeOverview(state: ChatUiState, viewModel: ChatViewModel, padding: PaddingValues) {
+    val scheme = MaterialTheme.colorScheme
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        BrandHeader()
+        DemoHero(
+            "Kommunikation üben",
+            "Die ersten Alltagssituationen und echten KI-Charaktere folgen in späteren Schritten."
+        )
+        Surface(color = scheme.surface, shape = RoundedCornerShape(18.dp)) {
             Text(
-                "Die Einstellung wird mit DataStore dauerhaft auf deinem Gerät gespeichert.",
-                style = MaterialTheme.typography.bodySmall,
-                color = scheme.onSurfaceVariant
+                "D03: Unter „Chats“ kannst du jetzt Nachrichten mit einem lokalen Testpartner austauschen. " +
+                    "Die Antworten stammen ausschließlich aus festen Beispielen.",
+                color = scheme.onSurface,
+                modifier = Modifier.padding(18.dp)
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ThemeMode.entries.forEach { mode ->
-                    if (mode == current) {
-                        Button(onClick = { onSelect(mode) }, modifier = Modifier.weight(1f)) {
-                            Text(mode.label)
-                        }
-                    } else {
-                        OutlinedButton(onClick = { onSelect(mode) }, modifier = Modifier.weight(1f)) {
-                            Text(mode.label)
+        }
+        Surface(color = scheme.surface, shape = RoundedCornerShape(18.dp)) {
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    "Darstellung",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    ThemeMode.entries.forEach { mode ->
+                        if (mode == state.themeMode) {
+                            Button(
+                                onClick = { viewModel.setThemeMode(mode) },
+                                modifier = Modifier.weight(1f)
+                            ) { Text(mode.label) }
+                        } else {
+                            OutlinedButton(
+                                onClick = { viewModel.setThemeMode(mode) },
+                                modifier = Modifier.weight(1f)
+                            ) { Text(mode.label) }
                         }
                     }
                 }
