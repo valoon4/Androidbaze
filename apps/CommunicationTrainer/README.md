@@ -46,9 +46,12 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [K6 Abnahme und Entscheidungen](docs/K6_ABNAHME_UND_ENTSCHEIDUNGEN.md) – Safety-/Privacy-/Qualitätsgates und offene Architekturentscheidungen.
 - [K6 MVP-Scope (JSON)](specs/k6_mvp_scope_v1.json) – versionierte Features, Phasen, Tests und Freigabegates.
 
+- [D00 Repository- und Build-Audit](docs/D00_REPO_BUILD_AUDIT.md) – tatsächlicher Ist-Zustand, bestehende CI-Risiken, Android-Toolchain-Vorschlag und D01-Startbedingungen.
+- [D00 Maschinenlesbares Build-Audit](specs/d00_build_audit_v1.json) – inventarisierter Git-Snapshot, zehn Risiken und klare Isolationsregeln für D01.
+
 ## Projektgrenzen
 
-Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. Eine spätere eigene Build-Struktur wird vor einer Umsetzung konzipiert und überprüft.
+Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. D00 hat die eigenständige Android-Gradle-Wurzel unter `apps/CommunicationTrainer/android/` als D01-Ziel empfohlen. Eine neue CI-Workflow-Datei außerhalb des Projektordners erfordert vor Erstellung eine ausdrückliche, eng begrenzte Ausnahmefreigabe.
 
 ## GitHub-Workflow
 
