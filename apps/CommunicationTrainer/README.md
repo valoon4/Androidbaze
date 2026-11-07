@@ -23,6 +23,11 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [K3 Persona-Fixtures (JSON)](specs/k3_personas_v1.json) – versionierte Konfigurationsdaten aller fünf Charaktere.
 - [K3 Szenario-Fixtures (JSON)](specs/k3_scenarios_v1.json) – sechs konkrete Alltagsszenarien mit Lernzielen.
 
+- [K4 UX-Konzept](docs/K4_UX_KONZEPT.md) – vier Bereiche, Einstieg, Chat, Übung, Coach, Replay, Fortschritt, Privatsphäre und Barrierefreiheit.
+- [K4 Nutzerabläufe & Wireframes](docs/K4_NUTZERABLAEUFE.md) – zwölf konkrete End-to-End-Flows und textuelle Bildschirmskizzen.
+- [K4 UX-Qualitätsplan](docs/K4_UX_TESTPLAN.md) – 36 Prüfaufgaben, A11y-/Vertrauens-Gates und Pilotmethodik.
+- [K4 Screen-Katalog (JSON)](specs/k4_screens_v1.json) – stabile UI-IDs, 29 Screens, Aktionen und Zustände als konzeptioneller Vertrag.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. Eine spätere eigene Build-Struktur wird vor einer Umsetzung konzipiert und überprüft.
