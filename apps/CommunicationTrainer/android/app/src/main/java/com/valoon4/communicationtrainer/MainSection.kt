@@ -1,8 +1,8 @@
 package com.valoon4.communicationtrainer
 
 /**
- * Only the two initial navigation destinations are available in D01.
- * Free chat, persistence, simulation and AI are intentionally not implemented yet.
+ * The two initial navigation destinations persist through D02.
+ * D02 supports local drafts; message sending, simulation and AI begin later.
  */
 enum class MainSection(
     val title: String,
@@ -12,7 +12,7 @@ enum class MainSection(
     CHATS(
         title = "Chats",
         headline = "Dein Raum für Gespräche",
-        intro = "Hier entstehen später deine freien Gespräche mit fiktiven KI-Charakteren."
+        intro = "Halte Gedanken als lokalen Gesprächsentwurf fest. Echte KI-Chats folgen später."
     ),
     PRACTICE(
         title = "Üben",

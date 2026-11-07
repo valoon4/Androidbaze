@@ -1,5 +1,15 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
+## 2026-11-07 – D02: lokale Persistenz ohne KI (PR #59 zur Freigabe)
+
+Der Nutzer hat nach dem erfolgreichen Merge von PR #58 ausdrücklich mit **D02** beauftragt. Room 2.8.5 und DataStore 1.2.0 bilden die nächsten isolierten Schichten. Ein UI erlaubt bereits mehrere lokale Gesprächsentwürfe, deren Wiederöffnung und bestätigte Löschung. Die Darstellungsauswahl wird persistent.
+
+**Technische Entscheidung:** initiale Room-Schema-Version 1, keine destruktive Migration; es gab in D01 keine Datenbank. Das echte Export-Schema ist für spätere Versionierung abzusichern. Alte/reihenfolgeversetzte Schreiboperationen dürfen jüngere Entwürfe nicht überschreiben. SQLite-Commit wird vom „Gespeichert“-Status unterschieden. Android-Backup bleibt ausgeschaltet.
+
+**Klare Einschränkung:** harte Prozessabbrüche vor der SQLite-Bestätigung können letzte Anschläge verlieren. Keine KI/Netzwerkkommunikation, keine automatische Exportfunktion und keine eigenständige Datenbankverschlüsselung in D02; keine behaupteten vollständigen Android-Emulator-/TalkBack-Tests ohne echte Nachweise.
+
+**PR-Grenze:** Änderungen nur in `apps/CommunicationTrainer/` und dem **eigenen** CommunicationTrainer-Debug-APK-Workflow; keine Fremd-App oder fremden Workflows. Eigenständige Merge-Freigabe erforderlich. [D02-Plan und Tests](D02_LOKALE_PERSISTENZ.md).
+
 ## 2026-11-07 – Aurora Pulse als endgültige Farbwelt für CommunicationTrainer
 
 **Nutzerentscheidung:** Nach vergleichender Bewertung von Playful Pulse, Aurora Flow und der Hybridvariante wurde **Aurora Pulse** ausdrücklich gewählt.
