@@ -1,0 +1,926 @@
+{
+  "schema_version": "k4.screens.v1",
+  "status": "ux-contract-draft-not-implemented",
+  "primary_tabs": [
+    {
+      "id": "chats",
+      "label": "Chats",
+      "entry": "chats_home"
+    },
+    {
+      "id": "practice",
+      "label": "Üben",
+      "entry": "practice_home"
+    },
+    {
+      "id": "progress",
+      "label": "Fortschritt",
+      "entry": "progress_home"
+    },
+    {
+      "id": "profile",
+      "label": "Profil",
+      "entry": "profile_home"
+    }
+  ],
+  "initial_screen": "welcome",
+  "screen_ids_note": "Stable conceptual IDs, not final Android navigation routes; parameterized routes and back-stack behavior specified at implementation time.",
+  "principles": [
+    "Free chat never has unsolicited coach",
+    "Explicit fictional AI label",
+    "No forced onboarding questionnaire",
+    "No global social competence score",
+    "Replay leaves original chat intact",
+    "Consented memory and learner profile kept separate",
+    "No claim of deletion until operation confirmed"
+  ],
+  "screens": [
+    {
+      "screen_id": "welcome",
+      "title": "Willkommen",
+      "parent_tab": null,
+      "mode": "entry",
+      "actions": [
+        {
+          "label": "Gespräch starten",
+          "next_screen_id": "character_picker",
+          "guard": null
+        },
+        {
+          "label": "Gezielt üben",
+          "next_screen_id": "practice_home",
+          "guard": null
+        },
+        {
+          "label": "Mehr über KI erfahren",
+          "next_screen_id": "about_ai",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "consent_required",
+        "error"
+      ],
+      "notes": "Explizite KI-Kennzeichnung; kein Pflichtfragebogen."
+    },
+    {
+      "screen_id": "goal_optional",
+      "title": "Was möchtest du ausprobieren?",
+      "parent_tab": null,
+      "mode": "entry",
+      "actions": [
+        {
+          "label": "Weiter",
+          "next_screen_id": "character_picker",
+          "guard": null
+        },
+        {
+          "label": "Überspringen",
+          "next_screen_id": "character_picker",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready"
+      ],
+      "notes": "Optional, kein diagnostischer Persönlichkeitstest."
+    },
+    {
+      "screen_id": "chats_home",
+      "title": "Chats",
+      "parent_tab": "chats",
+      "mode": "list",
+      "actions": [
+        {
+          "label": "Neues Gespräch",
+          "next_screen_id": "character_picker",
+          "guard": null
+        },
+        {
+          "label": "Chat öffnen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Chat löschen",
+          "next_screen_id": "delete_confirm",
+          "guard": null
+        },
+        {
+          "label": "Üben öffnen",
+          "next_screen_id": "practice_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "empty",
+        "loading",
+        "ready",
+        "error",
+        "offline"
+      ],
+      "notes": "Kein künstlicher Online-Status, echte gespeicherte Aktivität."
+    },
+    {
+      "screen_id": "character_picker",
+      "title": "Charakter wählen",
+      "parent_tab": "chats",
+      "mode": "selection",
+      "actions": [
+        {
+          "label": "Mit Charakter sprechen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Eigenen Charakter erstellen",
+          "next_screen_id": "character_editor",
+          "guard": null
+        },
+        {
+          "label": "Charakterdetails",
+          "next_screen_id": "character_detail",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "chats_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "loading",
+        "ready",
+        "empty",
+        "error"
+      ],
+      "notes": "Fünf K3-Personas; Charakter nicht mit Schwierigkeit ranken."
+    },
+    {
+      "screen_id": "character_detail",
+      "title": "Über den Charakter",
+      "parent_tab": "chats",
+      "mode": "detail",
+      "actions": [
+        {
+          "label": "Gespräch beginnen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "character_picker",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready"
+      ],
+      "notes": "Charakterkarte, Interessen, Schreibstil, KI-Hinweis."
+    },
+    {
+      "screen_id": "chat",
+      "title": "Chat",
+      "parent_tab": "chats",
+      "mode": "free_or_practice",
+      "actions": [
+        {
+          "label": "Auswerten",
+          "next_screen_id": "feedback_summary",
+          "guard": "user_request"
+        },
+        {
+          "label": "Erneut versuchen",
+          "next_screen_id": "replay_edit",
+          "guard": null
+        },
+        {
+          "label": "Charakterdetails",
+          "next_screen_id": "character_detail",
+          "guard": null
+        },
+        {
+          "label": "Zur Chatliste",
+          "next_screen_id": "chats_home",
+          "guard": null
+        },
+        {
+          "label": "Chatoptionen",
+          "next_screen_id": "chat_options",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "empty",
+        "ready",
+        "draft",
+        "sending",
+        "generating",
+        "send_error",
+        "offline",
+        "ended"
+      ],
+      "notes": "mode free|practice sichtbar; Chat-ID und Persona-Version fixiert."
+    },
+    {
+      "screen_id": "chat_options",
+      "title": "Chatoptionen",
+      "parent_tab": "chats",
+      "mode": "menu",
+      "actions": [
+        {
+          "label": "Chat umbenennen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Chat löschen",
+          "next_screen_id": "delete_confirm",
+          "guard": null
+        },
+        {
+          "label": "Erinnerungen ansehen",
+          "next_screen_id": "memory_list",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "chat",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready"
+      ],
+      "notes": "Alle Aktionen beschriftet und zugänglich."
+    },
+    {
+      "screen_id": "practice_home",
+      "title": "Entdecken & Üben",
+      "parent_tab": "practice",
+      "mode": "list",
+      "actions": [
+        {
+          "label": "Szenario wählen",
+          "next_screen_id": "scenario_detail",
+          "guard": null
+        },
+        {
+          "label": "Kompetenz wählen",
+          "next_screen_id": "competency_detail",
+          "guard": null
+        },
+        {
+          "label": "Kurz erklärt",
+          "next_screen_id": "lesson_detail",
+          "guard": null
+        },
+        {
+          "label": "Chats",
+          "next_screen_id": "chats_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "loading",
+        "ready",
+        "empty",
+        "error",
+        "offline"
+      ],
+      "notes": "Freiwillige Szenarien S01–S06; kein Streak-Druck."
+    },
+    {
+      "screen_id": "competency_detail",
+      "title": "Lernbereich",
+      "parent_tab": "practice",
+      "mode": "detail",
+      "actions": [
+        {
+          "label": "Szenario starten",
+          "next_screen_id": "scenario_detail",
+          "guard": null
+        },
+        {
+          "label": "Mini-Lektion",
+          "next_screen_id": "lesson_detail",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "practice_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "empty"
+      ],
+      "notes": "C01–C06 in Alltagssprache."
+    },
+    {
+      "screen_id": "scenario_detail",
+      "title": "Übung vorbereiten",
+      "parent_tab": "practice",
+      "mode": "setup",
+      "actions": [
+        {
+          "label": "Übung starten",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Einstellungen anpassen",
+          "next_screen_id": "scenario_detail",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "practice_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "loading",
+        "error"
+      ],
+      "notes": "Ziel, Persona, Beziehung und Schwierigkeit; freie Antworten."
+    },
+    {
+      "screen_id": "lesson_detail",
+      "title": "Kurz erklärt",
+      "parent_tab": "practice",
+      "mode": "lesson",
+      "actions": [
+        {
+          "label": "Passende Übung starten",
+          "next_screen_id": "scenario_detail",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "practice_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "loading",
+        "error"
+      ],
+      "notes": "Ein Gedanke, Beispiel, Gegenbeispiel, optionales Üben."
+    },
+    {
+      "screen_id": "practice_end",
+      "title": "Übung abschließen",
+      "parent_tab": "practice",
+      "mode": "completion",
+      "actions": [
+        {
+          "label": "Kurzfeedback ansehen",
+          "next_screen_id": "feedback_summary",
+          "guard": "user_choice"
+        },
+        {
+          "label": "Erneut versuchen",
+          "next_screen_id": "replay_edit",
+          "guard": null
+        },
+        {
+          "label": "Fertig",
+          "next_screen_id": "practice_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "saving",
+        "error"
+      ],
+      "notes": "Keine verpflichtende Analyse, kurzer Chat kann erfolgreich sein."
+    },
+    {
+      "screen_id": "feedback_summary",
+      "title": "Dein Rückblick",
+      "parent_tab": "practice",
+      "mode": "feedback",
+      "actions": [
+        {
+          "label": "Textstelle ansehen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Mehr erfahren",
+          "next_screen_id": "feedback_detail",
+          "guard": null
+        },
+        {
+          "label": "Nicht passend",
+          "next_screen_id": "feedback_dispute",
+          "guard": null
+        },
+        {
+          "label": "Erneut versuchen",
+          "next_screen_id": "replay_edit",
+          "guard": null
+        },
+        {
+          "label": "Fertig",
+          "next_screen_id": "practice_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "loading",
+        "strength_only",
+        "strength_and_option",
+        "reflection_question",
+        "not_assessable",
+        "boundary_notice",
+        "safety_notice",
+        "error"
+      ],
+      "notes": "Eine belegte Stärke; maximal eine freiwillige Idee; keine globale Note."
+    },
+    {
+      "screen_id": "feedback_detail",
+      "title": "Mehr zur Rückmeldung",
+      "parent_tab": "practice",
+      "mode": "feedback_detail",
+      "actions": [
+        {
+          "label": "Im Chat ansehen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Antwortvariante",
+          "next_screen_id": "replay_edit",
+          "guard": null
+        },
+        {
+          "label": "Nicht passend",
+          "next_screen_id": "feedback_dispute",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "feedback_summary",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "loading",
+        "error",
+        "not_assessable"
+      ],
+      "notes": "Beleg, Deutung, Unsicherheit und mehrere plausible Optionen."
+    },
+    {
+      "screen_id": "feedback_dispute",
+      "title": "Rückmeldung prüfen",
+      "parent_tab": "practice",
+      "mode": "dispute",
+      "actions": [
+        {
+          "label": "Korrektur anstoßen",
+          "next_screen_id": "feedback_summary",
+          "guard": null
+        },
+        {
+          "label": "Ausblenden",
+          "next_screen_id": "feedback_summary",
+          "guard": null
+        },
+        {
+          "label": "Abbrechen",
+          "next_screen_id": "feedback_summary",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "submitting",
+        "resolved",
+        "error"
+      ],
+      "notes": "Widerspruch ohne XP-Einbußen; Lernprofilspeicherung aussetzen."
+    },
+    {
+      "screen_id": "replay_edit",
+      "title": "Erneut versuchen",
+      "parent_tab": "practice",
+      "mode": "replay",
+      "actions": [
+        {
+          "label": "Variante ausprobieren",
+          "next_screen_id": "replay_compare",
+          "guard": null
+        },
+        {
+          "label": "Abbrechen",
+          "next_screen_id": "chat",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "editing",
+        "generating",
+        "error",
+        "offline"
+      ],
+      "notes": "Original unverändert; eigener Entwurf und Zweig."
+    },
+    {
+      "screen_id": "replay_compare",
+      "title": "Varianten vergleichen",
+      "parent_tab": "practice",
+      "mode": "replay",
+      "actions": [
+        {
+          "label": "Original öffnen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Variante öffnen",
+          "next_screen_id": "chat",
+          "guard": null
+        },
+        {
+          "label": "Zur Übung",
+          "next_screen_id": "practice_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "loading",
+        "error"
+      ],
+      "notes": "Hypothetischer Verlauf, keine garantierte soziale Wirkung."
+    },
+    {
+      "screen_id": "progress_home",
+      "title": "Fortschritt",
+      "parent_tab": "progress",
+      "mode": "overview",
+      "actions": [
+        {
+          "label": "Lernbeobachtungen",
+          "next_screen_id": "observations",
+          "guard": null
+        },
+        {
+          "label": "Meine Reflexionen",
+          "next_screen_id": "reflections",
+          "guard": null
+        },
+        {
+          "label": "Einstellungen",
+          "next_screen_id": "privacy_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "empty",
+        "ready",
+        "analysis_off",
+        "loading",
+        "error"
+      ],
+      "notes": "XP-Aktivität separat von Lernbeobachtungen."
+    },
+    {
+      "screen_id": "observations",
+      "title": "Lernbeobachtungen",
+      "parent_tab": "progress",
+      "mode": "learning_profile",
+      "actions": [
+        {
+          "label": "Beleg ansehen",
+          "next_screen_id": "feedback_detail",
+          "guard": null
+        },
+        {
+          "label": "Korrigieren",
+          "next_screen_id": "feedback_dispute",
+          "guard": null
+        },
+        {
+          "label": "Daten verwalten",
+          "next_screen_id": "privacy_home",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "progress_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "disabled",
+        "empty",
+        "ready",
+        "error"
+      ],
+      "notes": "Nur mit Opt-in; keine globalen Sozialkompetenzscores."
+    },
+    {
+      "screen_id": "reflections",
+      "title": "Eigene Erkenntnisse",
+      "parent_tab": "progress",
+      "mode": "reflection",
+      "actions": [
+        {
+          "label": "Reflexion speichern",
+          "next_screen_id": "reflections",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "progress_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "empty",
+        "ready",
+        "editing",
+        "saved",
+        "error"
+      ],
+      "notes": "Freiwillige persönliche Notiz, keine KI-Diagnose."
+    },
+    {
+      "screen_id": "profile_home",
+      "title": "Profil",
+      "parent_tab": "profile",
+      "mode": "overview",
+      "actions": [
+        {
+          "label": "Eigene Charaktere",
+          "next_screen_id": "characters_my",
+          "guard": null
+        },
+        {
+          "label": "Daten & Privatsphäre",
+          "next_screen_id": "privacy_home",
+          "guard": null
+        },
+        {
+          "label": "Darstellung & Bedienhilfen",
+          "next_screen_id": "preferences",
+          "guard": null
+        },
+        {
+          "label": "Über die KI",
+          "next_screen_id": "about_ai",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "error"
+      ],
+      "notes": "Keine unnötigen Berechtigungsanforderungen."
+    },
+    {
+      "screen_id": "characters_my",
+      "title": "Eigene Charaktere",
+      "parent_tab": "profile",
+      "mode": "list",
+      "actions": [
+        {
+          "label": "Charakter erstellen",
+          "next_screen_id": "character_editor",
+          "guard": null
+        },
+        {
+          "label": "Charakter bearbeiten",
+          "next_screen_id": "character_editor",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "profile_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "empty",
+        "ready",
+        "error"
+      ],
+      "notes": "Keine heimliche Änderung laufender Chats."
+    },
+    {
+      "screen_id": "character_editor",
+      "title": "Charakter erstellen/bearbeiten",
+      "parent_tab": "profile",
+      "mode": "editor",
+      "actions": [
+        {
+          "label": "Speichern",
+          "next_screen_id": "characters_my",
+          "guard": null
+        },
+        {
+          "label": "Beispiel ansehen",
+          "next_screen_id": "character_editor",
+          "guard": null
+        },
+        {
+          "label": "Abbrechen",
+          "next_screen_id": "characters_my",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "editing",
+        "validating",
+        "save_error",
+        "saved"
+      ],
+      "notes": "Fünf einfache kommunikationsnahe Regler; Persona-Version."
+    },
+    {
+      "screen_id": "privacy_home",
+      "title": "Daten & Privatsphäre",
+      "parent_tab": "profile",
+      "mode": "privacy",
+      "actions": [
+        {
+          "label": "Chats verwalten",
+          "next_screen_id": "chats_home",
+          "guard": null
+        },
+        {
+          "label": "Charaktererinnerungen",
+          "next_screen_id": "memory_list",
+          "guard": null
+        },
+        {
+          "label": "Lernprofil verwalten",
+          "next_screen_id": "observations",
+          "guard": null
+        },
+        {
+          "label": "Hilfe",
+          "next_screen_id": "about_ai",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "profile_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "loading",
+        "error"
+      ],
+      "notes": "Getrennte Kontrollen; K5 prüft tatsächliche Garantien."
+    },
+    {
+      "screen_id": "memory_list",
+      "title": "Charaktererinnerungen",
+      "parent_tab": "profile",
+      "mode": "privacy",
+      "actions": [
+        {
+          "label": "Eintrag öffnen",
+          "next_screen_id": "memory_detail",
+          "guard": null
+        },
+        {
+          "label": "Alle Erinnerungen löschen",
+          "next_screen_id": "delete_confirm",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "privacy_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "disabled",
+        "empty",
+        "ready",
+        "loading",
+        "error"
+      ],
+      "notes": "Nur berechtigte und belegte gespeicherte Erinnerungen."
+    },
+    {
+      "screen_id": "memory_detail",
+      "title": "Erinnerung",
+      "parent_tab": "profile",
+      "mode": "privacy",
+      "actions": [
+        {
+          "label": "Erinnerung korrigieren",
+          "next_screen_id": "memory_detail",
+          "guard": null
+        },
+        {
+          "label": "Eintrag löschen",
+          "next_screen_id": "delete_confirm",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "memory_list",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "editing",
+        "saving",
+        "error"
+      ],
+      "notes": "Quellbeleg und betroffener Charakter nachvollziehbar."
+    },
+    {
+      "screen_id": "delete_confirm",
+      "title": "Wirklich löschen?",
+      "parent_tab": "profile",
+      "mode": "destructive",
+      "actions": [
+        {
+          "label": "Endgültig löschen",
+          "next_screen_id": null,
+          "guard": "user_confirmation"
+        },
+        {
+          "label": "Abbrechen",
+          "next_screen_id": null,
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "deleting",
+        "success",
+        "partial_error",
+        "error"
+      ],
+      "notes": "Kontextabhängiger Rücksprung; niemals Erfolg vor bestätigter Löschung."
+    },
+    {
+      "screen_id": "preferences",
+      "title": "Darstellung und Bedienhilfen",
+      "parent_tab": "profile",
+      "mode": "settings",
+      "actions": [
+        {
+          "label": "Einstellungen speichern",
+          "next_screen_id": "profile_home",
+          "guard": null
+        },
+        {
+          "label": "Zurück",
+          "next_screen_id": "profile_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "saving",
+        "error"
+      ],
+      "notes": "Systemkontrast, Schriftgrößen, reduzierte Bewegung."
+    },
+    {
+      "screen_id": "about_ai",
+      "title": "Wie funktioniert die KI?",
+      "parent_tab": "profile",
+      "mode": "info",
+      "actions": [
+        {
+          "label": "Zurück",
+          "next_screen_id": "profile_home",
+          "guard": null
+        },
+        {
+          "label": "Zu den Chats",
+          "next_screen_id": "chats_home",
+          "guard": null
+        }
+      ],
+      "ui_states": [
+        "ready",
+        "error"
+      ],
+      "notes": "Simulierte Charaktere, technische Grenzen, mögliche Verarbeitung."
+    }
+  ]
+}
