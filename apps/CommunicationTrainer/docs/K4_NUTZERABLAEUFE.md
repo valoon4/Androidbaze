@@ -200,6 +200,20 @@ APP
 
 **Akzeptanz:** Alltagsnutzung funktioniert mit unterstützenden Technologien und unabhängig von Gesten.
 
+### F13 – K5-Nachtrag: Problematische KI-Antwort melden
+
+**Ausgang:** Der Nutzer erhält im freien Chat eine problematische, möglicherweise verletzende KI-Ausgabe.
+
+1. Bei der betreffenden **KI-Nachricht** im zugänglichen Menü „Problematische KI-Antwort melden“ wählen (alternativ aus passender Feedbackansicht).
+2. Eigene Meldemaske mit genau dieser Nachricht, Kategorie, optionalem Kommentar und Datenschutzhinweis öffnen.
+3. Vor dem Senden ausdrücklich zeigen, ob und **welcher Zusatzkontext** mit übermittelt wird. Keine implizite Upload-Funktion für den gesamten Chat.
+4. Aktion „Meldung absenden“ auslösen; Server und Berichtskanal bestätigen Empfang oder geben einen verständlichen Fehler zurück.
+5. Bei Fehler Reportentwurf erhalten, Retry kontrolliert und ohne Duplikate ermöglichen.
+6. Mit Android-Zurück oder „Abbrechen“ ohne Übermittlung zum ursprünglichen Chat zurückkehren.
+7. Bei Erfolg nachvollziehbaren Bestätigungstext zeigen und ursprünglichen Chat nicht verändern.
+
+**Akzeptanz:** Meldung direkt aus der App ohne künstliches Drängen möglich; keine Datenweitergabe über die Vorschau hinaus. *Nachtrag auf Grundlage der K5-Play-Richtlinienprüfung; noch kein implementierter Screen.*
+
 ## 14. Textuelle Layoutskizzen
 
 ### 14.1 Chats
