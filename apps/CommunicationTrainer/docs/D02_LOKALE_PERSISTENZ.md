@@ -10,7 +10,7 @@ Die erste Version bietet noch keine Nachrichtenübertragung und keine KI. D02 sc
 
 - `data/ChatEntities.kt`: Room-Tabellen **conversations**, **messages**, **drafts**, **replay_branches** mit dauerhaften IDs, referenzierten Branches, Persona-/Szenarioversionen und Entwurfsrevisionen.
 - `data/ChatDao.kt`: atomare Anlage von Gespräch und Root-Branch, revisionssichere Entwurfsupdates, Room Flow für Gesprächsliste, kaskadierendes lokales Löschen.
-- `data/ChatDatabase.kt`: Datenbank **Version 1**, Schema-Export und **kein** `fallbackToDestructiveMigration`. Es gab vorher **keine CommunicationTrainer-Datenbank**, daher gibt es zum D02-Erstaufbau keine historischen Nutzerdaten zu migrieren. Ab dem nächsten Schemaversion-Wechsel sind ein archiviertes v1-Schema, eine explizite Migration und Migrationstests obligatorisch.
+- `data/ChatDatabase.kt`: Datenbank **Version 1**, Schema-Export und **kein** `fallbackToDestructiveMigration`. Es gab vorher **keine CommunicationTrainer-Datenbank**, daher gibt es zum D02-Erstaufbau keine historischen Nutzerdaten zu migrieren. Das nach einem erfolgreichen Build exportierte **v1-Schema ist unter `android/app/schemas/com.valoon4.communicationtrainer.data.ChatDatabase/1.json` versioniert**; der CommunicationTrainer-CI-Lauf prüft per `git diff`, dass die erneute Generierung es nicht verändert. Ab dem nächsten Schema-Versionswechsel sind ein expliziter Migration-Codepfad und Migrationstests obligatorisch.
 - `data/AppPreferences.kt`: DataStore für gewählten Darstellungsmodus und zuletzt geöffnetes Gespräch (ID, **niemals Chattext**).
 - `data/ChatViewModel.kt`: vorläufige UI-Zustandsverwaltung mit SQLite-Acknowledgement, gespeicherter Revisionsnummer und Fehlersignalisierung.
 
