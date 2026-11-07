@@ -1576,7 +1576,8 @@ internal fun LearningCardsScreen(
                         index = 0
                         revealed = false
                     },
-                    label = { Text(option) }
+                    label = { Text(option) },
+                    modifier = Modifier.testTag("word-card-family-${option}")
                 )
             }
         }
