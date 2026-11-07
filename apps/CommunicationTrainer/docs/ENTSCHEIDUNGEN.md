@@ -1,5 +1,19 @@
 # Konzeptentscheidungen und Änderungsverlauf
 
+## 2026-11-07 – D01 Android-Skeleton und eigene Debug-APK-CI (PR zur Freigabe)
+
+**Nutzerauftrag:** Nach dem freigegebenen und gemergten PR #57 für D00 wurde der Beginn von **D01 inklusive eines eigenen CommunicationTrainer-GitHub-Actions-Workflows** ausdrücklich beauftragt. Damit ist **genau die neue Datei** unter `.github/workflows/communicationtrainer-debug-apk.yml` eine gezielt autorisierte Ausnahme von der sonstigen Projektordnergrenze.
+
+**Konkrete Codebasis:** Unter `apps/CommunicationTrainer/android/` existiert nun ein eigenständiges Kotlin-/Compose-Projekt, das **Chats** und **Üben** als navigierbare, noch funktionsarme Demo ansieht. Material3, Hell-/Dunkelmodus, lokale Navigationszustandssicherung und Unit-Tests sind angelegt; es gibt **noch kein** Netzwerk, keine Chatdaten und keinen KI-Provider. D02/D03 bleiben für Persistenz und Chatlaufzeit verantwortlich.
+
+**Toolchain:** JDK 17, Gradle 8.13, Android Gradle Plugin 8.13.2, Kotlin/Compose-Compiler 2.4.21, compileSdk/targetSdk 36, minSdk 26; Versionspins dienen der Reproduzierbarkeit. CI verwendet das offizielle GitHub-Setup für Gradle 8.13; lokal ist ein mit SHA-256 geprüfter Bootstrapper als **nicht-offizieller Gradle-Wrapper-Ersatz** dokumentiert.
+
+**GitHub Actions:** `pull_request` und `push` nur auf Änderungen an `apps/CommunicationTrainer/android/**` bzw. dem eigenen Workflow, sowie manuelle Ausführung; `contents: read`, keine Push-/Auto-Merge-Aktion; Unit-Tests, Assemble, APK-Paket-/targetSdk-/Signaturprüfung und Artefakt-Upload.
+
+**Isolation:** Alle anderen Projekt- und Workflow-Dateien sind unverändert, darunter `PC/Kabelsalat/` und `.github/workflows/kabelsalat*.yml`. Der Root-Wormblade-Workflow wird hier **nicht** geändert; D00 hat seine main-Push-Trigger gesondert dokumentiert.
+
+**Status:** Code und Workflow im D01-Branch erstellt; **Build/CI-Ausführung ist gesondert anhand tatsächlicher GitHub-Runs zu bestätigen**. Keine installierbare APK behaupten, bevor eine erfolgreich erzeugt und verifiziert wurde. PR benötigt eigenständige Freigabe vor dem Merge.
+
 ## 2026-11-07 – D00 Repository-/Build-Audit durchgeführt (D00-PR zur Freigabe)
 
 **Auftrag:** Der Nutzer hat nach dem ausdrücklich genehmigten und verifiziert gemergten **PR #56** den Start der technischen Phase **D00** beauftragt.
