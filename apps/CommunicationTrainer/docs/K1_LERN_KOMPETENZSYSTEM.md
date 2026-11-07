@@ -199,6 +199,10 @@ Es gibt keine Pflicht zu perfekter Beherrschung eines Skills, bevor Nutzer ander
 
 ## 8. MVP-Curriculum: 12 Beispiellektionen
 
+> **K6-Scope-Präzisierung (07.11.2026):** Die zwölf folgenden Lektionen sind das **fachliche Curriculum**, keine Pflicht, sie alle schon im ersten Release zu veröffentlichen. Der [K6-MVP](K6_MVP_UMFANG.md) sieht zunächst **eine** Mini-Lektion im technischen Alpha und **drei** redaktionell geprüfte Kurzlektionen in V1 vor. Die übrigen bleiben im Backlog. Fachliche Prinzipien aus K1 werden dadurch nicht aufgehoben.
+
+
+
 Alle sechs Kompetenzbereiche sind repräsentiert. Der genaue Umfang wird nach Pilotierung beschlossen.
 
 | Lern-ID | Titel | Skill | Kernübung | Erfolg kann auch sein ... |
