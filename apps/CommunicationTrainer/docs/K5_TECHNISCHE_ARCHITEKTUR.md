@@ -20,6 +20,18 @@ Diese Kombination ist **kein Versprechen** von vollständiger Offline-Generierun
 
 **Gastzugang:** Gegenwärtig **bedingt**. Ein kostenloser, unbegrenzter und gleichzeitig missbrauchsgeschützter Gastzugang ist kein realistischer impliziter Standard. Vor öffentlichem Betrieb müssen Identitäts- und Kostenkontrolle erprobt werden; ansonsten ehrliche Anmeldung bzw. begrenzte Testkontingente. Keine Identifizierung über invasive Geräte-Fingerprints.
 
+### 0.2 Ergänzung nach Kostenanalyse: austauschbare KI-Betriebsarten
+
+Das ursprüngliche MVP-Referenzdesign **Android + abgesicherter Broker + austauschbarer Cloud-Provider** bleibt eine technisch zu evaluierende Basis, ist aber nicht mehr die einzige vorgesehene Inferenzoption. Der Nutzer hat zusätzlich die Untersuchung von **lokaler Open-Weight-KI** und einer **freiwilligen ChatGPT-Plan-Anbindung** beauftragt.
+
+- [K5_KI_BETRIEBSARTEN.md](K5_KI_BETRIEBSARTEN.md) erläutert lokale Android-Inferenz, offiziellen ChatGPT-Kontozugang (nur bei nachgewiesener Plattform-/Vertriebsberechtigung) und Cloud-KI mit Managed API oder selbst gehostetem Modell.
+- [k5_provider_modes_v1.json](../specs/k5_provider_modes_v1.json) definiert vier technische Provider-Adapter-Konfigurationen (lokal, ChatGPT-Plan, Cloud-Broker und Self-Hosted als Cloud-Untermodus) für **drei nutzerseitige Betriebsarten**. Die App zeigt ausschließlich tatsächlich verfügbare Optionen.
+- [K5_MODELLVERGLEICH_TESTPLAN.md](K5_MODELLVERGLEICH_TESTPLAN.md) legt reproduzierbare, K1–K3-kompatible Geräte-, Qualitäts-, Sicherheits- und Kostenbenchmarks fest.
+
+**Modulgrenze:** Android-UI, Chat-, Coaching- und Replay-Domain sprechen eine InferenceGateway-Abstraktion an. Fähigkeit und Qualität werden pro Operation und Modus getrennt geprüft. Bei zu schwachem lokalen Coaching ist keine unüberprüfte Analyse zulässig. Ein stiller Wechsel von lokaler Inferenz zu externer Übertragung oder von ChatGPT-Kontingent zu bezahlter API ist **verboten**.
+
+**MVP-Realismus:** Kompatibilität des nativen Android-OAuth-Flows mit den veröffentlichten OpenAI-Vorgaben ist **noch nicht bestätigt**; die ChatGPT-Option bleibt deaktiviert, bis die Berechtigung geprüft ist. Ebenso hängt echte Offline-KI von Gerät, Modellinstallation, Lizenz und Qualitätsprüfung ab. Es ist **nicht** vorgesehen, sofort drei Runtimes produktiv zu betreiben.
+
 ## 1. Verantwortlichkeiten und logische Schichten
 
 ```text
