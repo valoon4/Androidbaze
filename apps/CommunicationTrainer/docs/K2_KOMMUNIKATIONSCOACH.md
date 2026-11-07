@@ -4,7 +4,8 @@
 **Status:** fachliche Spezifikation zur Prüfung, noch keine Implementierung  
 **Geltungsbereich:** CommunicationTrainer, Alltagskommunikation und soziale Kontakte  
 **Verbindliche Grundlagen:** [K1 Kompetenz- und Lernsystem](K1_LERN_KOMPETENZSYSTEM.md), [K1 Prüffälle](K1_KOMPETENZ_PRUEFFELLE.md), [M2 Charakter-/Simulationskonzept](CHARAKTER_SIMULATION.md)  
-**Begleitdokument:** [K2 Qualität, Annotationsregeln und Testfälle](K2_FEEDBACK_QUALITAET_TESTPLAN.md)
+**Maßgeblicher Testplan:** [K2 Qualität, Annotationsregeln und Testfälle](K2_FEEDBACK_QUALITAET_TESTPLAN.md)  
+**Ergänzende redaktionelle K2-Referenzen aus PR #48:** [20 Feedbackbeispiele](K2_COACH_BEISPIELE.md) · [36 zusätzliche Prüffälle](K2_COACH_QUALITAET.md) (nicht normativ, vor Testnutzung zu kalibrieren)
 
 ## 0. Produktauftrag, Qualität und Grenzen
 
