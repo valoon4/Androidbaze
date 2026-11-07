@@ -28,6 +28,10 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
     private val mutableState = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = mutableState
     private var loadJob: Job? = null
+    // Latest in-flight text remains visible when the user navigates away and back
+    // before a database commit. It is not counted as durable until SQLite confirms.
+    private data class PendingDraft(val text: String, val revision: Long)
+    private val pendingDrafts = mutableMapOf<String, PendingDraft>()
 
     init {
         viewModelScope.launch {
@@ -93,11 +97,15 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
                     return@launch
                 }
                 val draft = repository.getDraft(id)
+                val confirmedRevision = draft?.editRevision ?: 0L
+                val pending = pendingDrafts[id]
+                val usePending = pending != null && pending.revision > confirmedRevision
+                if (!usePending) pendingDrafts.remove(id)
                 mutableState.update {
                     if (it.selectedConversationId == id && it.isLoadingDraft) it.copy(
-                        draftText = draft?.text.orEmpty(),
-                        draftRevision = draft?.editRevision ?: 0L,
-                        persistedRevision = draft?.editRevision ?: 0L,
+                        draftText = if (usePending) pending!!.text else draft?.text.orEmpty(),
+                        draftRevision = if (usePending) pending!!.revision else confirmedRevision,
+                        persistedRevision = confirmedRevision,
                         isLoadingDraft = false
                     ) else it
                 }
@@ -123,6 +131,7 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
         val id = before.selectedConversationId ?: return
         if (before.isLoadingDraft || before.isBusy) return
         val revision = before.draftRevision + 1L
+        pendingDrafts[id] = PendingDraft(text, revision)
         mutableState.update { current ->
             if (current.selectedConversationId == id) current.copy(
                 draftText = text,
@@ -133,6 +142,7 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 repository.saveDraft(id, text, revision)
+                if (pendingDrafts[id]?.revision == revision) pendingDrafts.remove(id)
                 mutableState.update { state ->
                     if (state.selectedConversationId == id) state.copy(
                         persistedRevision = maxOf(state.persistedRevision, revision)
@@ -155,6 +165,7 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
         viewModelScope.launch {
             try {
                 repository.deleteConversation(id)
+                pendingDrafts.remove(id)
                 repository.preferences.selectConversation(null)
                 loadJob?.cancel()
                 mutableState.update { state ->
