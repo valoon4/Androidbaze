@@ -255,11 +255,16 @@ private fun keyboardVisibleInputModifier(tag: String): Modifier {
     var focused by remember { mutableStateOf(false) }
     val keyboardVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
     LaunchedEffect(focused, keyboardVisible) {
-        if (focused && keyboardVisible) {
-            // Allow the Android IME resizing animation to settle before
-            // scrolling the enclosing LazyColumn to the actual focused field.
-            delay(220L)
-            requester.bringIntoView()
+        if (focused) {
+            // Some Android IMEs report zero inset until the window has been
+            // resized; other IMEs animate their final height in several steps.
+            // React to focus independently, then repeat through that resize.
+            // The text field itself stays the request target, not the entire
+            // deep-reflection screen (which is one very tall LazyColumn item).
+            repeat(3) {
+                delay(150L)
+                requester.bringIntoView()
+            }
         }
     }
     return Modifier.fillMaxWidth()
