@@ -248,6 +248,10 @@ Debug-Logs mit echten Chatinhalten nur in explizit kontrollierter, rechtlich gep
 
 ## 9. Umsetzungsvorschlag nach K6
 
+> **K6-Scope-Präzisierung (07.11.2026):** Die bisherige P0–P4-Skizze wird für konkrete PRs vom [K6-Fahrplan D00–D12](K6_UMSETZUNGSPLAN.md) operationalisiert. D00/D01 prüfen zunächst Repo- und Android-Build-Isolation; D02/D03 testen Entwurfspersistenz und Mock-Chat **vor echten KI-Aufrufen**. Das [K6-MVP](K6_MVP_UMFANG.md) plant nur **einen** nach echten K2/K3-/Kosten-/Privacy-Prüfungen freigegebenen Inferenzstandard. Weder die lokale noch die ChatGPT-Plan-Anbindung sind automatisch verfügbar.
+
+
+
 **P0** – testbarer isolierter Android-Skeleton-Build, lokale Modelle/DB, Navigation, Zustandserhalt und Mock-Broker.  
 **P1** – Backend Auth/Budget/Idempotency, eine Providerintegration, basic Safety, stabiler Chatfluss.  
 **P2** – K3 Persona-/Szenario-Runner, minimaler K2-Coach mit Grounding-Gates, UI-Feedback.  
