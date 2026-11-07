@@ -110,6 +110,7 @@ import com.valoon4.emotionskompass.core.designsystem.EmotionskompassTheme
 import com.valoon4.emotionskompass.core.model.Emotion
 import com.valoon4.emotionskompass.core.model.EmotionCatalog
 import com.valoon4.emotionskompass.core.model.EmotionKind
+import com.valoon4.emotionskompass.core.model.WordCardDeck
 import com.valoon4.emotionskompass.core.model.LearningPath
 import com.valoon4.emotionskompass.core.model.NeedCatalog
 import com.valoon4.emotionskompass.core.lessons.LessonCatalog
@@ -557,6 +558,9 @@ private fun EmotionskompassApp(
     var discoveryAtlas by rememberSaveable { mutableStateOf(DiscoveryAtlas.GEFUEHLE) }
     val mainScreenStates = rememberSaveableStateHolder()
     val atlasStates = rememberSaveableStateHolder()
+    // Only public catalog IDs and the card position are saved; no personal texts.
+    // Keep the discovery deck when navigating to a word detail or reauthenticating.
+    val wordCardStates = rememberSaveableStateHolder()
     LaunchedEffect(state.section) {
         // Leaving Entdecken makes the daily-need return target obsolete.
         if (state.section != MainSection.ENTDECKEN) needReturnToHome = false
@@ -1040,7 +1044,9 @@ private fun EmotionskompassApp(
                     }
                 }
                 Destination.VERGLEICH -> ComparisonScreen(state, catalog)
-                Destination.LEARN_CARDS -> LearningCardsScreen(catalog, vm::openEmotion)
+                Destination.LEARN_CARDS -> wordCardStates.SaveableStateProvider("word-cards") {
+                    LearningCardsScreen(catalog, vm::openEmotion)
+                }
                 Destination.WISSENSWELT -> if (lessonCatalog != null) {
                     KnowledgeWorldScreen(
                         catalog = lessonCatalog,
@@ -1517,17 +1523,39 @@ private fun emotionKindLabel(kind: EmotionKind): String = when (kind) {
 }
 
 @Composable
-private fun LearningCardsScreen(
+internal fun LearningCardsScreen(
     catalog: EmotionCatalog,
     onEmotion: (String) -> Unit
 ) {
     var family by rememberSaveable { mutableStateOf("Alle") }
-    var index by rememberSaveable { mutableStateOf(0) }
-    var revealed by rememberSaveable { mutableStateOf(false) }
-    val cards = remember(catalog, family) {
-        catalog.search("", family)
+    val available = remember(catalog, family) { catalog.search("", family) }
+    // Only public catalog IDs enter SavedState. An ArrayList<String> is Bundle-safe.
+    // The order is stable across recomposition, short app switches and detail navigation.
+    var order by rememberSaveable(catalog.contentRevision, family) {
+        mutableStateOf(WordCardDeck.shuffle(available.map { it.id }))
     }
-    val current = cards.getOrNull(index.coerceIn(0, (cards.size - 1).coerceAtLeast(0)))
+    var index by rememberSaveable(family) { mutableStateOf(0) }
+    var revealed by rememberSaveable(family) { mutableStateOf(false) }
+    val availableIds = remember(available) { available.map { it.id }.toSet() }
+    val cards = remember(catalog, availableIds, order) {
+        order.mapNotNull(catalog::find).filter { it.id in availableIds }
+    }
+    val safeIndex = index.coerceIn(0, (cards.size - 1).coerceAtLeast(0))
+    val current = cards.getOrNull(safeIndex)
+    // Old saved state must not silently omit new cards after a catalog update.
+    LaunchedEffect(availableIds, order) {
+        if (order.size != availableIds.size || order.toSet() != availableIds) {
+            order = WordCardDeck.shuffle(available.map { it.id })
+            index = 0
+            revealed = false
+        }
+    }
+    val reshuffle: () -> Unit = {
+        // Avoid showing the currently visible card again immediately.
+        order = WordCardDeck.shuffle(available.map { it.id }, avoidFirst = current?.id)
+        index = 0
+        revealed = false
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -1553,7 +1581,7 @@ private fun LearningCardsScreen(
             }
         }
         if (current != null) {
-            Tag("KARTE ${index + 1} VON ${cards.size}")
+            Tag("KARTE ${safeIndex + 1} VON ${cards.size}")
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -1573,7 +1601,8 @@ private fun LearningCardsScreen(
                         style = MaterialTheme.typography.bodyMedium)
                     if (revealed) {
                         HorizontalDivider()
-                        Text(current.name, style = MaterialTheme.typography.headlineSmall,
+                        Text(current.name, modifier = Modifier.testTag("word-card-revealed-term"),
+                            style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary)
                         Text(emotionKindLabel(current.kind),
@@ -1596,26 +1625,37 @@ private fun LearningCardsScreen(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedButton(
                     onClick = {
-                        index = (index - 1).coerceAtLeast(0)
+                        index = (safeIndex - 1).coerceAtLeast(0)
                         revealed = false
                     },
-                    enabled = index > 0,
+                    enabled = safeIndex > 0,
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Zurück")
                 }
                 Button(
                     onClick = {
-                        index = (index + 1) % cards.size
-                        revealed = false
+                        if (safeIndex == cards.lastIndex) reshuffle()
+                        else {
+                            index = safeIndex + 1
+                            revealed = false
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(if (index == cards.lastIndex) "Von vorne" else "Nächste Karte")
+                    Text(if (safeIndex == cards.lastIndex) "Neuer Durchgang" else "Nächste Karte")
                 }
             }
+            OutlinedButton(
+                onClick = reshuffle,
+                modifier = Modifier.fillMaxWidth().testTag("word-cards-reshuffle")
+            ) {
+                Icon(Icons.Outlined.AutoAwesome, contentDescription = null)
+                Spacer(Modifier.size(8.dp))
+                Text("Neu mischen")
+            }
         }
-        Text("Hier wird kein Lernfortschritt gespeichert. Die Karten sind eine freiwillige Einladung zum Entdecken.",
+        Text("Die Karten sind zufällig gemischt und wiederholen sich erst in einem neuen Durchgang. Es wird kein Lernfortschritt gespeichert.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
