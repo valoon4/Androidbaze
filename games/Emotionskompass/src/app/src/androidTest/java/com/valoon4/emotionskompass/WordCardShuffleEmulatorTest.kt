@@ -66,8 +66,12 @@ class WordCardShuffleEmulatorTest {
         // A family chip can lie outside the viewport at 320dp and 200% text.
         // Assert its selection and the actual revealed catalog term, not
         // a counter label whose visibility depends on scrolling/text scale.
+        // The filter LazyRow is inside a verticalScroll Column. Scroll back
+        // vertically first: performScrollTo() on a chip may only scroll the
+        // nearest (horizontal) LazyRow, leaving it above the viewport.
+        rule.onNodeWithText("Wortkarten entdecken").performScrollTo()
         val chip = rule.onNodeWithTag("word-card-family-$family")
-        chip.performScrollTo().performClick()
+        chip.performClick()
         chip.assertIsSelected()
         rule.waitForIdle()
         val shown = revealName()
