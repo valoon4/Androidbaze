@@ -36,6 +36,10 @@ Eigenständiger Projektbereich für die geplante KI-gestützte App zum Üben von
 - [K5 Technik- und Sicherheitstestplan](docs/K5_TESTPLAN.md) – 42 Prüfungen, Privacy- und Release-Gates.
 - [K5 API- und Datenschnittstellen (JSON)](specs/k5_system_contracts_v1.json) – versionierte Verträge für acht Typen und acht API-Endpunkte.
 
+- [K5 KI-Betriebsarten](docs/K5_KI_BETRIEBSARTEN.md) – lokale Open-Weight-KI, bedingte ChatGPT-Plan-Anbindung und Cloud-Broker/Self-Hosting.
+- [K5 Modellvergleich und Kosten-Gates](docs/K5_MODELLVERGLEICH_TESTPLAN.md) – 28 zusätzliche Testfälle für die Auswahl einer zuverlässigen, wirtschaftlichen KI.
+- [K5 Provider-Modi (JSON)](specs/k5_provider_modes_v1.json) – vier technische Adapter, drei nutzerseitige Modusoptionen, Verfügbarkeit und Safety-/Privacy-Regeln.
+
 ## Projektgrenzen
 
 Alle künftigen app-spezifischen Dateien sollen unter `apps/CommunicationTrainer/` liegen. Andere Apps in diesem Repository und der vorhandene Root-Android-Build bleiben unberührt. Eine spätere eigene Build-Struktur wird vor einer Umsetzung konzipiert und überprüft.
