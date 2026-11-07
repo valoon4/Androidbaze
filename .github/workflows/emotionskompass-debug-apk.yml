@@ -1,4 +1,4 @@
-name: Build InnerWave M7.7 Branding Debug APK
+name: Build InnerWave M7.8 Branding Debug APK
 
 on:
   push:
@@ -58,19 +58,19 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
           grep -Fq "package: name='com.valoon4.emotionskompass'" apk-badging.txt
           grep -Fq "application-label:'InnerWave'" apk-badging.txt
-          grep -Fq "versionCode='37'" apk-badging.txt
-          grep -Fq "versionName='0.7.7-innerwave-branding-preview'" apk-badging.txt
+          grep -Fq "versionCode='38'" apk-badging.txt
+          grep -Fq "versionName='0.7.8-innerwave-ux-preview'" apk-badging.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee apk-signing.txt
           echo "DEBUG SIGNING NOTE: GitHub's default debug keystore is ephemeral; APK updates may have incompatible signer certificates."
-          cp "$APK" InnerWave-M77-v0.7.7-debug.apk
-          sha256sum InnerWave-M77-v0.7.7-debug.apk | tee InnerWave-M77-v0.7.7-debug.apk.sha256
+          cp "$APK" InnerWave-M78-v0.7.8-debug.apk
+          sha256sum InnerWave-M78-v0.7.8-debug.apk | tee InnerWave-M78-v0.7.8-debug.apk.sha256
       - name: Upload installable Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: InnerWave-M77-debug-apk
+          name: InnerWave-M78-debug-apk
           path: |
-            games/Emotionskompass/src/InnerWave-M77-v0.7.7-debug.apk
-            games/Emotionskompass/src/InnerWave-M77-v0.7.7-debug.apk.sha256
+            games/Emotionskompass/src/InnerWave-M78-v0.7.8-debug.apk
+            games/Emotionskompass/src/InnerWave-M78-v0.7.8-debug.apk.sha256
             games/Emotionskompass/src/apk-badging.txt
             games/Emotionskompass/src/apk-signing.txt
           if-no-files-found: error
