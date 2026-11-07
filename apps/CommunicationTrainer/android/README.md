@@ -17,6 +17,12 @@
 
 [D02-Datenschutz-/Testmatrix](../docs/D02_LOKALE_PERSISTENZ.md). Die bisherige D01-Dokumentation bleibt unten als Historie erhalten.
 
+## Wichtiger Hinweis zu Debug-Updates
+
+Die GitHub-Actions-Debug-APK verwendet derzeit **keinen dauerhaft hinterlegten Signing-Key**. Zwischen Build-Läufen kann daher die Debug-Signatur wechseln. Android kann dann ein APK-Update über eine bereits installierte Version verweigern. Eine vorherige Deinstallation entfernt auch lokale Room-Entwürfe und DataStore-Einstellungen, weil Android-Backup deaktiviert ist. **Für den D02-Neustarttest die APK installiert lassen** und nur den Prozess beenden bzw. die App neu öffnen.
+
+**Vor Tests über mehrere APK-Versionen mit wichtigen Nutzerdaten** müssen wir einen stabilen, sicher verwalteten Debug-Signing-Key bzw. einen getrennten Migrations-/Update-Testpfad einrichten. Keine privaten Texte in einer Debuginstallation ablegen, deren Update- und Wiederherstellungsweg noch nicht abgesichert ist.
+
 ## Historie: D01
 
 **Status:** installierbares Kotlin-/Jetpack-Compose-Grundgerüst als vorgeschlagener PR, noch **keine echte KI**, keine Chattexte, keine lokale Chatpersistenz oder Authentifizierung.
