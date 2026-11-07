@@ -323,6 +323,10 @@ Für Prototyping soll genau eine Umsetzung jedes Hauptflows existieren, ohne die
 
 ## 15. MVP-Schnitt und bewusste Verschiebungen
 
+> **K6-Scope-Präzisierung (07.11.2026):** Die nachfolgende K4-Liste ist der **vollständige UX-Fähigkeitskatalog**, nicht die zeitliche V1-Freigabeliste. [K6-MVP](K6_MVP_UMFANG.md) priorisiert: Alpha klein (Chats/Üben, 3 Figuren/2 Szenarien); V1 fünf Figuren, sechs Szenarien, kurzer freiwilliger Coach, ein Replay-Zweig, vier Tabs. Ein **eigener Charaktereditor**, umfangreiche Detailanalyse und dauerhaftes KI-Lernprofil folgen nach V1. Die K4-Screen-IDs bleiben fachliche Navigationsreferenzen, nicht 30 eigene Pflichtlayouts.
+
+
+
 **MVP UX zwingend:**
 1. transparente KI-Kennzeichnung und verständlicher Einstieg;
 2. vier Tabs;
