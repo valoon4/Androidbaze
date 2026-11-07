@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.valoon4.communicationtrainer.data.ThemeMode
 
 /**
  * Aurora Pulse – product palette selected for CommunicationTrainer.
@@ -76,9 +77,17 @@ internal val AuroraPulseDarkColors = darkColorScheme(
 )
 
 @Composable
-fun AuroraPulseTheme(content: @Composable () -> Unit) {
+fun AuroraPulseTheme(
+    mode: ThemeMode = ThemeMode.SYSTEM,
+    content: @Composable () -> Unit
+) {
+    val useDark = when (mode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) AuroraPulseDarkColors else AuroraPulseLightColors,
+        colorScheme = if (useDark) AuroraPulseDarkColors else AuroraPulseLightColors,
         content = content
     )
 }
