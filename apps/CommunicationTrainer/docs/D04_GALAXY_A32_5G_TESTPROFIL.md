@@ -42,7 +42,7 @@
 
 ### Bereits implementierter ungefährlicher D04-Schritt
 
-**D04-Preview, Bereich Üben → „SD-Speicher jetzt prüfen“:** Die Android-App prüft auf Knopfdruck **ohne Dateien herunterzuladen**, ob ein entnehmbares app-spezifisches Speichervolumen sichtbar und eingehängt ist. Sie liest dessen freien Speicher sowie optional den freien internen App-Speicher. Das Erfolgsergebnis bedeutet ausschließlich: **Platz für einen späteren Dateitest vorhanden**, nicht „KI installiert“, nicht „Modell direkt von SD ladbar“ und nicht „4 GB RAM reichen“.
+**D04-SD-Preview (eigene Paketkennung `.d04sdpreview`, getrennt von der bisherigen D04-Preview), Bereich Üben → „SD-Speicher jetzt prüfen“:** Die Android-App prüft auf Knopfdruck **ohne Dateien herunterzuladen**, ob ein entnehmbares app-spezifisches Speichervolumen sichtbar und eingehängt ist. Sie liest dessen freien Speicher sowie optional den freien internen App-Speicher. Das Erfolgsergebnis bedeutet ausschließlich: **Platz für einen späteren Dateitest vorhanden**, nicht „KI installiert“, nicht „Modell direkt von SD ladbar“ und nicht „4 GB RAM reichen“.
 
 Reiner Preflight-Code: `inference/SdStoragePreflight.kt`, JVM-Grenztests: `D04SdStoragePreflightTest.kt`. Als vorsichtige Reserve gilt im Probe-Modus **2 GiB freier SD-Platz** (Projektwert, keine Android-Vorgabe). Die Nutzerangabe „20 GB frei“ wird erst durch den tatsächlichen Button-Lauf bestätigt beziehungsweise korrigiert.
 

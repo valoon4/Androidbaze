@@ -22,7 +22,7 @@ android {
         // D04 is separately installable beside D03 because the CI debug certificate
         // is ephemeral. Release identity stays unchanged.
         getByName("debug") {
-            applicationIdSuffix = ".d04preview"
+            applicationIdSuffix = ".d04sdpreview"
             versionNameSuffix = "-preview"
         }
         release { isMinifyEnabled = false }
