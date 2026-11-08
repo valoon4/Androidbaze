@@ -64,6 +64,7 @@ import com.valoon4.communicationtrainer.data.ThemeMode
 import com.valoon4.communicationtrainer.inference.SdStorageInspection
 import com.valoon4.communicationtrainer.inference.SdStoragePreflight
 import com.valoon4.communicationtrainer.inference.SdStorageStatus
+import com.valoon4.communicationtrainer.inference.QwenSdProbeCard
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseAccent
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseTheme
 
@@ -569,6 +570,7 @@ private fun PracticeOverview(state: ChatUiState, viewModel: ChatViewModel, paddi
                 }
             }
         }
+        QwenSdProbeCard()
         Surface(color = scheme.surface, shape = RoundedCornerShape(18.dp)) {
             Column(
                 modifier = Modifier.padding(18.dp),
