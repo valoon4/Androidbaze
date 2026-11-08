@@ -97,6 +97,7 @@ object D05TrainingSession {
         draft.value = ""
         turns.value = listOf(scriptedOpening(scenarios.first { it.id == scenarioId.value }))
         consent.value = false
+        D051LocalReflection.reset()
         lastLatencyMs.value = null
         status.value = "Gesprächseinstieg bereit. Antworte auf die konkrete Bitte oder Aussage."
     }
@@ -107,6 +108,7 @@ object D05TrainingSession {
         draft.value = ""
         turns.value = emptyList()
         consent.value = false
+        D051LocalReflection.reset()
         chosenModel.value = ""
         lastLatencyMs.value = null
         status.value = "Kontowechsel: Trainingsdaten verworfen."
@@ -123,6 +125,8 @@ object D05TrainingSession {
             "Der Gesprächspartner hat bereits den ersten Satz gesprochen. " +
             "Bleibe direkt im Rollenspiel und gehe auf die Antwort der übenden Person ein; " +
             "frage nicht erst, welches Szenario geübt werden soll. " +
+            "Schwierigkeitsgrad: ${D051LearningGuide.level.value.label}. " +
+            "Passende Reaktion: ${D051LearningGuide.instructionFor(scenario.id, D051LearningGuide.level.value)} " +
             "Halte deine Antwort kurz (1–3 Sätze), natürlich und realistisch. " +
             "Bleibe respektvoll, stelle höchstens eine Frage. " +
             "Keine Therapie, Diagnosen oder Bewertungen der trainierenden Person. " +
