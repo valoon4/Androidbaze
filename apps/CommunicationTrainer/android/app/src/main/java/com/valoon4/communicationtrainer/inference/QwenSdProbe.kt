@@ -83,15 +83,17 @@ object QwenSdProbe {
         return sha to total
     }
 
-    fun verifyModel(context: Context, uri: Uri): String? = try {
+    fun verifyModel(context: Context, uri: Uri): String? {
+        return try {
         val pair = context.contentResolver.openInputStream(uri)?.use(::calculateSha256)
             ?: return "Datei konnte nicht geöffnet werden."
         if (pair.second < 300L * 1024 * 1024) "Datei zu klein für den erwarteten Qwen-Test."
         else if (pair.first != EXPECTED_SHA256)
             "SHA-256 stimmt nicht: Es ist nicht die freigegebene, festgelegte Testdatei."
         else null
-    } catch (e: Exception) {
-        "Dateiprüfung gescheitert: ${e.message ?: "Lesefehler"}"
+        } catch (e: Exception) {
+            "Dateiprüfung gescheitert: ${e.message ?: "Lesefehler"}"
+        }
     }
 
     fun runOnSelectedFile(context: Context, uri: Uri): String {
