@@ -35,6 +35,25 @@ class D05TrainingSessionTest {
         assertTrue(history.single().text.contains("enttäuscht"))
     }
 
+    @Test fun listeningScenarioHasOneUnambiguousCancellationResponsibility() {
+        val scenario = listening
+        assertTrue(scenario.setup.contains("Du hast euer geplantes Treffen abgesagt"))
+        assertTrue(scenario.opening.contains("Als du unser Treffen abgesagt hast"))
+        assertFalse(scenario.setup.contains("weil eine gemeinsame Verabredung abgesagt wurde"))
+        D05TrainingSession.selectScenario(scenario.id)
+        assertEquals(scenario.opening, D05TrainingSession.turns.value.single().text)
+
+        val input = D05TrainingSession.scenarioInput(
+            scenario, D05TrainingSession.turns.value,
+            "Ich verstehe, dass du enttäuscht bist. Was hättest du dir gewünscht?"
+        )
+        val policy = input.getJSONObject(0).getString("content")
+        assertTrue(policy.contains(scenario.setup))
+        assertTrue(policy.contains("feste Fakten"))
+        assertTrue(policy.contains("widersprüchlichen Details"))
+        assertEquals(scenario.opening, input.getJSONObject(1).getString("content"))
+    }
+
     @Test fun requestIncludesTheScriptedOpeningAndAlternatingRealTurns() {
         val history = listOf(
             D05TrainingSession.scriptedOpening(boundary),
