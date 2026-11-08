@@ -92,7 +92,10 @@ object D05TrainingSession {
         val token = ChatGptPlanProbe.ephemeralAccessToken()
         if (token == null) {
             sending.set(false)
-            state.value = current.copy(ended = true, status = "ChatGPT-Sitzung abgelaufen. Keine Nachricht übertragen.")
+            state.value = current.copy(
+                ended = true, turns = emptyList(),
+                status = "ChatGPT-Sitzung abgelaufen. Keine Nachricht übertragen."
+            )
             return false
         }
         // Validate and bound the full body before consuming the request.
@@ -130,6 +133,7 @@ object D05TrainingSession {
                     state.value = state.value.copy(
                         ended = true,
                         working = false,
+                        turns = emptyList(),
                         status = e.safeMessage + " Keine automatische Wiederholung. Übung beendet."
                     )
                 }
@@ -138,6 +142,7 @@ object D05TrainingSession {
                     state.value = state.value.copy(
                         ended = true,
                         working = false,
+                        turns = emptyList(),
                         status = "Verbindung unterbrochen. Eine Verarbeitung auf dem Server ist möglich. " +
                             "Keine automatische Wiederholung; Übung beendet."
                     )
