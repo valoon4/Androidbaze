@@ -50,6 +50,8 @@ def clean_name(name, year):
             break
         title.append(token)
     value=" ".join(title).strip(" -._")
+    if re.fullmatch(r"(?i)(?:teil|part|cd|disc|disk)[ ._-]*[1-9]", value):
+        return "", "Nur Teilenummer; Filmtitel manuell bestimmen"
     if re.match(r"(?i)^[a-z]{2,5}-[a-z0-9-]+$",name) and "-" in name:
         return "", "Release-Kürzel statt sicherem Filmtitel"
     if re.match(r"(?i)^[a-z]{2,6}-[a-z0-9-]+$",value):
