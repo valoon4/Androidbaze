@@ -2,8 +2,8 @@
 
 Enthält den **synthetischen** K5-Fallkatalog M01–M28 und Modellkandidaten, **keine** Modellantworten und **keine** API-Schlüssel.
 
-- `cases.json` – 28 Fälle, jeder mit Fachkriterium, Kategorie, Hard-Gate und nötigen Testwiederholungen;
-- `candidates.json` – zu prüfende Modelle, noch **ohne geprüften Artefakt-Hash, Hardware, Lizenzfreigabe oder Benchmark-Ergebnis**;
+- `cases.json` – 28 Fälle, jeder mit Fachkriterium, Kategorie, Hard-Gate, nötigen Wiederholungen sowie **Operation** (Chat/Coach/Plattform) und relevanten Modellmodi;
+- `candidates.json` – zu prüfende Modelle samt geplanter **Chat-/Coach-Fähigkeit**, noch **ohne geprüften Artefakt-Hash, Hardware, Lizenzfreigabe oder Benchmark-Ergebnis**;
 - `measurements.jsonl` – zunächst **leer**. Unveröffentlichte Kandidaten dürfen hier nur nach echten kontrollierten Runs mit SHA-256-Evidenz-Hash aufgeführt werden; Rohchats bleiben außerhalb des Repos.
 - `evaluate.py` – strenger Offline-Parser mit Status `NO_REAL_MEASUREMENTS`, `INCOMPLETE_REQUIRES_REVIEW`, `BLOCKED_HARD_GATE` oder `REVIEW_READY_NOT_APPROVED`; **niemals** eine automatische Produktfreigabe;
 - `test_evaluate.py` – Python-Tests, die besonders einen **synthetischen Testfall als fälschlichen Qualitätsnachweis** verhindern.
@@ -50,3 +50,5 @@ Die Auswertung enthält p50/p95 für vollständige Antwortzeiten **nur aus tats�
 Die vollständige fachliche Erwartung der 28 Fälle steht in [K5_MODELLVERGLEICH_TESTPLAN.md](../../docs/K5_MODELLVERGLEICH_TESTPLAN.md). Angaben wie 30 oder 100+ Gesprächszüge sind hier **Prüfaufträge**, keine fertig generierten Langdialog-Fixturns. Für echte Qualitätsvergleiche müssen die synthetischen, versionierten Dialogskripte und separate unabhängige Reviewerbewertungen vorliegen. Andernfalls bleibt die fachliche Entscheidung offen.
 
 Das CLI stellt **keine Netzwerkverbindung her** und führt selbst keine lokale LLM-Engine aus. Ein späterer autorisierter Lab-Runner für LiteRT-LM/llama.cpp/Cloud-Broker muss als **eigener klar begrenzter PR** mit Modelllizenzen, Hashes und Datenschutz-Review ergänzt werden.
+
+**Wichtig für faire Modellevaluierung:** Der Validator prüft pro Kandidat nur die Fälle, die zu seiner Betriebsart und seiner ausdrücklich geplanten Operation passen. Ein On-device-Chat-only-Modell wird nicht wegen fehlender Coach-Bewertungen abgewertet; ein Cloud-Timeout-Test ist nicht auf ein Offline-Modell anwendbar. Die übergreifende K5-M01–M28-Suite bleibt vollständig, und alle jeweils anwendbaren harten Gates bleiben Pflicht.

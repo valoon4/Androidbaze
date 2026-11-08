@@ -18,7 +18,10 @@
       "region": null,
       "legal_review": "not_completed",
       "privacy_approval": false,
-      "real_benchmark_runs": 0
+      "real_benchmark_runs": 0,
+      "planned_operations": [
+        "chat"
+      ]
     },
     {
       "id": "local-qwen3-1.7b",
@@ -34,7 +37,10 @@
       "region": null,
       "legal_review": "not_completed",
       "privacy_approval": false,
-      "real_benchmark_runs": 0
+      "real_benchmark_runs": 0,
+      "planned_operations": [
+        "chat"
+      ]
     },
     {
       "id": "local-qwen3-4b",
@@ -50,7 +56,10 @@
       "region": null,
       "legal_review": "not_completed",
       "privacy_approval": false,
-      "real_benchmark_runs": 0
+      "real_benchmark_runs": 0,
+      "planned_operations": [
+        "chat"
+      ]
     },
     {
       "id": "cloud-gpt-6-luna",
@@ -66,7 +75,11 @@
       "region": null,
       "legal_review": "not_completed",
       "privacy_approval": false,
-      "real_benchmark_runs": 0
+      "real_benchmark_runs": 0,
+      "planned_operations": [
+        "chat",
+        "coach"
+      ]
     },
     {
       "id": "cloud-gpt-6.1-terra",
@@ -82,7 +95,11 @@
       "region": null,
       "legal_review": "not_completed",
       "privacy_approval": false,
-      "real_benchmark_runs": 0
+      "real_benchmark_runs": 0,
+      "planned_operations": [
+        "chat",
+        "coach"
+      ]
     },
     {
       "id": "cloud-gemini-3.7-flash",
@@ -98,7 +115,11 @@
       "region": null,
       "legal_review": "not_completed",
       "privacy_approval": false,
-      "real_benchmark_runs": 0
+      "real_benchmark_runs": 0,
+      "planned_operations": [
+        "chat",
+        "coach"
+      ]
     }
   ]
 }

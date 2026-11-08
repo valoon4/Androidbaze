@@ -62,7 +62,11 @@ def validate_suite(suite: dict, catalog: dict) -> tuple[dict, dict]:
     if len(ids) != 28 or set(ids) != {f"M{i:02}" for i in range(1, 29)}:
         raise ValueError("The K5 M01–M28 suite must be complete and have unique IDs")
     for case in cases:
-        if case.get("repetitions", 0) < 1 or not isinstance(case.get("hard_gate"), bool):
+        if (case.get("repetitions", 0) < 1 or
+                not isinstance(case.get("hard_gate"), bool) or
+                case.get("operation") not in {"chat", "coach", "platform"} or
+                not isinstance(case.get("applies_to_modes"), list) or
+                not case["applies_to_modes"]):
             raise ValueError(f"Invalid gate or repeats for {case['id']}")
         if case.get("fixture") != "synthetic_only":
             raise ValueError("No private chat fixtures are permitted")
@@ -74,6 +78,10 @@ def validate_suite(suite: dict, catalog: dict) -> tuple[dict, dict]:
     names = [candidate.get("id") for candidate in candidates]
     if len(set(names)) != len(names) or any(not name for name in names):
         raise ValueError("Candidate IDs must be unique and nonempty")
+    for candidate in candidates:
+        ops = candidate.get("planned_operations")
+        if not isinstance(ops, list) or not ops or not set(ops).issubset({"chat", "coach"}):
+            raise ValueError("Candidate must explicitly declare chat/coach capabilities to evaluate")
     return {case["id"]: case for case in cases}, {candidate["id"]: candidate for candidate in candidates}
 
 
@@ -88,6 +96,12 @@ def validate_rows(rows: list[dict], cases: dict, candidates: dict) -> None:
             raise ValueError("Raw conversations or secrets are forbidden in evidence files")
         if row["candidate_id"] not in candidates or row["case_id"] not in cases:
             raise ValueError("Unknown candidate or test case")
+        candidate = candidates[row["candidate_id"]]
+        case = cases[row["case_id"]]
+        if (candidate["mode"] not in case["applies_to_modes"] or
+                (case["operation"] != "platform" and
+                 case["operation"] not in candidate["planned_operations"])):
+            raise ValueError("Evidence for a case outside this mode/operation is not comparable")
         if type(row["trial"]) is not int or row["trial"] < 1:
             raise ValueError("Trial must be positive integer")
         if row["evidence_type"] not in ALLOWED_TYPES:
@@ -134,8 +148,14 @@ def summarize(suite: dict, catalog: dict, rows: list[dict]) -> dict:
         candidate_rows = [row for row in rows if row["candidate_id"] == candidate_id]
         real = [row for row in candidate_rows if row["evidence_type"] == "real_model"]
         fixture = [row for row in candidate_rows if row["evidence_type"] == "synthetic_fixture"]
+        applicable = {
+            case_id: case for case_id, case in cases.items()
+            if candidate["mode"] in case["applies_to_modes"] and
+            (case["operation"] == "platform" or
+             case["operation"] in candidate["planned_operations"])
+        }
         counts = Counter(row["case_id"] for row in real)
-        missing = sorted(case_id for case_id, case in cases.items()
+        missing = sorted(case_id for case_id, case in applicable.items()
                          if counts[case_id] < case["repetitions"])
         gates_failed = sorted({row["case_id"] for row in real
                                if cases[row["case_id"]]["hard_gate"] and
@@ -184,6 +204,7 @@ def summarize(suite: dict, catalog: dict, rows: list[dict]) -> dict:
             "status": status,
             "real_measurements": len(real),
             "synthetic_fixture_rows_not_counted": len(fixture),
+            "required_case_count_for_mode_and_operations": len(applicable),
             "test_cases_with_real_evidence": len(counts),
             "missing_or_under_repeated_cases": missing,
             "hard_gates_failed": gates_failed,

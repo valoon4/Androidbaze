@@ -27,6 +27,7 @@ class D04EvidenceValidatorTest(unittest.TestCase):
         self.assertEqual("NO_REAL_MEASUREMENTS", report["overall_status"])
         self.assertEqual(28, report["case_count"])
         self.assertEqual(6, len(report["candidates"]))
+        self.assertLess(report["candidates"][0]["required_case_count_for_mode_and_operations"], 28)
         for candidate in report["candidates"]:
             self.assertEqual("NO_REAL_MEASUREMENTS", candidate["status"])
             self.assertIsNone(candidate["full_latency_ms_p50"])
@@ -91,6 +92,18 @@ class D04EvidenceValidatorTest(unittest.TestCase):
         report = summarize(SUITE, CATALOG, [row])
         self.assertEqual("BLOCKED_HARD_GATE", report["candidates"][0]["status"])
         self.assertIn("M09", report["candidates"][0]["hard_gates_failed"])
+
+    def test_cloud_only_case_must_not_be_scored_for_local_model(self):
+        row = fixture()
+        row["case_id"] = "M25"
+        with self.assertRaises(ValueError):
+            summarize(SUITE, CATALOG, [row])
+
+    def test_coach_only_case_must_not_block_chat_only_model(self):
+        report = summarize(SUITE, CATALOG, [])
+        local = next(x for x in report["candidates"] if x["candidate_id"] == CANDIDATE_ID)
+        self.assertNotIn("M16", local["missing_or_under_repeated_cases"])
+        self.assertIn("M09", local["missing_or_under_repeated_cases"])
 
     def test_catalog_or_suite_missing_case_rejected(self):
         suite = copy.deepcopy(SUITE)
