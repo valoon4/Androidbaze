@@ -48,6 +48,8 @@ Als erstes Zielgerät dient ein **Samsung Galaxy A32 5G mit 4 GB physischem RAM 
 
 [Gerätedaten, verifizierte Herstellerquellen, Testreihenfolge und offene Messfragen](D04_GALAXY_A32_5G_TESTPROFIL.md).
 
+**Neue Hardwarechance:** Der Nutzer hat eine **20-GB-Speicherkarte**, während intern nur ca. **1,5 GB frei** sind. D04 prüft daher zuerst ein Modell **direkt im app-spezifischen SD-Dateiverzeichnis** (Android-13-Scoped-Storage, kein intern dupliziertes GGUF). Ein sicherer SD-Ladeweg muss noch nachgewiesen werden; die freie Restkapazität der Karte ist unbekannt. **Kein Modelldownload und keine Freigabe allein aufgrund der Kartenkapazität.**
+
 ## 4. Versuchsdesign – Pflicht vor Modellwahl
 
 1. **Gate A / Freigabe:** Modell- und Runtime-Version und Nutzungsrechte; passende konkrete Android-Testgeräte (klein/mittel/leistungsstark), Testrahmen und Budget; Cloud nur über abgesicherten Test-Broker mit geprüftem Vertrag, Quotas und Zweckfreigabe.
