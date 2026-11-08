@@ -24,16 +24,19 @@ Stand der öffentlichen Modell-/Runtime-Unterlagen: **08.11.2026**. Die Kandidat
 | **Qwen3-4B** | Local-M | mögliche bessere Dialogqualität | RAM, Thermik, Modellladen, tatsächliche Gerätekompatibilität |
 | **GPT-6 Luna** | günstige Managed-API-Referenz | Kostenuntergrenze einer kleinen Cloudklasse | Qualität, reale Kontoberechtigung, Budget, Security-/Broker-Gate |
 | **GPT-6.1 Terra** | stärkere Managed-API-Referenz | Abgleich, ob Qualitätsgewinn den Aufpreis rechtfertigt | Budget, Datenübermittlung, Verträge, Broker, reale Latenz |
+| **Gemini 3.7 Flash** | unabhängige Managed-API-Referenz von Google | Anbieterdiversität, deutscher Gesprächsstil, Preis-/Antwortvergleich | eigenständiger Vertrag/Datenschutz, Brokerintegration, echte Verfügbarkeit |
 
 Die Qwen3-Modellkarten sind mit **Apache-2.0** gekennzeichnet. Dies ist **keine** automatische Freigabe jedes Drittanbieter-GGUF-/LiteRT-Konvertats, jeder Runtime oder kommerzieller Verteilung: exakte Gewichte, Chat-Template, Derivate und eigene Lizenzprüfung dokumentieren.
 
-**Offizielle Quellen:** [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B), [Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B), [Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B), [LiteRT-LM Kotlin/Android](https://developers.google.com/edge/litert-lm/android), [llama.cpp Android](https://github.com/ggml-org/llama.cpp/blob/master/docs/android.md), [OpenAI-Modellübersicht](https://developers.openai.com/api/docs/models), [OpenAI-API-Preise](https://developers.openai.com/api/docs/pricing).
+**Offizielle Quellen:** [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B), [Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B), [Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B), [LiteRT-LM Kotlin/Android](https://developers.google.com/edge/litert-lm/android), [llama.cpp Android](https://github.com/ggml-org/llama.cpp/blob/master/docs/android.md), [OpenAI-Modellübersicht](https://developers.openai.com/api/docs/models), [OpenAI-API-Preise](https://developers.openai.com/api/docs/pricing), [Gemini-API-Modellübersicht](https://ai.google.dev/gemini-api/docs/models), [Gemini-API-Preise](https://ai.google.dev/gemini-api/docs/pricing).
 
 **Wichtig:** Das ist keine Aussage, dass alle drei Qwen-Modelle mit einem bestimmten LiteRT-Binary kompatibel sind. Android Runtime und passendes quantisiertes Modell sind zusammen zu validieren. Für `llama.cpp` muss ein geprüftes GGUF-Gewicht und das konkrete ARM64-Geräteprofil vorliegen. Modelle weder in APK noch Repo einchecken, bevor Hardware, Hash, Lizenz und Downloadweg freigegeben sind.
 
 ## 3. Grober Preisindikator, kein tatsächlicher App-Preis
 
 Die offiziellen Standard-API-Preise zum **08.11.2026**: GPT-6 Luna **0,10 USD / 1 Mio. Eingabetoken**, **0,50 USD / 1 Mio. Ausgabetoken**; GPT-6.1 Terra **1 USD / 1 Mio. Eingabetoken**, **5 USD / 1 Mio. Ausgabetoken**. Diese Angaben müssen vor einer Live-Evaluierung erneut anhand des gewählten Tarifs verifiziert werden.
+
+Für Gemini 3.7 Flash nennt die offizielle Preisübersicht (zeitlich befristeter Standardtarif bis 31.12.2026) **0,75 USD / 1 Mio. Eingabetoken** und **3,75 USD / 1 Mio. Ausgabetoken inklusive Thinking-Tokens**. Damit wären bei der unten genannten Beispielmenge **0,002625 USD** an reinen Modelltokenkosten fällig. In der Praxis können Denkbudget, Caching und tatsächliche Antworttoken die Vergleichbarkeit beeinflussen. Ohne konkrete API-Tokens ist auch das **keine gemessene App-Kostenrechnung**.
 
 Eine *rein beispielhafte* Antwort mit 2.000 Eingabe- und 300 Ausgabetoken ergäbe **0,00035 USD** (Luna) oder **0,0035 USD** (Terra) an reinen Modelltokenkosten. Die Formel ist `input_tokens * input_price_per_million / 1e6 + output_tokens * output_price_per_million / 1e6`.
 

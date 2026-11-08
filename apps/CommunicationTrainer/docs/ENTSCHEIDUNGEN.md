@@ -4,7 +4,7 @@
 
 Nach Freigabe von PR #60 und dessen erfolgreichem Merge wird D04 als eigenständiger PR angelegt. **Kein Real-Modell ist in die App integriert**. Der bisherige D03-Demochat wird hinter einen typisierten `InferenceGateway` verlegt. Lokalmodell-, Cloud-/Broker- und ChatGPT-Plan-Modi werden explizit als **nicht verfügbar** modelliert; keine stillen Providerwechsel, kein Nutzertext-Upload und keine Kosten.
 
-Fünf Kandidaten (drei Qwen3-Open-Weight-Größen sowie zwei Cloud-API-Referenzmodelle) und die K5-Fälle M01–M28 sind für ein reproduzierbares Lab-Review vorbereitet. **Es gibt keine echte Inferenzmessung** und keine Modellrangliste. Die offline auswertende Python-Suite erkennt fehlende Evidenz und blockierte Sicherheitsprüfungen; der volle D04-Gate-A-Entscheid braucht reale Android-Hardware-/Cloud-Broker-Läufe und menschliches Review. Quellen und Grenzen: [D04_INFERENCE_MODELLVERGLEICH.md](D04_INFERENCE_MODELLVERGLEICH.md).
+Sechs Kandidaten (drei Qwen3-Open-Weight-Größen sowie drei Cloud-API-Referenzen von OpenAI und Google) und die K5-Fälle M01–M28 sind für ein reproduzierbares Lab-Review vorbereitet. **Es gibt keine echte Inferenzmessung** und keine Modellrangliste. Die offline auswertende Python-Suite erkennt fehlende Evidenz und blockierte Sicherheitsprüfungen; der volle D04-Gate-A-Entscheid braucht reale Android-Hardware-/Cloud-Broker-Läufe und menschliches Review. Quellen und Grenzen: [D04_INFERENCE_MODELLVERGLEICH.md](D04_INFERENCE_MODELLVERGLEICH.md).
 
 Für Installationen neben D03: eigener `.d04preview`-Debug-Anwendungsname. Keine Datentransfers zwischen Preview-IDs und keine Behauptung eines stabilen Mehrversionsupdatepfads.
 
