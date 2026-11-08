@@ -10,6 +10,7 @@ class TestCleaner(unittest.TestCase):
         self.assertEqual(clean_name("rsg-towerdeath-1080p","1981")[0],"")
         self.assertIn("Jahr ",clean_name("Film.1980.German.DVDRip","1981")[1])
         self.assertEqual(disc_number("etm-dfx-cd2"),2)
+        self.assertEqual(clean_name("Teil 1","1981")[0],"")
         self.assertTrue(subtitle_parts(Path("movie.forced.srt")) is None)
         self.assertEqual(subtitle_parts(Path("movie.DE.srt"))[1],"deu")
 
