@@ -25,7 +25,7 @@ jobs:
   android:
     name: Build, unit-test and verify CommunicationTrainer debug APK
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: apps/CommunicationTrainer/android
@@ -52,7 +52,12 @@ jobs:
           SDKMGR="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
           test -n "$SDKMGR"
           yes | "$SDKMGR" --licenses > /dev/null || true
-          "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
+          "$SDKMGR" "platforms;android-36" "build-tools;36.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
+      - name: Bootstrap pinned CPU-only llama.cpp sources (no model)
+        run: bash scripts/bootstrap-qwen-probe.sh
+      - name: Verify native dependency pin
+        run: |
+          test "$(git -C app/src/main/cpp/vendor/llama.cpp rev-parse HEAD)" = "a691b2345844ce1b430201fc5fd404ce062e05f2"
       - name: D04 offline benchmark suite and no-false-quality tests
         run: |
           python3 -m unittest discover -s ../benchmarks/d04 -p 'test_*.py' -v
@@ -78,19 +83,19 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
           "$AAPT" dump badging "$APK" | tee apk-badging.txt
-          grep -Fq "package: name='com.valoon4.communicationtrainer.d04sdpreview'" apk-badging.txt
-          grep -Fq "application-label:'CommunicationTrainer D04 SD-Test'" apk-badging.txt
+          grep -Fq "package: name='com.valoon4.communicationtrainer.d04qwenpreview'" apk-badging.txt
+          grep -Fq "application-label:'CommunicationTrainer Qwen SD-Test'" apk-badging.txt
           grep -Fq "targetSdkVersion:'36'" apk-badging.txt
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee apk-signing.txt
-          cp "$APK" CommunicationTrainer-D04-SD-debug.apk
-          sha256sum CommunicationTrainer-D04-SD-debug.apk | tee CommunicationTrainer-D04-SD-debug.apk.sha256
+          cp "$APK" CommunicationTrainer-D04-Qwen-debug.apk
+          sha256sum CommunicationTrainer-D04-Qwen-debug.apk | tee CommunicationTrainer-D04-Qwen-debug.apk.sha256
       - name: Upload installable debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: CommunicationTrainer-D04-SD-debug-apk
+          name: CommunicationTrainer-D04-Qwen-debug-apk
           path: |
-            apps/CommunicationTrainer/android/CommunicationTrainer-D04-SD-debug.apk
-            apps/CommunicationTrainer/android/CommunicationTrainer-D04-SD-debug.apk.sha256
+            apps/CommunicationTrainer/android/CommunicationTrainer-D04-Qwen-debug.apk
+            apps/CommunicationTrainer/android/CommunicationTrainer-D04-Qwen-debug.apk.sha256
             apps/CommunicationTrainer/android/apk-badging.txt
             apps/CommunicationTrainer/android/apk-signing.txt
             apps/CommunicationTrainer/android/d04-evaluation-summary.json
