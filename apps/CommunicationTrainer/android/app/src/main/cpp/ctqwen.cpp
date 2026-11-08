@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
+#include <exception>
+#include <iomanip>
 #include <mutex>
 #include <sstream>
 #include <string>
@@ -110,14 +112,15 @@ std::string run(int fd, int n_threads, int n_ctx, int max_tokens) {
     std::string answer;
     int generated = 0;
     int32_t position = count;
-    for (; generated < max_tokens && position < n_ctx; ++generated, ++position) {
+    for (; generated < max_tokens && position < n_ctx; ++position) {
         llama_token token = llama_sampler_sample(resources.sampler, resources.ctx, -1);
         if (llama_vocab_is_eog(vocab, token)) break;
         char piece[512];
         int n = llama_token_to_piece(vocab, token, piece, sizeof(piece), 0, true);
         if (n < 0) return "ABBRUCH: Ausgabe konnte nicht dekodiert werden.";
         answer.append(piece, n);
-        if (generated + 1 == max_tokens) break;
+        ++generated;
+        if (generated == max_tokens) break;
         fill_batch(&token, 1, position);
         if (llama_process(resources.ctx, LLAMA_PROCESS_TYPE_DECODE, resources.batch) != 0) {
             return "ABBRUCH: Token-Generierung fehlgeschlagen.";
@@ -129,11 +132,14 @@ std::string run(int fd, int n_threads, int n_ctx, int max_tokens) {
     };
     const auto total_ms = ms(finished - started);
     const auto load_and_prefill_ms = ms(first - started);
+    const auto decode_ms = ms(finished - first);
     std::ostringstream report;
     report << "ECHTE LOKALE CPU-MESSUNG (ein synthetischer Prompt)\n"
            << "Modellladen + Prompt: " << load_and_prefill_ms << " ms\n"
            << "Gesamt: " << total_ms << " ms\n"
            << "Ausgabetoken: " << generated << "\n"
+           << "Dekodiergeschwindigkeit: " << std::fixed << std::setprecision(1)
+           << (decode_ms > 0 ? (generated * 1000.0 / decode_ms) : 0.0) << " Token/s\n"
            << "Ausgabetext (ungeprüfte Modellqualität):\n" << answer;
     return report.str();
 }
