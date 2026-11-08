@@ -79,11 +79,14 @@ object D05TrainingSession {
     }
 
     internal fun onAccountChanged() {
-        // Stop accepting next turns whenever the OAuth account changes.
-        // Do not erase an in-flight response: if it returns, its result belongs
-        // only to the discarded session and must never be shown under a new account.
-        clearConversation()
+        // Wipe visible and pending session data even if an older request is
+        // still processing. That reply is discarded via sessionGeneration.
+        draft.value = ""
+        turns.value = emptyList()
+        consent.value = false
         chosenModel.value = ""
+        lastLatencyMs.value = null
+        status.value = "Kontowechsel: Trainingsdaten verworfen."
     }
 
     internal fun scenarioInput(scenario: Scenario, history: List<Turn>, userMessage: String): JSONArray {
@@ -232,6 +235,7 @@ object D05TrainingSession {
                     }
                 }
             }
+            throw D05Failure("Antwortstream ohne Abschluss beendet.")
         } finally { conn.disconnect() }
     }
 }
