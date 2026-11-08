@@ -35,9 +35,9 @@ object D05TrainingSession {
             "eine freundliche, aber beharrliche Kollegin",
             "Hey, könntest du heute noch meinen Bericht fertigstellen? Ich schaffe es zeitlich nicht und bräuchte wirklich deine Hilfe."),
         Scenario("listening", "Aktiv zuhören",
-            "Ein Freund ist enttäuscht, weil eine gemeinsame Verabredung abgesagt wurde. Du möchtest zuhören und seine Gefühle anerkennen, statt sofort Ratschläge zu geben.",
-            "ein enttäuschter Freund",
-            "Ich bin echt enttäuscht, dass unser Treffen ausgefallen ist. Ich hatte mich so darauf gefreut.")
+            "Du hast euer geplantes Treffen abgesagt. Dein Freund hatte sich darauf gefreut und ist enttäuscht. Du übst zuerst, seine Gefühle und Wünsche zu verstehen, statt dich sofort zu rechtfertigen oder Lösungen vorzugeben.",
+            "dein enttäuschter Freund, dessen Treffen die übende Person abgesagt hat",
+            "Als du unser Treffen abgesagt hast, war ich echt enttäuscht. Ich hatte mich so darauf gefreut.")
     )
 
     const val MAX_USER_TURNS = 4
@@ -117,7 +117,9 @@ object D05TrainingSession {
         require(userMessage.isNotBlank() && userMessage.length <= MAX_USER_CHARS)
         val policy = "Dies ist ein freiwilliges deutsches Kommunikationstraining mit einer fiktiven Rolle. " +
             "Antworte nur als ${scenario.counterparty}. " +
-            "Die Situation: ${scenario.setup} " +
+            "Die Situation und die Rollen gelten als feste Fakten: ${scenario.setup} " +
+            "Erfinde keine widersprüchlichen Details wie einen anderen Verantwortlichen " +
+            "für eine Absage. Unbekannte Gründe oder Motive sind nicht vorgegeben. " +
             "Der Gesprächspartner hat bereits den ersten Satz gesprochen. " +
             "Bleibe direkt im Rollenspiel und gehe auf die Antwort der übenden Person ein; " +
             "frage nicht erst, welches Szenario geübt werden soll. " +
