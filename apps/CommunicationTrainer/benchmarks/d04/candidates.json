@@ -83,6 +83,22 @@
       "legal_review": "not_completed",
       "privacy_approval": false,
       "real_benchmark_runs": 0
+    },
+    {
+      "id": "cloud-gemini-3.7-flash",
+      "mode": "cloud_broker",
+      "model_id": "gemini-3.7-flash",
+      "runtime_candidate": "approved managed Gemini API via secured test broker ONLY",
+      "model_license_status": "commercial_service_terms_to_review",
+      "source_url": "https://ai.google.dev/gemini-api/docs/models",
+      "measured": false,
+      "artifact_sha256": null,
+      "runtime_version": null,
+      "device_profile": null,
+      "region": null,
+      "legal_review": "not_completed",
+      "privacy_approval": false,
+      "real_benchmark_runs": 0
     }
   ]
 }
