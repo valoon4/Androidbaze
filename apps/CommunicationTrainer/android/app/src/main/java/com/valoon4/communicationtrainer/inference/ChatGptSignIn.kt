@@ -117,9 +117,10 @@ object ChatGptSignIn {
                     val reader = socket.getInputStream().bufferedReader(StandardCharsets.US_ASCII)
                     val first = reader.readLine()?.take(4096) ?: ""
                     // Drain headers (bounded), never log authorization code or headers.
-                    repeat(60) {
-                        val line = reader.readLine() ?: return@repeat
-                        if (line.isBlank()) return@repeat
+                    for (index in 0 until 60) {
+                        val line = reader.readLine() ?: break
+                        if (line.isBlank()) break
+                        if (line.length > 4096) throw AuthFailure("Ungültige lokale Callback-Header.")
                     }
                     val path = first.split(" ").getOrNull(1) ?: ""
                     val parsed = Uri.parse("http://127.0.0.1$path")
@@ -221,9 +222,17 @@ object ChatGptSignIn {
 
     private fun readLimited(connection: HttpsURLConnection): String {
         connection.inputStream.use { input ->
-            val bytes = input.readNBytes(128 * 1024 + 1)
-            if (bytes.size > 128 * 1024) throw AuthFailure("Unerwartet große Serverantwort.")
-            return bytes.toString(StandardCharsets.UTF_8)
+            val output = java.io.ByteArrayOutputStream()
+            val buffer = ByteArray(8192)
+            var total = 0
+            while (true) {
+                val read = input.read(buffer)
+                if (read < 0) break
+                total += read
+                if (total > 128 * 1024) throw AuthFailure("Unerwartet große Serverantwort.")
+                output.write(buffer, 0, read)
+            }
+            return output.toString("UTF-8")
         }
     }
 
