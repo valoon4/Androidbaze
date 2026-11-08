@@ -95,6 +95,7 @@ object ChatGptSignIn {
         val app = context.applicationContext
         working.value = true
         signInOutcome.value = null
+        if (!isProbe) ChatGptPlanProbe.clearSession()
         probeOutcome.value = null
         progress.value = "Starte geschützte Browser-Rückleitung …"
         try {
@@ -290,6 +291,18 @@ object ChatGptSignIn {
                 val granted = scope.split(" ").toSet()
                 val canUsePlan = granted.contains("resource.invoke") &&
                     granted.contains("chatgpt.tokens.use.direct")
+                if (canUsePlan) {
+                    // Access token kept in process memory only, after signed ID token
+                    // and explicit plan scopes are verified. Never retain refresh token.
+                    if (json.optString("token_type") != "Bearer")
+                        throw AuthFailure("OAuth-Zugriffstoken ist kein Bearer-Token.")
+                    val accessToken = json.optString("access_token")
+                        .takeIf { it.length in 20..8192 }
+                        ?: throw AuthFailure("Kein gültiges OAuth-Zugriffstoken erhalten.")
+                    ChatGptPlanProbe.onVerifiedSignIn(accessToken, json.optLong("expires_in", 0L))
+                    if (!ChatGptPlanProbe.authenticated.value)
+                        throw AuthFailure("Zugriffstoken ist für den Test abgelaufen oder nicht nutzbar.")
+                }
                 Outcome.Success(VerifiedConnection(identity.optString("email").takeIf { it.isNotBlank() }, canUsePlan))
             }
         } catch (_: SocketTimeoutException) {
