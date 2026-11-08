@@ -213,6 +213,7 @@ internal object D05Transport {
                     }
                 }
             }
+            throw Failure("Antwortstream ohne Abschlussereignis beendet.")
         } finally {
             connection.disconnect()
         }
