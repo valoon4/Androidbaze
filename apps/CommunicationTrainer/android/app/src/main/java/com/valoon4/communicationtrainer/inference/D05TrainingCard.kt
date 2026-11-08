@@ -84,6 +84,7 @@ fun D05TrainingCard() {
             val scenario = D05TrainingSession.scenarios.first { it.id == selectedScenario }
             Text(scenario.setup, style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+            D051LearningGoalControls(selectedScenario, working)
 
             if (!authenticated) {
                 Text("Melde dich zuerst oben mit ChatGPT an, um eine Trainingssitzung zu starten.",
@@ -180,6 +181,7 @@ fun D05TrainingCard() {
             }
             Text(status, style = MaterialTheme.typography.bodySmall)
             latency?.let { Text("Letzte Antwortzeit: ${it} ms", style = MaterialTheme.typography.labelSmall) }
+            D051ReflectionControls(selectedScenario, working)
             Text(
                 "Pilot: keine Qualitätsbewertung, kein Coach-Feedback und noch keine " +
                     "Wiederaufnahme nach App-Neustart. Kein automatischer Retry.",
