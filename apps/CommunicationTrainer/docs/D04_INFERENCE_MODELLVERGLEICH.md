@@ -44,7 +44,7 @@ Eine *rein beispielhafte* Antwort mit 2.000 Eingabe- und 300 Ausgabetoken ergäb
 
 ## 3a. Konkretisiertes erstes Referenzgerät
 
-Der Nutzer testet auf einem **Samsung Galaxy A32 5G** (Dimensity 720, je nach Markt 4 oder 6 GB RAM). Für D04 ist ein **konservatives On-device-CPU-Startprofil mit Qwen3-0.6B Q4_K_M** vorgesehen; 1.7B nur optional nach RAM-/Speichermessung, 4B nicht als Ersttest auf diesem Gerät. Der tatsächliche RAM, die Android-Version und Modell-ABI des Nutzers sind noch nicht verifiziert. **Noch keine echten Inferenzmesswerte.**
+Als erstes Zielgerät dient ein **Samsung Galaxy A32 5G mit 4 GB physischem RAM (vom Nutzer bestätigt)** und Dimensity 720. D04 verwendet deshalb zunächst ausschließlich ein konservatives **CPU-first-Testprofil mit Qwen3-0.6B Q4_K_M**, maximal 1.024 Kontexttoken im ersten Lauf und separaten 2-/4-Thread-Messungen. 1.7B und 4B werden auf diesem Gerät vorerst **nicht** eingesetzt. Android-Version, CPU-ABI, freier Speicher und tatsächliche Speicherlast sind noch nicht vom Gerät erfasst. **Es gibt weiterhin keine echten Inferenzmesswerte.**
 
 [Gerätedaten, verifizierte Herstellerquellen, Testreihenfolge und offene Messfragen](D04_GALAXY_A32_5G_TESTPROFIL.md).
 
