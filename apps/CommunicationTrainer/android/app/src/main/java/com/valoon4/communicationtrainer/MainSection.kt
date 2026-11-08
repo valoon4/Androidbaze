@@ -12,7 +12,7 @@ enum class MainSection(
     CHATS(
         title = "Chats",
         headline = "Dein Raum für Gespräche",
-        intro = "Halte Gedanken als lokalen Gesprächsentwurf fest. Echte KI-Chats folgen später."
+        intro = "Tausche lokale Testnachrichten aus. Echte KI-Chats folgen später."
     ),
     PRACTICE(
         title = "Üben",

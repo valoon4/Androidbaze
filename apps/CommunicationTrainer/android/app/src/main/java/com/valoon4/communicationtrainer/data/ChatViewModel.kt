@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -19,6 +22,10 @@ data class ChatUiState(
     val isLoadingDraft: Boolean = false,
     val isBusy: Boolean = false,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val messages: List<MessageEntity> = emptyList(),
+    val isSending: Boolean = false,
+    val respondingMessageId: String? = null,
+    val failNextMockReply: Boolean = false,
     val error: String? = null
 ) {
     val isDraftSaved: Boolean get() = !isLoadingDraft && draftRevision == persistedRevision
@@ -28,6 +35,8 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
     private val mutableState = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = mutableState
     private var loadJob: Job? = null
+    private var messageJob: Job? = null
+    private val processingReplies = mutableSetOf<String>()
     // Latest in-flight text remains visible when the user navigates away and back
     // before a database commit. It is not counted as durable until SQLite confirms.
     private data class PendingDraft(val text: String, val revision: Long)
@@ -75,8 +84,10 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
 
     fun openConversation(id: String, persistSelection: Boolean = true) {
         loadJob?.cancel()
+        messageJob?.cancel()
         mutableState.update {
             it.copy(
+                messages = emptyList(),
                 selectedConversationId = id,
                 draftText = "",
                 draftRevision = 0,
@@ -97,17 +108,27 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
                     return@launch
                 }
                 val draft = repository.getDraft(id)
+                val storedMessages = repository.messages(id).first()
                 val confirmedRevision = draft?.editRevision ?: 0L
                 val pending = pendingDrafts[id]
                 val usePending = pending != null && pending.revision > confirmedRevision
                 if (!usePending) pendingDrafts.remove(id)
                 mutableState.update {
                     if (it.selectedConversationId == id && it.isLoadingDraft) it.copy(
+                        messages = storedMessages,
                         draftText = if (usePending) pending!!.text else draft?.text.orEmpty(),
                         draftRevision = if (usePending) pending!!.revision else confirmedRevision,
                         persistedRevision = confirmedRevision,
                         isLoadingDraft = false
                     ) else it
+                }
+                messageJob = viewModelScope.launch {
+                    repository.messages(id).collect { items ->
+                        mutableState.update { state ->
+                            if (state.selectedConversationId == id) state.copy(messages = items)
+                            else state
+                        }
+                    }
                 }
                 if (persistSelection) repository.preferences.selectConversation(id)
             } catch (error: Exception) {
@@ -129,7 +150,7 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
     fun editDraft(text: String) {
         val before = mutableState.value
         val id = before.selectedConversationId ?: return
-        if (before.isLoadingDraft || before.isBusy) return
+        if (before.isLoadingDraft || before.isBusy || before.isSending) return
         val revision = before.draftRevision + 1L
         pendingDrafts[id] = PendingDraft(text, revision)
         mutableState.update { current ->
@@ -168,8 +189,10 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
                 pendingDrafts.remove(id)
                 repository.preferences.selectConversation(null)
                 loadJob?.cancel()
+                messageJob?.cancel()
                 mutableState.update { state ->
                     if (state.selectedConversationId == id) state.copy(
+                        messages = emptyList(),
                         selectedConversationId = null,
                         draftText = "",
                         draftRevision = 0,
@@ -188,12 +211,127 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
 
     fun closeConversation() {
         loadJob?.cancel()
-        mutableState.update { it.copy(selectedConversationId = null, isLoadingDraft = false, error = null) }
+        messageJob?.cancel()
+        mutableState.update {
+            it.copy(selectedConversationId = null, messages = emptyList(), isLoadingDraft = false, error = null)
+        }
         viewModelScope.launch {
             try {
                 repository.preferences.selectConversation(null)
             } catch (error: Exception) {
                 mutableState.update { it.copy(error = "Auswahl konnte nicht gespeichert werden.") }
+            }
+        }
+    }
+
+    /**
+     * Sends ONLY a confirmed SQLite draft. A duplicate tap cannot start a second
+     * send; the DAO transaction binds message insertion to draft clearing.
+     */
+    fun sendMessage() {
+        val snapshot = mutableState.value
+        val id = snapshot.selectedConversationId ?: return
+        if (snapshot.isBusy || snapshot.isSending || snapshot.isLoadingDraft ||
+            !snapshot.isDraftSaved || snapshot.error != null ||
+            snapshot.draftText.isBlank() ||
+            snapshot.respondingMessageId != null ||
+            snapshot.messages.any { it.role == "user" && it.status in setOf("queued", "failed") }
+        ) return
+
+        mutableState.update { it.copy(isSending = true, error = null) }
+        val clientId = UUID.randomUUID().toString()
+        viewModelScope.launch {
+            try {
+                val message = repository.enqueueSavedDraft(id, snapshot.draftRevision, clientId)
+                if (message == null) {
+                    mutableState.update { current ->
+                        if (current.selectedConversationId == id) current.copy(
+                            error = "Entwurf ist noch nicht sicher gespeichert. Bitte erneut versuchen."
+                        ) else current
+                    }
+                    return@launch
+                }
+                pendingDrafts.remove(id)
+                mutableState.update { current ->
+                    if (current.selectedConversationId == id) {
+                        current.copy(
+                            draftText = "",
+                            draftRevision = snapshot.draftRevision + 1L,
+                            persistedRevision = snapshot.draftRevision + 1L
+                        )
+                    } else current
+                }
+                val failOnce = mutableState.value.failNextMockReply
+                mutableState.update { it.copy(failNextMockReply = false) }
+                simulateAnswer(message, failOnce)
+            } catch (error: Exception) {
+                mutableState.update {
+                    if (it.selectedConversationId == id) it.copy(
+                        error = "Senden fehlgeschlagen. Dein bestätigter Entwurf bleibt erhalten."
+                    ) else it
+                }
+            } finally {
+                mutableState.update { it.copy(isSending = false) }
+            }
+        }
+    }
+
+    fun retryMockReply(messageId: String) {
+        val current = mutableState.value
+        if (current.isSending || current.respondingMessageId != null) return
+        val candidate = current.messages.firstOrNull {
+            it.id == messageId && it.role == "user" && it.status in setOf("queued", "failed")
+        } ?: return
+        if (!processingReplies.add(candidate.id)) return
+        // Retry keeps the original clientMessageId; it must never create another user message.
+        viewModelScope.launch {
+            try {
+                val prepared = repository.prepareMockRetry(candidate.id)
+                if (prepared != null) {
+                    processingReplies.remove(candidate.id)
+                    simulateAnswer(prepared, false)
+                }
+            } catch (error: Exception) {
+                mutableState.update { it.copy(error = "Wiederholen fehlgeschlagen. Bitte erneut versuchen.") }
+            } finally {
+                processingReplies.remove(candidate.id)
+            }
+        }
+    }
+
+    fun setFailNextMockReply(enabled: Boolean) {
+        mutableState.update { it.copy(failNextMockReply = enabled) }
+    }
+
+    private fun simulateAnswer(message: MessageEntity, shouldFail: Boolean) {
+        if (!processingReplies.add(message.id)) return
+        mutableState.update { it.copy(respondingMessageId = message.id) }
+        viewModelScope.launch {
+            try {
+                delay(500)
+                if (shouldFail) {
+                    repository.failMockReply(message.id)
+                } else {
+                    repository.completeMockReply(
+                        message.id,
+                        MockConversationEngine.answer(message.content)
+                    )
+                }
+            } catch (error: Exception) {
+                // A recoverable failed state remains in Room across process death.
+                try {
+                    repository.failMockReply(message.id)
+                } catch (_: Exception) {
+                    mutableState.update {
+                        it.copy(error = "Antwortstatus konnte nicht gespeichert werden. Bitte Chat erneut öffnen.")
+                    }
+                }
+            } finally {
+                processingReplies.remove(message.id)
+                mutableState.update {
+                    if (it.respondingMessageId == message.id) it.copy(respondingMessageId = null)
+                    else it
+                }
             }
         }
     }

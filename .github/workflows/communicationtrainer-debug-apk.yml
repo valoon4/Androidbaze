@@ -51,7 +51,7 @@ jobs:
           test -n "$SDKMGR"
           yes | "$SDKMGR" --licenses > /dev/null || true
           "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
-      - name: Unit tests (D02 persistence, preferences, navigation and contrast)
+      - name: Unit tests (D03 mock chat, persistence and contrast)
         run: gradle :app:testDebugUnitTest --no-daemon --stacktrace
       - name: Verify exported Room v1 schema
         run: |
@@ -72,19 +72,19 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
           "$AAPT" dump badging "$APK" | tee apk-badging.txt
-          grep -Fq "package: name='com.valoon4.communicationtrainer.d02preview'" apk-badging.txt
-          grep -Fq "application-label:'CommunicationTrainer D02 Test'" apk-badging.txt
+          grep -Fq "package: name='com.valoon4.communicationtrainer.d03preview'" apk-badging.txt
+          grep -Fq "application-label:'CommunicationTrainer D03 Test'" apk-badging.txt
           grep -Fq "targetSdkVersion:'36'" apk-badging.txt
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee apk-signing.txt
-          cp "$APK" CommunicationTrainer-D02-debug.apk
-          sha256sum CommunicationTrainer-D02-debug.apk | tee CommunicationTrainer-D02-debug.apk.sha256
+          cp "$APK" CommunicationTrainer-D03-debug.apk
+          sha256sum CommunicationTrainer-D03-debug.apk | tee CommunicationTrainer-D03-debug.apk.sha256
       - name: Upload installable debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: CommunicationTrainer-D02-debug-apk
+          name: CommunicationTrainer-D03-debug-apk
           path: |
-            apps/CommunicationTrainer/android/CommunicationTrainer-D02-debug.apk
-            apps/CommunicationTrainer/android/CommunicationTrainer-D02-debug.apk.sha256
+            apps/CommunicationTrainer/android/CommunicationTrainer-D03-debug.apk
+            apps/CommunicationTrainer/android/CommunicationTrainer-D03-debug.apk.sha256
             apps/CommunicationTrainer/android/apk-badging.txt
             apps/CommunicationTrainer/android/apk-signing.txt
             apps/CommunicationTrainer/android/app/schemas/**/1.json

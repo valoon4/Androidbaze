@@ -24,7 +24,22 @@ class ChatRepository(context: Context) {
         return id
     }
 
+
     suspend fun getConversation(id: String): ConversationEntity? = dao.getConversation(id)
+
+    fun messages(id: String): Flow<List<MessageEntity>> =
+        dao.observeMessages(id, rootBranchId(id))
+
+    suspend fun enqueueSavedDraft(id: String, expectedRevision: Long, clientId: String): MessageEntity? =
+        dao.enqueueSavedDraft(id, expectedRevision, clientId, System.currentTimeMillis())
+
+    suspend fun completeMockReply(messageId: String, content: String): MessageEntity? =
+        dao.completeMockReply(messageId, content, System.currentTimeMillis())
+
+    suspend fun failMockReply(messageId: String) = dao.failMockReply(messageId)
+
+    suspend fun prepareMockRetry(messageId: String): MessageEntity? = dao.prepareMockRetry(messageId)
+
 
     suspend fun getDraft(id: String): DraftEntity? = dao.getDraft(id, rootBranchId(id))
 
