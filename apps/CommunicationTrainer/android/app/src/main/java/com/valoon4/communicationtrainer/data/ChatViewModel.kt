@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.valoon4.communicationtrainer.inference.InferenceGateways
+import com.valoon4.communicationtrainer.inference.InferenceMode
+import com.valoon4.communicationtrainer.inference.InferenceRequest
+import com.valoon4.communicationtrainer.inference.InferenceResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -32,6 +36,9 @@ data class ChatUiState(
 }
 
 class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
+    // Only the existing local D03 fixture is allowed. Switching to another
+    // mode requires future explicit product, permission, and security gates.
+    private val inferenceGateway = InferenceGateways.create(InferenceMode.D03_MOCK)
     private val mutableState = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = mutableState
     private var loadJob: Job? = null
@@ -312,10 +319,29 @@ class ChatViewModel(private val repository: ChatRepository) : ViewModel() {
                 if (shouldFail) {
                     repository.failMockReply(message.id)
                 } else {
-                    repository.completeMockReply(
-                        message.id,
-                        MockConversationEngine.answer(message.content)
+                    val response = inferenceGateway.generateCharacterTurn(
+                        InferenceRequest(
+                            requestId = "mock:${message.clientMessageId}",
+                            conversationId = message.conversationId,
+                            branchId = message.branchId,
+                            personaRef = "d03-testpartner-v1",
+                            scenarioRef = null,
+                            policyVersion = "d04-gateway-contract-v1",
+                            modelVersion = "d03-deterministic-v1",
+                            privacyPurpose = "local_test",
+                            latestUserText = message.content
+                        )
                     )
+                    when (response) {
+                        is InferenceResult.Completed ->
+                            repository.completeMockReply(message.id, response.text)
+                        is InferenceResult.Rejected -> {
+                            repository.failMockReply(message.id)
+                            mutableState.update {
+                                it.copy(error = "Simulationsantwort gesperrt: ${response.code}.")
+                            }
+                        }
+                    }
                 }
             } catch (error: Exception) {
                 // A recoverable failed state remains in Room across process death.

@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,6 +61,9 @@ import com.valoon4.communicationtrainer.data.ChatViewModel
 import com.valoon4.communicationtrainer.data.ConversationEntity
 import com.valoon4.communicationtrainer.data.MessageEntity
 import com.valoon4.communicationtrainer.data.ThemeMode
+import com.valoon4.communicationtrainer.inference.SdStorageInspection
+import com.valoon4.communicationtrainer.inference.SdStoragePreflight
+import com.valoon4.communicationtrainer.inference.SdStorageStatus
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseAccent
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseTheme
 
@@ -485,6 +489,8 @@ private fun MessageBubble(message: MessageEntity, isProcessing: Boolean, retry: 
 @Composable
 private fun PracticeOverview(state: ChatUiState, viewModel: ChatViewModel, padding: PaddingValues) {
     val scheme = MaterialTheme.colorScheme
+    val context = LocalContext.current
+    var sdInspection by remember { mutableStateOf<SdStorageInspection?>(null) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -505,6 +511,63 @@ private fun PracticeOverview(state: ChatUiState, viewModel: ChatViewModel, paddi
                 color = scheme.onSurface,
                 modifier = Modifier.padding(18.dp)
             )
+        }
+        Surface(color = scheme.surface, shape = RoundedCornerShape(18.dp)) {
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    "D04 · SD-Speicherprüfung",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    "Prüft nur, ob ein app-eigener Speicherort auf einer eingehängten SD-Karte " +
+                        "sichtbar ist und wie viel Platz dort frei ist. " +
+                        "Es werden keine Dateien heruntergeladen oder Modelle gestartet.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = scheme.onSurfaceVariant
+                )
+                OutlinedButton(
+                    onClick = { sdInspection = SdStoragePreflight.inspect(context) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("SD-Speicher jetzt prüfen")
+                }
+                sdInspection?.let { inspection ->
+                    Text(
+                        text = when (inspection.status) {
+                            SdStorageStatus.AVAILABLE_FOR_STORAGE_PROBE ->
+                                "SD-Speicherort erkannt. Freier Platz: " +
+                                    SdStoragePreflight.gib(inspection.sdFreeBytes ?: 0L) +
+                                    ". Nur Speicherprüfung bestanden – Modellladen und KI-Leistung ungetestet."
+                            SdStorageStatus.NOT_DETECTED ->
+                                "Keine entnehmbare SD-Karte im app-eigenen Speicher erkannt. " +
+                                    "Es wurde nichts heruntergeladen."
+                            SdStorageStatus.NOT_MOUNTED ->
+                                "SD-Karte nicht eingehängt oder nicht zugänglich. Kein Modellstart."
+                            SdStorageStatus.NOT_ENOUGH_SPACE ->
+                                "SD-Speicherort erkannt, aber für den geplanten Test zu wenig frei: " +
+                                    SdStoragePreflight.gib(inspection.sdFreeBytes ?: 0L) +
+                                    ". Als vorsichtige Testreserve empfehlen wir 2 GiB."
+                            SdStorageStatus.READ_FAILED ->
+                                "Freier Speicherplatz konnte nicht bestimmt werden. Keine Dateinutzung."
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (inspection.status == SdStorageStatus.AVAILABLE_FOR_STORAGE_PROBE)
+                            scheme.onSurface else scheme.onSurfaceVariant
+                    )
+                    inspection.internalFreeBytes?.let { bytes ->
+                        Text(
+                            "Interner freier App-Speicher: " + SdStoragePreflight.gib(bytes) +
+                                ". Diese Prüfung verschiebt keine vorhandenen Chats.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = scheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
         }
         Surface(color = scheme.surface, shape = RoundedCornerShape(18.dp)) {
             Column(
