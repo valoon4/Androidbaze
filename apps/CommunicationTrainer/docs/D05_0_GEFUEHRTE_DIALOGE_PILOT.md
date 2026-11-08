@@ -45,3 +45,27 @@ Die App sendet pro Runde nur die festgelegte fiktive Rollenbeschreibung, den **a
 - [ ] Unterbrechungen, Kontingentgrenzen, fehlerhafte Antworten und Szenariowechsel manuell geprüft
 
 **Vor einer echten Integration in den normalen Chatbereich:** dauerhafte und sichere Speicherung mit Nutzerzustimmung, robustes Request-Idempotency-Konzept, Abbruch, Restore nach Prozess-Tod, klare Rollentrennung, sichere Session-/Token-Verwaltung und qualitative Übungsevaluation. Kein automatischer Merge.
+
+
+## D05.0.1 – Szenario beginnt mit konkretem Gegenüber (UX-Fix, 08.11.2026)
+
+**Grund der Nachbesserung:** Im ersten Gerätetest wurde das Szenario „Freundlich Nein sagen“ trotz natürlich wirkender und kontextbezogener KI-Antworten **nicht tatsächlich geübt**: Nach zwei Nutzernachrichten hatte der KI-Partner noch keine Bitte ausgesprochen. Die positive Aussage über Dialogqualität war daher nicht ausreichend, um die Szenariotauglichkeit zu bestätigen.
+
+**Korrektur:**
+- Jedes Szenario beginnt mit einem **festen, vollständig sichtbaren und ausdrücklich als vorgegeben markierten** Gegenüber-Turn, noch bevor der Nutzer erstmals antwortet.
+- „Freundlich Nein sagen“: Die Kollegin bittet konkret darum, ihren Bericht noch heute fertigzustellen.
+- „Aktiv zuhören“: Der Freund äußert bereits eine konkrete Enttäuschung über das ausgefallene Treffen.
+- Der vorgenerierte Einstieg ist kostenlos, ohne Netzwerkzugriff; **nicht** als echte KI-Antwort ausgeben. KI wird erst nach Eingabe und erneuter Freigabe des Nutzers aufgerufen.
+- Die Szene und der genaue Einstieg sind Bestandteil jeder folgenden Online-Anfrage. Rollenhistorie wird strikt auf `assistant` (Einstieg), dann abwechselnd `user`/`assistant` geprüft. Manipulierte oder unvollständige Historie wird blockiert.
+- Szenario- oder Modellwechsel startet den Einstieg neu, verwirft lokalen Pilotverlauf und setzt Consent zurück. Keine Veränderung an vorhandenen D03-Chats oder Room-Entwürfen.
+- Für die neue Test-APK wird eine weitere eigene Paketkennung `com.valoon4.communicationtrainer.d05openingpreview` verwendet; damit entsteht kein Signaturkonflikt mit dem bisherigen D05-Pilot-Build.
+
+**Erneute D05-Abnahme:**
+1. „Freundlich Nein sagen“ wählen. **Vor** der ersten Eingabe muss die Kollegin bereits eine klare Bitte ausgesprochen haben.
+2. Die erste eigene Antwort soll direkt eine freundliche Absage sein können; es ist **keine zusätzliche Aufwärmrunde** nötig.
+3. Nach bestätigter Online-Anfrage prüfen, ob die KI weiterhin die Kollegin spielt und die Absage sinnvoll aufgreift. Mindestens eine weitere Runde testen.
+4. „Aktiv zuhören“ auswählen; der Freund soll **bereits beim Start** konkrete Enttäuschung äußern.
+5. Auf Szenario- oder Modellwechsel prüfen: alter Verlauf nicht sichtbar, Consent zurückgesetzt, neuer Einstieg vorhanden.
+6. Screenshot des Anfangs und eine Beobachtung zur KI-Kontexttreue teilen, ohne echte Personendaten, OAuth-Tokens oder Login-URLs.
+
+**Kein automatischer Merge:** Der bisherige erfolgreiche CI-Lauf und der erste qualitative Gerätetest bleiben dokumentiert, aber die Szenario-Abnahme wird mit der korrigierten Version wiederholt.
