@@ -33,6 +33,35 @@
 
 **Alternative für die Entwicklung:** Model- und Runtime-Benchmarks vorläufig auf einem separaten Rechner oder Gerät mit ausreichend freiem Speicher durchführen und nur anonymisierte Messmetadaten übernehmen. So bleibt das Nutzergerät geschützt. Cloud-Broker-Tests bleiben unabhängig davon bis zu gesonderter Freigabe gesperrt.
 
+## Option: 20-GB-microSD statt Modell im internen Speicher
+
+**Nutzerangabe, 08.11.2026:** Eine **Speicherkarte mit 20 GB** ist im Galaxy A32 5G vorhanden. Ob „20 GB“ die **Gesamtkapazität oder den noch freien Platz** beschreibt, ist derzeit nicht geklärt. Der interne Speicher hat laut Nutzer weiterhin nur etwa **1,5 GB frei**. Diese Angabe nicht mit dem weiterhin knappen **4-GB-RAM** verwechseln.
+
+**Neue, vorsichtige D04-Option:** Große GGUF-Modelldatei auf der microSD halten, native Android-Laufzeit und Room-Datenbank zunächst intern belassen. Ein Qwen3-0.6B-Q4_K_M-Artefakt liegt je nach Quantisierung grob bei **0,4–0,5 GB**; die tatsächliche native Runtime- und Cache-Größe ist noch nicht gemessen. Kein automatischer Download, bevor der direkte SD-Zugriff ohne interne Schattenkopie verifiziert ist.
+
+### Implementationspfad A (bevorzugt für ein von der App verwaltetes Modell)
+
+1. Über `Context.getExternalFilesDirs(null)` das tatsächlich eingehängte SD-App-Verzeichnis ermitteln, mit `Environment.isExternalStorageRemovable(dir)` von emuliertem „external“ unterscheiden. Freien Platz mit `StatFs` **auf dem gewählten Volume** messen, Status `Environment.MEDIA_MOUNTED` prüfen. Nicht annehmen, dass jedes Gerät eine beschreibbare SD-App-Directory anbietet.
+2. Einen ausdrücklich vom Nutzer bestätigten Download direkt in die **app-spezifische SD-Directory** schreiben; `.partial`-Datei ebenfalls **auf der SD-Karte**, am Ende Hash-/Größenprüfung und kontrollierte Umbenennung auf demselben Volume. Nicht in internen `cacheDir` herunterladen/entpacken und dann zur SD verschieben. Kein unnötiger zweiter vollständiger Modell-Download.
+3. Die native Runtime mit dem tatsächlichen App-SD-**Dateipfad** laden; vorab kleinformatigen End-to-End-Probeversuch mit Seek-/mmap-Zugriff auf diesem Gerät durchführen. Bestehende Chat-Datenbank bleibt im internen App-Sandbox-Speicher, falls SD entfernt wird.
+4. Bei `SD_MISSING`, `NO_SPACE`, `FILE_READ_ERROR`, falschem SHA, nicht seekbarer Datei oder OOM eindeutig abbrechen und Modell-/Zwischendateien sicher bereinigen. **Niemals** still auf intern oder Cloud umschalten; Chatentwürfe behalten. Hinweis in der Oberfläche, dass App-spezifische SD-Dateien beim Deinstallieren verloren gehen können.
+
+Android-Quelle: [App-specific storage](https://developer.android.com/training/data-storage/app-specific). Auf Android 13 sind für die app-spezifischen SD-Verzeichnisse **keine allgemeinen Speicherberechtigungen** erforderlich; die Karte kann dennoch entfernt oder unzugänglich sein.
+
+### Implementationspfad B (nutzerausgewählte .gguf-Datei)
+
+Über `ACTION_OPEN_DOCUMENT` wählt der Nutzer die Modell-Datei selbst aus. Die App erhält einen `content://`-URI und kann eine dauerhafte Leseberechtigung mit `takePersistableUriPermission` anfordern. Das **garantiert keinen direkt an eine native Modellbibliothek übergebbaren Dateipfad**. Wir müssen prüfen, ob die Runtime den bereitgestellten `ParcelFileDescriptor` **seekbar** lesen kann; sonst B als inkompatibel kennzeichnen, statt heimlich intern zu kopieren. Auch die SD-Root-Directory-Auswahl ist unter Android 11+ eingeschränkt, daher keine breite Root-Berechtigung verlangen.
+
+Android-Quelle: [Storage Access Framework](https://developer.android.com/training/data-storage/shared/documents-files).
+
+### Neue Stop/Go-Gates vor dem Test auf dem Nutzergerät
+
+- **Noch kein GO:** 20 GB *Kartengröße* belegen nicht genügend **freien Speicher** auf der Karte; diesen zunächst ausdrücklich prüfen.
+- **Noch kein GO:** `llama.cpp` muss in einem separaten, nachvollziehbar getesteten Android-Build die GGUF direkt von dieser Karte laden können, ohne interne Modellkopie oder kritischen zusätzlichen Cache.
+- **Noch kein GO:** Interner freier Speicher von ca. 1,5 GB ist für OS/Installation riskant knapp; nach tatsächlichem Runtime-Build prüfen, wie viel internen Speicher das Testpaket/Cache braucht, ohne die 3-GB-Vorsichtsschwelle für *interne Modellinstallationen* fälschlich auf SD-Laden anzuwenden.
+- **Unverändert:** 4 GB RAM sind die enge Grenze für LLM-Inferenz; keine Qwen3-1.7B/4B-Tests auf diesem Gerät, bevor die 0.6B-Testreihe stabil nachgewiesen wurde.
+- **Datenschutz:** Keine privaten Chats als Benchmarks, keine allgemeinen Storage-/ALL_FILES_ACCESS-Berechtigungen, keine heimliche Cloudnutzung, kein Modell-Download ohne gesonderte Zustimmung.
+
 ## Daten, die für den konkreten Test noch benötigt werden
 
 - **RAM: 4 GB laut Nutzer bestätigt.** Nicht erneut als offene Frage führen; tatsächlich verfügbarer Arbeitsspeicher im Lauf muss separat gemessen werden.
