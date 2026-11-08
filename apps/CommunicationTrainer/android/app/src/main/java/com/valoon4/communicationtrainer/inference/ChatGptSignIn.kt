@@ -95,7 +95,10 @@ object ChatGptSignIn {
         val app = context.applicationContext
         working.value = true
         signInOutcome.value = null
-        if (!isProbe) ChatGptPlanProbe.clearSession()
+        if (!isProbe) {
+            D05TrainingSession.resetForNewLogin()
+            ChatGptPlanProbe.clearSession()
+        }
         probeOutcome.value = null
         progress.value = "Starte geschützte Browser-Rückleitung …"
         try {
