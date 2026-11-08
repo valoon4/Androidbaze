@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -17,6 +18,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,7 +46,12 @@ fun D05TrainingCard() {
     val working by D05TrainingSession.busy.collectAsState()
     val status by D05TrainingSession.status.collectAsState()
     val latency by D05TrainingSession.lastLatencyMs.collectAsState()
+    val note by D051LocalReflection.note.collectAsState()
+    val observations by D051LocalReflection.selectedObservations.collectAsState()
     var expandedModel by remember { mutableStateOf(false) }
+    var pendingChange by remember { mutableStateOf<Pair<String, String>?>(null) }
+    val wouldDiscard = turns.any { it.role == "user" } ||
+        draft.isNotBlank() || note.isNotBlank() || observations.isNotEmpty()
 
     Card(shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
@@ -76,7 +83,12 @@ fun D05TrainingCard() {
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !working,
-                    onClick = { D05TrainingSession.selectScenario(option.id) }
+                    onClick = {
+                        if (selectedScenario != option.id) {
+                            if (wouldDiscard) pendingChange = "scenario" to option.id
+                            else D05TrainingSession.selectScenario(option.id)
+                        }
+                    }
                 ) {
                     Text((if (selectedScenario == option.id) "✓ " else "") + option.title)
                 }
@@ -108,8 +120,11 @@ fun D05TrainingCard() {
                                 DropdownMenuItem(
                                     text = { Text(model.displayName) },
                                     onClick = {
-                                        D05TrainingSession.selectModel(model.slug)
                                         expandedModel = false
+                                        if (model.slug != selectedModel) {
+                                            if (wouldDiscard) pendingChange = "model" to model.slug
+                                            else D05TrainingSession.selectModel(model.slug)
+                                        }
                                     }
                                 )
                             }
@@ -176,7 +191,10 @@ fun D05TrainingCard() {
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !working,
-                    onClick = { D05TrainingSession.clearConversation() }
+                    onClick = {
+                        if (wouldDiscard) pendingChange = "reset" to ""
+                        else D05TrainingSession.clearConversation()
+                    }
                 ) { Text("Neues Training beginnen / Verlauf verwerfen") }
             }
             Text(status, style = MaterialTheme.typography.bodySmall)
@@ -188,6 +206,31 @@ fun D05TrainingCard() {
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            pendingChange?.let { change ->
+                AlertDialog(
+                    onDismissRequest = { pendingChange = null },
+                    title = { Text("Training wirklich neu beginnen?") },
+                    text = {
+                        Text(
+                            "Dein bisheriger Gesprächsverlauf, Entwurf und deine Reflexion " +
+                                "werden verworfen. Die Aktion sendet keine Nachricht an ChatGPT."
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            when (change.first) {
+                                "scenario" -> D05TrainingSession.selectScenario(change.second)
+                                "model" -> D05TrainingSession.selectModel(change.second)
+                                "reset" -> D05TrainingSession.clearConversation()
+                            }
+                            pendingChange = null
+                        }) { Text("Verwerfen") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { pendingChange = null }) { Text("Abbrechen") }
+                    }
+                )
+            }
         }
     }
 }
