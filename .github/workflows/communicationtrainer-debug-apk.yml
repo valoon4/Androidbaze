@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - "apps/CommunicationTrainer/android/**"
+      - "apps/CommunicationTrainer/benchmarks/d04/**"
       - ".github/workflows/communicationtrainer-debug-apk.yml"
   pull_request:
     paths:
       - "apps/CommunicationTrainer/android/**"
+      - "apps/CommunicationTrainer/benchmarks/d04/**"
       - ".github/workflows/communicationtrainer-debug-apk.yml"
   workflow_dispatch:
 
@@ -51,7 +53,11 @@ jobs:
           test -n "$SDKMGR"
           yes | "$SDKMGR" --licenses > /dev/null || true
           "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
-      - name: Unit tests (D03 mock chat, persistence and contrast)
+      - name: D04 offline benchmark suite and no-false-quality tests
+        run: |
+          python3 -m unittest discover -s ../benchmarks/d04 -p 'test_*.py' -v
+          python3 ../benchmarks/d04/evaluate.py --output d04-evaluation-summary.json
+      - name: Unit tests (D04 gateway, D03 chats and persistence)
         run: gradle :app:testDebugUnitTest --no-daemon --stacktrace
       - name: Verify exported Room v1 schema
         run: |
@@ -72,21 +78,22 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           APKSIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
           "$AAPT" dump badging "$APK" | tee apk-badging.txt
-          grep -Fq "package: name='com.valoon4.communicationtrainer.d03preview'" apk-badging.txt
-          grep -Fq "application-label:'CommunicationTrainer D03 Test'" apk-badging.txt
+          grep -Fq "package: name='com.valoon4.communicationtrainer.d04preview'" apk-badging.txt
+          grep -Fq "application-label:'CommunicationTrainer D04 Gateway-Test'" apk-badging.txt
           grep -Fq "targetSdkVersion:'36'" apk-badging.txt
           "$APKSIGNER" verify --verbose --print-certs "$APK" | tee apk-signing.txt
-          cp "$APK" CommunicationTrainer-D03-debug.apk
-          sha256sum CommunicationTrainer-D03-debug.apk | tee CommunicationTrainer-D03-debug.apk.sha256
+          cp "$APK" CommunicationTrainer-D04-debug.apk
+          sha256sum CommunicationTrainer-D04-debug.apk | tee CommunicationTrainer-D04-debug.apk.sha256
       - name: Upload installable debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: CommunicationTrainer-D03-debug-apk
+          name: CommunicationTrainer-D04-debug-apk
           path: |
-            apps/CommunicationTrainer/android/CommunicationTrainer-D03-debug.apk
-            apps/CommunicationTrainer/android/CommunicationTrainer-D03-debug.apk.sha256
+            apps/CommunicationTrainer/android/CommunicationTrainer-D04-debug.apk
+            apps/CommunicationTrainer/android/CommunicationTrainer-D04-debug.apk.sha256
             apps/CommunicationTrainer/android/apk-badging.txt
             apps/CommunicationTrainer/android/apk-signing.txt
+            apps/CommunicationTrainer/android/d04-evaluation-summary.json
             apps/CommunicationTrainer/android/app/schemas/**/1.json
           if-no-files-found: error
           retention-days: 30
