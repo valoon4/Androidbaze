@@ -1,0 +1,47 @@
+# D05.0 – KI-gestützter Trainingsdialog, isolierter Pilot
+
+**Status:** Implementierter Android-Prototyp, GitHub-CI und echter Gerätetest sind separate Freigabe-Gates.
+
+## Ziel
+
+Ein realistischer, mehrzügiger fiktiver Gesprächspartner zur Kommunikationsübung über die vom Nutzer bereits autorisierte ChatGPT-Plan-Nutzung. Bewusst kein stiller Ersatz der D03-Mock-Chats: vorhandene Room-v1-Daten, Entwürfe und lokale Chats bleiben unverändert. Keine Datenbankmigration.
+
+Zwei feste Übungssituationen:
+1. Freundlich Nein sagen – eine Kollegin bittet kurzfristig um zusätzliche Arbeit.
+2. Aktiv zuhören – ein enttäuschter Freund möchte ernst genommen werden.
+
+Die App sendet pro Runde nur die festgelegte fiktive Rollenbeschreibung, den **ausschließlich innerhalb dieses Pilotdialogs eingegebenen** Text und dessen bisherige Rollen-Historie. Ein leerer/synthetischer Nutzerverlauf wird nicht durch private Daten aus Room ergänzt. Für Kontextzwecke werden bereits in diesem Pilot erfolgte Runden erneut mitgesendet.
+
+## Sichtbarer Schutz & Datenfluss
+
+- Benutzer muss sich in der **separat installierbaren D05-Pilot-App** selbst per ChatGPT-OAuth anmelden und ein tatsächlich kontoberechtigtes Modell aus `GET /v1/models` auswählen.
+- **Vor jeder Nachricht** separate Checkbox: Online-Übertragung genau dieses Textes und bisherigen Pilotverlaufs. Checkbox setzt sich unmittelbar beim Sendestart zurück.
+- `POST https://api.openai.com/v1/responses` mit dem ausschließlich im Prozessspeicher vorhandenen OAuth Bearer, `store:false`, `stream:true`; kein API-Key oder kostenpflichtiger Provider-Fallback.
+- Genau zwei Szenarien, max. **4 Nutzerrunden**, max. **600 Zeichen** pro Nutzerturn, Antwort max. **2500 Zeichen**, begrenzte Event- und Streamgrößen, kein automatischer Retry und keine heimlichen Folgeanfragen.
+- Antwort gilt nur nach vollständig erhaltenem `response.completed` als erfolgreich; sonst bleibt der unsent lokale Text stehen und ein Fehler wird angezeigt. Ein Nutzer darf anschließend durch einen neuen Klick bewusst einen Versuch starten; Server-Deduplikation ist in diesem Pilot noch nicht vorhanden.
+- Keine automatische Speicherung von Dialogen, Entwürfen, Tokens, Modellantworten oder Consent in Room/Preferences. Pilot-Entwurf und Verlauf bleiben bei UI-Navigation im App-Prozess erhalten, aber **nicht nach Prozessende** (warnende UI). Nicht für sensible/echte Privatinhalte benutzen.
+- Beim OAuth-Kontowechsel werden Pilot-Entwurf/Verlauf/Consent zurückgesetzt; auslaufende ältere Anfragen werden anhand Session-Generation verworfen.
+- ChatGPT-Credits/App-Limits müssen **vor Test durch Nutzer geprüft werden**; App selbst kann Kontoeinstellungen nicht abrufen und keine Null-Kosten-Garantie geben.
+- Kein Coaching/Feedback, keine Psychotherapie, keine diagnostischen Aussagen, kein Produktionsmodus.
+- Die D04.3-Einmal-Testfunktion bleibt parallel vorhanden; der D05-Pilot ist ein separat bestätigter Übungsmodus. Bestehender D03-Mockmodus bleibt lokaler Offline-Standard.
+
+## Gerätetest (Galaxy A32 5G, Android 13)
+
+1. D05-Debug-APK mit separatem App-Label `CommunicationTrainer D05 Pilot` und Paketkennung `.d05trainingpreview` installieren.
+2. Unter **Üben** ChatGPT-Konto verbinden; sicherstellen, dass die Plan-Berechtigung bestätigt wurde.
+3. Unter **D05.0** ein Szenario wählen und per separatem Button das Kontomodellangebot laden; ein Modell auswählen.
+4. Nur fiktiven Text eingeben, z. B. `Danke fürs Fragen, aber heute kann ich das nicht übernehmen.`
+5. Prüfen, dass ohne aktivierte Zustimmung **keine** Anfrage gesendet werden kann. Einwilligung aktivieren, dann absenden; Antwort sollte fiktiv und situationsbezogen sein.
+6. Eine zweite Pilotnachricht senden. Die Antwort soll den vorherigen Trainingsverlauf berücksichtigen. Es werden dabei keine bisherigen D03-Chats übertragen.
+7. „Neues Training beginnen“ verwirft alles (ohne Cloud-Löschung, da es nicht in App-DB gespeichert wird). Szenariowechsel leert Verlauf und Consent. Bei Logout/anderem Konto wird Verlauf gelöscht.
+8. Im Fehlerfall kein automatisches Wiederholen. Test-Screenshot ohne OAuth-URL, Access-Token oder sensible Inhalte melden.
+
+## Qualität- und Sicherheitsgates
+
+- [ ] CI-Tests inkl. consent, Eingabegrenzen, Szenario-/Kontextrollen, Session-Invalidierung bestanden
+- [ ] APK-Paketkennung, Signatur, Room-v1-Schema und APK-SHA-256 überprüft
+- [ ] Echte zweizügige Rollenspielinteraktion auf Galaxy A32 5G bestätigt
+- [ ] Sichtbare Datenschutzhinweise und Credit-Limit-Einstellungen verständlich
+- [ ] Unterbrechungen, Kontingentgrenzen, fehlerhafte Antworten und Szenariowechsel manuell geprüft
+
+**Vor einer echten Integration in den normalen Chatbereich:** dauerhafte und sichere Speicherung mit Nutzerzustimmung, robustes Request-Idempotency-Konzept, Abbruch, Restore nach Prozess-Tod, klare Rollentrennung, sichere Session-/Token-Verwaltung und qualitative Übungsevaluation. Kein automatischer Merge.
