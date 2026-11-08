@@ -55,3 +55,24 @@ Offizielle OSS-OAuth-Clients können **nach ausdrücklicher Zustimmung** berecht
 - [ ] Datenschutz- und Produkttest vor jedem Merge; keine echten Nutzergespräche übertragen
 
 **Kein Merge ohne gesonderte ausdrückliche Freigabe.**
+
+
+## D04.2 Android-Callback-Härtung nach Ecosia-Timeout (08.11.2026)
+
+**Gerätebeobachtung:** Der Browser (Ecosia) zeigte nach dem OAuth-Redirect auf `http://127.0.0.1:<port>/auth/callback` `ERR_CONNECTION_TIMED_OUT`. Dies belegt **keinen** falschen Login und auch keinen erfolgreichen Credential-Austausch. Mögliche Ursachen: Listener nach drei Minuten abgelaufen, App-Prozess im Hintergrund beendet, Browser-/Loopback-Inkompatibilität. Ursache bisher nicht exakt isoliert.
+
+**Änderungen in dieser Iteration:**
+
+- Eine getrennt installierbare `.d04callbackpreview`-App heißt `CommunicationTrainer Callback-Test`.
+- Vor dem erneuten OAuth-Login steht **„1. Lokale Browser-Rückleitung testen (ohne Konto)“**. Dieser Test öffnet eine zufällige lokale `127.0.0.1`-Adresse, prüft einen einmaligen Nonce und zeigt eine Bestätigung ohne Kontakt zu OpenAI, Modellanfragen oder Nutzerdaten.
+- Die Listener-Lebensdauer beträgt für OAuth höchstens acht Minuten; für den Selbsttest 90 Sekunden. Beide laufen in einem app-weit verwalteten Worker und nicht in einer beim Browserwechsel zerstörbaren Compose-Coroutine.
+- Ein während der Anmeldung sichtbarer, zeitlich begrenzter Android-Foreground-Service mit einer unkritischen Benachrichtigung verhindert nach Möglichkeit, dass der Prozess beim Browserwechsel zu einem Cache-Prozess herabgestuft wird. Der Dienst beendet sich nach Erfolg/Fehler. **Keine absolute Garantie gegen Android-Prozessbeendigung.**
+- Eine nicht geheime Statusanzeige nennt die Phase (Listener/Browser/Callback/HTTPS-Validierung). Browser-Codes, volle OAuth-URLs, Tokens und E-Mail werden weder geloggt noch in der Benachrichtigung angezeigt.
+- Die originalen OAuth-Sicherheitsprüfungen (PKCE, State, Nonce, JWT-Signatur) bleiben erhalten, und die URL bleibt `127.0.0.1`: Die offizielle SIWC-Open-Source-Dokumentation verlangt weiterhin den Loopback-Redirect und unterstützt nicht beliebige Custom-Scheme-Ersatz-URIs.
+- **Keine** Änderungen am normalen Chat, keine Inferenz und keine automatische Kredit-/API-Nutzung.
+
+**Testabfolge:** Nur die neue Callback-Test-App installieren, unter Üben zuerst „Lokale Browser-Rückleitung testen“ auswählen; im Browser muss eine schlichte Bestätigungsseite erscheinen. Anschließend zurück zur App wechseln und die Statusmeldung überprüfen. Wenn bereits der lokale Test scheitert, **keine weitere ChatGPT-Anmeldung** versuchen; optional vorab mit Chrome als Standardbrowser statt Ecosia den identischen rein lokalen Test wiederholen. Kein Screenshot mit vollständiger `/auth/callback?...code=...`-Adresszeile weitergeben.
+
+**Erst wenn der lokale Browsertest erfolgreich ist:** Mit „2. Weiter mit ChatGPT“ den offiziellen OAuth-Flow erneut ausprobieren. Der Browser darf weiterhin eine Seite auf `127.0.0.1` öffnen, nun mit lokal erreichbarem Listener. Ob die Anmeldung auf diesem Gerät vollständig funktioniert, ist weiterhin empirisch offen.
+
+**CI-Gate:** Neue APK muss unter Paketkennung `com.valoon4.communicationtrainer.d04callbackpreview` signiert werden und alle bestehenden OAuth-Sicherheitstests bestehen. Erst danach zur Installation geben.
