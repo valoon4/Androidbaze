@@ -18,7 +18,7 @@ D05.0 zeigt einen realistischen Rollenspielpartner. Der Nutzer konnte ein Nein s
 - **Alltag** (voreingestellt): eine realistische Nachfrage oder Unsicherheit.
 - **Anspruchsvoll:** ein zusätzlicher milder Widerstand oder mehrdeutige Gefühle; keine manipulativen Schuldvorwürfe, Grenzannahme nach Klarstellung.
 - Die Werte sind **Prompt-Vorgaben**, keine Garantie, dass das Modell sie immer erfüllt. Modellkandidaten werden nicht nach erfundenen Qualitätsscores sortiert.
-- Wechsel des Levels beendet den aktuellen D05-Pilotdialog und setzt Entwurf sowie Online-Consent zurück. Erst die nächste ausdrücklich gesendete Nachricht löst eine neue KI-Anfrage aus.
+- Wechsel des Levels beendet den aktuellen D05-Pilotdialog und setzt Entwurf sowie Online-Consent zurück. **Bei vorhandenem Entwurf oder begonnenem Chat fragt die UI erst nach Bestätigung**, statt unbemerkt Daten zu verwerfen. Erst die nächste ausdrücklich gesendete Nachricht löst eine neue KI-Anfrage aus.
 - Szenario- und Rollenfakten bleiben über alle Schwierigkeitsstufen hinweg stabil.
 
 ### 3. Offline-Selbstreflexion statt erfundener Bewertung
@@ -27,7 +27,7 @@ D05.0 zeigt einen realistischen Rollenspielpartner. Der Nutzer konnte ein Nein s
 - Drei szenariospezifische Beobachtungen zum Abhaken sowie ein freies Reflexionsfeld (max. 400 Zeichen).
 - **Nur der Nutzer** sagt, was ihm gelungen ist. Die App erstellt keine Noten, objektiven Kompetenzwerte, Diagnosen oder KI-Bewertungen.
 - Kein zusätzlicher Cloud-Aufruf für Reflexion, keine Übertragung dieser Antworten im D05-Rollenspiel, keine Speicherung; bei App-Prozessende gehen die Angaben verloren.
-- Nach Szenario-/Level-/Modellwechsel und Kontowechsel wird die Reflexion verworfen.
+- Nach Szenario-/Level-/Modellwechsel und Kontowechsel wird die Reflexion verworfen. Szenario-/Modellwechsel sowie „Neues Training“ fragen bei ungespeicherten Inhalten **vorher** nach Bestätigung.
 - Neue KI-Antworten heben die bisherige „vorgemerkt“-Bestätigung auf, damit keine veraltete Zwischenreflexion als Abschluss erscheint.
 
 ## Technische Leitplanken
