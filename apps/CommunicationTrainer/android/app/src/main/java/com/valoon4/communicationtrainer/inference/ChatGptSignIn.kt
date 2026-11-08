@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Base64
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -21,6 +25,7 @@ import java.security.SecureRandom
 import java.security.Signature
 import java.security.spec.RSAPublicKeySpec
 import java.util.UUID
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.net.ssl.HttpsURLConnection
 
 /**
@@ -67,6 +72,118 @@ object ChatGptSignIn {
         }
     }
 
+    // An application-owned worker is not cancelled when Android destroys or
+    // recreates a Compose activity while the external browser is on screen.
+    // Foreground service keeps the local callback listener alive on low-RAM phones.
+    private val worker = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val busy = AtomicBoolean(false)
+    val working = MutableStateFlow(false)
+    val signInOutcome = MutableStateFlow<Outcome?>(null)
+    val probeOutcome = MutableStateFlow<String?>(null)
+    val progress = MutableStateFlow("Bereit.")
+
+    fun beginSignIn(context: Context) {
+        begin(context, isProbe = false)
+    }
+
+    fun beginLocalBrowserTest(context: Context) {
+        begin(context, isProbe = true)
+    }
+
+    private fun begin(context: Context, isProbe: Boolean) {
+        if (!busy.compareAndSet(false, true)) return
+        val app = context.applicationContext
+        working.value = true
+        signInOutcome.value = null
+        probeOutcome.value = null
+        progress.value = "Starte geschützte Browser-Rückleitung …"
+        try {
+            ChatGptKeepAliveService.start(app)
+        } catch (_: Exception) {
+            progress.value = "Android konnte die kurzzeitige Anmelde-Schutzfunktion nicht starten."
+            if (isProbe) probeOutcome.value = "Lokaler Browsertest wurde blockiert."
+            else signInOutcome.value = Outcome.Failure("Android konnte die Browser-Anmeldung nicht absichern.")
+            busy.set(false)
+            working.value = false
+            return
+        }
+
+        worker.launch {
+            try {
+                if (isProbe) {
+                    probeOutcome.value = runLocalBrowserTest(app)
+                } else {
+                    signInOutcome.value = connect(app)
+                }
+            } catch (_: Exception) {
+                if (isProbe) probeOutcome.value = "Lokaler Browser-Test fehlgeschlagen."
+                else signInOutcome.value = Outcome.Failure("Die Anmeldung wurde unerwartet unterbrochen.")
+            } finally {
+                progress.value = "Test abgeschlossen. Die lokale Rückleitung wurde beendet."
+                ChatGptKeepAliveService.stop(app)
+                working.value = false
+                busy.set(false)
+            }
+        }
+    }
+
+    // Offline-compatible end-to-end loopback test. NO account, OAuth request, model
+    // request, cookies, network endpoint outside this phone, or user data.
+    private suspend fun runLocalBrowserTest(context: Context): String = withContext(Dispatchers.IO) {
+        try {
+            ServerSocket(0, 1, InetAddress.getByName("127.0.0.1")).use { server ->
+                server.soTimeout = 90_000
+                val token = randomUrlSafeBytes(20)
+                val probeUrl = "http://127.0.0.1:" + server.localPort +
+                    "/local-browser-check?nonce=" + token
+                progress.value = "Lokaler Prüfserver aktiv; Browser wird geöffnet."
+                withContext(Dispatchers.Main) {
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(probeUrl))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .addCategory(Intent.CATEGORY_BROWSABLE))
+                }
+                server.accept().use { socket ->
+                    socket.soTimeout = 9_000
+                    val reader = socket.getInputStream().bufferedReader(StandardCharsets.US_ASCII)
+                    val request = reader.readLine()?.take(4096) ?: ""
+                    for (i in 0 until 60) {
+                        val header = reader.readLine() ?: break
+                        if (header.isBlank()) break
+                        if (header.length > 4096) return@withContext "Browser sendete ungültige Header."
+                    }
+                    val path = request.split(" ").getOrNull(1) ?: ""
+                    val uri = Uri.parse("http://127.0.0.1" + path)
+                    val matches = request.startsWith("GET ") &&
+                        uri.path == "/local-browser-check" &&
+                        constantTimeEquals(uri.getQueryParameter("nonce"), token)
+                    val html = if (matches)
+                        "<html><body><p>CommunicationTrainer: lokaler Browsertest erfolgreich. Zur App zurueckkehren.</p></body></html>"
+                    else
+                        "<html><body><p>CommunicationTrainer: lokale Pruefung fehlgeschlagen.</p></body></html>"
+                    val bytes = html.toByteArray(StandardCharsets.UTF_8)
+                    socket.getOutputStream().use { output ->
+                        output.write(("HTTP/1.1 " + (if (matches) "200 OK" else "400 Bad Request") +
+                            "\r\nContent-Type: text/html; charset=utf-8" +
+                            "\r\nCache-Control: no-store" +
+                            "\r\nContent-Security-Policy: default-src 'none'" +
+                            "\r\nConnection: close" +
+                            "\r\nContent-Length: " + bytes.size + "\r\n\r\n").toByteArray(StandardCharsets.US_ASCII))
+                        output.write(bytes)
+                        output.flush()
+                    }
+                    if (matches)
+                        "Browser-Rückleitung erfolgreich: Dein Browser erreicht den lokalen Listener."
+                    else
+                        "Browser erreicht den Listener, aber die Sicherheitsprüfung stimmte nicht."
+                }
+            }
+        } catch (_: SocketTimeoutException) {
+            "Browser-Rückleitung nicht erreichbar (Zeitüberschreitung). Mit Chrome als Standardbrowser erneut prüfen; kein ChatGPT-Login nötig."
+        } catch (_: Exception) {
+            "Lokaler Browser-Test konnte nicht abgeschlossen werden. Keine Anmeldung wurde gestartet."
+        }
+    }
+
     private fun hostId(context: Context): String {
         // Host ID is an opaque, non-identifying UUID. Never use email/device ID.
         val prefs = context.getSharedPreferences("chatgpt_host", Context.MODE_PRIVATE)
@@ -80,7 +197,7 @@ object ChatGptSignIn {
     }
 
     /** Returns only a verified status; credentials are intentionally discarded. */
-    suspend fun connect(context: Context): Outcome = withContext(Dispatchers.IO) {
+    private suspend fun connect(context: Context): Outcome = withContext(Dispatchers.IO) {
         try {
             val application = context.applicationContext
             val state = randomUrlSafeBytes(32)
@@ -88,7 +205,7 @@ object ChatGptSignIn {
             val verifier = randomUrlSafeBytes(32)
             val host = hostId(application)
             ServerSocket(0, 1, InetAddress.getByName("127.0.0.1")).use { server ->
-                server.soTimeout = 180_000
+                server.soTimeout = 480_000
                 val redirect = "http://127.0.0.1:${server.localPort}$CALLBACK_PATH"
                 val parameters = mapOf(
                     "client_id" to INITIAL_CLIENT_ID,
@@ -103,6 +220,7 @@ object ChatGptSignIn {
                     "code_challenge_method" to "S256",
                     "code_challenge" to pkceChallenge(verifier)
                 )
+                progress.value = "Lokaler Listener aktiv – Anmeldung im Browser beginnt."
                 val authUri = AUTHORIZATION + "?" + parameters.entries.joinToString("&") {
                     "${urlEncode(it.key)}=${urlEncode(it.value)}"
                 }
@@ -113,6 +231,7 @@ object ChatGptSignIn {
                     application.startActivity(browser)
                 }
                 val callback = server.accept().use { socket ->
+                    progress.value = "Browser-Rückleitung angekommen – Berechtigung wird geprüft."
                     socket.soTimeout = 10_000
                     val reader = socket.getInputStream().bufferedReader(StandardCharsets.US_ASCII)
                     val first = reader.readLine()?.take(4096) ?: ""
@@ -154,6 +273,7 @@ object ChatGptSignIn {
                     code to issuedId
                 }
 
+                progress.value = "OpenAI-Identität wird über HTTPS überprüft."
                 // Only the actual issued client ID is used for code exchange.
                 val json = postForm(TOKEN_ENDPOINT, mapOf(
                     "grant_type" to "authorization_code",
@@ -173,7 +293,7 @@ object ChatGptSignIn {
                 Outcome.Success(VerifiedConnection(identity.optString("email").takeIf { it.isNotBlank() }, canUsePlan))
             }
         } catch (_: SocketTimeoutException) {
-            Outcome.Failure("Browser-Anmeldung innerhalb von drei Minuten nicht abgeschlossen.")
+            Outcome.Failure("Die lokale Browser-Rückleitung ist innerhalb von acht Minuten nicht angekommen. Prüfe zuerst den Browser-Selbsttest.")
         } catch (e: AuthFailure) {
             Outcome.Failure(e.message ?: "Anmeldung nicht möglich.")
         } catch (_: Exception) {
