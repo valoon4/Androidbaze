@@ -193,6 +193,7 @@ object D05TrainingSession {
                     return@launch
                 }
                 turns.value = history + Turn("user", text) + Turn("assistant", reply)
+                D051LocalReflection.acknowledged.value = false
                 draft.value = ""
                 lastLatencyMs.value = SystemClock.elapsedRealtime() - began
                 status.value = if (turns.value.count { it.role == "user" } >= MAX_USER_TURNS)
