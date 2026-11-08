@@ -264,6 +264,7 @@ object ChatGptPlanProbe {
                     }
                 }
             }
+            throw PlanProbeFailure("Antwortstream ohne vollständiges Ende. Keine Wiederholung.")
         } finally { conn.disconnect() }
     }
 
