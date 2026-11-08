@@ -5,16 +5,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +34,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun D051LearningGoalControls(scenarioId: String, working: Boolean) {
     val level by D051LearningGuide.level.collectAsState()
+    val turns by D05TrainingSession.turns.collectAsState()
+    val draft by D05TrainingSession.draft.collectAsState()
+    var menuOpen by remember { mutableStateOf(false) }
+    var confirmChange by remember { mutableStateOf<D051LearningGuide.Level?>(null) }
     val objective = D051LearningGuide.objectiveFor(scenarioId)
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text("Dein Lernziel", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
@@ -34,23 +45,48 @@ fun D051LearningGoalControls(scenarioId: String, working: Boolean) {
         Text(objective.cue, style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Schwierigkeit", fontWeight = FontWeight.Medium)
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            D051LearningGuide.Level.entries.forEach { option ->
-                OutlinedButton(
-                    modifier = Modifier.weight(1f),
-                    enabled = !working,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 7.dp),
-                    onClick = { D051LearningGuide.selectLevel(option) }
-                ) {
-                    Text((if (option == level) "✓ " else "") + option.label,
-                        style = MaterialTheme.typography.labelSmall)
+        Column {
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !working,
+                onClick = { menuOpen = true }
+            ) { Text(level.label + " · Schwierigkeitsgrad ändern") }
+            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                D051LearningGuide.Level.entries.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option.label + " – " + option.explanation) },
+                        onClick = {
+                            menuOpen = false
+                            if (level != option) {
+                                if (turns.any { it.role == "user" } || draft.isNotBlank())
+                                    confirmChange = option
+                                else D051LearningGuide.selectLevel(option)
+                            }
+                        }
+                    )
                 }
             }
         }
-        Text(level.explanation + " Ein Wechsel startet die Übung neu.",
+        Text(level.explanation + " Beim Wechsel wird eine laufende Übung nach Bestätigung verworfen.",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         HorizontalDivider()
+        confirmChange?.let { next ->
+            AlertDialog(
+                onDismissRequest = { confirmChange = null },
+                title = { Text("Schwierigkeitsgrad wechseln?") },
+                text = { Text("Dein bisheriger Pilotdialog und ein möglicher Entwurf gehen verloren. Es wird keine KI-Anfrage gesendet.") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        D051LearningGuide.selectLevel(next)
+                        confirmChange = null
+                    }) { Text("Verwerfen und wechseln") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { confirmChange = null }) { Text("Abbrechen") }
+                }
+            )
+        }
     }
 }
 
