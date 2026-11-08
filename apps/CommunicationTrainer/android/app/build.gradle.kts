@@ -14,7 +14,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 4
-        versionName = "0.4.2-d04-siwc"
+        versionName = "0.4.3-d04-callback"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -22,7 +22,7 @@ android {
         // D04 is separately installable beside D03 because the CI debug certificate
         // is ephemeral. Release identity stays unchanged.
         getByName("debug") {
-            applicationIdSuffix = ".d04chatgptpreview"
+            applicationIdSuffix = ".d04callbackpreview"
             versionNameSuffix = "-preview"
         }
         release { isMinifyEnabled = false }
