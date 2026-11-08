@@ -42,6 +42,12 @@ Eine *rein beispielhafte* Antwort mit 2.000 Eingabe- und 300 Ausgabetoken ergäb
 
 **Nicht enthalten:** längerer Chathintergrund, Coaching als separate Abfrage, Wiederholungen, Reasoningtoken-Overhead, Cache-/Routenpreise, Moderation, API-/Netz-Broker, Hosting, Support, Steuer, Ausfälle, Latenz und Betrieb. On-device hat **keine API-Tokenrechnung**, aber Modellgröße, Hardwarestrom, Batterieverschleiß, Geräteverfügbarkeit, Packaging und Pflege. Keine endgültige Kostenaussage ohne echten Sitzungsmix.
 
+## 3a. Konkretisiertes erstes Referenzgerät
+
+Der Nutzer testet auf einem **Samsung Galaxy A32 5G** (Dimensity 720, je nach Markt 4 oder 6 GB RAM). Für D04 ist ein **konservatives On-device-CPU-Startprofil mit Qwen3-0.6B Q4_K_M** vorgesehen; 1.7B nur optional nach RAM-/Speichermessung, 4B nicht als Ersttest auf diesem Gerät. Der tatsächliche RAM, die Android-Version und Modell-ABI des Nutzers sind noch nicht verifiziert. **Noch keine echten Inferenzmesswerte.**
+
+[Gerätedaten, verifizierte Herstellerquellen, Testreihenfolge und offene Messfragen](D04_GALAXY_A32_5G_TESTPROFIL.md).
+
 ## 4. Versuchsdesign – Pflicht vor Modellwahl
 
 1. **Gate A / Freigabe:** Modell- und Runtime-Version und Nutzungsrechte; passende konkrete Android-Testgeräte (klein/mittel/leistungsstark), Testrahmen und Budget; Cloud nur über abgesicherten Test-Broker mit geprüftem Vertrag, Quotas und Zweckfreigabe.
