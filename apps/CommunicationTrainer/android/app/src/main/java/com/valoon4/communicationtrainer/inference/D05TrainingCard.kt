@@ -57,7 +57,9 @@ fun D05TrainingCard() {
                 fontWeight = FontWeight.SemiBold)
             Text(
                 "Übe einen kurzen Dialog mit einer fiktiven KI-Person. " +
-                    "Die Antwort berücksichtigt den bisherigen Übungsverlauf. " +
+                    "Jedes Szenario beginnt mit einer konkreten Bitte oder Aussage " +
+                    "(als vorgegebener Text, ohne KI-Kosten). " +
+                    "Die anschließende KI-Antwort berücksichtigt den Übungsverlauf. " +
                     "Du gibst jede Online-Nachricht separat frei. " +
                     "Die alten lokalen Chats und Entwürfe werden nicht gelesen oder verändert.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -123,8 +125,15 @@ fun D05TrainingCard() {
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
-                            Text(if (turn.role == "user") "Du" else "Trainingspartner",
-                                style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+                            Text(
+                                when {
+                                    turn.role == "user" -> "Du"
+                                    turn.isScriptedOpening -> "Trainingspartner · vorgegebener Einstieg"
+                                    else -> "Trainingspartner · KI-Antwort"
+                                },
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
                             Text(turn.text)
                         }
                     }
@@ -137,7 +146,7 @@ fun D05TrainingCard() {
                     value = draft,
                     onValueChange = D05TrainingSession::updateDraft,
                     enabled = canCompose,
-                    label = { Text("Deine Antwort im Rollenspiel") },
+                    label = { Text("Deine Antwort an den Trainingspartner") },
                     supportingText = { Text("${draft.length}/600 Zeichen · Nicht dauerhaft gespeichert") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 2,
