@@ -13,15 +13,14 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 
 /**
  * Explicitly opt-in OAuth-only preview. No model requests or chat transmission.
@@ -30,9 +29,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChatGptConnectionCard() {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    var working by remember { mutableStateOf(false) }
-    var outcome by remember { mutableStateOf<ChatGptSignIn.Outcome?>(null) }
+    val working by ChatGptSignIn.working.collectAsState()
+    val outcome by ChatGptSignIn.signInOutcome.collectAsState()
+    val diagnostic by ChatGptSignIn.probeOutcome.collectAsState()
+    val progress by ChatGptSignIn.progress.collectAsState()
 
     Card(
         shape = RoundedCornerShape(18.dp),
@@ -56,19 +56,25 @@ fun ChatGptConnectionCard() {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            OutlinedButton(
+                enabled = !working,
+                onClick = { ChatGptSignIn.beginLocalBrowserTest(context) },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("1. Lokale Browser-Rückleitung testen (ohne Konto)") }
+            diagnostic?.let { message ->
+                Text(message, style = MaterialTheme.typography.bodySmall,
+                    color = if (message.startsWith("Browser-Rückleitung erfolgreich"))
+                        MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.error)
+            }
             Button(
-                onClick = {
-                    if (working) return@Button
-                    working = true
-                    outcome = null
-                    coroutineScope.launch {
-                        outcome = ChatGptSignIn.connect(context)
-                        working = false
-                    }
-                },
+                onClick = { ChatGptSignIn.beginSignIn(context) },
                 enabled = !working,
                 modifier = Modifier.fillMaxWidth()
-            ) { Text(if (working) "Anmeldung läuft im Browser …" else "Weiter mit ChatGPT") }
+            ) { Text("2. Weiter mit ChatGPT") }
+            if (working) {
+                Text(progress, style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
             when (val state = outcome) {
                 is ChatGptSignIn.Outcome.Success -> {
                     Text(
@@ -94,14 +100,12 @@ fun ChatGptConnectionCard() {
                 }
             }
             if (outcome is ChatGptSignIn.Outcome.Success) {
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { outcome = null }
-                ) { Text("Testverbindung ausblenden") }
+                Text("Diese Bestätigung gilt nur für diese Test-Sitzung.", style = MaterialTheme.typography.bodySmall)
             }
             Text(
-                "Achtung: Browser- und Callback-Kompatibilität auf Android 13 noch nicht " +
-                    "durch einen realen Anmeldungstest bestätigt.",
+                "Wichtig: Ein fehlgeschlagener Rücksprung ist kein Hinweis auf falsches Passwort. " +
+                    "Bitte niemals vollständige Callback-URLs teilen – sie können Zugangscodes enthalten. " +
+                    "Bei Android-Browserproblemen zuerst Schritt 1 testen.",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
