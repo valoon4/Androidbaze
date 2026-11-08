@@ -65,6 +65,8 @@ import com.valoon4.communicationtrainer.inference.SdStorageInspection
 import com.valoon4.communicationtrainer.inference.SdStoragePreflight
 import com.valoon4.communicationtrainer.inference.SdStorageStatus
 import com.valoon4.communicationtrainer.inference.ChatGptConnectionCard
+import com.valoon4.communicationtrainer.inference.D05TrainingCard
+import com.valoon4.communicationtrainer.inference.D043PlanInferenceCard
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseAccent
 import com.valoon4.communicationtrainer.ui.theme.AuroraPulseTheme
 
@@ -160,7 +162,7 @@ private fun BrandHeader() {
 }
 
 @Composable
-private fun DemoHero(title: String, description: String) {
+private fun DemoHero(title: String, description: String, isOffline: Boolean = true) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -179,7 +181,7 @@ private fun DemoHero(title: String, description: String) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Surface(color = AuroraPulseAccent.HeroStart, shape = RoundedCornerShape(30.dp)) {
                 Text(
-                    "D03 · LOKALE SIMULATION",
+                    if (isOffline) "D03 · LOKALE SIMULATION" else "D05 · ONLINE ROLLENSPIEL",
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
@@ -193,7 +195,7 @@ private fun DemoHero(title: String, description: String) {
             )
             Text(description, color = Color.White, style = MaterialTheme.typography.bodyMedium)
             Text(
-                "Keine KI · Keine Netzwerkübertragung",
+                if (isOffline) "Keine KI · Keine Netzwerkübertragung" else "Online nur mit ausdrücklicher Freigabe",
                 color = AuroraPulseAccent.HeroMint,
                 style = MaterialTheme.typography.labelLarge
             )
@@ -503,7 +505,8 @@ private fun PracticeOverview(state: ChatUiState, viewModel: ChatViewModel, paddi
         BrandHeader()
         DemoHero(
             "Kommunikation üben",
-            "Die ersten Alltagssituationen und echten KI-Charaktere folgen in späteren Schritten."
+            "Führe ein fiktives KI-Gespräch oder nutze weiterhin die lokale Demo unter Chats.",
+            isOffline = false
         )
         Surface(color = scheme.surface, shape = RoundedCornerShape(18.dp)) {
             Text(
@@ -514,6 +517,8 @@ private fun PracticeOverview(state: ChatUiState, viewModel: ChatViewModel, paddi
             )
         }
         ChatGptConnectionCard()
+        D05TrainingCard()
+        D043PlanInferenceCard()
         Surface(color = scheme.surface, shape = RoundedCornerShape(18.dp)) {
             Column(
                 modifier = Modifier.padding(18.dp),

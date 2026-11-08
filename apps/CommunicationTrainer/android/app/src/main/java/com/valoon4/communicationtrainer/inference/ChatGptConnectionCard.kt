@@ -101,7 +101,6 @@ fun ChatGptConnectionCard() {
             if (outcome is ChatGptSignIn.Outcome.Success) {
                 Text("Diese Bestätigung gilt nur für diese Test-Sitzung.", style = MaterialTheme.typography.bodySmall)
             }
-            D043PlanInferenceCard()
             Text(
                 "Wichtig: Ein fehlgeschlagener Rücksprung ist kein Hinweis auf falsches Passwort. " +
                     "Bitte niemals vollständige Callback-URLs teilen – sie können Zugangscodes enthalten. " +
