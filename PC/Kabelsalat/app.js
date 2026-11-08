@@ -137,6 +137,9 @@ let netLinkFromId=null,netLinkToId=null,reviewKey='shaft';
 const EXPLORE_MODE_KEY='kabelsalat_ui_mode_v1';
 const EXPLORE_PROGRESS_KEY='kabelsalat_explore_progress_v1';
 let exploreMode=true,exploreWith2D=false,exploreStage='shaft';
+/* Presentation-only visibility: never included in project JSON, undo or audit logs. */
+let exploreConstructionMode='hidden';
+const CONSTRUCTION_MODES=['hidden','transparent','solid'];
 let exploreVisited=new Set();
 try{
  exploreMode=localStorage.getItem(EXPLORE_MODE_KEY)!=='expert';
@@ -380,10 +383,14 @@ function highlightBox(mesh,color='#eec657'){
 }
 function drawHousing(key){
  const e=project.enclosures[key];
- if(exploreMode||!project.showBox||!e.visible||viewMode.startsWith('SW'))return;
+ if(!e?.visible||viewMode.startsWith('SW')||
+  (exploreMode?exploreConstructionMode==='hidden':!project.showBox))return;
  for(const p of e.panels){
   if(!p.visible)continue;
-  const g=components.panelGeometry(e,p),opacity=(p.opacity/100)*(e.opacity/100);
+  const g=components.panelGeometry(e,p),baseOpacity=(p.opacity/100)*(e.opacity/100);
+  const opacity=exploreMode?
+   (exploreConstructionMode==='transparent'?Math.min(.32,Math.max(.18,baseOpacity)):.95):
+   baseOpacity;
   const mat=p.material.toLowerCase(),color=mat.includes('stahl')?'#779ba9':
     mat.includes('beton')?'#b1b9be':mat.includes('holz')?'#bd9266':
     mat.includes('brand')?'#d1a9ac':'#b5c5cc';
@@ -391,11 +398,11 @@ function drawHousing(key){
     color,opacity);
   mesh.userData={type:'panel',id:p.id,group:key};
   hitObjects.push(mesh);
-  if(p.id===panelKey)highlightBox(mesh);
+  if(!exploreMode&&p.id===panelKey)highlightBox(mesh);
  }
 }
 function drawSupports(){
- if(exploreMode)return; // Show structural details in expert mode to reduce initial clutter.
+ if(exploreMode&&exploreConstructionMode==='hidden')return; // Demo: show existing supports with the plates.
  for(const s of project.supports){
   if(!s.visible||(viewMode.startsWith('SW')&&viewMode!==s.wall))continue;
   const mesh=box(s.w/1000,s.h/1000,s.d/1000,
@@ -405,7 +412,9 @@ function drawSupports(){
  }
 }
 function drawWalls(){
- const s=sizes(),op=exploreMode?Math.max(.52,project.opacity/100):project.opacity/100;
+ const s=sizes(),op=exploreMode?
+  (exploreConstructionMode==='hidden'?Math.max(.52,project.opacity/100):.24):
+  project.opacity/100;
  box(s.w+.16,.085,s.d+.16,0,-.055,0,'#8aa2ad',exploreMode?.9:1);
  const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
  floor.position.y=-.096;models.add(floor);
@@ -450,12 +459,13 @@ function drawCable(c){
  const cableRadius=exploreMode?Math.max(.006,thickness)*(chosen?1.75:1.08):
  chosen?thickness*1.22:thickness;
  const cableMaterial=exploreMode?
- new THREE.MeshBasicMaterial({color:c.color,transparent:true,opacity:chosen?1:.34,depthWrite:false}):
+ new THREE.MeshBasicMaterial({color:c.color,transparent:true,
+  opacity:chosen?1:(exploreConstructionMode==='hidden'?.34:.76),depthWrite:false}):
  new THREE.MeshStandardMaterial({color:c.color,roughness:.34,metalness:.04,transparent:true,opacity:chosen?1:.88});
  const line=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.min(100,48+route.length*10),cableRadius,10,false),
  cableMaterial);
  line.userData={type:'cable',id:c.id};models.add(line);hitObjects.push(line);
- if(chosen){
+ if(chosen&&!exploreMode){
  for(const [key,vec] of [['a',a],['b',b]]){
  const radius=Math.max(.019,thickness*2.3);
  const sphere=new THREE.Mesh(new THREE.SphereGeometry(radius,16,12),new THREE.MeshBasicMaterial({color:'#ffffff'}));
@@ -758,6 +768,7 @@ draft.addEventListener('pointerdown',e=>{
  const p=draftPoint(e),selected=geom2d.hitHole(wall().holes,draftMetrics,p.x,p.y);
  if(selected){
  holeId=selected.id;renderAll();
+ if(exploreMode){e.preventDefault();return;}
  draftDrag={holeId:selected.id,wallId,changed:false,x:p.x,y:p.y};
  draft.setPointerCapture(e.pointerId);e.preventDefault();return;
  }
@@ -782,14 +793,14 @@ draft.addEventListener('pointerdown',e=>{
  if(lineCable){
   cableId=lineCable.id;filter='all';renderAll();e.preventDefault();return;
  }
- if(mode!=='add')return;
+ if(exploreMode||mode!=='add')return;
  const w=wall();if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
  const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y);
  const newHole={id:uid(w.id+'-2d'),row:0,col:0,u:mm.x/wallSpanMm(w.id),v:mm.y/project.dims.h,dn:w.dn};
  change(()=>{w.holes.push(newHole);holeId=newHole.id;});e.preventDefault();
 });
 draft.addEventListener('pointermove',e=>{
- if(!draftDrag||!draftMetrics)return;
+ if(exploreMode||!draftDrag||!draftMetrics)return;
  const p=draftPoint(e);
  if(!draftDrag.changed&&Math.hypot(p.x-draftDrag.x,p.y-draftDrag.y)<1)return;
  const w=project.walls.find(x=>x.id===draftDrag.wallId),h=w?.holes.find(x=>x.id===draftDrag.holeId);
@@ -814,6 +825,12 @@ $('splitEnabled').addEventListener('change',()=>{
 const canvas=$('scene');
 canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;canvas.setPointerCapture(e.pointerId);const hit=pick(e),obj=hit?.object.userData||{};
+ if(exploreMode){
+  if(obj.type==='hole'){wallId=obj.wall;holeId=obj.hole;renderAll();return;}
+  if(obj.type==='cable'){cableId=obj.id;filter='all';renderAll();return;}
+  if(viewMode==='3D'){grab={type:'orbit',x:e.clientX,y:e.clientY};canvas.classList.add('dragging');}
+  return;
+ }
  if(mode==='add'){const wallHit=pick(e,wallObjects);if(wallHit){newOpening(wallHit.object.userData.wall,wallHit.point);return;}}
  if(obj.type==='handle'){grab={type:'handle',id:obj.id,end:obj.end};return;}
  if(obj.type==='waypoint'){
@@ -969,6 +986,21 @@ function renderExplorerUI(){
  $('toggleExpert').textContent=exploreMode?'🛠 Profi-Modus':'✨ Eugi-Modus';
  $('toggleExpert').setAttribute('aria-pressed',String(!exploreMode));
  $('explore2DToggle').textContent=exploreWith2D?'▢ 2D-Plan ausblenden':'▤ Wand als 2D-Plan sehen';
+ const labels={
+  hidden:'👁 Platten transparent zeigen',
+  transparent:'▣ Platten deckend zeigen',
+  solid:'⊘ Platten ausblenden'
+ };
+ $('exploreConstructionMode').textContent=labels[exploreConstructionMode];
+ $('exploreConstructionMode').setAttribute('aria-pressed',String(exploreConstructionMode!=='hidden'));
+ const shown=['OLA','MS'].filter(k=>project.enclosures[k]?.visible);
+ const missing=['OLA','MS'].filter(k=>!project.enclosures[k]?.visible);
+ $('exploreConstructionNote').textContent=exploreConstructionMode==='hidden'?
+  'Für die Vorführung: vorhandene Platten und Auflager einblenden (nur Ansicht).':
+  (shown.length?shown.join(' / ')+'-Platten im 3D-Modell sichtbar. ':'Keine Einhausung aktiv. ')+
+  (missing.length?missing.join(' / ')+' ist im Projekt ausgeblendet. ':'')+
+  (project.supports.some(s=>s.visible)?'Vorhandene Auflager sichtbar. ':'Keine Auflager hinterlegt. ')+
+  'Schematische Konstruktion – kein geprüfter Brandschutz.';
  const tips={
   network:'🗺️ Die Kreise sind Schächte. Linien verbinden sie schematisch. Tippe auf einen Kreis oder doppelklicke, um einen Schacht zu öffnen.',
   shaft:'🏗️ Der graublaue Kasten ist ein Schacht. Kleine Kreise sind Rohröffnungen; die Kabel laufen als bunte Linien hindurch. Mit der Maus drehen, mit dem Rad zoomen.',
@@ -1026,6 +1058,7 @@ $('questShaft').addEventListener('click',()=>openQuest('shaft'));
 $('questCable').addEventListener('click',()=>openQuest('cable'));
 $('toggleExpert').addEventListener('click',()=>{
  exploreMode=!exploreMode;
+ if(exploreMode){mode='orbit';grab=null;draftDrag=null;}
  try{localStorage.setItem(EXPLORE_MODE_KEY,exploreMode?'explore':'expert');}catch(_){}
  renderAll();requestAnimationFrame(resize);
 });
@@ -1036,6 +1069,11 @@ $('explore2DToggle').addEventListener('click',()=>{
 });
 $('exploreCameraReset').addEventListener('click',()=>{
  azimuth=.72;elevation=.42;zoom=1;viewMode='3D';renderAll();
+});
+$('exploreConstructionMode').addEventListener('click',()=>{
+ exploreConstructionMode=CONSTRUCTION_MODES[
+  (CONSTRUCTION_MODES.indexOf(exploreConstructionMode)+1)%CONSTRUCTION_MODES.length];
+ viewMode='3D';renderAll();
 });
 
 /* Network workspace commands. All changes go through the undo/persistence system. */

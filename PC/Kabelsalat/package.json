@@ -1,7 +1,7 @@
 {
   "name": "kabelsalat",
-  "version": "1.1.0-beta.1",
-  "description": "Kabelsalat 1.1 Beta – Eugi-Modus und zwei referenzbasierte HTML-Schachtmodelle mit Browser-Hosting-Vorbereitung",
+  "version": "1.2.0-beta.1",
+  "description": "Kabelsalat 1.2 Beta – transparente Einhausungsplatten und sicherer Präsentationsmodus",
   "main": "main.js",
   "author": "Eugi",
   "license": "MIT",
