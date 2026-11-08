@@ -9,6 +9,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.junit.Test
 import java.security.KeyPairGenerator
 import java.security.Signature
@@ -16,6 +17,7 @@ import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class D042ChatGptOAuthTest {
     @Test fun pkceUsesS256AccordingToRfc7636() {
         val verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
