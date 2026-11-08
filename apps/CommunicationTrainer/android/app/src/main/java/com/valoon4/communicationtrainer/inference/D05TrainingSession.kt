@@ -21,15 +21,23 @@ import javax.net.ssl.HttpsURLConnection
  * HTTPS request per turn. No refresh token, telemetry, retries or paid fallback.
  */
 object D05TrainingSession {
-    data class Scenario(val id: String, val title: String, val setup: String, val counterparty: String)
-    data class Turn(val role: String, val text: String)
+    data class Scenario(
+        val id: String,
+        val title: String,
+        val setup: String,
+        val counterparty: String,
+        val opening: String
+    )
+    data class Turn(val role: String, val text: String, val isScriptedOpening: Boolean = false)
     val scenarios = listOf(
         Scenario("boundary", "Freundlich Nein sagen",
             "Eine Person bittet dich kurzfristig, ihre zusätzliche Aufgabe zu übernehmen. Du möchtest höflich, klar und ohne Rechtfertigungsdruck Nein sagen.",
-            "eine freundliche, aber beharrliche Kollegin"),
+            "eine freundliche, aber beharrliche Kollegin",
+            "Hey, könntest du heute noch meinen Bericht fertigstellen? Ich schaffe es zeitlich nicht und bräuchte wirklich deine Hilfe."),
         Scenario("listening", "Aktiv zuhören",
             "Ein Freund ist enttäuscht, weil eine gemeinsame Verabredung abgesagt wurde. Du möchtest zuhören und seine Gefühle anerkennen, statt sofort Ratschläge zu geben.",
-            "ein enttäuschter Freund")
+            "ein enttäuschter Freund",
+            "Ich bin echt enttäuscht, dass unser Treffen ausgefallen ist. Ich hatte mich so darauf gefreut.")
     )
 
     const val MAX_USER_TURNS = 4
@@ -42,11 +50,26 @@ object D05TrainingSession {
     val scenarioId = MutableStateFlow("boundary")
     val chosenModel = MutableStateFlow("")
     val draft = MutableStateFlow("")
-    val turns = MutableStateFlow<List<Turn>>(emptyList())
+    // Each new practice starts with a local, clearly labelled, scripted partner
+    // request. It costs zero tokens, and is included in subsequent context.
+    val turns = MutableStateFlow<List<Turn>>(listOf(scriptedOpening(scenarios.first())))
     val consent = MutableStateFlow(false)
     val busy = MutableStateFlow(false)
     val status = MutableStateFlow("Noch kein Trainingsgespräch gestartet.")
     val lastLatencyMs = MutableStateFlow<Long?>(null)
+
+    internal fun scriptedOpening(scenario: Scenario) =
+        Turn(role = "assistant", text = scenario.opening, isScriptedOpening = true)
+
+    internal fun validHistory(scenario: Scenario, history: List<Turn>): Boolean {
+        if (history.isEmpty() || history.size % 2 != 1 ||
+            history.size > 1 + 2 * MAX_USER_TURNS) return false
+        if (history.first() != scriptedOpening(scenario)) return false
+        if (history.drop(1).any { it.isScriptedOpening }) return false
+        return history.drop(1).withIndex().all { (i, turn) ->
+            turn.role == if (i % 2 == 0) "user" else "assistant"
+        }
+    }
 
     fun selectScenario(id: String) {
         if (sending.get() || scenarios.none { it.id == id }) return
@@ -72,10 +95,10 @@ object D05TrainingSession {
     fun clearConversation() {
         if (sending.get()) return
         draft.value = ""
-        turns.value = emptyList()
+        turns.value = listOf(scriptedOpening(scenarios.first { it.id == scenarioId.value }))
         consent.value = false
         lastLatencyMs.value = null
-        status.value = "Neues Training. Nichts wurde an die bestehenden Chats übertragen."
+        status.value = "Gesprächseinstieg bereit. Antworte auf die konkrete Bitte oder Aussage."
     }
 
     internal fun onAccountChanged() {
@@ -90,12 +113,14 @@ object D05TrainingSession {
     }
 
     internal fun scenarioInput(scenario: Scenario, history: List<Turn>, userMessage: String): JSONArray {
-        require(history.size <= MAX_USER_TURNS * 2)
+        require(validHistory(scenario, history))
         require(userMessage.isNotBlank() && userMessage.length <= MAX_USER_CHARS)
-        require(history.all { it.role in setOf("user", "assistant") })
         val policy = "Dies ist ein freiwilliges deutsches Kommunikationstraining mit einer fiktiven Rolle. " +
             "Antworte nur als ${scenario.counterparty}. " +
             "Die Situation: ${scenario.setup} " +
+            "Der Gesprächspartner hat bereits den ersten Satz gesprochen. " +
+            "Bleibe direkt im Rollenspiel und gehe auf die Antwort der übenden Person ein; " +
+            "frage nicht erst, welches Szenario geübt werden soll. " +
             "Halte deine Antwort kurz (1–3 Sätze), natürlich und realistisch. " +
             "Bleibe respektvoll, stelle höchstens eine Frage. " +
             "Keine Therapie, Diagnosen oder Bewertungen der trainierenden Person. " +
@@ -134,7 +159,8 @@ object D05TrainingSession {
             !consent.value -> "Bitte die Freigabe zur Übertragung dieses Trainings aktivieren."
             text.isBlank() || text.length > MAX_USER_CHARS -> "Bitte 1–600 Zeichen eingeben."
             history.count { it.role == "user" } >= MAX_USER_TURNS -> "Das Testlimit von vier Runden ist erreicht."
-            history.size % 2 != 0 -> "Letzte Trainingsantwort ist unvollständig; keine weitere Anfrage."
+            !validHistory(currentScenario!!, history) ->
+                "Der Szenario-Einstieg fehlt oder ist unvollständig. Bitte Training neu starten."
             else -> null
         }
         if (error != null) {
