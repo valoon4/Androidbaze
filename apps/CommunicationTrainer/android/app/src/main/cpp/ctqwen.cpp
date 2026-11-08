@@ -50,8 +50,6 @@ std::string run(int fd, int n_threads, int n_ctx, int max_tokens) {
 
     llama_model_params mp = llama_model_default_params();
     mp.n_gpu_layers = 0;
-    mp.use_mmap = true;
-    mp.use_mlock = false;
 
     auto started = Clock::now();
     resources.model = llama_model_load_from_file(path.c_str(), mp);
