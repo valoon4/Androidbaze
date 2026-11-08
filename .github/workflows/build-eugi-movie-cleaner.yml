@@ -1,10 +1,15 @@
 name: Build Eugi Movie Cleaner EXE
+
 on:
   push:
     paths:
       - 'EugiMovieCleaner/**'
       - '.github/workflows/build-eugi-movie-cleaner.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -20,11 +25,24 @@ jobs:
         run: python -m unittest discover -p "test_*.py" -v
       - name: Install PyInstaller
         run: python -m pip install pyinstaller==6.16.0
-      - name: Build Windows EXE
+      - name: Build offline Windows EXE
         run: python -m PyInstaller --noconfirm --clean --onefile --windowed --name EugiMovieCleaner movie_cleaner.py
-      - name: Upload EXE
+      - name: Upload Windows EXE artifact
         uses: actions/upload-artifact@v4
         with:
           name: EugiMovieCleaner-Windows-EXE
           path: EugiMovieCleaner/dist/EugiMovieCleaner.exe
           if-no-files-found: error
+      - name: Publish EXE to Releases (preview)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $tag = "eugi-movie-cleaner-v0.1-preview"
+          $file = "EugiMovieCleaner/dist/EugiMovieCleaner.exe"
+          gh release view $tag --repo "${{ github.repository }}" 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $file --repo "${{ github.repository }}" --clobber
+          } else {
+            gh release create $tag $file --repo "${{ github.repository }}" --title "Eugi Movie Cleaner v0.1 (Preview)" --notes "Erste Testversion. Bitte zunächst nur mit Kopien von Filmordnern testen. Die Anwendung läuft nach dem Download offline. Untertitel-Muxing benötigt separat installiertes MKVToolNix." --prerelease --target "${{ github.sha }}"
+          }
