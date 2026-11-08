@@ -67,6 +67,53 @@ object QwenSdProbe {
         )
     }
 
+    /**
+     * Read-only diagnostics. Values are a snapshot and can change before launch.
+     * Never weakens the existing safety gate and never loads a model.
+     */
+    fun deviceDiagnostic(context: Context): String {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val memory = ActivityManager.MemoryInfo().also(manager::getMemoryInfo)
+        val sd = SdStoragePreflight.inspect(context)
+        val availableMiB = memory.availMem / (1024L * 1024L)
+        val totalMiB = memory.totalMem / (1024L * 1024L)
+        val thresholdMiB = memory.threshold / (1024L * 1024L)
+        val criticalMemory = memory.lowMemory
+        val classifiedLowRam = manager.isLowRamDevice
+        val isArm64 = Build.SUPPORTED_ABIS.contains("arm64-v8a")
+        val blocker = if (sd.status != SdStorageStatus.AVAILABLE_FOR_STORAGE_PROBE) {
+            "SD-Speicherprüfung nicht bestanden: ${sd.status}."
+        } else deviceGate(
+            arm64 = isArm64,
+            lowRam = criticalMemory || classifiedLowRam,
+            availableRam = memory.availMem,
+            internalFree = sd.internalFreeBytes ?: 0L
+        )
+        val reasons = listOfNotNull(
+            if (!isArm64) "ARM64 nicht unterstützt" else null,
+            if (criticalMemory) "Android meldet akuten RAM-Mangel" else null,
+            if (classifiedLowRam) "Android stuft das Gerät als Low-RAM-Gerät ein" else null,
+            if (memory.availMem < MIN_AVAILABLE_RAM)
+                "Verfügbar: ${availableMiB} MiB; erforderlich: mindestens 1100 MiB" else null,
+            if ((sd.internalFreeBytes ?: 0L) < MIN_INTERNAL_HEADROOM)
+                "Interner Reserve-Speicher unter 512 MiB" else null
+        )
+        return buildString {
+            append("RAM aktuell frei: ${availableMiB} MiB von ${totalMiB} MiB insgesamt.\n")
+            append("Android-RAM-Warnschwelle: ${thresholdMiB} MiB. ")
+            append("Low-Memory-Warnung: ${if (criticalMemory) "Ja" else "Nein"}.\n")
+            append("Low-RAM-Geräteklassifikation: ${if (classifiedLowRam) "Ja" else "Nein"}.\n")
+            append("SD-Status: ${sd.status}.\n")
+            if (blocker == null) {
+                append("RAM-/Speicher-Vorprüfung bestanden. Modellladen bleibt ungetestet.")
+            } else {
+                append("Modellstart gesperrt: ${blocker}\n")
+                if (reasons.isNotEmpty()) append("Gründe: ${reasons.joinToString("; ")}")
+            }
+            append("\nDiese Werte ändern sich je nach laufenden Apps. Kein Modell geladen.")
+        }
+    }
+
     fun calculateSha256(stream: InputStream): Pair<String, Long> {
         val digest = MessageDigest.getInstance("SHA-256")
         val buffer = ByteArray(128 * 1024)
@@ -125,6 +172,7 @@ fun QwenSdProbeCard() {
     var verifiedUri by remember { mutableStateOf<Uri?>(null) }
     var busy by remember { mutableStateOf(false) }
     var result by remember { mutableStateOf("Noch keine GGUF-Datei ausgewählt.") }
+    var deviceDiagnostic by remember { mutableStateOf<String?>(null) }
     val chooseModel = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         selectedUri = uri
         verifiedUri = null
@@ -145,6 +193,14 @@ fun QwenSdProbeCard() {
                     "Benötigt die exakt angegebene Qwen3-0.6B-Q4_K_M.gguf-Datei auf deiner SD-Karte.",
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            OutlinedButton(
+                enabled = !busy,
+                onClick = { deviceDiagnostic = QwenSdProbe.deviceDiagnostic(context) },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("RAM und Gerät jetzt prüfen (ohne Modellstart)") }
+            deviceDiagnostic?.let { report ->
+                Text(report, style = MaterialTheme.typography.bodySmall)
+            }
             OutlinedButton(
                 enabled = !busy,
                 onClick = { chooseModel.launch(arrayOf("*/*")) },
