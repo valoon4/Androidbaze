@@ -35,7 +35,7 @@
 
 ## Option: 20-GB-microSD statt Modell im internen Speicher
 
-**Nutzerangabe, 08.11.2026:** Eine **Speicherkarte mit 20 GB** ist im Galaxy A32 5G vorhanden. Ob „20 GB“ die **Gesamtkapazität oder den noch freien Platz** beschreibt, ist derzeit nicht geklärt. Der interne Speicher hat laut Nutzer weiterhin nur etwa **1,5 GB frei**. Diese Angabe nicht mit dem weiterhin knappen **4-GB-RAM** verwechseln.
+**Nutzerangabe, 08.11.2026:** Eine **Speicherkarte mit rund 20 GB tatsächlich freiem Platz** ist laut Nutzer im Galaxy A32 5G vorhanden (keine direkte App-Messung). Die 20 GB sind **frei**, nicht die Gesamtkapazität. Der interne Speicher hat laut Nutzer weiterhin nur etwa **1,5 GB frei**. Diese Angabe nicht mit dem weiterhin knappen **4-GB-RAM** verwechseln.
 
 **Neue, vorsichtige D04-Option:** Große GGUF-Modelldatei auf der microSD halten, native Android-Laufzeit und Room-Datenbank zunächst intern belassen. Ein Qwen3-0.6B-Q4_K_M-Artefakt liegt je nach Quantisierung grob bei **0,4–0,5 GB**; die tatsächliche native Runtime- und Cache-Größe ist noch nicht gemessen. Kein automatischer Download, bevor der direkte SD-Zugriff ohne interne Schattenkopie verifiziert ist.
 
@@ -56,7 +56,7 @@ Android-Quelle: [Storage Access Framework](https://developer.android.com/trainin
 
 ### Neue Stop/Go-Gates vor dem Test auf dem Nutzergerät
 
-- **Noch kein GO:** 20 GB *Kartengröße* belegen nicht genügend **freien Speicher** auf der Karte; diesen zunächst ausdrücklich prüfen.
+- **Freier SD-Speicher vom Nutzer bestätigt:** ca. 20 GB – ausreichend für den geplanten 0.6B-Modell-Dateitest. Vor einem Download zusätzlich **on-device** Speicherziel, Schreibzugriff und tatsächlich verfügbaren freien Platz messen; diese Kapazitätsangabe ist keine Aussage über RAM, native Runtime-Kompatibilität oder Performance.
 - **Noch kein GO:** `llama.cpp` muss in einem separaten, nachvollziehbar getesteten Android-Build die GGUF direkt von dieser Karte laden können, ohne interne Modellkopie oder kritischen zusätzlichen Cache.
 - **Noch kein GO:** Interner freier Speicher von ca. 1,5 GB ist für OS/Installation riskant knapp; nach tatsächlichem Runtime-Build prüfen, wie viel internen Speicher das Testpaket/Cache braucht, ohne die 3-GB-Vorsichtsschwelle für *interne Modellinstallationen* fälschlich auf SD-Laden anzuwenden.
 - **Unverändert:** 4 GB RAM sind die enge Grenze für LLM-Inferenz; keine Qwen3-1.7B/4B-Tests auf diesem Gerät, bevor die 0.6B-Testreihe stabil nachgewiesen wurde.
