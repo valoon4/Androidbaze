@@ -8,21 +8,23 @@ plugins {
 android {
     namespace = "com.valoon4.communicationtrainer"
     compileSdk = 36
+    ndkVersion = "27.2.12479018"
 
     defaultConfig {
         applicationId = "com.valoon4.communicationtrainer"
         minSdk = 26
         targetSdk = 36
         versionCode = 4
-        versionName = "0.4.0-d04"
+        versionName = "0.4.1-d04-qwen"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ndk { abiFilters += "arm64-v8a" }
     }
 
     buildTypes {
         // D04 is separately installable beside D03 because the CI debug certificate
         // is ephemeral. Release identity stays unchanged.
         getByName("debug") {
-            applicationIdSuffix = ".d04sdpreview"
+            applicationIdSuffix = ".d04qwenpreview"
             versionNameSuffix = "-preview"
         }
         release { isMinifyEnabled = false }
@@ -33,6 +35,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
     buildFeatures { compose = true }
 
     testOptions {
