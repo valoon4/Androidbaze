@@ -59,6 +59,10 @@ Weder die Root-Gradle-Konfiguration noch Kabelsalat, InnerWave, TimeFlow oder ih
 
 **D01-Build- und Testanleitung:** [android/README.md](android/README.md). Nach erfolgreichem Workflow-Lauf liegt die Debug-APK als GitHub-Artefakt vor; D01 ist **keine** freigegebene Veröffentlichung.
 
+## D04 – InferenceGateway und Vergleichsvorbereitung
+
+Der typisierte Gateway-Vertrag ist als D04-PR vorbereitet: **nur** die vorhandene lokale Simulation ist aktiv. Zwei Cloud-Referenzen und lokale Qwen3-Modellgrößen sind **bloße Kandidaten**, noch nicht gemessen, autorisiert oder integriert. [Architektur und Qualitätsgates](docs/D04_INFERENCE_MODELLVERGLEICH.md), [28 K5-Testfälle und Offline-Auswertung](benchmarks/d04/README.md).
+
 ## D02 – Lokale Gespräche und Entwürfe (PR #59 zur Freigabe)
 
 Die erste tatsächlich nutzbare lokale Speicherung ist unter [android/](android/) umgesetzt: Room mit Gesprächen/Nachrichten/Entwürfen/Replay-Referenzen und DataStore für den System-/Hell-/Dunkelmodus sowie die zuletzt ausgewählte Unterhaltung. Der Chat versendet weiterhin **keine** Nachrichten; echte KI folgt nicht vor der späteren expliziten Modellfreigabe.

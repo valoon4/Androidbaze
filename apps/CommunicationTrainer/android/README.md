@@ -1,4 +1,13 @@
-# CommunicationTrainer – D03 Mock-Chats mit Aurora Pulse
+# CommunicationTrainer – D04 InferenceGateway und Modellvergleich
+
+**D04-Entwicklungsstand:** Es gibt jetzt ein einheitliches, testbares Gateway für spätere KI-Betriebsarten. Der aktuell benutzbare Chat bleibt **lokale D03-Simulation mit festen Antworten**; es gibt weiterhin **keinen echten KI-Provider, keine installierten Modellgewichte, keine Internetberechtigung** und **keine echten Modellbenchmarks**.
+
+Die neue Debug-APK installiert sich als **CommunicationTrainer D04 Gateway-Test**, eigenständig neben D03 (`com.valoon4.communicationtrainer.d04preview`). In der UI ist das bewährte D03-Testgespräch zu prüfen: Text speichern, senden, Beispielantworten, Fehler-Retry, Neustart. D04 ändert **keine** realen Chatdaten in D03.
+
+[Architektur, Kandidaten, sichere Gates und offener Messstatus](../docs/D04_INFERENCE_MODELLVERGLEICH.md) · [Messvalidator und Testkorpus](../benchmarks/d04/README.md).
+
+---
+# Historie: D03 Mock-Chats mit Aurora Pulse
 
 **Stand: PR #60 zur Freigabe.** In D03 kannst du erstmals Textnachrichten lokal senden und feste, deterministische Testantworten erhalten. **Es ist keine echte KI angeschlossen**, keine Kommunikation wird an einen Server übertragen, und die Antworten stammen nicht von einer echten Person.
 
