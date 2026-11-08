@@ -48,11 +48,11 @@ fun ChatGptConnectionCard() {
                 fontWeight = FontWeight.SemiBold
             )
             Text(
-                "Test der offiziellen Anmeldung über deinen Browser. Nach deiner Zustimmung " +
-                    "wird nur geprüft, ob ChatGPT deine Identität und die Berechtigung für " +
-                    "ChatGPT-Plan-Nutzung bestätigt. Die App versendet keine Chats, ruft keine KI auf " +
-                    "und verwendet keine kostenpflichtige API. " +
-                    "Es werden keine Zugangsdaten auf dem Gerät gespeichert.",
+                "Die Anmeldung erfolgt im Systembrowser. Wir prüfen deine Identität und " +
+                    "die ausdrücklich erteilte ChatGPT-Plan-Berechtigung. " +
+                    "Anschließend kannst du unter D04.3 freiwillig eine einzige künstliche " +
+                    "Testanfrage ausführen. Bestehende Chats bleiben lokal. " +
+                    "Tokens werden nur vorübergehend im Arbeitsspeicher gehalten.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -84,9 +84,8 @@ fun ChatGptConnectionCard() {
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        "Es wurde keine KI-Anfrage gesendet. Für die nächste Entwicklungsphase " +
-                            "werden zunächst die App-Nutzungsgrenzen und eine kontrollierte " +
-                            "synthetische Testanfrage geprüft.",
+                        "Der Login selbst sendet keine KI-Anfrage. " +
+                            "Der D04.3-Test unten erfordert eine eigene ausdrückliche Freigabe.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -102,6 +101,7 @@ fun ChatGptConnectionCard() {
             if (outcome is ChatGptSignIn.Outcome.Success) {
                 Text("Diese Bestätigung gilt nur für diese Test-Sitzung.", style = MaterialTheme.typography.bodySmall)
             }
+            D043PlanInferenceCard()
             Text(
                 "Wichtig: Ein fehlgeschlagener Rücksprung ist kein Hinweis auf falsches Passwort. " +
                     "Bitte niemals vollständige Callback-URLs teilen – sie können Zugangscodes enthalten. " +
