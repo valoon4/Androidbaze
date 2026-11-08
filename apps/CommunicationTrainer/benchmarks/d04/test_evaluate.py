@@ -26,7 +26,7 @@ class D04EvidenceValidatorTest(unittest.TestCase):
         report = summarize(SUITE, CATALOG, [])
         self.assertEqual("NO_REAL_MEASUREMENTS", report["overall_status"])
         self.assertEqual(28, report["case_count"])
-        self.assertEqual(5, len(report["candidates"]))
+        self.assertEqual(6, len(report["candidates"]))
         for candidate in report["candidates"]:
             self.assertEqual("NO_REAL_MEASUREMENTS", candidate["status"])
             self.assertIsNone(candidate["full_latency_ms_p50"])
