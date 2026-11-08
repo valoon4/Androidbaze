@@ -69,3 +69,14 @@ Die App sendet pro Runde nur die festgelegte fiktive Rollenbeschreibung, den **a
 6. Screenshot des Anfangs und eine Beobachtung zur KI-Kontexttreue teilen, ohne echte Personendaten, OAuth-Tokens oder Login-URLs.
 
 **Kein automatischer Merge:** Der bisherige erfolgreiche CI-Lauf und der erste qualitative Gerätetest bleiben dokumentiert, aber die Szenario-Abnahme wird mit der korrigierten Version wiederholt.
+
+
+## D05.0.2 – Rollenfakten eindeutig gemacht
+
+**Anlass:** In der erfolgreich getesteten Übung „Aktiv zuhören“ schloss die KI aus dem zunächst unbestimmten Wortlaut, dass die übende Person das Treffen abgesagt hat. Diese Annahme wurde erst während des Dialogs getroffen und war in der Szenariobeschreibung nicht festgelegt.
+
+**Entscheidung:** Im Szenario ist **die übende Person diejenige, die das Treffen abgesagt hat**; der Freund ist deshalb enttäuscht. Diese Festlegung passt zum bereits getesteten Dialog, wird vor dem ersten Turn sichtbar erklärt und in der vorgegebenen ersten Aussage („Als du unser Treffen abgesagt hast …“) genannt. Nutzer sollen zunächst das Gefühl verstehen, nicht zwingend sofort ihre Absage rechtfertigen.
+
+Der Dialog-Prompt enthält dieselben Rollenfakten und untersagt widersprüchliche Rollenfestlegungen sowie erfundene Erklärungen für die Absage. So entsteht weniger Interpretationsspielraum; KI-Gehorsam kann dennoch nicht allein durch einen Prompt garantiert werden. Ein Robolectric-Test prüft die sichtbare Beschreibung, den vorgegebenen Einstieg und den ausgehenden KI-Kontext.
+
+**Abnahmekriterium:** In der neuen APK auf „Aktiv zuhören“ wechseln, vor dem Senden Rollenklärung lesen, Einstieg kontrollieren und ggf. einen weiteren kurzen Dialog auf Rollenstabilität prüfen. Die vorherige Praxiserfahrung belegt realistische KI-Reaktionen, nicht die Vollständigkeit aller möglichen Antwortverläufe. PR #66 bleibt bis Nutzerfreigabe ungemergt.
