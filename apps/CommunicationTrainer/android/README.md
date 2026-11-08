@@ -4,6 +4,8 @@
 
 Die neue Debug-APK installiert sich als **CommunicationTrainer D04 Gateway-Test**, eigenständig neben D03 (`com.valoon4.communicationtrainer.d04preview`). In der UI ist das bewährte D03-Testgespräch zu prüfen: Text speichern, senden, Beispielantworten, Fehler-Retry, Neustart. D04 ändert **keine** realen Chatdaten in D03.
 
+**Hardware-Preflight (D04):** Auf dem bestätigten Galaxy A32 5G (Android 13, 4 GB RAM) sind laut Nutzer etwa 20 GB auf der microSD frei, aber intern nur ungefähr 1,5 GB. Unter **Üben → „SD-Speicher jetzt prüfen“** kann die D04-Preview den verfügbaren Platz auf einer als entnehmbar erkannten App-SD-Directory anzeigen. Es ist **nur ein Lesetest**: kein Download, keine KI, kein Chattransfer und keine Modell-Dateikopie. Der native Modellzugriff bleibt noch gesondert zu testen.
+
 [Architektur, Kandidaten, sichere Gates und offener Messstatus](../docs/D04_INFERENCE_MODELLVERGLEICH.md) · [Messvalidator und Testkorpus](../benchmarks/d04/README.md).
 
 ---
