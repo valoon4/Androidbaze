@@ -79,7 +79,8 @@ assert.ok(html.includes('Basic-Modus')&&app.includes("'◉ Basic-Modus'"),
  'Neutral Basic-Modus must be present');
 assert.ok(app.includes("$('loadExample').click()")&&app.includes('if(!pdfView())return;'),
  'Presentation loading must respect the existing overwrite confirmation');
-assert.ok(app.includes("event.key==='Escape'&&presentationFocus"),
+assert.ok(app.includes("if(event.key!=='Escape')return;")&&
+ app.includes("if(presentationFocus){event.preventDefault();exitPresentation();}"),
  'Escape must always exit the presentation');
 assert.ok(html.includes('body.scene-info-compact .explore-scene-overlay>:not(.explore-scene-bar)'),
  'Compact control state must leave the toggle reachable');
