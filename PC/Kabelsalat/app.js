@@ -673,7 +673,12 @@ function drawCable(c){
  }
 }
 function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);drawPdfProtectionGuide();view();draw2D();}
-function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();renderQualityUI();renderExplorerUI();drawNetwork();}
+function renderAll(){
+ fixSelection();renderUI();
+ // The network pane toggles the 3D canvas's CSS display state. Restore it
+ // BEFORE camera calculations and rebuilding scene meshes.
+ renderNetworkUI();rebuild();renderQualityUI();renderExplorerUI();drawNetwork();
+}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
@@ -1819,7 +1824,16 @@ $('newProject').addEventListener('click',()=>{if(!confirm('Neue leere Planung st
  project=validProject(project);
  networkOpen=false;netRouteId=null;netSegmentShaftId='S1';});});
 $('exportPng').addEventListener('click',()=>{renderer.render(scene,activeCamera);renderer.domElement.toBlob(blob=>{if(blob)download(filename()+'.png',blob,'image/png');},'image/png');});
-function resize(){const rect=$('scene').getBoundingClientRect();renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);camera.aspect=rect.width/Math.max(1,rect.height);camera.updateProjectionMatrix();view();draw2D();}
+function resize(){
+ const rect=$('scene').getBoundingClientRect();
+ // Never shrink WebGL to 10×10 while the network overlay hides the canvas.
+ // Hidden canvas sizing could leave a blank viewport after returning to 3D.
+ if(rect.width<20||rect.height<20)return;
+ renderer.setSize(Math.max(10,rect.width),Math.max(10,rect.height),false);
+ camera.aspect=rect.width/Math.max(1,rect.height);
+ camera.updateProjectionMatrix();view();draw2D();
+ renderer.render(scene,activeCamera);
+}
 new ResizeObserver(resize).observe($('viewport'));
 new ResizeObserver(()=>draw2D()).observe($('draft2d'));
 function animate(){requestAnimationFrame(animate);renderer.render(scene,activeCamera);}
