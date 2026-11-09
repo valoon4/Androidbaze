@@ -55,6 +55,19 @@ assert.equal(switched.sourceInfo.shaft,'13_U_028');
 assert.equal(switched.network.shafts[0].snapshot.sourceInfo.shaft,'13_T_021');
 const pdf=validProject(examples.create('pdf-u028'));
 assert.deepEqual(pdf.walls.map(w=>w.holes.length),[29,13,26,23]);
+for(const [wid,hid,u,v] of [
+ ['SW1','SW1_T1_LR01',.0513,.8373],
+ ['SW1','SW1_T2_LR02',.9653,.8373],
+ ['SW2','SW2_T3_LR01',.8597,.8174],
+ ['SW3','SW3_T1_LR26',.0754,.1790],
+ ['SW4','SW4_T1_LR23',.2127,.3345]
+]){
+ const hole=pdf.walls.find(w=>w.id===wid).holes.find(h=>h.id===hid);
+ assert.ok(hole,'Missing PDF vector-coordinate reference '+hid);
+ assert.equal(hole.u,u,'Relative PDF x-center '+hid);
+ assert.equal(hole.v,v,'Relative PDF y-center '+hid);
+}
+assert.ok(pdf.sourceInfo.warning.includes('PDF-Vektorgrafik'));
 const ph=(w,t,lr)=>w+'_T'+t+'_LR'+String(lr).padStart(2,'0');
 const pp=(w,t,lr)=>pdf.cables.filter(c=>[c.a,c.b].some(end=>end?.hole===ph(w,t,lr)));
 for(const w of pdf.walls)for(const h of w.holes)

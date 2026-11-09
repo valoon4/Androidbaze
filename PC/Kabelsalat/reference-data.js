@@ -21,34 +21,36 @@ const round=v=>Math.round(v*100000)/100000;
 const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
 const pick=p=>p?.length?p[0]:null;
 
-/* PDF V2 pp.21-24: transcribed nominal DN and cable allocations.
-   Normalized coordinates and bounding dimensions are illustrative only. */
+/* PDF V2 pp.21-24: transcribed DN and cable allocations.
+   Relative hole positions are normalized from the original PDF vector circle
+   centers. These are diagram positions, NOT surveyed 3D coordinates.
+   Shaft/wall dimensions remain visibly flagged as old-HTML placeholders. */
 function createPdfU028(){
  const shaftId='13_U_028',dims={w:2750,d:2350,h:1850};
  const rows={
  SW1:[
- [1,[1,2,3,4,5],[.12,.27,.42,.57,.72],.81],
- [1,[6,7,8,9,10],[.12,.27,.42,.57,.72],.66],
- [1,[11,12,13,14,15],[.12,.27,.42,.57,.72],.51],
- [1,[16,17,18,19,20,21],[.12,.27,.42,.57,.72,.87],.36],
- [1,[22,23,24,25,26,27],[.12,.27,.42,.57,.72,.87],.21],
- [2,[1,2],[.93,.987],.81]],
+ [1,[1,2,3,4,5],[.0513,.1734,.2956,.4178,.5400],.8373],
+ [1,[6,7,8,9,10],[.0513,.1734,.2956,.4178,.5400],.6727],
+ [1,[11,12,13,14,15],[.0513,.1734,.2956,.4178,.5400],.5081],
+ [1,[16,17,18,19,20,21],[.0513,.1734,.2956,.4178,.5400,.6621],.3436],
+ [1,[22,23,24,25,26,27],[.0513,.1734,.2956,.4178,.5400,.6621],.1790],
+ [2,[1,2],[.8597,.9653],.8373]],
  SW2:[
- [1,[11,10,9],[.30,.46,.62],.78],
- [1,[5,8,7,6],[.13,.30,.46,.62],.59],
- [1,[1,4,3,2],[.13,.30,.46,.62],.40],
- [3,[1],[.88],.78],[3,[2],[.88],.59]],
+ [1,[11,10,9],[.2489,.3906,.5324],.8174],
+ [1,[5,8,7,6],[.1071,.2489,.3906,.5324],.6528],
+ [1,[1,4,3,2],[.1071,.2489,.3906,.5324],.4882],
+ [3,[1],[.8597],.8174],[3,[2],[.8597],.6528]],
  SW3:[
- [1,[5,4,3,2,1],[.18,.33,.48,.63,.78],.81],
- [1,[10,9,8,7,6],[.18,.33,.48,.63,.78],.66],
- [1,[15,14,13,12,11],[.18,.33,.48,.63,.78],.51],
- [1,[20,19,18,17,16],[.18,.33,.48,.63,.78],.36],
- [1,[26,25,24,23,22,21],[.04,.18,.33,.48,.63,.78],.21]],
+ [1,[5,4,3,2,1],[.1976,.3198,.4419,.5641,.6863],.8373],
+ [1,[10,9,8,7,6],[.1976,.3198,.4419,.5641,.6863],.6727],
+ [1,[15,14,13,12,11],[.1976,.3198,.4419,.5641,.6863],.5081],
+ [1,[20,19,18,17,16],[.1976,.3198,.4419,.5641,.6863],.3436],
+ [1,[26,25,24,23,22,21],[.0754,.1976,.3198,.4419,.5641,.6863],.1790]],
  SW4:[
- [1,[6,5,4,3,2,1],[.12,.27,.42,.57,.72,.87],.79],
- [1,[12,11,10,9,8,7],[.12,.27,.42,.57,.72,.87],.61],
- [1,[18,17,16,15,14,13],[.12,.27,.42,.57,.72,.87],.43],
- [1,[23,22,21,20,19],[.27,.42,.57,.72,.87],.25]]};
+ [1,[6,5,4,3,2,1],[.0754,.2127,.3499,.4872,.6244,.7617],.8282],
+ [1,[12,11,10,9,8,7],[.0754,.2127,.3499,.4872,.6244,.7617],.6637],
+ [1,[18,17,16,15,14,13],[.0754,.2127,.3499,.4872,.6244,.7617],.4991],
+ [1,[23,22,21,20,19],[.2127,.3499,.4872,.6244,.7617],.3345]]};
  const key=(w,t,r)=>w+'_T'+t+'_LR'+String(r).padStart(2,'0'),byId=new Map(),walls=[];
  for(const [w,grid] of Object.entries(rows)){
   const holes=[],page={SW1:21,SW2:22,SW3:23,SW4:24}[w];
@@ -167,7 +169,7 @@ function createPdfU028(){
   savedAt:'2026-11-08',document:'AvL0116 Fachkonzept V2, 08.11.2026',
   sourceVersion:'PDF V2 (Konzept, kein Ausführungsplan)',
   sourcePages:[21,22,23,24],geometryStatus:'schematic',
-  warning:'91 nominale DN und Rohrbelegungen aus PDF S.21–24. Reale XYZ-Abstände und Schachtmaße fehlen. 2750/2350/1850/120 mm aus HTML nur Platzhalter. Kabellängen, Rmin, Powerpanel-Kanäle und Auflager ungeprüft.',
+  warning:'91 nominale DN und Rohrbelegungen aus PDF S.21–24. Relative Rohrmittelpunkte aus PDF-Vektorgrafik (nicht vermessen). Reale XYZ-Abstände und Schachtmaße fehlen. 2750/2350/1850/120 mm aus HTML nur Platzhalter. Kabellängen, Rmin, Powerpanel-Kanäle und Auflager ungeprüft.',
   originalNote:'PDF S.13 nennt SW2/Trasse 3 TSB/TÜZ, Detailseite S.22 dagegen 5 EEA. Hier Detailseite S.22 abgebildet; Klärung offen. Vollständiges angekündigtes Kabelverzeichnis nicht enthalten; keine realen Kanalpositionen.',
   planAnchors:[],unmatchedEndpointCount:cables.filter(c=>!c.b).length,
   originalCableCount:cables.length,originalPhysicalPortCount:91

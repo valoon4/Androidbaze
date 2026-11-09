@@ -11,6 +11,13 @@ const samples=globalThis.KabelsalatSamples;
 if(!samples)throw Error('Kabelsalat-Beispielmodul fehlt');
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
 const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'};
+const PDF_WALLS={
+ SW1:'13_U_042 / Gleis · Trasse 1 + 2 · PDF S. 21',
+ SW2:'21_B_010 / Tunnelwand · Trasse 1 + 3 · PDF S. 22',
+ SW3:'13_U_032 · gespiegelte LR-Reihenfolge · PDF S. 23',
+ SW4:'13_U_021 · Trasse 1 · PDF S. 24'
+};
+const pdfView=()=>project.sourceInfo?.sourceVersion?.startsWith('PDF V2')===true;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let idCounter=0;const uid=p=>p+'-'+Date.now().toString(36)+'-'+(++idCounter).toString(36);
@@ -246,7 +253,7 @@ function renderUI(){
  $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallThickness').value=wall().thickness;$('wallDn').value=wall().dn;$('wallTitle').textContent=wallId+' · Konfiguration';
  $('copyHole').disabled=!hole();$('draftCopy').disabled=!hole();
  $('toggleWall').textContent=wall().visible?'Sichtbar':'Ausgeblendet';
- $('wallList').innerHTML=project.walls.map(w=>'<div class="wall-card '+(w.id===wallId?'active':'')+'" data-wall="'+w.id+'"><div class="row spread"><b><span class="dot" style="background:'+(w.visible?'#68a989':'#c9d2d7')+'"></span>'+w.id+'</b><span class="badge">'+w.holes.length+' Öffnungen</span></div><div class="small">'+WALL_NAMES[w.id]+' · '+w.rows+' × '+w.cols+'</div></div>').join('');
+ $('wallList').innerHTML=project.walls.map(w=>'<div class="wall-card '+(w.id===wallId?'active':'')+'" data-wall="'+w.id+'"><div class="row spread"><b><span class="dot" style="background:'+(w.visible?'#68a989':'#c9d2d7')+'"></span>'+w.id+'</b><span class="badge">'+w.holes.length+' Öffnungen</span></div><div class="small">'+(pdfView()?esc(PDF_WALLS[w.id]):WALL_NAMES[w.id]+' · '+w.rows+' × '+w.cols)+'</div></div>').join('');
  $('viewport').classList.toggle('with-2d',project.splitEnabled!==false);$('splitEnabled').checked=project.splitEnabled!==false;
  $('opacity').value=project.opacity;$('opacityText').textContent=project.opacity+' %';$('showBox').checked=project.showBox;$('showLabels').checked=project.showLabels;
  $('modeButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('scene').classList.toggle('placing',mode==='add');
@@ -404,10 +411,27 @@ function drawOpening(w,h){
  group.add(circle);circle.userData={type:'hole',wall:w.id,hole:h.id};
  const occupants=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
  project.cables.filter(c=>[c.a,c.b].some(e=>e?.wall===w.id&&e?.hole===h.id)):[];
- const ringColor=occupants.length?occupants[0].color:(exploreMode?'#426f7c':'#cad6d9');
- const ring=new THREE.Mesh(new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32),
- new THREE.MeshBasicMaterial({color:selected?'#f3bb48':ringColor}));
- ring.position.z=.004;group.add(ring);models.add(group);hitObjects.push(circle);
+ if(occupants.length&&pdfView()){
+  const segments=new Map();
+  for(const c of occupants)segments.set(c.color,(segments.get(c.color)||0)+1);
+  let cursor=-Math.PI/2;
+  for(const [color,count] of segments){
+   const arc=2*Math.PI*count/occupants.length;
+   const part=new THREE.Mesh(new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32,Math.max(.005,arc-.025)),
+    new THREE.MeshBasicMaterial({color}));
+   part.rotation.z=cursor;part.position.z=.004;group.add(part);cursor+=arc;
+  }
+ }else{
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32),
+   new THREE.MeshBasicMaterial({color:exploreMode?'#426f7c':'#cad6d9'}));
+  ring.position.z=.004;group.add(ring);
+ }
+ if(selected){
+  const focus=new THREE.Mesh(new THREE.TorusGeometry(r+.011,.004,6,32),
+   new THREE.MeshBasicMaterial({color:'#f3bb48'}));
+  focus.position.z=.005;group.add(focus);
+ }
+ models.add(group);hitObjects.push(circle);
 }
 function highlightBox(mesh,color='#eec657'){
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),
@@ -481,9 +505,25 @@ function drawWalls(){
  drawHousing('OLA');drawHousing('MS');drawSupports();
 }
 function endpoint(r){if(!r)return null;const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holePosition(w.id,h):null;}
+function cableDisplayPoint(ref,c){
+ const pos=endpoint(ref);
+ if(!pos||!pdfView())return pos;
+ const w=project.walls.find(w=>w.id===ref.wall),hole=w?.holes.find(h=>h.id===ref.hole);
+ if(!hole)return pos;
+ const peers=project.cables.filter(other=>
+  [other.a,other.b].some(e=>e?.wall===ref.wall&&e?.hole===ref.hole));
+ const slot=peers.findIndex(other=>other.id===c.id);
+ if(slot<0||peers.length<2)return pos;
+ // Visual fan-out of multi-cable opening: actual physical positions are unknown.
+ const a=slot*2.39996323,r=openingRadius(hole)*.55*Math.sqrt((slot+.5)/peers.length);
+ const delta=['SW1','SW3'].includes(ref.wall)?
+  new THREE.Vector3(0,Math.sin(a)*r,Math.cos(a)*r):
+  new THREE.Vector3(Math.cos(a)*r,Math.sin(a)*r,0);
+ return pos.clone().add(delta);
+}
 function drawCable(c){
  if(exploreMode&&exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus)return;
- const a=endpoint(c.a),b=endpoint(c.b);
+ const a=cableDisplayPoint(c.a,c),b=cableDisplayPoint(c.b,c);
  if(!a||!b){
   if(!project.sourceInfo?.sourceVersion?.startsWith('PDF V2')||!(a||b))return;
   // Incomplete: only show a short stub, NOT an invented full cable route.
@@ -772,11 +812,21 @@ function draw2D(){
  if(project.sourceInfo?.sourceVersion?.startsWith('PDF V2')){
   const occupants=project.cables.filter(c=>[c.a,c.b].some(e=>e?.wall===wallId&&e?.hole===h.id));
   if(occupants.length){
-   ctx.beginPath();ctx.arc(p.x,p.y,r+2,0,Math.PI*2);
-   ctx.strokeStyle=occupants[0].color;ctx.lineWidth=3;ctx.stroke();
+   const segments=new Map();
+   for(const c of occupants)segments.set(c.color,(segments.get(c.color)||0)+1);
+   let cursor=-Math.PI/2;
+   for(const [color,count] of segments){
+    const arc=2*Math.PI*count/occupants.length;
+    ctx.beginPath();ctx.arc(p.x,p.y,r+2,cursor,cursor+arc-.025);
+    ctx.strokeStyle=color;ctx.lineWidth=3;ctx.stroke();cursor+=arc;
+   }
   }
   ctx.font='bold 9px Segoe UI,Arial';ctx.textAlign='center';ctx.fillStyle='#1b3142';
   ctx.fillText(String(Number(h.id.split('_LR')[1])),p.x,p.y+3);
+  if(cw>=295){
+   ctx.font='8px Segoe UI,Arial';ctx.textAlign='center';ctx.fillStyle='#55707d';
+   ctx.fillText('DN '+h.dn,p.x,p.y+r+11);
+  }
   if(occupants.length){
    ctx.font='bold 9px Segoe UI,Arial';ctx.textAlign='left';ctx.fillStyle='#9a5718';
    ctx.fillText(String(occupants.length),p.x+r+3,p.y-r-3);
@@ -1107,7 +1157,16 @@ function renderExplorerUI(){
  const selectedGroups=['OLA','MS'].filter(k=>exploreSystemFocus==='all'||exploreSystemFocus===k);
  const shown=selectedGroups.filter(k=>project.enclosures[k]?.visible);
  const missing=selectedGroups.filter(k=>!project.enclosures[k]?.visible);
- $('pdfProtectionNote').hidden=!project.sourceInfo?.sourceVersion?.startsWith('PDF V2');
+ $('pdfProtectionNote').hidden=!pdfView();
+ $('pdfWallSection').hidden=!pdfView();
+ $('loadPdfV2').hidden=pdfView();
+ $('pdfWallContext').textContent=pdfView()?wallId+' · '+PDF_WALLS[wallId]+
+  ' · '+wall().holes.length+' LR · relative PDF-Positionen, keine vermessenen mm':'';
+ document.querySelectorAll('#pdfWallViews [data-pdf-view]').forEach(btn=>{
+  const active=btn.dataset.pdfView===viewMode;
+  btn.classList.toggle('active',active);
+  btn.setAttribute('aria-pressed',String(active));
+ });
  $('exploreConstructionNote').textContent=exploreConstructionMode==='hidden'?
   'Für die Vorführung: vorhandene Platten und Auflager einblenden (nur Ansicht).':
   (shown.length?shown.join(' / ')+'-Platten im 3D-Modell sichtbar. ':'Keine Einhausung aktiv. ')+
@@ -1180,6 +1239,18 @@ $('toggleExpert').addEventListener('click',()=>{
  else presentationFocus=false;
  try{localStorage.setItem(EXPLORE_MODE_KEY,exploreMode?'explore':'expert');}catch(_){}
  renderAll();requestAnimationFrame(resize);
+});
+$('loadPdfV2').addEventListener('click',()=>{
+ $('exampleSelect').value='pdf-u028';
+ $('loadExample').click(); // retains unsaved-work confirmation
+});
+$('pdfWallViews').addEventListener('click',event=>{
+ const button=event.target.closest('[data-pdf-view]');
+ const requested=button?.dataset.pdfView;
+ if(!pdfView()||!['3D','SW1','SW2','SW3','SW4'].includes(requested))return;
+ if(requested==='3D'){viewMode='3D';exploreWith2D=false;}
+ else{wallId=requested;viewMode=requested;exploreWith2D=project.splitEnabled!==false;}
+ networkOpen=false;renderAll();requestAnimationFrame(resize);
 });
 $('explore2DToggle').addEventListener('click',()=>{
  exploreWith2D=!exploreWith2D;

@@ -1,7 +1,7 @@
 {
   "name": "kabelsalat",
-  "version": "1.5.0-beta.1",
-  "description": "Kabelsalat 1.5 Beta – PDF V2 13_U_028 mit vier Wandbildern, Rohrbelegungen und sichtbaren offenen Enden",
+  "version": "1.6.0-beta.1",
+  "description": "Kabelsalat 1.6 Beta – PDF-Vektorpositionen, mehrfarbige Rohrbelegung und Wandvergleich",
   "main": "main.js",
   "author": "Eugi",
   "license": "MIT",

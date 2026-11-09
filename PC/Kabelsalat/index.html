@@ -201,6 +201,20 @@ body.explore-mode .explore-scene-overlay{max-height:calc(100% - 65px);overflow-y
 .pdf-separated-channels{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 .pdf-separated-channels span{display:block;padding:7px 5px;background:white;
  border:1px solid #d0e2e4;border-radius:6px;text-align:center;font-size:10px;font-weight:700}
+.pdf-wall-views{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:6px 0}
+.pdf-wall-views .chip{font-size:10px;min-width:0;padding:6px 3px}
+#pdfWallSection[hidden],#pdfProtectionNote[hidden],#loadPdfV2[hidden]{display:none!important}
+#pdfWallContext{font-size:10px;color:#486574;line-height:1.45}
+.pdf-crosssection{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:7px 8px 12px;
+ border-bottom:5px solid #a9b6bc;background:#f3f6f7}
+.pdf-crosssection .pdf-channel{position:relative;border:4px solid #8d9aa5;min-height:55px;
+ background:white;display:flex;align-items:center;justify-content:center;gap:8px}
+.pdf-crosssection .pdf-channel::after{content:'▥    ▥';position:absolute;bottom:-17px;
+ left:0;right:0;text-align:center;color:#8597a4;font-size:12px}
+.pdf-crosssection .pdf-channel i{display:inline-block;width:16px;height:16px;
+ border:4px solid;border-radius:50%;background:white}
+.pdf-crosssection .pdf-channel.ms i{border-color:#247dc5}
+.pdf-crosssection .pdf-channel.ola i{border-color:#d62f48}
 #pdfProtectionNote{font-size:10px;line-height:1.5}
 #explorePresentationFocus{width:100%;margin-top:10px;font-size:10.5px}
 body.presentation-focus #app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
@@ -221,7 +235,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.5 β1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.6 β1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="toggleExpert" class="btn mode-toggle" title="Zwischen Entdecken und Bearbeiten wechseln" aria-pressed="false">🛠 Profi-Modus</button>
@@ -353,6 +367,18 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <p id="exploreSceneText">Du siehst vier Wände mit runden Rohröffnungen. Die farbigen Linien sind Kabel.</p>
 <div class="explore-legend"><span><i class="swatch-wall"></i> Schachtwand</span><span><i class="swatch-hole"></i> Leerrohr</span><span><i class="swatch-wire"></i> Kabel</span></div>
 <div class="explore-views"><button id="explore2DToggle" class="btn tiny">▤ Wand als 2D-Plan sehen</button><button id="exploreCameraReset" class="btn tiny">⟳ Ansicht zurücksetzen</button></div>
+ <button id="loadPdfV2" class="btn soft tiny full" type="button">📄 PDF-Referenz 13_U_028 öffnen</button>
+ <div id="pdfWallSection" hidden>
+  <div class="explore-demo-caption">Wandbild direkt mit PDF vergleichen</div>
+  <div id="pdfWallViews" class="pdf-wall-views" role="group" aria-label="PDF-Wandansicht">
+   <button class="chip" type="button" data-pdf-view="SW1" aria-pressed="false">SW1</button>
+   <button class="chip" type="button" data-pdf-view="SW2" aria-pressed="false">SW2</button>
+   <button class="chip" type="button" data-pdf-view="SW3" aria-pressed="false">SW3</button>
+   <button class="chip" type="button" data-pdf-view="SW4" aria-pressed="false">SW4</button>
+   <button class="chip active" type="button" data-pdf-view="3D" aria-pressed="true">3D</button>
+  </div>
+  <div id="pdfWallContext" role="status"></div>
+ </div>
 <div class="explore-construction">
  <button id="exploreConstructionMode" class="btn primary tiny" type="button" aria-pressed="false">👁 Platten transparent zeigen</button>
  <div id="exploreConstructionNote" class="small" role="status">Für die Vorführung: vorhandene Platten und Auflager einblenden (nur Ansicht).</div>
@@ -380,8 +406,13 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
  <div id="pdfProtectionNote" class="hint" hidden>
   <b>PDF-V2-Konzept · Powerpanel-Trennung:</b>
   <div class="pdf-separated-channels"><span>🔵 MS · eigener Kanal</span><span>🔴 OLA · eigener Kanal</span></div>
+  <div class="pdf-crosssection" role="img" aria-label="PDF Seite 19: zwei schematisch getrennte, umschlossene Kanäle, MS blau und OLA rot, auf Auflagern">
+   <div class="pdf-channel ms"><i></i><i></i></div><div class="pdf-channel ola"><i></i><i></i></div>
+  </div>
+  <div class="small">PDF S. 19: Konzeptquerschnitt, nicht maßstäblich oder im realen 3D-Schacht eingebaut.</div>
   Beide Gewerke müssen vollständig eingefasst sowie voneinander und von LST/TK/fremden Rohren getrennt werden.
-  <b>Die PDF enthält keine bestätigten Kanalmaße, Befestigungen oder Auflagerpositionen.</b>
+  <b>Variante A: ≤ 75 mm – gestapelte Platten. Variante B: &gt; 75 mm – geeignete Auflager.</b>
+  Die PDF enthält keine bestätigten Kanalmaße, Befestigungen oder Auflagerpositionen.
   Die vorhandenen generischen Platten sind hier nicht als vermeintliche Ausführung eingeblendet.
   Keine Brandschutzfreigabe.
  </div>

@@ -25,6 +25,17 @@ assert.ok(app.includes("exploreConstructionMode==='hidden'?.34:.76"),
  'Explorer needs saturated cables when showing a translucent construction');
 assert.ok(html.includes('id="exploreConstructionMode"'), 'Presentation button missing');
 assert.ok(html.includes('id="exploreConstructionNote"'), 'Presentation state explanation missing');
+for(const id of ['pdfWallSection','pdfWallViews','pdfWallContext','loadPdfV2'])
+ assert.ok(html.includes('id="'+id+'"'),'PDF 1.6 UI missing: '+id);
+assert.ok(app.includes("new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32,Math.max(.005,arc-.025))"),
+ '3D multi-trade ring segments not wired');
+assert.ok(app.includes("ctx.arc(p.x,p.y,r+2,cursor,cursor+arc-.025)"),
+ '2D multi-trade ring segments not wired');
+assert.ok(app.includes('cableDisplayPoint(c.a,c)')&&app.includes('cableDisplayPoint(c.b,c)'),
+ 'Multiple PDF cables must remain individually visible');
+assert.ok(app.includes('PDF_WALLS[wallId]'),'Source wall context missing');
+assert.ok(html.includes('pdf-crosssection')&&html.includes('Variante A:'),
+ 'Powerpanel schema and 75mm variants not explained');
 assert.ok(html.includes('id="pdfProtectionNote"'),
  'PDF concept must disclose the unresolved protective channel geometry');
 assert.ok(app.includes("samples.create('pdf-u028')"), 'Fresh installs must load PDF V2 demo');
