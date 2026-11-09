@@ -589,40 +589,86 @@ function cableRenderPath(c,a,b){
  else curve=new THREE.CatmullRomCurve3(spec.points.map(p=>new THREE.Vector3(...p)),false,'centripetal',.5);
  return{curve,route,routeKind:spec.kind,routeWarnings:spec.warnings};
 }
-/* No Powerpanel geometry is asserted here: the blue mesh only surrounds
-   the two PDF cables with known endpoints; red rings locate the four
-   currently one-sided OLA occurrences. All sizes are visual symbols. */
-function drawPdfProtectionGuide(){
- if(!exploreMode||!pdfView()||!exploreProtectionGuide||viewMode!=='3D')return;
- for(const c of project.cables){
-  if(!['MS','OLA'].includes(c.group)||
-   (exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus))continue;
-  const color=c.group==='MS'?'#2b8eef':'#ed4151';
+/* Version 2.0: reference-only construction visualization. Unknown endpoints,
+   manufacturer radii and unmeasured shaft geometry are NEVER treated as verified. */
+function avlConstructionPlan(group){
+ const cs=project.cables.filter(c=>c.group===group);
+ const cables=cs.map(c=>{
   const a=cableDisplayPoint(c.a,c),b=cableDisplayPoint(c.b,c);
-  if(a&&b){
-   const {curve}=cableRenderPath(c,a,b);
-   // Deliberately open wire-mesh corridor; NOT a closed fire-rated assembly.
-   const shell=new THREE.Mesh(new THREE.TubeGeometry(curve,64,.055,8,false),
-    new THREE.MeshBasicMaterial({color,wireframe:true,transparent:true,
-     opacity:.34,depthTest:false,depthWrite:false}));
-   shell.userData={type:'concept-only',group:c.group};
-   models.add(shell);
-  }else{
-   const ref=a?c.a:b?c.b:null;
-   if(!ref)continue;
-   const w=project.walls.find(w=>w.id===ref.wall);
-   const hole=w?.holes.find(h=>h.id===ref.hole);
-   if(!hole)continue;
-   // An unresolved endpoint is highlighted at its documented pipe, not
-   // extended into an invented route or a fictitious Powerpanel box.
-   const ring=new THREE.Mesh(new THREE.TorusGeometry(openingRadius(h)+.045,
-    .008,8,32),new THREE.MeshBasicMaterial({color,transparent:true,
-    opacity:.9,depthTest:false,depthWrite:false}));
-   const direction=normal(ref.wall);
-   ring.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),direction);
-   ring.position.copy(endpoint(ref)).addScaledVector(direction,.065);
-   ring.userData={type:'concept-only',group:c.group};
-   models.add(ring);
+  return{a:a?.toArray()||null,b:b?.toArray()||null,
+   wallA:c.a?.wall,wallB:c.b?.wall,refA:c.a?.hole,refB:c.b?.hole,
+   radius:Math.max(.009,Math.min(.04,(Number(c.diameter)||12)/2000))};
+ });
+ const ports=project.walls.flatMap(w=>w.holes.map(h=>({
+  id:h.id,wall:w.id,point:holePosition(w.id,h).toArray(),radius:openingRadius(h)})));
+ return constructionV2.construction(group,cables,ports,sizes());
+}
+function drawAvlEndPanel(panel,plan,color,opacity){
+ const axis=panel.axis,cross=axis===0?2:0;
+ const cx=(panel.low[cross]+panel.high[cross])/2,cy=(panel.low[1]+panel.high[1])/2;
+ const w=panel.high[cross]-panel.low[cross],h=panel.high[1]-panel.low[1];
+ const shape=new THREE.Shape();
+ shape.moveTo(-w/2,-h/2);shape.lineTo(w/2,-h/2);
+ shape.lineTo(w/2,h/2);shape.lineTo(-w/2,h/2);shape.closePath();
+ for(const hole of panel.holes){
+  const x=hole.at[cross]-cx,y=hole.at[1]-cy;
+  if(Math.abs(x)+hole.radius>w/2||Math.abs(y)+hole.radius>h/2)continue;
+  const opening=new THREE.Path();
+  opening.absarc(x,y,hole.radius,0,Math.PI*2,true);shape.holes.push(opening);
+ }
+ const thick=panel.high[axis]-panel.low[axis];
+ const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,
+  {depth:thick,steps:1,bevelEnabled:false,curveSegments:24}),material(color,opacity));
+ if(axis===2)mesh.position.set(cx,cy,panel.low[2]);
+ else{mesh.rotation.y=-Math.PI/2;mesh.position.set(panel.high[0],cy,cx);}
+ mesh.userData={type:'concept-only',group:plan.group};models.add(mesh);
+}
+function drawAvlConstruction(plan){
+ if(plan.status!=='concept')return;
+ const color=plan.group==='OLA'?'#c6b9a1':'#acbfca';
+ const opacity=exploreConstructionMode==='solid'?.91:.29;
+ for(const p of plan.panels){
+  if(p.kind==='perforated'){drawAvlEndPanel(p,plan,color,opacity);continue;}
+  const mid=p.low.map((v,i)=>(v+p.high[i])/2);
+  const size=p.low.map((v,i)=>p.high[i]-v);
+  const mesh=box(size[0],size[1],size[2],...mid,color,opacity);
+  mesh.userData={type:'concept-only',group:plan.group};
+ }
+ for(const p of plan.supports){
+  const mid=p.low.map((v,i)=>(v+p.high[i])/2);
+  const size=p.low.map((v,i)=>p.high[i]-v);
+  const mesh=box(size[0],size[1],size[2],...mid,
+   p.kind==='stack'?'#aeb9be':'#7d939e',.94);
+  mesh.userData={type:'concept-only',group:plan.group};
+ }
+}
+function drawPdfProtectionGuide(){
+ if(!exploreMode||!avlReference()||!exploreProtectionGuide||viewMode!=='3D')return;
+ for(const group of ['MS','OLA']){
+  if(exploreSystemFocus!=='all'&&exploreSystemFocus!==group)continue;
+  const plan=avlConstructionPlan(group);
+  if(exploreConstructionMode!=='hidden')drawAvlConstruction(plan);
+  for(const c of project.cables.filter(c=>c.group===group)){
+   const a=cableDisplayPoint(c.a,c),b=cableDisplayPoint(c.b,c);
+   const color=group==='MS'?'#2b8eef':'#ed4151';
+   if(a&&b){
+    if(plan.status==='concept')continue;
+    const {curve}=cableRenderPath(c,a,b);
+    const shell=new THREE.Mesh(new THREE.TubeGeometry(curve,64,.055,8,false),
+     new THREE.MeshBasicMaterial({color,wireframe:true,transparent:true,
+      opacity:.34,depthTest:false,depthWrite:false}));
+    shell.userData={type:'concept-only',group};models.add(shell);
+   }else{
+    const ref=a?c.a:b?c.b:null;if(!ref)continue;
+    const w=project.walls.find(x=>x.id===ref.wall);
+    const hole=w?.holes.find(h=>h.id===ref.hole);if(!hole)continue;
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(openingRadius(hole)+.045,
+     .008,8,32),new THREE.MeshBasicMaterial({color,transparent:true,
+     opacity:.9,depthTest:false,depthWrite:false}));
+    ring.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal(ref.wall));
+    ring.position.copy(endpoint(ref)).addScaledVector(normal(ref.wall),.065);
+    ring.userData={type:'concept-only',group};models.add(ring);
+   }
   }
  }
 }
@@ -1281,19 +1327,24 @@ function renderExplorerUI(){
  };
  $('exploreConstructionMode').textContent=labels[exploreConstructionMode];
  $('exploreProtectionGuide').textContent=exploreProtectionGuide?
-  '🔵🔴 3D-Konzeptmarkierungen ausblenden':'🔵🔴 MS/OLA im 3D markieren';
+  '🔵🔴 V2.0-Konstruktion ausblenden':'🔵🔴 V2.0-Konstruktion anzeigen';
  $('exploreProtectionGuide').setAttribute('aria-pressed',String(exploreProtectionGuide));
- $('exploreProtectionGuide').hidden=!pdfView();
- $('exploreProtectionStatus').hidden=!pdfView();
+ $('exploreProtectionGuide').hidden=!avlReference();
+ $('exploreProtectionStatus').hidden=!avlReference();
  const protectedGroups=['MS','OLA'].map(group=>{
   const list=project.cables.filter(c=>c.group===group);
   const known=list.filter(c=>endpoint(c.a)&&endpoint(c.b)).length;
   return {group,known,total:list.length};
  });
- $('exploreProtectionStatus').textContent=pdfView()?
-  protectedGroups.map(x=>x.group+': '+x.known+'/'+x.total+' Endpunktpaare').join(' · ')+
-  '. Blaue Gitter = schematische MS-Kabelwege. Rote Ringe = offene OLA-Anschlüsse.'+
-  ' Keine geschlossenen Powerpanel-Kanäle, keine bestätigte Trennung.':'';
+ $('exploreProtectionStatus').textContent=avlReference()?
+  protectedGroups.map(x=>{
+   const p=avlConstructionPlan(x.group);
+   return x.group+': '+x.known+'/'+x.total+' Endpunktpaare · '+
+    (p.status==='concept'?
+     (x.group==='OLA'?'A · Stapelplatten':'B · SP-Stützen')+' (schematische 3D-Bauteile)':
+     'Kanal nicht gebaut – '+p.issues[0]);
+  }).join(' | ')+
+  '. Maße, Mindestbiegeradius, Konstruktionsstatik und Brandschutzfreigabe offen.':'';
 
  $('exploreConstructionMode').setAttribute('aria-pressed',String(exploreConstructionMode!=='hidden'));
  const selectedGroups=['OLA','MS'].filter(k=>exploreSystemFocus==='all'||exploreSystemFocus===k);
@@ -1414,7 +1465,7 @@ $('exploreConstructionMode').addEventListener('click',()=>{
  viewMode='3D';exploreCameraShot='overview';renderAll();
 });
 $('exploreProtectionGuide').addEventListener('click',()=>{
- if(!pdfView())return;
+ if(!avlReference())return;
  exploreProtectionGuide=!exploreProtectionGuide;
  if(exploreProtectionGuide){viewMode='3D';networkOpen=false;}
  renderAll();
