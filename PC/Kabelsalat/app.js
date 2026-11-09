@@ -581,8 +581,9 @@ function cableDisplayPoint(ref,c){
    3D protection-route guide. It does not establish a manufacturer bend radius. */
 function cableRenderPath(c,a,b){
  const route=(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000));
+ const auto=exploreMode&&avlReference()&&c.drawingDiameterOnly&&['OLA','MS'].includes(c.group);
  const spec=constructionV2.cablePath(a.toArray(),b.toArray(),c.a.wall,c.b.wall,
-  normal(c.a.wall).toArray(),normal(c.b.wall).toArray(),route.map(p=>p.toArray()));
+  normal(c.a.wall).toArray(),normal(c.b.wall).toArray(),auto?[]:route.map(p=>p.toArray()));
  let curve;
  if(spec.kind==='straight')curve=new THREE.LineCurve3(a.clone(),b.clone());
  else if(spec.kind==='smooth-side')curve=new THREE.CubicBezierCurve3(...spec.points.map(p=>new THREE.Vector3(...p)));
@@ -1308,7 +1309,7 @@ function renderExplorerUI(){
   exploreSystemFocus==='all'||c.group===exploreSystemFocus);
  const routedCount=presentedCables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length;
  const openings=project.walls.reduce((sum,w)=>sum+w.holes.length,0);
- $('exploreSceneTitle').textContent=pdfView()?'13_U_028 · PDF V2':'Kabelschacht · 3D';
+ $('exploreSceneTitle').textContent=avlReference()?project.sourceInfo.shaft+' · AVL0116 V2.0':'Kabelschacht · 3D';
  $('exploreSourceLine').textContent=pdfView()?
   openings+' Leerrohre · '+project.cables.length+' Kabelobjekte · '+
   (project.cables.length-project.cables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length)+
@@ -1538,7 +1539,7 @@ $('startPitch').addEventListener('click',()=>{
  try{localStorage.setItem(EXPLORE_MODE_KEY,'explore');}catch(_){}
  networkOpen=false;presentationFocus=true;sceneInfoCompact=true;
  exploreWith2D=false;exploreCutawayWall=null;exploreSystemFocus='all';
- exploreConstructionMode='hidden';exploreProtectionGuide=true;
+ exploreConstructionMode='transparent';exploreProtectionGuide=true;
  viewMode='3D';exploreCameraShot='overview';
  azimuth=.72;elevation=.42;zoom=.86;
  renderAll();requestAnimationFrame(resize);
