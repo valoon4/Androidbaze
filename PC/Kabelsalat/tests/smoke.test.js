@@ -1,5 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 assert.ok(html.includes('Kabelsalat'), 'UI must display Kabelsalat brand');
