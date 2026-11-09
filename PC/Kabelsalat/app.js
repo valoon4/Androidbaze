@@ -505,12 +505,13 @@ function drawWalls(){
  for(const w of project.walls){
  if(!w.visible||(viewMode.startsWith('SW')&&w.id!==viewMode)||
   (exploreMode&&viewMode==='3D'&&exploreCutawayWall===w.id))continue;
- const span=(w.id==='SW2'||w.id==='SW4')?s.w:s.d,half=span/2;
+ const span=pdfView()?pdfWallWidth(w.id,s):(w.id==='SW2'||w.id==='SW4')?s.w:s.d,half=span/2;
  const shape=new THREE.Shape();
  shape.moveTo(-half,0);shape.lineTo(half,0);shape.lineTo(half,s.h);shape.lineTo(-half,s.h);shape.closePath();
  const included=[];
  for(const h of w.holes){
- const p=holePosition(w.id,h),u=w.id==='SW2'?-p.x:w.id==='SW3'?-p.z:w.id==='SW4'?p.x:p.z,r=openingRadius(h);
+ const p=holePosition(w.id,h),u=pdfView()?(h.u-.5)*span:
+  w.id==='SW2'?-p.x:w.id==='SW3'?-p.z:w.id==='SW4'?p.x:p.z,r=openingRadius(h);
  if(u-r< -half||u+r>half||p.y-r<0||p.y+r>s.h)continue;
  if(included.some(v=>Math.hypot(v.u-u,v.y-p.y)<v.r+r))continue;
  const path=new THREE.Path();path.absarc(u,p.y,r,0,Math.PI*2,true);shape.holes.push(path);
@@ -518,13 +519,23 @@ function drawWalls(){
  }
  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:w.thickness/1000,bevelEnabled:false,curveSegments:12,steps:1}),
  material(exploreMode?'#52788b':(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4'),op));
- if(w.id==='SW1'){mesh.rotation.y=-Math.PI/2;mesh.position.x=-s.w/2;}
- else if(w.id==='SW3'){mesh.rotation.y=Math.PI/2;mesh.position.x=s.w/2;}
- else if(w.id==='SW2'){mesh.rotation.y=Math.PI;mesh.position.z=-s.d/2;}
- else mesh.position.z=s.d/2;
+ if(pdfView()){
+  if(w.id==='SW1')mesh.position.z=-s.d/2;
+  else if(w.id==='SW2'){mesh.rotation.y=-Math.PI/2;mesh.position.x=s.w/2;}
+  else if(w.id==='SW3'){mesh.rotation.y=Math.PI;mesh.position.z=s.d/2;}
+  else{mesh.rotation.y=Math.PI/2;mesh.position.x=-s.w/2;}
+ }else{
+  if(w.id==='SW1'){mesh.rotation.y=-Math.PI/2;mesh.position.x=-s.w/2;}
+  else if(w.id==='SW3'){mesh.rotation.y=Math.PI/2;mesh.position.x=s.w/2;}
+  else if(w.id==='SW2'){mesh.rotation.y=Math.PI;mesh.position.z=-s.d/2;}
+  else mesh.position.z=s.d/2;
+ }
  mesh.userData={type:'wall',wall:w.id};models.add(mesh);wallObjects.push(mesh);
- if(project.showLabels)createLabel(w.id,new THREE.Vector3(w.id==='SW1'?-s.w/2:w.id==='SW3'?s.w/2:0,
- s.h+.15,w.id==='SW2'?-s.d/2:w.id==='SW4'?s.d/2:0));
+ if(project.showLabels)createLabel(w.id,pdfView()?
+  new THREE.Vector3(w.id==='SW2'?s.w/2:w.id==='SW4'?-s.w/2:0,
+   s.h+.15,w.id==='SW1'?-s.d/2:w.id==='SW3'?s.d/2:0):
+  new THREE.Vector3(w.id==='SW1'?-s.w/2:w.id==='SW3'?s.w/2:0,
+   s.h+.15,w.id==='SW2'?-s.d/2:w.id==='SW4'?s.d/2:0));
  for(const h of w.holes)drawOpening(w,h);
  }
  drawHousing('OLA');drawHousing('MS');drawSupports();
@@ -649,8 +660,15 @@ function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();rende
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
-function wallCoords(wid,p){const s=sizes(),u=(wid==='SW2'||wid==='SW4')?(p.x/s.w+.5):p.z/s.d+.5;
- return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};}
+function wallCoords(wid,p){
+ const s=sizes();
+ const u=pdfView()?
+  wid==='SW1'?p.x/s.w+.5:
+  wid==='SW2'?p.z/s.d+.5:
+  wid==='SW3'?.5-p.x/s.w:.5-p.z/s.d:
+  (wid==='SW2'||wid==='SW4')?p.x/s.w+.5:p.z/s.d+.5;
+ return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};
+}
 function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
  change(()=>{w.holes.push({id,row:0,col:0,dn:w.dn,...coords});wallId=wid;holeId=id;});}
 
@@ -831,8 +849,13 @@ function projectedCablePoints(c,m){
  if(!a||!b)return [];
  const points=[a,...(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000)),b];
  return points.map(p=>{
-  const along=wallId==='SW1'||wallId==='SW3'?
-   p.z*1000+project.dims.d/2:p.x*1000+project.dims.w/2;
+  const along=pdfView()?
+   (wallId==='SW1'?p.x*1000+project.dims.w/2:
+    wallId==='SW2'?p.z*1000+project.dims.d/2:
+    wallId==='SW3'?project.dims.w/2-p.x*1000:
+    project.dims.d/2-p.z*1000):
+   (wallId==='SW1'||wallId==='SW3'?
+    p.z*1000+project.dims.d/2:p.x*1000+project.dims.w/2);
   return geom2d.toPixels(m,along,p.y*1000);
  });
 }
@@ -1382,7 +1405,8 @@ $('exploreCutawayWall').addEventListener('change',()=>{
  exploreCutawayWall=Object.hasOwn(CUTAWAY_AZIMUTH,selected)?selected:null;
  if(exploreCutawayWall){
   // Face the missing wall to reveal the interior, without moving any object.
-  azimuth=CUTAWAY_AZIMUTH[exploreCutawayWall];
+  azimuth=pdfView()?({SW1:Math.PI,SW2:Math.PI/2,SW3:0,SW4:-Math.PI/2})[exploreCutawayWall]:
+   CUTAWAY_AZIMUTH[exploreCutawayWall];
   elevation=.46;zoom=.9;
   exploreCameraShot='custom';
  }
