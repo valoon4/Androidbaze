@@ -583,7 +583,8 @@ function cableRenderPath(c,a,b){
  const route=(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000));
  const auto=exploreMode&&avlReference()&&c.drawingDiameterOnly&&['OLA','MS'].includes(c.group);
  const spec=constructionV2.cablePath(a.toArray(),b.toArray(),c.a.wall,c.b.wall,
-  normal(c.a.wall).toArray(),normal(c.b.wall).toArray(),auto?[]:route.map(p=>p.toArray()));
+  normal(c.a.wall).toArray(),normal(c.b.wall).toArray(),auto?[]:route.map(p=>p.toArray()),
+  project.network?.quality?.minBendRadiusMm??null);
  let curve;
  if(spec.kind==='straight')curve=new THREE.LineCurve3(a.clone(),b.clone());
  else if(spec.kind==='smooth-side')curve=new THREE.CubicBezierCurve3(...spec.points.map(p=>new THREE.Vector3(...p)));
@@ -1345,7 +1346,9 @@ function renderExplorerUI(){
      (x.group==='OLA'?'A · Stapelplatten':'B · SP-Stützen')+' (schematische 3D-Bauteile)':
      'Kanal nicht gebaut – '+p.issues[0]);
   }).join(' | ')+
-  '. Maße, Mindestbiegeradius, Konstruktionsstatik und Brandschutzfreigabe offen.':'';
+  '. Maße, Konstruktionsstatik und Brandschutzfreigabe offen. Biegeradius: '+
+  (project.network?.quality?.minBendRadiusMm==null?'Herstellerwert fehlt':
+   'Projektwert '+project.network.quality.minBendRadiusMm+' mm, nur geometrische Näherung')+'.':'';
 
  $('exploreConstructionMode').setAttribute('aria-pressed',String(exploreConstructionMode!=='hidden'));
  const selectedGroups=['OLA','MS'].filter(k=>exploreSystemFocus==='all'||exploreSystemFocus===k);
