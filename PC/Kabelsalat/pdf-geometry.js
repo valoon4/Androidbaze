@@ -57,5 +57,11 @@
   }[id];
   return {position:pos,target,span:span(id,s)};
  }
- return {WALLS,span,hole,transform,inverse,along,camera,wall};
+ function tangentOffset(id,angle,r){
+  wall(id);const rad=Math.max(0,Number(r)||0);
+  return id==='SW1'||id==='SW3'?
+   [Math.cos(angle)*rad,Math.sin(angle)*rad,0]:
+   [0,Math.sin(angle)*rad,Math.cos(angle)*rad];
+ }
+ return {WALLS,span,hole,transform,inverse,along,camera,wall,tangentOffset};
 });
