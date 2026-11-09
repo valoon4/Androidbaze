@@ -434,6 +434,21 @@ function drawOpening(w,h){
  const circle=new THREE.Mesh(new THREE.CircleGeometry(r,30),new THREE.MeshBasicMaterial({
  color:selected?'#267d75':'#486c7d',transparent:true,opacity:selected?.35:(exploreMode?.20:.045),depthWrite:false,side:THREE.DoubleSide}));
  group.add(circle);circle.userData={type:'hole',wall:w.id,hole:h.id};
+ if(pdfView()){
+  // Visible, hollow 3D conduit mouth. DN sets the physical opening radius;
+  // the sleeve extension is illustrative because penetration length is unknown.
+  const lip=new THREE.Mesh(new THREE.TorusGeometry(r+.010,.010,10,32),
+   new THREE.MeshStandardMaterial({color:'#94adba',roughness:.48,metalness:.30,
+    side:THREE.DoubleSide}));
+  lip.position.z=.012;group.add(lip);
+  const sleeve=new THREE.Mesh(new THREE.CylinderGeometry(r+.010,r+.010,.20,32,1,true),
+   new THREE.MeshStandardMaterial({color:'#a9b8c3',transparent:true,
+    opacity:.74,roughness:.55,metalness:.18,side:THREE.DoubleSide,depthWrite:false}));
+  sleeve.rotation.x=Math.PI/2;sleeve.position.z=.10;group.add(sleeve);
+  const innerLip=new THREE.Mesh(new THREE.TorusGeometry(r+.010,.006,8,32),
+   new THREE.MeshBasicMaterial({color:'#506878'}));
+  innerLip.position.z=.20;group.add(innerLip);
+ }
  const occupants=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
  project.cables.filter(c=>[c.a,c.b].some(e=>e?.wall===w.id&&e?.hole===h.id)):[];
  if(occupants.length&&pdfView()){
@@ -497,7 +512,8 @@ function drawSupports(){
 }
 function drawWalls(){
  const s=sizes(),op=exploreMode?
-  (exploreConstructionMode==='hidden'?Math.max(.52,project.opacity/100):.24):
+  (pdfView()? .19 :
+   (exploreConstructionMode==='hidden'?Math.max(.52,project.opacity/100):.24)):
   project.opacity/100;
  box(s.w+.16,.085,s.d+.16,0,-.055,0,'#8aa2ad',exploreMode?.9:1);
  const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
@@ -615,14 +631,14 @@ function drawCable(c){
   // Incomplete: only show a short stub, NOT an invented full cable route.
   const known=c.a&&a?c.a:c.b,start=a||b;
   if(viewMode.startsWith('SW')&&known.wall!==viewMode)return;
-  const end=start.clone().addScaledVector(normal(known.wall),.24);
+  const end=start.clone().addScaledVector(normal(known.wall),.36);
   const selected=c.id===cableId;
   const stub=new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(start,end),12,
-   selected?.012:.007,8,false),
+   selected?.019:.012,9,false),
    new THREE.MeshBasicMaterial({color:c.color,transparent:true,
     opacity:selected?1:.78,depthWrite:false}));
   stub.userData={type:'cable',id:c.id};models.add(stub);hitObjects.push(stub);
-  const cap=new THREE.Mesh(new THREE.SphereGeometry(.018,10,8),
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(.027,12,10),
    new THREE.MeshBasicMaterial({color:'#f0ad36'}));
   cap.position.copy(end);models.add(cap);
   return;
@@ -631,11 +647,12 @@ function drawCable(c){
  const chosen=c.id===cableId;
  const thickness=Math.max(.004,(Number(c.diameter)||12)/2000);
  const {curve,route}=cableRenderPath(c,a,b);
- const cableRadius=exploreMode?Math.max(.006,thickness)*(chosen?1.75:1.08):
- chosen?thickness*1.22:thickness;
+ const cableRadius=exploreMode?
+  (pdfView()?(chosen?.022:.014):Math.max(.006,thickness)*(chosen?1.75:1.08)):
+  chosen?thickness*1.22:thickness;
  const cableMaterial=exploreMode?
  new THREE.MeshBasicMaterial({color:c.color,transparent:true,
-  opacity:chosen?1:(exploreConstructionMode==='hidden'?.34:.76),depthWrite:false}):
+  opacity:chosen?1:(pdfView()?.94:(exploreConstructionMode==='hidden'?.34:.76)),depthWrite:false}):
  new THREE.MeshStandardMaterial({color:c.color,roughness:.34,metalness:.04,transparent:true,opacity:chosen?1:.88});
  const line=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.min(100,48+route.length*10),cableRadius,10,false),
  cableMaterial);
