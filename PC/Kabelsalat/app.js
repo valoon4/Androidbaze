@@ -562,10 +562,7 @@ function cableDisplayPoint(ref,c){
  if(slot<0||peers.length<2)return pos;
  // Visual fan-out of multi-cable opening: actual physical positions are unknown.
  const a=slot*2.39996323,r=openingRadius(hole)*.55*Math.sqrt((slot+.5)/peers.length);
- const delta=pdfView()?
-  (['SW1','SW3'].includes(ref.wall)?
-   new THREE.Vector3(Math.cos(a)*r,Math.sin(a)*r,0):
-   new THREE.Vector3(0,Math.sin(a)*r,Math.cos(a)*r)):
+ const delta=pdfView()?new THREE.Vector3(...pdfGeometry.tangentOffset(ref.wall,a,r)):
   (['SW1','SW3'].includes(ref.wall)?
    new THREE.Vector3(0,Math.sin(a)*r,Math.cos(a)*r):
    new THREE.Vector3(Math.cos(a)*r,Math.sin(a)*r,0));
