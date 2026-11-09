@@ -1731,4 +1731,5 @@ new ResizeObserver(resize).observe($('viewport'));
 new ResizeObserver(()=>draw2D()).observe($('draft2d'));
 function animate(){requestAnimationFrame(animate);renderer.render(scene,activeCamera);}
 renderAll();persist();resize();animate();
+document.body.classList.add('app-ready');
 })();
