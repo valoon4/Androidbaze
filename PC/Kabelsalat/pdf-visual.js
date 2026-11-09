@@ -55,7 +55,8 @@
    '<circle cx="'+x+'" cy="'+y+'" r="'+r+
    '" fill="#ffffff" stroke="#273f53" stroke-width="2"/>'+arcs+
    '<text x="'+x+'" y="'+(y+5)+'" text-anchor="middle" class="p-lr">'+
-   Number(digits)+'</text><text x="'+x+'" y="'+(y+r+21)+
+   Number(digits)+'</text><text x="'+x+'" y="'+
+   (h.id==='SW1_T1_LR21'?y+25:y+r+14)+
    '" text-anchor="middle" class="p-dn">DN '+safe(h.dn)+'</text>'+badge+'</g>';
  }
  function wallSvg(w,itemsByPipe){
