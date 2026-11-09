@@ -41,6 +41,34 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   await page.locator('#runQuality').click();
   await page.locator('#qualityBackToShaft').click();
   assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
+  await page.locator('#toggleExpert').click(); // Back to read-only Basic.
+  // Reproduce user report: both panes collapsed and PDF view on top.
+  await page.locator('#sidebarToggleLeft').click();
+  await page.locator('#sidebarToggleRight').click();
+  assert.ok(await page.locator('body').evaluate(el=>
+   el.classList.contains('sidebar-left-collapsed')&&
+   el.classList.contains('sidebar-right-collapsed')));
+  await page.locator('#pdfOpen').click();
+  await page.locator('#enableEditing').click();
+  assert.equal(await page.locator('#pdfVisualPanel').evaluate(el=>el.hidden),true);
+  const editState=await page.evaluate(()=>({
+   basic:document.body.classList.contains('explore-mode'),
+   leftCollapsed:document.body.classList.contains('sidebar-left-collapsed'),
+   rightCollapsed:document.body.classList.contains('sidebar-right-collapsed'),
+   network:document.querySelector('#viewport').classList.contains('network-open')
+  }));
+  assert.deepEqual(editState,{basic:false,leftCollapsed:false,rightCollapsed:false,network:false},
+   'The shortcut did not restore editable 3D controls');
+  const oldName=await page.locator('#projectName').inputValue();
+  assert.ok(oldName);
+  await page.locator('#projectName').fill('Kabelsalat Test Editor');
+  await page.locator('#projectName').dispatchEvent('change');
+  assert.equal(await page.locator('#viewInfo').textContent(),
+   'Kabelsalat Test Editor','Editor must apply real form changes to project');
+  await page.locator('#undo').click();
+  assert.equal(await page.locator('#projectName').inputValue(),oldName,
+   'Undo must restore original project data');
+  await page.screenshot({path:path.join(out,'shaft-editable.png'),fullPage:true});
   await page.locator('#toggleExpert').click();
   await page.screenshot({path:path.join(out,'shaft-3d.png'),fullPage:true});
   console.log('WebGL scene initialized:',JSON.stringify(data));
