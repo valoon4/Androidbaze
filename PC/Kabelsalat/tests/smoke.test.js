@@ -110,7 +110,7 @@ globalThis.KabelsalatSamples=require('../examples.js').factory(
  globalThis.KabelsalatComponents,globalThis.KabelsalatNetwork);
 const before=app.split('let project;')[0].replace(/^\(\(\) => \{\s*/, '');
 assert.ok(before.includes('function validProject(o)'), 'Data model must be testable');
-assert.ok(app.includes("samples.create('station')"), 'First start should load visible network demo');
+assert.ok(app.includes("samples.create('pdf-u028')"), 'First start should load PDF V2 shaft reference');
 const {demo,validProject,grid}=new Function(before+'\nreturn {demo,validProject,grid};')();
 const initial=demo();
 assert.equal(initial.walls.length,4,'Four independent shaft walls');
