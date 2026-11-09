@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v1.9.0-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v1.9.2-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-1.9.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-1.9.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.9.2-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.9.2-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -97,6 +97,16 @@ Die drei separat ladbaren JSON-Dateien liegen in examples/. Hinweise und Prüfsc
 Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Auswahlmöglichkeiten; **eine medizinisch geprüfte ADHS-Wirksamkeit wird nicht behauptet**.
 
 **Abnahme:** Siehe [Abnahmekriterien Basic-Modus](./EUGI_MODE_ACCEPTANCE.md). Der echte Windows-GUI-Test einschließlich Lesbarkeit/Interaktionsweg steht noch aus.
+
+## Neu in 1.9.2: PDF-Wände und Kabel wirklich im 3D-Modell umgesetzt
+
+- **Schachtgeometrie tatsächlich korrigiert:** SW1 ist die Stirnwand, SW2 rechts, SW3 gegenüber und SW4 links, wie in der PDF V2 auf Seite 4. Rohre, Kabelenden, Wandansichten, Spiegelungen und Kamera werden über dasselbe geprüfte Koordinatenmodul berechnet. Frühere HTML-Szenarien behalten aus Kompatibilitätsgründen ihre bisherige Orientierung.
+- **Leerrohre als sichtbare 3D-Körper:** DN 63, DN 75, DN 110 und DN 160 werden nicht mehr nur als farbige Ringe beschrieben, sondern als **hohle, zylindrische Rohrmündungen** an den vier richtigen Schachtwänden dargestellt. DN bestimmt die kreisförmige Öffnungsgröße; die gezeigte kurze Muffenlänge ist ausdrücklich nur eine optische Illustration.
+- **Kabel jetzt besser erkennbar:** alle 86 im PDF-Konzept ableitbaren Kabelobjekte werden als lebhaft gefärbte Kurven oder **erkennbar offene Einzelstücke** gezeichnet. Die Kabeldarstellung ist bewusst **optisch dicker als die nicht belegten realen Kabelaußendurchmesser**. Zwei MS-Kabel haben dokumentierte Rohranschlüsse an beiden Wänden, 66 Kabelobjekte haben weiterhin unbestätigte Enden. Keine erfundenen OLA-Langverbindungen.
+- **Visueller PDF-Vergleich unabhängig von WebGL:** Der Button **„PDF-Wandbilder anzeigen“** öffnet vier echte 2D-Schachtdarstellungen mit **allen 91 Rohrkreisen**, LR-Nummern, Nenndurchmessern und farbigen Belegungsringen. Die Vorlagen werden direkt aus den PDF-Referenzdaten erzeugt und sind auch bei fehlgeschlagenem 3D-Start nach einer kurzen Startprüfung automatisch verfügbar.
+- **Hinweis bei alten lokalen Projekten:** Bei einer älteren gespeicherten Schachtvorlage erscheint deutlich **„Du siehst noch ein älteres gespeichertes Schachtmodell“**. Über **„PDF V2 als 3D-Modell laden“** kann man gezielt wechseln. Die vorhandene Sicherheitsabfrage gegen unbeabsichtigtes Überschreiben bleibt bestehen; lokal gespeicherte Projekte werden nicht eigenmächtig ersetzt.
+- **97 automatisierte PDF-Visual-Abnahmefälle** sichern **91 einzelne Leerrohre, vier Wandachsen und die zwei belegten MS-Verbindungen** ab. Zusätzlich prüfen wir 86 Kabelobjekte, die 106 belegten Rohranschluss-Vorkommen und 66 offene Verläufe. Diese 97 Prüfungen sind **nicht** gleichzusetzen mit 97 abgeschlossenen Tickets des 828-Aufgaben-Langzeitplans.
+- **Fachliche Grenzen:** Positionen auf den Wandbildern beruhen auf PDF-Schemata, nicht auf vermessenen XYZ-Koordinaten. Die 3D-Visualisierung ist **keine geprüfte Planung**. MS-/OLA-Powerpanel-H2O-Einhausungen, realer Plattenaufbau, Auflager und Trennung von Fremdkabeln benötigen noch fachliche Maße und Freigaben.
 
 ## Neu in 1.9: Cache-Schutz und zuverlässiger Start für den Pitch
 
@@ -194,6 +204,6 @@ Eine zusätzliche öffentlich erreichbare GitHub-Pages-Webseite ist als Workflow
 
 ## Einzeldatei fürs direkte Öffnen in Chrome/Edge (ohne ZIP und Installation)
 
-Die Release-Datei `Kabelsalat-1.9.0-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
+Die Release-Datei `Kabelsalat-1.9.2-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
 
 **Hinweis:** Ob `localStorage` für `file://` funktioniert, hängt von Browser- und IT-Sicherheitsrichtlinien ab. Eigene Projekte deshalb immer mit „Projekt speichern“ als JSON exportieren, um Datenverlust auszuschließen. Eine Firmenrichtlinie kann auch lokale HTML-Dateien blockieren; dann IT-Abstimmung oder eine freigegebene GitHub-Pages-/Intranet-Webseite verwenden. **Keine Sicherheitsbarrieren umgehen.**
