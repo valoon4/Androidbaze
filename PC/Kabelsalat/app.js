@@ -153,6 +153,7 @@ const CONSTRUCTION_MODES=['hidden','transparent','solid'];
 /* Pure presentation controls, never serialized to the project. */
 let exploreSystemFocus='all',presentationFocus=false,exploreCameraShot='overview';
 let sceneInfoCompact=false; // View-only; not persisted into project or exported.
+let pdfNoticeDismissed=false;
 let exploreCutawayWall=null; // Temporary 3D cutaway; never persisted or exported.
 /* Pane layout lives in browser UI preferences, never in project JSON. */
 const SIDEBAR_LAYOUT_KEY='kabelsalat_sidebar_layout_v1';
@@ -1187,6 +1188,7 @@ $('loadExample').addEventListener('click',()=>{
   variantId=project.variants[0]?.id||null;netRouteId=project.network.routes[0]?.id||null;
   netSegmentShaftId=project.activeShaftId;netLinkFromId=null;netLinkToId=null;netLinkId=null;
   filter='all';viewMode='3D';zoom=1;networkOpen=selected==='station';
+  if(selected==='pdf-u028')pdfNoticeDismissed=false;
   exploreCutawayWall=null;exploreSystemFocus='all';exploreCameraShot='overview';
   mapZoom=1;mapOffsetX=0;mapOffsetY=0;reviewKey='shaft';
  },'Beispiel '+selected+' geladen');
@@ -1216,6 +1218,7 @@ function saveSidebarLayout(){
 /* Guided, low-noise exploration: no hidden mutations to the project data. */
 function renderExplorerUI(){
  renderSidebarLayout();
+ $('oldProjectNotice').hidden=pdfView()||pdfNoticeDismissed||!exploreMode||presentationFocus;
  document.body.classList.toggle('explore-mode',exploreMode);
  document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
  document.body.classList.toggle('presentation-focus',exploreMode&&presentationFocus);
@@ -1364,6 +1367,13 @@ $('toggleExpert').addEventListener('click',()=>{
  else{presentationFocus=false;sceneInfoCompact=false;}
  try{localStorage.setItem(EXPLORE_MODE_KEY,exploreMode?'explore':'expert');}catch(_){}
  renderAll();requestAnimationFrame(resize);
+});
+$('switchToPdf').addEventListener('click',()=>{
+ $('exampleSelect').value='pdf-u028';$('loadExample').click();
+});
+$('previewPdfNow').addEventListener('click',()=>globalThis.KabelsalatPdfVisual?.show?.());
+$('dismissPdfNotice').addEventListener('click',()=>{
+ pdfNoticeDismissed=true;$('oldProjectNotice').hidden=true;
 });
 $('loadPdfV2').addEventListener('click',()=>{
  $('exampleSelect').value='pdf-u028';
