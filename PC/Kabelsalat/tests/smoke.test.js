@@ -4,6 +4,8 @@ globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 assert.ok(html.includes('Kabelsalat'), 'UI must display Kabelsalat brand');
+assert.ok(html.includes('src="construction-v2.js?v=2.0.0-beta.1"'),
+ 'V2.0 geometry module must load before the 3D editor');
 assert.ok(html.includes('id="enableEditing"')&&html.includes('body:not(.explore-mode) #enableEditing'),
  'Basic users must see a prominent path to actual professional editing');
 assert.ok(app.includes('function enterEditWorkspace()')&&
@@ -24,7 +26,7 @@ assert.ok(app.includes('function returnToShaft()')&&
 assert.ok(app.includes('pdfView()?pdfGeometry.span(id,project.dims)'),
  'PDF 2D wall span must follow the same orientation as 3D world coordinates');
 for(const asset of ['recovery.js','app.js','vendor/three.min.js'])
- assert.ok(html.includes('src="'+asset+'?v=1.9.3-beta.1"'),'Cache-busted script missing: '+asset);
+ assert.ok(html.includes('src="'+asset+'?v=2.0.0-beta.1"'),'Cache-busted script missing: '+asset);
 for(const id of ['startupRecovery','reloadFresh','resetDisplay','recoveryReason'])
  assert.ok(html.includes('id="'+id+'"'),'Recovery interface missing: '+id);
 const recovery=fs.readFileSync(path.resolve(__dirname,'../recovery.js'),'utf8');
@@ -33,7 +35,7 @@ assert.ok(recovery.includes('kabelsalat_sidebar_layout_v1')&&recovery.includes('
 assert.ok(!recovery.includes("removeItem('eugi.schachtwand.3d.v1')"),
  'Display reset must not touch saved projects');
 for(const asset of ['pdf-geometry.js','pdf-visual.js'])
- assert.ok(html.includes('src="'+asset+'?v=1.9.3-beta.1"'),
+ assert.ok(html.includes('src="'+asset+'?v=2.0.0-beta.1"'),
   'New visual source asset missing: '+asset);
 for(const id of ['pdfVisualPanel','pdfOpen','pdfClose','oldProjectNotice','switchToPdf'])
  assert.ok(html.includes('id="'+id+'"'),'PDF visual UI missing: '+id);
@@ -51,13 +53,13 @@ assert.ok(app.includes("document.body.classList.add('app-ready')"),
  '3D app must mark successful boot');
 assert.ok(html.includes('id="draftCanvas"'), 'Parallel 2D canvas missing');
 assert.ok(html.includes('id="splitEnabled"'), '2D toggle missing');
-assert.ok(html.includes('src="editor2d.js?v=1.9.3-beta.1"'), '2D module not loaded');
-assert.ok(html.includes('src="components.js?v=1.9.3-beta.1"'), 'Components module not loaded');
-assert.ok(html.includes('src="network.js?v=1.9.3-beta.1"'), 'Network module not loaded');
-assert.ok(html.includes('src="quality.js?v=1.9.3-beta.1"'), 'Quality module not loaded');
-assert.ok(html.includes('src="reports.js?v=1.9.3-beta.1"'), 'Report module not loaded');
-assert.ok(html.includes('src="examples.js?v=1.9.3-beta.1"'), 'Examples module not loaded');
-assert.ok(html.includes('src="reference-data.js?v=1.9.3-beta.1"'), 'Reference data module not loaded');
+assert.ok(html.includes('src="editor2d.js?v=2.0.0-beta.1"'), '2D module not loaded');
+assert.ok(html.includes('src="components.js?v=2.0.0-beta.1"'), 'Components module not loaded');
+assert.ok(html.includes('src="network.js?v=2.0.0-beta.1"'), 'Network module not loaded');
+assert.ok(html.includes('src="quality.js?v=2.0.0-beta.1"'), 'Quality module not loaded');
+assert.ok(html.includes('src="reports.js?v=2.0.0-beta.1"'), 'Report module not loaded');
+assert.ok(html.includes('src="examples.js?v=2.0.0-beta.1"'), 'Examples module not loaded');
+assert.ok(html.includes('src="reference-data.js?v=2.0.0-beta.1"'), 'Reference data module not loaded');
 assert.ok(html.includes('id="exampleSelect"'), 'Example selector missing');
 assert.ok(html.includes('id="loadExample"'), 'Example action missing');
 for(const id of ['toggleExpert','exploreGuide','questNetwork','questShaft','questCable',
@@ -102,15 +104,15 @@ assert.ok(!app.includes('project.sceneInfoCompact')&&!app.includes('project.pres
 for(const id of ['exploreProtectionGuide','exploreProtectionStatus'])
  assert.ok(html.includes('id="'+id+'"'),'1.8 PDF guide control missing: '+id);
 assert.ok(app.includes('function drawPdfProtectionGuide()'), '3D protection guide must be rendered');
-assert.ok(app.includes("if(!exploreMode||!pdfView()||!exploreProtectionGuide||viewMode!=='3D')return"),
- 'Protection guide must be restricted to PDF 3D Basic view');
+assert.ok(app.includes("if(!exploreMode||!avlReference()||!exploreProtectionGuide||viewMode!=='3D')return"),
+ 'Protection guide must be restricted to reference 3D Basic view');
 assert.ok(app.includes('const {curve}=cableRenderPath(c,a,b)'),
  'Protection overlay must follow the same schematic curves as actual MS cables');
-assert.ok(app.includes("new THREE.TorusGeometry(openingRadius(h)+.045"),
+assert.ok(app.includes("new THREE.TorusGeometry(openingRadius(hole)+.045"),
  'Unresolved OLA endpoints must be rings, not invented full cable paths');
 assert.ok(app.includes('drawPdfProtectionGuide();view();draw2D();'),
  'Guide must be in the ordinary redraw process');
-assert.ok(app.includes('exploreConstructionMode=\'hidden\';exploreProtectionGuide=true;'),
+assert.ok(app.includes('exploreConstructionMode=\'transparent\';exploreProtectionGuide=true;'),
  'Pitch must show schematic guide by default');
 assert.ok(!app.includes('project.exploreProtectionGuide'),
  'Display-only guide must not alter project JSON');
