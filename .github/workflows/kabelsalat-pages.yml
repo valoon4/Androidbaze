@@ -35,7 +35,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site/vendor _site/examples
-          cp PC/Kabelsalat/{index.html,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js} _site/
+          cp PC/Kabelsalat/{index.html,recovery.js,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js} _site/
           cp PC/Kabelsalat/vendor/{three.min.js,LICENSE.threejs} _site/vendor/
           cp PC/Kabelsalat/examples/*.json _site/examples/
           touch _site/.nojekyll
