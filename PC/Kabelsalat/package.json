@@ -1,14 +1,14 @@
 {
   "name": "kabelsalat",
-  "version": "1.9.3-beta.1",
-  "description": "Kabelsalat 1.9.3 Beta – sichere Profi-Bearbeitung aus jeder gesperrten Basic-Ansicht",
+  "version": "2.0.0-beta.1",
+  "description": "Kabelsalat v2.0 Beta – geradlinige/gebogene Kabelwege und getrennte AVL0116-Konstruktionsvarianten mit offenen Prüfhinweisen",
   "main": "main.js",
   "author": "Kabelsalat",
   "license": "MIT",
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node --check pdf-geometry.js && node --check pdf-visual.js && node tests/pdf-visual.test.js && node --check recovery.js && node --check main.js && node --check preload.js && node --check editor2d.js && node --check components.js && node --check network.js && node --check quality.js && node --check reports.js && node --check reference-data.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js && node tests/network.test.js && node tests/quality.test.js && node tests/reports.test.js && node tests/examples.test.js && node tests/references.test.js && node --check build-standalone.js && node tests/standalone.test.js",
+    "test": "node --check pdf-geometry.js && node --check construction-v2.js && node tests/construction-v2.test.js && node --check pdf-visual.js && node tests/pdf-visual.test.js && node --check recovery.js && node --check main.js && node --check preload.js && node --check editor2d.js && node --check components.js && node --check network.js && node --check quality.js && node --check reports.js && node --check reference-data.js && node --check app.js && node tests/smoke.test.js && node tests/editor2d.test.js && node tests/components.test.js && node tests/network.test.js && node tests/quality.test.js && node tests/reports.test.js && node tests/examples.test.js && node tests/references.test.js && node --check build-standalone.js && node tests/standalone.test.js",
     "dist:win": "electron-builder --win portable --x64 --publish never",
     "dist:browser-html": "node build-standalone.js"
   },
@@ -37,7 +37,8 @@
       "preload.js",
       "examples.js",
       "examples/*.json",
-      "reference-data.js"
+      "reference-data.js",
+      "construction-v2.js"
     ],
     "directories": {
       "output": "dist"
