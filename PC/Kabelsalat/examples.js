@@ -80,7 +80,7 @@ function assemble(project,shafts,links=[],routes=[],selected=shafts[0].id){
  return {...project,version:5,activeShaftId:selected,network:net};
 }
 function create(id){
- if(id==='source-t021'||id==='source-u028'||id==='source-both'){
+ if(id==='source-t021'||id==='source-u028'||id==='source-both'||id==='pdf-u028'){
   if(!referenceModule)throw Error('Referenzdaten fehlen: reference-data.js');
   return referenceModule.create(id);
  }
