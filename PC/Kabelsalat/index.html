@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="kabelsalat-version" content="1.9.2-beta.2">
+<meta name="kabelsalat-version" content="1.9.3-beta.1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -237,6 +237,14 @@ body.scene-info-compact .explore-scene-overlay{padding:9px 11px}
 #exitPitch{display:none;position:absolute;right:18px;top:17px;z-index:10;
  background:#ffffffed;border-color:#c2dbd1;box-shadow:0 4px 16px #1c414929}
 body.presentation-focus #exitPitch{display:block}
+#enableEditing{position:fixed;top:73px;left:50%;transform:translateX(-50%);
+ z-index:45;border:2px solid #a4d6c5;background:#15594c;color:#fff;
+ border-radius:999px;padding:9px 16px;box-shadow:0 5px 18px #16433760;
+ cursor:pointer;font-size:12px;white-space:nowrap}
+#enableEditing:hover{background:#237766;color:#fff}
+body:not(.explore-mode) #enableEditing{display:none!important}
+body.presentation-focus #enableEditing{top:13px}
+@media(max-width:700px){#enableEditing{top:68px;font-size:10px;padding:7px 10px}}
 @media(max-width:920px){#startPitch{padding:7px 8px;font-size:11px}
  .header-actions{gap:4px}#exitPitch{right:11px;top:10px}}
 body.explore-mode #draft2d .row{display:none}
@@ -309,7 +317,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.9.2 β2 · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.9.3 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <button id="returnToShaft" class="btn shaft-return" type="button" title="Zurück zur 3D-Hauptansicht ohne Projektdaten zu ändern">↩ Zum 3D-Schacht</button>
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
@@ -324,7 +332,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <section class="section" id="exploreGuide">
 <div class="eyebrow">Basic-Modus · Schacht und Kabel im Blick</div>
 <h2>Modell erkunden</h2>
-<p class="small">Schacht, Rohrbelegung und Kabelwege ansehen. Im Basic-Modus bleiben die Planungsdaten vor versehentlichen Änderungen geschützt.</p>
+<p class="small">Basic zeigt nur die Vorschau. Zum Bearbeiten oben auf <b>„✎ Schacht bearbeiten“</b> klicken: Beide Werkzeugleisten werden automatisch geöffnet.</p>
 <div class="quest-list" role="group" aria-label="Drei kurze Entdeckungsmissionen">
 <button class="quest" id="questNetwork" data-quest="network">
  <span class="quest-icon">🗺️</span><span class="quest-copy"><strong>1 · Übersicht</strong><small>Schächte und vorhandene Netzverbindungen anzeigen.</small></span><span class="quest-check" aria-hidden="true">○</span>
@@ -436,6 +444,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 <main id="viewport" class="with-2d"><canvas id="scene"></canvas><div id="tooltip"></div>
+<button id="enableEditing" class="btn primary" type="button" title="Profi-Werkzeuge und beide Seitenleisten öffnen">✎ Schacht bearbeiten · Werkzeuge öffnen</button>
 <div id="startupRecovery" role="alert" aria-live="assertive">
  <strong>⚠ Schachtansicht wird geladen</strong>
  <div id="recoveryReason" class="small">Falls nur Pfeile erscheinen, sind vielleicht veraltete Browserdateien geladen.</div>
@@ -741,6 +750,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=1.9.2-beta.2"></script><script src="vendor/three.min.js?v=1.9.2-beta.2"></script><script src="editor2d.js?v=1.9.2-beta.2"></script><script src="components.js?v=1.9.2-beta.2"></script><script src="network.js?v=1.9.2-beta.2"></script><script src="quality.js?v=1.9.2-beta.2"></script><script src="reports.js?v=1.9.2-beta.2"></script><script src="reference-data.js?v=1.9.2-beta.2"></script><script src="examples.js?v=1.9.2-beta.2"></script><script src="pdf-geometry.js?v=1.9.2-beta.2"></script><script src="pdf-visual.js?v=1.9.2-beta.2"></script><script src="app.js?v=1.9.2-beta.2"></script>
+<script src="recovery.js?v=1.9.3-beta.1"></script><script src="vendor/three.min.js?v=1.9.3-beta.1"></script><script src="editor2d.js?v=1.9.3-beta.1"></script><script src="components.js?v=1.9.3-beta.1"></script><script src="network.js?v=1.9.3-beta.1"></script><script src="quality.js?v=1.9.3-beta.1"></script><script src="reports.js?v=1.9.3-beta.1"></script><script src="reference-data.js?v=1.9.3-beta.1"></script><script src="examples.js?v=1.9.3-beta.1"></script><script src="pdf-geometry.js?v=1.9.3-beta.1"></script><script src="pdf-visual.js?v=1.9.3-beta.1"></script><script src="app.js?v=1.9.3-beta.1"></script>
 </body>
 </html>
