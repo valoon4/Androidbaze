@@ -38,11 +38,11 @@ assert.ok(app.includes("exploreSystemFocus!=='all'))return"),
 assert.ok(app.includes("document.body.classList.toggle('presentation-focus',exploreMode&&presentationFocus)"),
  'Full-screen demo must be restricted to explorer mode');
 assert.ok(app.includes("if(exploreMode){mode='orbit';grab=null;draftDrag=null;}"),
- 'Explorer must still be read-only';
+ 'Explorer must still be read-only');
 assert.ok(app.includes("const CONSTRUCTION_MODES=['hidden','transparent','solid']"),
  'Presentation must offer hidden, translucent and solid modes');
-assert.ok(app.includes("if(exploreMode&&exploreConstructionMode==='hidden')return;"),
- 'Existing supports must become visible during presentation');
+assert.ok(app.includes("exploreConstructionMode==='hidden'||exploreSystemFocus!=='all'"),
+ 'Existing supports must be visible in combined presentation and hidden in single-system filters');
 assert.ok(app.includes("if(exploreMode||mode!=='add')return;"),
  '2D view must not create pipes in presentation mode');
 assert.ok(app.includes("if(exploreMode){mode='orbit';grab=null;draftDrag=null;}"),
