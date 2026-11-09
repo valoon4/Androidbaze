@@ -161,8 +161,9 @@ assert.ok(app.includes("exploreSystemFocus!=='all'))return"),
  'Ungrouped supports must not imply trade-specific affiliation');
 assert.ok(app.includes("document.body.classList.toggle('presentation-focus',exploreMode&&presentationFocus)"),
  'Full-screen demo must be restricted to explorer mode');
-assert.ok(app.includes("if(exploreMode){mode='orbit';grab=null;draftDrag=null;}"),
- 'Explorer must still be read-only');
+assert.ok(app.includes("if(exploreMode){\n   if(obj.type==='hole')")&&
+ app.includes("if(exploreMode||mode!=='add')return;"),
+ 'Explorer must still be read-only until the editor is explicitly enabled');
 assert.ok(app.includes("const CONSTRUCTION_MODES=['hidden','transparent','solid']"),
  'Presentation must offer hidden, translucent and solid modes');
 assert.ok(app.includes("exploreConstructionMode==='hidden'||exploreSystemFocus!=='all'"),
