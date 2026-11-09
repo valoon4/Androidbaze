@@ -140,6 +140,14 @@ let exploreMode=true,exploreWith2D=false,exploreStage='shaft';
 /* Presentation-only visibility: never included in project JSON, undo or audit logs. */
 let exploreConstructionMode='hidden';
 const CONSTRUCTION_MODES=['hidden','transparent','solid'];
+/* Pure presentation controls, never serialized to the project. */
+let exploreSystemFocus='all',presentationFocus=false,exploreCameraShot='overview';
+const PRESENTATION_GROUPS=['all','OLA','MS'];
+const CAMERA_SHOTS={
+ overview:{azimuth:.72,elevation:.42,zoom:1,view:'3D'},
+ close:{azimuth:-.65,elevation:.65,zoom:.72,view:'3D'},
+ top:{azimuth:.72,elevation:.42,zoom:.88,view:'Oben'}
+};
 let exploreVisited=new Set();
 try{
  exploreMode=localStorage.getItem(EXPLORE_MODE_KEY)!=='expert';
@@ -384,7 +392,8 @@ function highlightBox(mesh,color='#eec657'){
 function drawHousing(key){
  const e=project.enclosures[key];
  if(!e?.visible||viewMode.startsWith('SW')||
-  (exploreMode?exploreConstructionMode==='hidden':!project.showBox))return;
+  (exploreMode?(exploreConstructionMode==='hidden'||
+    (exploreSystemFocus!=='all'&&exploreSystemFocus!==key)):!project.showBox))return;
  for(const p of e.panels){
   if(!p.visible)continue;
   const g=components.panelGeometry(e,p),baseOpacity=(p.opacity/100)*(e.opacity/100);
@@ -402,7 +411,8 @@ function drawHousing(key){
  }
 }
 function drawSupports(){
- if(exploreMode&&exploreConstructionMode==='hidden')return; // Demo: show existing supports with the plates.
+ if(exploreMode&&(exploreConstructionMode==='hidden'||exploreSystemFocus!=='all'))return;
+ // Supports have no verified OLA/MS assignment: hide in single-system view.
  for(const s of project.supports){
   if(!s.visible||(viewMode.startsWith('SW')&&viewMode!==s.wall))continue;
   const mesh=box(s.w/1000,s.h/1000,s.d/1000,
@@ -446,6 +456,7 @@ function drawWalls(){
 }
 function endpoint(r){if(!r)return null;const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holePosition(w.id,h):null;}
 function drawCable(c){
+ if(exploreMode&&exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus)return;
  const a=endpoint(c.a),b=endpoint(c.b);if(!a||!b)return;
  if(viewMode.startsWith('SW')&&c.a.wall!==viewMode&&c.b.wall!==viewMode)return;
  const chosen=c.id===cableId,sz=sizes(),na=normal(c.a.wall),nb=normal(c.b.wall);
@@ -983,6 +994,19 @@ $('showExampleNetwork').addEventListener('click',()=>setNetworkOpen(true));
 function renderExplorerUI(){
  document.body.classList.toggle('explore-mode',exploreMode);
  document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
+ document.body.classList.toggle('presentation-focus',exploreMode&&presentationFocus);
+ $('explorePresentationFocus').textContent=presentationFocus?'↙ Seitenleisten wieder anzeigen':'▣ Fokusansicht ohne Seitenleisten';
+ $('explorePresentationFocus').setAttribute('aria-pressed',String(presentationFocus));
+ document.querySelectorAll('#exploreSystemFilters [data-presentation-group]').forEach(btn=>{
+  const active=btn.dataset.presentationGroup===exploreSystemFocus;
+  btn.classList.toggle('active',active);
+  btn.setAttribute('aria-pressed',String(active));
+ });
+ document.querySelectorAll('#exploreCameraPresets [data-camera-shot]').forEach(btn=>{
+  const active=btn.dataset.cameraShot===exploreCameraShot;
+  btn.classList.toggle('active',active);
+  btn.setAttribute('aria-pressed',String(active));
+ });
  $('toggleExpert').textContent=exploreMode?'🛠 Profi-Modus':'✨ Eugi-Modus';
  $('toggleExpert').setAttribute('aria-pressed',String(!exploreMode));
  $('explore2DToggle').textContent=exploreWith2D?'▢ 2D-Plan ausblenden':'▤ Wand als 2D-Plan sehen';
@@ -993,13 +1017,15 @@ function renderExplorerUI(){
  };
  $('exploreConstructionMode').textContent=labels[exploreConstructionMode];
  $('exploreConstructionMode').setAttribute('aria-pressed',String(exploreConstructionMode!=='hidden'));
- const shown=['OLA','MS'].filter(k=>project.enclosures[k]?.visible);
- const missing=['OLA','MS'].filter(k=>!project.enclosures[k]?.visible);
+ const selectedGroups=['OLA','MS'].filter(k=>exploreSystemFocus==='all'||exploreSystemFocus===k);
+ const shown=selectedGroups.filter(k=>project.enclosures[k]?.visible);
+ const missing=selectedGroups.filter(k=>!project.enclosures[k]?.visible);
  $('exploreConstructionNote').textContent=exploreConstructionMode==='hidden'?
   'Für die Vorführung: vorhandene Platten und Auflager einblenden (nur Ansicht).':
   (shown.length?shown.join(' / ')+'-Platten im 3D-Modell sichtbar. ':'Keine Einhausung aktiv. ')+
   (missing.length?missing.join(' / ')+' ist im Projekt ausgeblendet. ':'')+
-  (project.supports.some(s=>s.visible)?'Vorhandene Auflager sichtbar. ':'Keine Auflager hinterlegt. ')+
+  (exploreSystemFocus!=='all'?'Auflager ohne Gewerkszuordnung im Filter ausgeblendet. ':
+   project.supports.some(s=>s.visible)?'Vorhandene Auflager sichtbar. ':'Keine Auflager hinterlegt. ')+
   'Schematische Konstruktion – kein geprüfter Brandschutz.';
  const tips={
   network:'🗺️ Die Kreise sind Schächte. Linien verbinden sie schematisch. Tippe auf einen Kreis oder doppelklicke, um einen Schacht zu öffnen.',
@@ -1059,6 +1085,7 @@ $('questCable').addEventListener('click',()=>openQuest('cable'));
 $('toggleExpert').addEventListener('click',()=>{
  exploreMode=!exploreMode;
  if(exploreMode){mode='orbit';grab=null;draftDrag=null;}
+ else presentationFocus=false;
  try{localStorage.setItem(EXPLORE_MODE_KEY,exploreMode?'explore':'expert');}catch(_){}
  renderAll();requestAnimationFrame(resize);
 });
@@ -1068,12 +1095,32 @@ $('explore2DToggle').addEventListener('click',()=>{
  renderAll();requestAnimationFrame(resize);
 });
 $('exploreCameraReset').addEventListener('click',()=>{
- azimuth=.72;elevation=.42;zoom=1;viewMode='3D';renderAll();
+ azimuth=.72;elevation=.42;zoom=1;viewMode='3D';exploreCameraShot='overview';renderAll();
 });
 $('exploreConstructionMode').addEventListener('click',()=>{
  exploreConstructionMode=CONSTRUCTION_MODES[
   (CONSTRUCTION_MODES.indexOf(exploreConstructionMode)+1)%CONSTRUCTION_MODES.length];
- viewMode='3D';renderAll();
+ viewMode='3D';exploreCameraShot='overview';renderAll();
+});
+$('exploreSystemFilters').addEventListener('click',event=>{
+ const button=event.target.closest('[data-presentation-group]');
+ if(!button||!PRESENTATION_GROUPS.includes(button.dataset.presentationGroup))return;
+ exploreSystemFocus=button.dataset.presentationGroup;
+ if(exploreConstructionMode==='hidden')exploreConstructionMode='transparent';
+ renderAll();
+});
+$('exploreCameraPresets').addEventListener('click',event=>{
+ const button=event.target.closest('[data-camera-shot]');
+ const shot=CAMERA_SHOTS[button?.dataset.cameraShot];
+ if(!shot)return;
+ exploreCameraShot=button.dataset.cameraShot;
+ azimuth=shot.azimuth;elevation=shot.elevation;zoom=shot.zoom;viewMode=shot.view;
+ networkOpen=false;renderAll();
+});
+$('explorePresentationFocus').addEventListener('click',()=>{
+ presentationFocus=!presentationFocus;
+ networkOpen=false;
+ renderAll();requestAnimationFrame(resize);
 });
 
 /* Network workspace commands. All changes go through the undo/persistence system. */

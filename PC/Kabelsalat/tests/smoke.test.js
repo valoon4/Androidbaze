@@ -25,6 +25,20 @@ assert.ok(app.includes("exploreConstructionMode==='hidden'?.34:.76"),
  'Explorer needs saturated cables when showing a translucent construction');
 assert.ok(html.includes('id="exploreConstructionMode"'), 'Presentation button missing');
 assert.ok(html.includes('id="exploreConstructionNote"'), 'Presentation state explanation missing');
+for(const id of ['exploreSystemFilters','exploreCameraPresets','explorePresentationFocus'])
+ assert.ok(html.includes('id="'+id+'"'),'Demo v1.3 UI missing: '+id);
+for(const state of ['exploreSystemFocus','presentationFocus','exploreCameraShot'])
+ assert.ok(app.includes(state),'Demo v1.3 state missing: '+state);
+assert.ok(app.includes("exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus"),
+ 'Presentation filter must apply to visible cables');
+assert.ok(app.includes("exploreSystemFocus!==key"),
+ 'Presentation filter must apply to visible enclosure groups');
+assert.ok(app.includes("exploreSystemFocus!=='all'))return"),
+ 'Ungrouped supports must not imply trade-specific affiliation');
+assert.ok(app.includes("document.body.classList.toggle('presentation-focus',exploreMode&&presentationFocus)"),
+ 'Full-screen demo must be restricted to explorer mode');
+assert.ok(app.includes("if(exploreMode){mode='orbit';grab=null;draftDrag=null;}"),
+ 'Explorer must still be read-only';
 assert.ok(app.includes("const CONSTRUCTION_MODES=['hidden','transparent','solid']"),
  'Presentation must offer hidden, translucent and solid modes');
 assert.ok(app.includes("if(exploreMode&&exploreConstructionMode==='hidden')return;"),
