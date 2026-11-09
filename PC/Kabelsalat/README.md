@@ -1,10 +1,17 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v1.9.3-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.1-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.1 – PDF-Wandbelegung und kompaktere Leerrohre
+
+- Die **13_U_028-PDF-V2-Szene** verwendet die dokumentierten **91 Leerrohre auf SW1–SW4** (29/13/26/23), ohne Trassen/LR-IDs, DN oder Kabelbelegungen zu verändern.
+- In der **3D-/Editor-Demo** sind schematische Mittelpunktsabstände zwischen den Leerrohren horizontal und vertikal auf **62 %** reduziert, zentriert zur Wandmitte. Die originalen PDF-Kreismittelpunkte stehen getrennt in `sourceU/sourceV`; die PDF-Wandbilder zeigen nach wie vor diese Originalpositionen. Dies sind weder vermessene Einbauabstände noch eine Fachfreigabe.
+- Über **„Aktuelle PDF-Wandbelegung (91 LR) neu laden“** ist die Referenz bewusst neu ladbar, auch wenn im Browser ein altes Modell gespeichert ist. Die vorhandene Rückfrage schützt eigene Projektänderungen. Bestehende Autosaves und importierte JSON-Projekte werden nicht stillschweigend überschrieben.
+- Fehlende Endpunkte, Biegeradien und Brandschutzfreigaben bleiben offen.
 
 ## Herunterladen und starten
 
-Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
+Die folgenden Downloads sind noch historische 1.9.3-Builds; die aktuelle 2.0.1-Quellversion steht in diesem Repository. Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
 - `Kabelsalat-1.9.3-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
 - `Kabelsalat-1.9.3-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
