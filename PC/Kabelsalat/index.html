@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="kabelsalat-version" content="1.9.0-beta.1">
+<meta name="kabelsalat-version" content="1.9.2-beta.1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -252,12 +252,53 @@ body.app-ready:not(.startup-failed) #startupRecovery{display:none!important}
  .explore-scene-overlay{max-width:260px;left:10px;top:12px;padding:10px}
  .explore-views{flex-direction:column}
 }
+
+/* PDF V2 visual comparison: independent of WebGL and the editable project. */
+#pdfOpen{position:absolute;z-index:12;right:16px;bottom:18px;border:2px solid #27786d;
+ background:#f8fffded;color:#18584b;font-weight:800;box-shadow:0 4px 15px #143d4537}
+body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
+#pdfVisualPanel[hidden]{display:none!important}
+#pdfVisualPanel{position:absolute;inset:9px 9px 9px 9px;z-index:25;
+ background:#f3f7fa;overflow:auto;border:2px solid #9bb3c2;border-radius:12px;
+ box-shadow:0 10px 50px #173a527a}
+#pdfVisualPanel h2{margin:0;font-size:19px;color:#16344b}
+.pdf-visual-head{position:sticky;top:0;background:#e6eff5f5;padding:12px 14px;z-index:2;
+ display:flex;gap:10px;align-items:flex-start;justify-content:space-between;border-bottom:1px solid #b8cbd9}
+.pdf-visual-head .small{font-size:11px;margin-top:5px}
+#pdfClose{min-width:35px;flex:none}
+.pdf-visual-controls{display:flex;flex-wrap:wrap;gap:6px;padding:10px 15px}
+.pdf-visual-controls button{background:white;border:1px solid #9eb6c4;border-radius:6px;
+ color:#23465a;padding:6px 10px;font-weight:750;cursor:pointer}
+.pdf-visual-controls button.active{background:#205e6b;color:#fff}
+.pdf-wall-grid{display:grid;gap:12px;padding:0 12px 14px}
+.pdf-wall-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pdf-wall-grid.single{grid-template-columns:minmax(0,1fr)}
+.pdf-wall-card{min-width:0;background:#fff;border:1px solid #c3d3df;border-radius:10px;overflow:hidden}
+.pdf-wall-card h3{margin:0;padding:10px 12px;background:#1b334b;color:white;font-size:14px}
+.pdf-wall-card h3 small{color:#bed8e6;font-size:11px;font-weight:500;margin-left:8px}
+.pdf-reference-svg{display:block;width:100%;height:auto;max-height:660px}
+.pdf-wall-grid.single .pdf-reference-svg{max-height:calc(100vh - 240px)}
+.p-trasse{font:700 18px Segoe UI,Arial,sans-serif;fill:#304e61}
+.p-lr{font:700 20px Segoe UI,Arial,sans-serif;fill:#1b3145}
+.p-dn{font:13px Segoe UI,Arial,sans-serif;fill:#496579}
+.p-count{font:700 14px Segoe UI,Arial,sans-serif;fill:#1d3444}
+.pdf-visual-foot{margin:0 12px 14px;background:#fff8eb;border:1px solid #e1c894;
+ padding:10px 14px;border-radius:9px;color:#715329;font-size:12px}
+.pdf-visual-key{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:5px}
+.pdf-visual-key b{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle}
+.pdf-channel-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px;max-width:550px}
+.pdf-channel-mini span{border:5px solid #8d9ba5;min-height:40px;padding:10px 8px;
+ text-align:center;background:white;font-weight:bold;color:#294a62}
+.pdf-channel-mini span:first-child{color:#247dc5}.pdf-channel-mini span:last-child{color:#d62f48}
+@media(max-width:950px){.pdf-wall-grid.four{grid-template-columns:1fr}
+ #pdfOpen{right:10px;bottom:10px;font-size:11px}.pdf-wall-grid.single .pdf-reference-svg{max-height:none}}
+
 </style>
 </head>
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.9 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.9.2 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="startPitch" class="btn primary" type="button" title="PDF-V2-Schacht 13_U_028 als Präsentation öffnen">▶ Präsentieren</button>
@@ -392,6 +433,43 @@ body.app-ready:not(.startup-failed) #startupRecovery{display:none!important}
  </div>
  <div class="small">Setzt nur Anzeigeeinstellungen zurück. Gespeicherte Schachtprojekte bleiben erhalten.</div>
 </div>
+
+<button id="pdfOpen" class="btn tiny" type="button" aria-controls="pdfVisualPanel" aria-expanded="false">
+ 📐 PDF-Wandbilder anzeigen
+</button>
+<section id="pdfVisualPanel" role="dialog" aria-label="PDF-V2-Wandbilder – grafischer Vergleich" hidden>
+ <div class="pdf-visual-head">
+  <div><h2>13_U_028 · Schacht und Kabel direkt aus PDF</h2>
+   <div id="pdfVisualSummary" class="small">Vier Wandansichten · Daten werden geladen.</div></div>
+  <button id="pdfClose" class="btn soft" type="button" aria-label="Wandbilder schließen">✕ Schließen</button>
+ </div>
+ <div class="pdf-visual-controls" role="group" aria-label="Wand aus der PDF auswählen">
+  <button data-pdf-wall="all" class="active" aria-pressed="true">Alle vier Wände</button>
+  <button data-pdf-wall="SW1" aria-pressed="false">SW1 · Stirnwand</button>
+  <button data-pdf-wall="SW2" aria-pressed="false">SW2 · rechts</button>
+  <button data-pdf-wall="SW3" aria-pressed="false">SW3 · gegenüber</button>
+  <button data-pdf-wall="SW4" aria-pressed="false">SW4 · links</button>
+ </div>
+ <div id="pdfVisualCanvas"><div class="small">PDF-Grafik wird geladen …</div></div>
+ <div class="pdf-visual-foot">
+  <div class="pdf-visual-key">
+   <span><b style="background:#247dc5"></b> MS blau</span>
+   <span><b style="background:#d62f48"></b> OLA rot</span>
+   <span><b style="background:#9351b5"></b> OLSP violett</span>
+   <span><b style="background:#119e91"></b> TK/LWL türkis</span>
+   <span><b style="background:#c58c16"></b> EEA/sonstige ocker</span>
+  </div>
+  <div><b>Darstellung nach den PDF-Wandzeichnungen S.21–24.</b> Die Positionen sind grafisch,
+   keine vermessenen XYZ-Koordinaten. Kreisdurchmesser nach den dokumentierten Nenn-DN.
+   Die gefärbten Ringteile entsprechen der Kabelbelegung; orange Endpunkte im 3D-Modell zeigen fehlende Anschlüsse.</div>
+  <div class="pdf-channel-mini" role="img" aria-label="Brandschutzkonzept: zwei eigenständige getrennte Schutzkanäle">
+   <span>● ● MS · eigener geschlossener Kanal</span><span>● ● OLA · eigener geschlossener Kanal</span>
+  </div>
+  <div style="margin-top:7px">Powerpanel-H2O-Querschnitt nur als <b>Konzeptprinzip nach S.19</b>.
+   Position, Aufbau, Auflager und Trennung der fremden Kabel sind noch nicht bautechnisch nachgewiesen.</div>
+ </div>
+</section>
+
 <button id="exitPitch" class="btn soft" type="button" title="Präsentation verlassen (Esc)">↩ Präsentation beenden · Esc</button>
 <button id="sidebarToggleLeft" class="sidebar-edge-toggle" type="button" aria-controls="leftSidebar" aria-expanded="true" aria-label="Linke Seitenleiste einklappen" title="Linke Seitenleiste einklappen">❮</button>
 <button id="sidebarToggleRight" class="sidebar-edge-toggle" type="button" aria-controls="rightSidebar" aria-expanded="true" aria-label="Rechte Seitenleiste einklappen" title="Rechte Seitenleiste einklappen">❯</button>
@@ -637,6 +715,6 @@ body.app-ready:not(.startup-failed) #startupRecovery{display:none!important}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=1.9.0-beta.1"></script><script src="vendor/three.min.js?v=1.9.0-beta.1"></script><script src="editor2d.js?v=1.9.0-beta.1"></script><script src="components.js?v=1.9.0-beta.1"></script><script src="network.js?v=1.9.0-beta.1"></script><script src="quality.js?v=1.9.0-beta.1"></script><script src="reports.js?v=1.9.0-beta.1"></script><script src="reference-data.js?v=1.9.0-beta.1"></script><script src="examples.js?v=1.9.0-beta.1"></script><script src="app.js?v=1.9.0-beta.1"></script>
+<script src="recovery.js?v=1.9.2-beta.1"></script><script src="vendor/three.min.js?v=1.9.2-beta.1"></script><script src="editor2d.js?v=1.9.2-beta.1"></script><script src="components.js?v=1.9.2-beta.1"></script><script src="network.js?v=1.9.2-beta.1"></script><script src="quality.js?v=1.9.2-beta.1"></script><script src="reports.js?v=1.9.2-beta.1"></script><script src="reference-data.js?v=1.9.2-beta.1"></script><script src="examples.js?v=1.9.2-beta.1"></script><script src="pdf-visual.js?v=1.9.2-beta.1"></script><script src="app.js?v=1.9.2-beta.1"></script>
 </body>
 </html>
