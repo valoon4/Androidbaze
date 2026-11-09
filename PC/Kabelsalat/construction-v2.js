@@ -100,7 +100,9 @@
   }
   for(const side of [0,1]){
    const a=low.slice(),b=high.slice();
-   a[1]=bot+t;b[1]=top-t;
+   // Endplates extend to the floor and roof so the complete circular cable
+   // penetrations stay INSIDE the plate, without being silently discarded.
+   a[1]=bot;b[1]=top;
    if(side===0)b[along]=low[along]+t;else a[along]=high[along]-t;
    const panel=rect(side?'Wandabschluss Ende':'Wandabschluss Anfang','perforated',a,b);
    panel.axis=along;panel.holes=cables.map((c,i)=>({
