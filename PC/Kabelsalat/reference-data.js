@@ -20,6 +20,8 @@ const manifest=[
 const round=v=>Math.round(v*100000)/100000;
 const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
 const pick=p=>p?.length?p[0]:null;
+// Compact demo arrangement, preserve original PDF-circle centers separately.
+const compactPdf=v=>round(.5+(v-.5)*.62);
 
 /* PDF V2 pp.21-24: transcribed DN and cable allocations.
    Relative hole positions are normalized from the original PDF vector circle
@@ -61,7 +63,8 @@ function createPdfU028(){
     w==='SW1'&&trasse===1&&[21,27].includes(lr)?160:
     w==='SW3'&&lr===26?160:110;
    const hole={id:key(w,trasse,lr),row:Math.round((1-v)*10),
-    col:col+1,u:x[col],v,dn,
+    col:col+1,u:compactPdf(x[col]),v:compactPdf(v),
+    sourceU:x[col],sourceV:v,dn,
     sourceAddress:'Trasse '+trasse+' / LR '+String(lr).padStart(2,'0'),
     sourcePage:page,sourceCount:0,sourceCategory:'Trasse '+trasse,
     nominalDnConfirmed:false,origin:'pdf-v2-nominal-dn-unverified'};
@@ -169,7 +172,7 @@ function createPdfU028(){
   savedAt:'2026-11-08',document:'AvL0116 Fachkonzept V2, 08.11.2026',
   sourceVersion:'PDF V2 (Konzept, kein Ausführungsplan)',
   sourcePages:[21,22,23,24],geometryStatus:'schematic',
-  warning:'91 nominale DN und Rohrbelegungen aus PDF S.21–24. Relative Rohrmittelpunkte aus PDF-Vektorgrafik (nicht vermessen). Reale XYZ-Abstände und Schachtmaße fehlen. 2750/2350/1850/120 mm aus HTML nur Platzhalter. Kabellängen, Rmin, Powerpanel-Kanäle und Auflager ungeprüft.',
+  warning:'91 nominale DN und Rohrbelegungen aus PDF S.21–24. Original-Rohrmittelpunkte aus PDF-Vektorgrafik erhalten; 3D/Editor zeigen schematisch auf 62 % verdichtete Rohrabstände (nicht vermessen). Reale XYZ-Abstände und Schachtmaße fehlen. 2750/2350/1850/120 mm aus HTML nur Platzhalter. Kabellängen, Rmin, Powerpanel-Kanäle und Auflager ungeprüft.',
   originalNote:'PDF S.13 nennt SW2/Trasse 3 TSB/TÜZ, Detailseite S.22 dagegen 5 EEA. Hier Detailseite S.22 abgebildet; Klärung offen. Vollständiges angekündigtes Kabelverzeichnis nicht enthalten; keine realen Kanalpositionen.',
   planAnchors:[],unmatchedEndpointCount:cables.filter(c=>!c.b).length,
   originalCableCount:cables.length,originalPhysicalPortCount:91
