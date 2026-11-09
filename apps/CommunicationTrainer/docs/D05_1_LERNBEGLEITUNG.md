@@ -55,3 +55,16 @@ D05.0 zeigt einen realistischen Rollenspielpartner. Der Nutzer konnte ein Nein s
 3. **D05.2 – Sitzungsstabilität und Datenschutz:** sichere lokale Persistenz und Wiederherstellung von Entwürfen, Schutz bei App-Wechsel/Prozessende, Abbruch- und Deduplikationskonzept, transparente Cloud-Datenkontrolle, robuste Tokenverwaltung.
 
 **Kein Merge ohne ausdrückliche Nutzerfreigabe.** PR #66 und die D05.1-Folge-PR werden unabhängig abgenommen.
+
+
+## D05.1.0 – Qualitätsnachbesserung nach Gerätetest „Anspruchsvoll“ (09.11.2026)
+
+**Konkreter Nutzerbefund:** Bei der ersten höflichen Absage („Ich habe leider keine Kapazitäten dafür. Ich bin mit meiner Arbeit selbst in Rückstand.“) antwortete die KI schon mit „Ich respektiere dein Nein und kümmere mich selbst darum“. Das ist sozial angemessen, aber belegt keine herausfordernde Gesprächssituation. Der bisherige Prompt erlaubte bereits allein den Ausdruck einer Enttäuschung als `Anspruchsvoll`, daher musste das Modell nicht nachfragen.
+
+**Verfeinerung:** Der Schwierigkeitsgrad erhält für „Freundlich Nein sagen“ jetzt ausdrücklich *rundenbezogene* Instruktionen. Auf ein erstes höfliches Nein soll das Gegenüber – sofern Nachfragen nicht ausdrücklich ausgeschlossen wurden – **genau eine kleine, freiwillige Anschlussfrage** stellen, ohne Schuldgefühle oder Druck aufzubauen. Bei einer zweiten klaren Grenze lautet die Anweisung: keine weitere Bitte, Nein akzeptieren. Der Einsteigermodus bleibt nach einer Absage ohne Nachverhandlung. Eine einzelne Modellantwort bleibt probabilistisch; Offline-Tests verifizieren nur, dass die richtigen Instruktionen übertragen werden, nicht dass jedes Modell sie garantiert befolgt.
+
+**Zweiter Nutzerbefund:** Im Freitextfeld der Reflexion steht „Weiß nicht“. Die Reflexionsaufforderung war zu offen. Neue, szenariospezifische **optionale Denkimpulse** helfen mit konkreten Beobachtungsfragen, ohne ein positives Ergebnis zu suggerieren. Keine automatische Textbefüllung, Bewertung, zusätzliche KI-Anfrage oder Speicherung. Ein „Weiß nicht“ bleibt eine voll gültige persönliche Reflexion.
+
+**Testannahme:** Schwierigkeit „Anspruchsvoll“ sollte nach der ersten Absage eine *höfliche, kleine* Nachfrage eher wahrscheinlich machen. Nach einer wiederholten klaren Absage muss die KI die Grenze respektieren; keine künstliche Eskalation. Die Reflexionshilfe soll bei Bedarf sichtbar sein und die Eingabe nicht überlagern. Die UI soll bei kleinen Displays mit Bildschirmtastatur nutzbar bleiben.
+
+Die alte Test-APK ist nicht zum Überschreiben durch eine zufällige Debug-Signatur geeignet. Neue APK bekommt eine eigene Paketkennung; nicht mehr benötigte Pilot-Apps können anschließend entfernt werden, um Speicher zu sparen.
