@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta name="kabelsalat-version" content="1.9.0-beta.1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -240,6 +241,13 @@ body.explore-mode .view-top{top:14px}
 body.explore-mode .view-controls{margin-left:auto}
 body.explore-mode .view-tabs{opacity:.92}
 body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcfd 0%,#e0eaee 70%,#d4e3e9 100%)}
+#startupRecovery{position:absolute;z-index:30;top:65px;left:40px;max-width:375px;
+ padding:14px;background:#fffaf0f7;border:2px solid #d5ac66;border-radius:12px;
+ line-height:1.5;box-shadow:0 8px 24px #193d4944}
+#startupRecovery .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#startupRecovery .small{margin-top:7px;font-size:11px}
+body.app-ready:not(.startup-failed) #startupRecovery{display:none!important}
+@media(max-width:700px){#startupRecovery{top:60px;left:32px;right:7px;max-width:none}}
 @media(max-width:1110px){
  .explore-scene-overlay{max-width:260px;left:10px;top:12px;padding:10px}
  .explore-views{flex-direction:column}
@@ -249,7 +257,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.8 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.9 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="startPitch" class="btn primary" type="button" title="PDF-V2-Schacht 13_U_028 als Präsentation öffnen">▶ Präsentieren</button>
@@ -375,6 +383,15 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 </section>
 </aside>
 <main id="viewport" class="with-2d"><canvas id="scene"></canvas><div id="tooltip"></div>
+<div id="startupRecovery" role="alert" aria-live="assertive">
+ <strong>⚠ Schachtansicht wird geladen</strong>
+ <div id="recoveryReason" class="small">Falls nur Pfeile erscheinen, sind vielleicht veraltete Browserdateien geladen.</div>
+ <div class="row">
+ <button id="reloadFresh" class="btn primary tiny" type="button">↻ Frisch neu laden</button>
+ <button id="resetDisplay" class="btn soft tiny" type="button">↺ Ansicht zurücksetzen</button>
+ </div>
+ <div class="small">Setzt nur Anzeigeeinstellungen zurück. Gespeicherte Schachtprojekte bleiben erhalten.</div>
+</div>
 <button id="exitPitch" class="btn soft" type="button" title="Präsentation verlassen (Esc)">↩ Präsentation beenden · Esc</button>
 <button id="sidebarToggleLeft" class="sidebar-edge-toggle" type="button" aria-controls="leftSidebar" aria-expanded="true" aria-label="Linke Seitenleiste einklappen" title="Linke Seitenleiste einklappen">❮</button>
 <button id="sidebarToggleRight" class="sidebar-edge-toggle" type="button" aria-controls="rightSidebar" aria-expanded="true" aria-label="Rechte Seitenleiste einklappen" title="Rechte Seitenleiste einklappen">❯</button>
@@ -620,6 +637,6 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 </section>
 </aside>
 </div>
-<script src="vendor/three.min.js"></script><script src="editor2d.js"></script><script src="components.js"></script><script src="network.js"></script><script src="quality.js"></script><script src="reports.js"></script><script src="reference-data.js"></script><script src="examples.js"></script><script src="app.js"></script>
+<script src="recovery.js?v=1.9.0-beta.1"></script><script src="vendor/three.min.js?v=1.9.0-beta.1"></script><script src="editor2d.js?v=1.9.0-beta.1"></script><script src="components.js?v=1.9.0-beta.1"></script><script src="network.js?v=1.9.0-beta.1"></script><script src="quality.js?v=1.9.0-beta.1"></script><script src="reports.js?v=1.9.0-beta.1"></script><script src="reference-data.js?v=1.9.0-beta.1"></script><script src="examples.js?v=1.9.0-beta.1"></script><script src="app.js?v=1.9.0-beta.1"></script>
 </body>
 </html>
