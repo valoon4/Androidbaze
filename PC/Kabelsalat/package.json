@@ -1,7 +1,7 @@
 {
   "name": "kabelsalat",
-  "version": "1.9.2-beta.2",
-  "description": "Kabelsalat 1.9.2 Beta 2 – PDF-orientierte 2D/3D-Geometrie und sicherer Rückweg zum Schacht",
+  "version": "1.9.3-beta.1",
+  "description": "Kabelsalat 1.9.3 Beta – sichere Profi-Bearbeitung aus jeder gesperrten Basic-Ansicht",
   "main": "main.js",
   "author": "Kabelsalat",
   "license": "MIT",
