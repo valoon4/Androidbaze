@@ -1368,10 +1368,9 @@ $('questNetwork').addEventListener('click',()=>openQuest('network'));
 $('questShaft').addEventListener('click',()=>openQuest('shaft'));
 $('questCable').addEventListener('click',()=>openQuest('cable'));
 $('toggleExpert').addEventListener('click',()=>{
- exploreMode=!exploreMode;
- if(exploreMode){mode='orbit';grab=null;draftDrag=null;}
- else{presentationFocus=false;sceneInfoCompact=false;}
- try{localStorage.setItem(EXPLORE_MODE_KEY,exploreMode?'explore':'expert');}catch(_){}
+ if(exploreMode){enterEditWorkspace();return;}
+ exploreMode=true;mode='orbit';grab=null;draftDrag=null;
+ try{localStorage.setItem(EXPLORE_MODE_KEY,'explore');}catch(_){}
  renderAll();requestAnimationFrame(resize);
 });
 $('switchToPdf').addEventListener('click',()=>{
@@ -1443,6 +1442,20 @@ function exitPresentation(){
  presentationFocus=false;sceneInfoCompact=false;
  renderAll();requestAnimationFrame(resize);
 }
+/* Read-only Basic, collapsed panes and PDF overlays should never trap editors.
+   This changes UI state only, not underlying pipe/cable project data. */
+function enterEditWorkspace(){
+ window.KabelsalatPdfVisual?.hide?.();
+ exploreMode=false;presentationFocus=false;sceneInfoCompact=false;
+ networkOpen=false;viewMode='3D';exploreWith2D=false;
+ leftSidebarCollapsed=false;rightSidebarCollapsed=false;
+ mode='orbit';grab=null;draftDrag=null;
+ try{localStorage.setItem(EXPLORE_MODE_KEY,'expert');}catch(_){}
+ saveSidebarLayout();
+ $('leftSidebar').scrollTop=0;$('rightSidebar').scrollTop=0;
+ renderAll();requestAnimationFrame(resize);
+}
+$('enableEditing').addEventListener('click',enterEditWorkspace);
 /* Read-only home navigation for network, PDF, quality and presentations. */
 function returnToShaft(){
  window.KabelsalatPdfVisual?.hide?.();
