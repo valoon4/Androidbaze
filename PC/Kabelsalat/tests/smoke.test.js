@@ -170,8 +170,9 @@ assert.ok(app.includes("exploreConstructionMode==='hidden'||exploreSystemFocus!=
  'Existing supports must be visible in combined presentation and hidden in single-system filters');
 assert.ok(app.includes("if(exploreMode||mode!=='add')return;"),
  '2D view must not create pipes in presentation mode');
-assert.ok(app.includes("if(exploreMode){mode='orbit';grab=null;draftDrag=null;}"),
- 'Entering presentation mode must clear editing gestures');
+assert.ok(app.includes("exploreMode=true;mode='orbit';grab=null;draftDrag=null;")&&
+ app.includes("if(exploreMode){enterEditWorkspace();return;}"),
+ 'Entering presentation mode must clear editing gestures and keep an editing escape route');
 
 for(const id of ['globalSearch','qualityList','minPipeGap','minEdgeGap','minBend',
  'reviewTarget','saveReview','exportPdf','exportViewer'])
