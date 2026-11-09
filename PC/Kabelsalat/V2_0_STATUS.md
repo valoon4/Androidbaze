@@ -22,3 +22,6 @@ Reale Schacht-Innenmaße, Rohrdurchmesser und Einbauhöhen, exakte Kabel-Endpunk
 
 ## Sicherung und Freigabe
 Die ursprünglichen 1.9.4-Pitch-Dateien `pitch/13_T_021.html`, `pitch/13_U_028.html` und die beiden ergänzenden 1.9.4-Kopien wurden nicht geändert. Die V2.0-Hauptanwendung ist als **Beta** gekennzeichnet; ein grüner GitHub-Pages-Build und ein Browser-/End-to-End-Test müssen separat bestätigt werden.
+
+## Ergänzung v2.0.1 · Schachtwandbelegung und Rohrabstände
+Die kanonisch neu ladbare `13_U_028`-PDF-V2-Belegung enthält SW1/2/3/4 = 29/13/26/23 Rohre. IDs, DN, Trassen, Kabelbelegungen und Original-PDF-Mittelpunkte bleiben erhalten. Die 3D-/Editor-Demo verdichtet die schematischen Mittelpunktsabstände auf 62 %; die Originaldaten bleiben unter `sourceU/sourceV` erhalten und die PDF-Vergleichsansicht nutzt sie unverändert. **Keine maßhaltige Abstandsfestlegung.** Alte lokal gespeicherte Projekte werden nicht automatisch überschrieben; die aktuelle Belegung kann mit Sicherheitsabfrage neu geladen werden.
