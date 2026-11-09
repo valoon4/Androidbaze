@@ -25,6 +25,21 @@ assert.ok(app.includes("exploreConstructionMode==='hidden'?.34:.76"),
  'Explorer needs saturated cables when showing a translucent construction');
 assert.ok(html.includes('id="exploreConstructionMode"'), 'Presentation button missing');
 assert.ok(html.includes('id="exploreConstructionNote"'), 'Presentation state explanation missing');
+for(const side of ['Left','Right']){
+ assert.ok(html.includes('id="sidebarToggle'+side+'"'),'Missing independently accessible '+side+' pane toggle');
+ assert.ok(app.includes("$('sidebarToggle"+side+"').addEventListener('click'"),
+  'Pane toggle click handler missing: '+side);
+}
+assert.ok(html.includes('body.sidebar-left-collapsed #app{--left-pane-width:0px}'),
+ 'Left options pane must release full width to model');
+assert.ok(html.includes('body.sidebar-right-collapsed #app{--right-pane-width:0px}'),
+ 'Right options pane must release full width to model');
+assert.ok(html.includes('body.presentation-focus .sidebar-edge-toggle{display:none}'),
+ 'Independent edge toggles must not block fullscreen focus');
+assert.ok(app.includes("const SIDEBAR_LAYOUT_KEY='kabelsalat_sidebar_layout_v1'"),
+ 'Sidebar preferences must remain separate from project data');
+assert.ok(!app.includes('project.leftSidebarCollapsed')&&!app.includes('project.rightSidebarCollapsed'),
+ 'Sidebar UI must not write into engineering project JSON');
 for(const id of ['exploreCutawayWall','exploreCableCoverage'])
  assert.ok(html.includes('id="'+id+'"'), 'Demo v1.4 UI missing: '+id);
 assert.ok(app.includes("exploreMode&&viewMode==='3D'&&exploreCutawayWall===w.id"),

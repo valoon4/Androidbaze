@@ -143,6 +143,14 @@ const CONSTRUCTION_MODES=['hidden','transparent','solid'];
 /* Pure presentation controls, never serialized to the project. */
 let exploreSystemFocus='all',presentationFocus=false,exploreCameraShot='overview';
 let exploreCutawayWall=null; // Temporary 3D cutaway; never persisted or exported.
+/* Pane layout lives in browser UI preferences, never in project JSON. */
+const SIDEBAR_LAYOUT_KEY='kabelsalat_sidebar_layout_v1';
+let leftSidebarCollapsed=false,rightSidebarCollapsed=false;
+try{
+ const savedLayout=JSON.parse(localStorage.getItem(SIDEBAR_LAYOUT_KEY)||'{}');
+ leftSidebarCollapsed=savedLayout.left===true;
+ rightSidebarCollapsed=savedLayout.right===true;
+}catch(_){/* If storage is unavailable, retain both panes. */}
 const CUTAWAY_AZIMUTH={SW1:-Math.PI/2,SW2:Math.PI,SW3:Math.PI/2,SW4:0};
 const PRESENTATION_GROUPS=['all','OLA','MS'];
 const CAMERA_SHOTS={
@@ -994,8 +1002,27 @@ $('loadExample').addEventListener('click',()=>{
 $('showExampleNetwork').addEventListener('click',()=>setNetworkOpen(true));
 
 
+/* Pane toggles are always reachable from the model, even in expert mode. */
+function renderSidebarLayout(){
+ document.body.classList.toggle('sidebar-left-collapsed',leftSidebarCollapsed);
+ document.body.classList.toggle('sidebar-right-collapsed',rightSidebarCollapsed);
+ for(const [side,collapsed] of [['Left',leftSidebarCollapsed],['Right',rightSidebarCollapsed]]){
+  const button=$('sidebarToggle'+side);
+  const label=(side==='Left'?'Linke':'Rechte')+' Seitenleiste '+(collapsed?'aufklappen':'einklappen');
+  button.textContent=side==='Left'?(collapsed?'❯':'❮'):(collapsed?'❮':'❯');
+  button.title=label;
+  button.setAttribute('aria-label',label);
+  button.setAttribute('aria-expanded',String(!collapsed));
+ }
+}
+function saveSidebarLayout(){
+ try{localStorage.setItem(SIDEBAR_LAYOUT_KEY,JSON.stringify({
+  left:leftSidebarCollapsed,right:rightSidebarCollapsed
+ }));}catch(_){/* UI controls still work if browser storage is blocked. */}
+}
 /* Guided, low-noise exploration: no hidden mutations to the project data. */
 function renderExplorerUI(){
+ renderSidebarLayout();
  document.body.classList.toggle('explore-mode',exploreMode);
  document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
  document.body.classList.toggle('presentation-focus',exploreMode&&presentationFocus);
@@ -1145,6 +1172,16 @@ $('explorePresentationFocus').addEventListener('click',()=>{
  presentationFocus=!presentationFocus;
  networkOpen=false;
  renderAll();requestAnimationFrame(resize);
+});
+$('sidebarToggleLeft').addEventListener('click',()=>{
+ leftSidebarCollapsed=!leftSidebarCollapsed;
+ saveSidebarLayout();renderSidebarLayout();
+ requestAnimationFrame(resize);
+});
+$('sidebarToggleRight').addEventListener('click',()=>{
+ rightSidebarCollapsed=!rightSidebarCollapsed;
+ saveSidebarLayout();renderSidebarLayout();
+ requestAnimationFrame(resize);
 });
 
 /* Network workspace commands. All changes go through the undo/persistence system. */

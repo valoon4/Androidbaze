@@ -1,7 +1,7 @@
 {
   "name": "kabelsalat",
-  "version": "1.4.0-beta.1",
-  "description": "Kabelsalat 1.4 Beta – reversible Schachtwand-Durchblicke und sichtbare Anschlussabdeckung",
+  "version": "1.4.1-beta.1",
+  "description": "Kabelsalat 1.4.1 Beta – einklappbare linke und rechte Optionen für mehr Schachtfläche",
   "main": "main.js",
   "author": "Eugi",
   "license": "MIT",

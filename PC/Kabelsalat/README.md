@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v1.4.0-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v1.4.1-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-1.4.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-1.4.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.4.1-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.4.1-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -98,6 +98,14 @@ Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Ausw
 
 **Abnahme:** Siehe [EUGI_MODE_ACCEPTANCE.md](./EUGI_MODE_ACCEPTANCE.md). Der echte Windows-GUI-Test einschließlich Lesbarkeit/Interaktionsweg steht noch aus.
 
+## Neu in 1.4.1: Mehr Platz für den Schacht – Sofort-Fix nach Fachanwender-Feedback
+
+- **Beide Optionsfenster unabhängig einklappen:** Ein schmaler Pfeil **❮** am linken und **❯** am rechten Rand der 3D-Ansicht blendet die jeweilige Seitenleiste aus. Der Pfeil bleibt sichtbar und öffnet die Leiste auf erneuten Klick wieder. Auch beide gleichzeitig einklappen ist möglich.
+- Der Schacht bekommt sofort die frei gewordene Fläche. **3D-Kamera und 2D-Darstellung passen sich der geänderten Fenstergröße an**, ohne Maße oder Projektobjekte zu verändern.
+- Die Auswahl wird **ausschließlich als lokale UI-Präferenz** gespeichert, getrennt von Projekt-JSON, Audit und Undo/Redo. Funktioniert im Eugi- und Profi-Modus.
+- Der bisherige **Fokusmodus** bleibt separat: In dieser Präsentationsansicht kann weiterhin über „Seitenleisten wieder anzeigen“ im überlagerten Steuerfeld zurückgekehrt werden.
+- **Noch offen für 1.5 (höchste Priorität):** Fachgerechter Abgleich von Schachtwandanordnung, Leerrohrpositionen, bestätigten DN-/Durchmessern sowie sämtlichen Kabelkennungen, Belegungen und Verläufen mit den bereitgestellten Planunterlagen. Aktuelle Referenz-HTMLs enthalten schematische Maße und offene Kabelenden. **Keine Werte oder Verbindungen erfinden.**
+
 ## Neu in 1.4: Demo-Sprint – Schacht-Durchblick und sichtbare Datenlücken
 
 - Im **Eugi-Modus** lässt sich unter **„Schacht öffnen“** eine einzelne Wand SW1–SW4 nur für die 3D-Ansicht ausblenden. Die Kamera springt auf diese Schachtseite, um Rohre, Kabelverläufe und vorhandene Platten im Inneren zu zeigen.
@@ -142,6 +150,6 @@ Eine zusätzliche öffentlich erreichbare GitHub-Pages-Webseite ist als Workflow
 
 ## Einzeldatei fürs direkte Öffnen in Chrome/Edge (ohne ZIP und Installation)
 
-Die Release-Datei `Kabelsalat-1.4.0-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
+Die Release-Datei `Kabelsalat-1.4.1-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
 
 **Hinweis:** Ob `localStorage` für `file://` funktioniert, hängt von Browser- und IT-Sicherheitsrichtlinien ab. Eigene Projekte deshalb immer mit „Projekt speichern“ als JSON exportieren, um Datenverlust auszuschließen. Eine Firmenrichtlinie kann auch lokale HTML-Dateien blockieren; dann IT-Abstimmung oder eine freigegebene GitHub-Pages-/Intranet-Webseite verwenden. **Keine Sicherheitsbarrieren umgehen.**

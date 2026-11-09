@@ -8,7 +8,7 @@
 <style>
 :root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#222c38;background:#f1f4f6;font-size:13px}*{box-sizing:border-box}
 body{margin:0;overflow:hidden}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
-#app{display:grid;grid-template-columns:304px minmax(340px,1fr) 342px;grid-template-rows:65px minmax(0,1fr);height:100vh;min-height:550px}
+#app{--left-pane-width:304px;--right-pane-width:342px;display:grid;grid-template-columns:var(--left-pane-width) minmax(0,1fr) var(--right-pane-width);grid-template-rows:65px minmax(0,1fr);height:100vh;min-height:550px}
 header{grid-column:1/4;background:#fff;border-bottom:1px solid #dfe6eb;display:flex;align-items:center;padding:0 24px;gap:18px;z-index:3}
 .mark{width:35px;height:35px;border-radius:11px;background:#183e45;color:#c1f7d6;display:grid;place-items:center;font-size:21px;font-weight:800}
 .brand{font-size:15px;font-weight:800;letter-spacing:-.4px}.subtitle{font-size:11px;color:#7b8996;margin-top:3px}
@@ -53,7 +53,19 @@ input[type="range"]{width:100%;accent-color:#4a927c}input[type="color"]{width:49
 hr{border:0;border-top:1px solid #e9eff1;margin:17px 0}
 #empty-cable{border:1px dashed #cbd7db;border-radius:12px;text-align:center;padding:23px 12px;color:#8499a4;line-height:1.6}
 a{color:#24735f}.status{margin-left:4px;font-size:11px;color:#79918a}
-@media(max-width:1020px){#app{grid-template-columns:250px minmax(320px,1fr) 290px}.sidebar{padding:16px 12px}header{padding:0 13px}}
+@media(max-width:1020px){#app{--left-pane-width:250px;--right-pane-width:290px}.sidebar{padding:16px 12px}header{padding:0 13px}}
+body.sidebar-left-collapsed #app{--left-pane-width:0px}
+body.sidebar-right-collapsed #app{--right-pane-width:0px}
+body.sidebar-left-collapsed #leftSidebar,body.sidebar-right-collapsed #rightSidebar{display:none}
+.sidebar-edge-toggle{position:absolute;top:50%;transform:translateY(-50%);z-index:8;
+ min-width:28px;min-height:78px;padding:10px 5px;border:1px solid #8cb4b1;
+ background:#e4f5efed;color:#1d5e54;font-size:17px;font-weight:800;cursor:pointer;
+ box-shadow:0 3px 14px #183e4528;transition:background .12s}
+.sidebar-edge-toggle:hover{background:#c9eddd}
+.sidebar-edge-toggle:focus-visible{outline:3px solid #217a62;outline-offset:2px}
+#sidebarToggleLeft{left:0;border-left:0;border-radius:0 10px 10px 0}
+#sidebarToggleRight{right:0;border-right:0;border-radius:10px 0 0 10px}
+body.presentation-focus .sidebar-edge-toggle{display:none}
 
 .view-tabs{position:absolute;bottom:101px;left:24px;max-width:calc(100% - 48px);display:flex;flex-wrap:wrap;gap:4px;background:#fffffff2;border:1px solid #dce6e8;padding:6px;border-radius:10px;box-shadow:0 6px 20px #5e849622}
 .view-tabs .chip{padding:7px 9px}
@@ -205,7 +217,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.4 β1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.4.1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="toggleExpert" class="btn mode-toggle" title="Zwischen Entdecken und Bearbeiten wechseln" aria-pressed="false">🛠 Profi-Modus</button>
@@ -214,7 +226,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <button id="saveProject" class="btn primary">↓ Projekt speichern</button><input id="fileInput" type="file" accept=".json,application/json" hidden>
 </div>
 </header>
-<aside class="sidebar">
+<aside class="sidebar" id="leftSidebar">
 <section class="section" id="exploreGuide">
 <div class="eyebrow">Eugi-Modus · Weniger suchen, mehr entdecken</div>
 <h2>Was willst du entdecken?</h2>
@@ -330,6 +342,8 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 </section>
 </aside>
 <main id="viewport" class="with-2d"><canvas id="scene"></canvas><div id="tooltip"></div>
+<button id="sidebarToggleLeft" class="sidebar-edge-toggle" type="button" aria-controls="leftSidebar" aria-expanded="true" aria-label="Linke Seitenleiste einklappen" title="Linke Seitenleiste einklappen">❮</button>
+<button id="sidebarToggleRight" class="sidebar-edge-toggle" type="button" aria-controls="rightSidebar" aria-expanded="true" aria-label="Rechte Seitenleiste einklappen" title="Rechte Seitenleiste einklappen">❯</button>
 <div id="exploreSceneOverlay" class="explore-scene-overlay">
 <div class="explore-scene-label">🧱 Das ist ein Kabelschacht</div>
 <p id="exploreSceneText">Du siehst vier Wände mit runden Rohröffnungen. Die farbigen Linien sind Kabel.</p>
@@ -392,7 +406,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 </div>
 <div class="view-foot"><div class="float kbd">🖱 Ziehen: drehen · Mausrad: zoomen<br>● Öffnung: anklicken · Weißer Griff: Kabelanschluss ziehen</div><div class="float kbd" id="sceneStats">—</div></div>
 </main>
-<aside class="sidebar right">
+<aside class="sidebar right" id="rightSidebar">
 <section class="section" id="exploreSelection">
 <div class="eyebrow">Was du gerade ansiehst</div>
 <h2>Ein Kabel, ein Weg</h2>
