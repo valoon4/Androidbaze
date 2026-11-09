@@ -42,6 +42,53 @@ class D051LearningGuideTest {
         D051LearningGuide.selectLevel(D051LearningGuide.Level.DAILY)
     }
 
+    @Test fun challengeAsksOnceButMustRespectRepeatedClearBoundary() {
+        val scenario = D05TrainingSession.scenarios.first { it.id == "boundary" }
+        val opening = D05TrainingSession.scriptedOpening(scenario)
+        D051LearningGuide.selectLevel(D051LearningGuide.Level.CHALLENGE)
+        val first = D05TrainingSession.scenarioInput(
+            scenario, listOf(opening), "Ich habe keine Kapazitäten, tut mir leid."
+        ).getJSONObject(0).getString("content")
+        assertTrue(first.contains("genau EINE"))
+        assertTrue(first.contains("freiwillige"))
+        assertTrue(first.contains("kein") || first.contains("Keine"))
+        val followUp = listOf(
+            opening,
+            D05TrainingSession.Turn("user", "Ich habe keine Kapazitäten."),
+            D05TrainingSession.Turn("assistant", "Gibt es jemanden, an den ich mich wenden kann?")
+        )
+        val second = D05TrainingSession.scenarioInput(
+            scenario, followUp, "Auch das kann ich heute nicht. Bitte frag die Teamleitung."
+        ).getJSONObject(0).getString("content")
+        assertTrue(second.contains("KEINE weitere Bitte"))
+        assertTrue(second.contains("akzeptiere sie"))
+        assertFalse(second.contains("Dies ist die erste Antwort"))
+        D051LearningGuide.selectLevel(D051LearningGuide.Level.DAILY)
+    }
+
+    @Test fun entryLevelNeverDemandsMoreWorkAfterFirstNo() {
+        val cue = D051LearningGuide.responseCue(
+            "boundary", D051LearningGuide.Level.START, 0
+        )
+        assertTrue(cue.contains("ohne Nachverhandlung"))
+        val challengeCue = D051LearningGuide.responseCue(
+            "boundary", D051LearningGuide.Level.CHALLENGE, 0
+        )
+        assertTrue(challengeCue.contains("kleinere"))
+    }
+
+    @Test fun reflectionIdeasAreSpecificOptionalAndOnlyOffline() {
+        val b = D051LearningGuide.reflectionIdeasFor("boundary")
+        val l = D051LearningGuide.reflectionIdeasFor("listening")
+        assertEquals(3, b.size)
+        assertEquals(3, l.size)
+        assertTrue(b.any { it.contains("beim Ablehnen") })
+        assertTrue(l.any { it.contains("Gefühl") })
+        assertFalse(b == l)
+        assertTrue(b.all { it.endsWith("?") })
+        assertTrue(l.all { it.endsWith("?") })
+    }
+
     @Test fun changingDifficultyClearsDraftAndConsentBeforeAnotherRequest() {
         D051LearningGuide.selectLevel(D051LearningGuide.Level.DAILY)
         D05TrainingSession.selectScenario("boundary")
