@@ -1,7 +1,7 @@
 {
   "name": "kabelsalat",
-  "version": "1.7.0-beta.1",
-  "description": "Kabelsalat 1.7 Beta – Basic-/Profi-Modus, Ein-Klick-Pitch und aufklappbare Präsentationssteuerung",
+  "version": "1.8.0-beta.1",
+  "description": "Kabelsalat 1.8 Beta – belegte MS-Kabelwege und offene OLA-Anschlüsse als klar markierte 3D-Konzeptansicht",
   "main": "main.js",
   "author": "Kabelsalat",
   "license": "MIT",

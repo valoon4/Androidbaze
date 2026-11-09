@@ -52,6 +52,21 @@ assert.ok(html.includes('body.presentation-focus #exitPitch{display:block}'),
  'Presentation exit control must stay visible');
 assert.ok(!app.includes('project.sceneInfoCompact')&&!app.includes('project.presentationFocus'),
  'View preferences must never enter engineering JSON');
+for(const id of ['exploreProtectionGuide','exploreProtectionStatus'])
+ assert.ok(html.includes('id="'+id+'"'),'1.8 PDF guide control missing: '+id);
+assert.ok(app.includes('function drawPdfProtectionGuide()'), '3D protection guide must be rendered');
+assert.ok(app.includes("if(!exploreMode||!pdfView()||!exploreProtectionGuide||viewMode!=='3D')return"),
+ 'Protection guide must be restricted to PDF 3D Basic view');
+assert.ok(app.includes('const {curve}=cableRenderPath(c,a,b)'),
+ 'Protection overlay must follow the same schematic curves as actual MS cables');
+assert.ok(app.includes("new THREE.TorusGeometry(openingRadius(h)+.045"),
+ 'Unresolved OLA endpoints must be rings, not invented full cable paths');
+assert.ok(app.includes('drawPdfProtectionGuide();view();draw2D();'),
+ 'Guide must be in the ordinary redraw process');
+assert.ok(app.includes('exploreConstructionMode=\'hidden\';exploreProtectionGuide=true;'),
+ 'Pitch must show schematic guide by default');
+assert.ok(!app.includes('project.exploreProtectionGuide'),
+ 'Display-only guide must not alter project JSON');
 assert.ok(html.includes('id="pdfProtectionNote"'),
  'PDF concept must disclose the unresolved protective channel geometry');
 assert.ok(app.includes("samples.create('pdf-u028')"), 'Fresh installs must load PDF V2 demo');

@@ -194,6 +194,10 @@ body.explore-mode #viewport:not(.network-open) .explore-scene-overlay{display:bl
 .explore-construction .small{margin-top:7px;color:#5a6f78;line-height:1.4}
 .explore-construction .selector{margin-top:6px}
 #exploreCableCoverage{border-top:1px solid #dcebe6;padding-top:8px}
+.explore-protection-visual{margin:9px 0;padding:9px;background:#eef4f8;border:1px solid #cbdde5;border-radius:9px}
+.explore-protection-visual .small{margin-top:7px;color:#385a6e;line-height:1.5}
+#exploreProtectionGuide[hidden],#exploreProtectionStatus[hidden]{display:none!important}
+body.explore-mode #exploreProtectionGuide{font-size:11px}
 body.explore-mode .explore-scene-overlay{max-height:calc(100% - 65px);overflow-y:auto}
 .explore-demo-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:8px}
 .explore-demo-controls .chip{font-size:10px;padding:7px 4px;min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -245,7 +249,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.7 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.8 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="startPitch" class="btn primary" type="button" title="PDF-V2-Schacht 13_U_028 als Präsentation öffnen">▶ Präsentieren</button>
@@ -419,6 +423,10 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
   <option value="SW4">SW4 ausblenden und hineinschauen</option>
  </select>
  <div id="exploreCableCoverage" class="small" role="status">3D-Kabelwege: wird ermittelt.</div>
+ <div class="explore-protection-visual" id="exploreProtectionBlock">
+  <button id="exploreProtectionGuide" class="btn soft full tiny" type="button" aria-pressed="false" hidden>🔵🔴 MS/OLA im 3D markieren</button>
+  <div id="exploreProtectionStatus" class="small" role="status" hidden>Trennungsstatus wird ermittelt.</div>
+ </div>
  <div id="pdfProtectionNote" class="hint" hidden>
   <b>PDF-V2-Konzept · Powerpanel-Trennung:</b>
   <div class="pdf-separated-channels"><span>🔵 MS · eigener Kanal</span><span>🔴 OLA · eigener Kanal</span></div>
@@ -429,7 +437,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
   Beide Gewerke müssen vollständig eingefasst sowie voneinander und von LST/TK/fremden Rohren getrennt werden.
   <b>Variante A: ≤ 75 mm – gestapelte Platten. Variante B: &gt; 75 mm – geeignete Auflager.</b>
   Die PDF enthält keine bestätigten Kanalmaße, Befestigungen oder Auflagerpositionen.
-  Die vorhandenen generischen Platten sind hier nicht als vermeintliche Ausführung eingeblendet.
+  Die 3D-Markierungen zeigen ausschließlich dokumentierte MS-Verläufe und offene OLA-Rohranschlüsse. Die generischen Platten sind hier nicht als vermeintliche Ausführung eingeblendet.
   Keine Brandschutzfreigabe.
  </div>
  <button id="explorePresentationFocus" class="btn soft" type="button" aria-pressed="false">▣ Fokusansicht ohne Seitenleisten</button>

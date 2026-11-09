@@ -146,6 +146,7 @@ const EXPLORE_PROGRESS_KEY='kabelsalat_explore_progress_v1';
 let exploreMode=true,exploreWith2D=false,exploreStage='shaft';
 /* Presentation-only visibility: never included in project JSON, undo or audit logs. */
 let exploreConstructionMode='hidden';
+let exploreProtectionGuide=false; // View-only PDF concept; never saved to project JSON.
 const CONSTRUCTION_MODES=['hidden','transparent','solid'];
 /* Pure presentation controls, never serialized to the project. */
 let exploreSystemFocus='all',presentationFocus=false,exploreCameraShot='overview';
@@ -522,6 +523,56 @@ function cableDisplayPoint(ref,c){
   new THREE.Vector3(Math.cos(a)*r,Math.sin(a)*r,0);
  return pos.clone().add(delta);
 }
+/* Shared render path for both real cable drawing and the explicitly schematic
+   3D protection-route guide. It does not establish a manufacturer bend radius. */
+function cableRenderPath(c,a,b){
+ const sz=sizes(),na=normal(c.a.wall),nb=normal(c.b.wall);
+ const mid=a.clone().add(b).multiplyScalar(.5);
+ mid.y=clamp(mid.y+.04,.18,sz.h*.85);
+ mid.z=clamp(mid.z+.08,-sz.d/2+.18,sz.d/2-.14);
+ const route=(c.route||[]).map(p=>
+  new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000));
+ const pts=[a.clone(),a.clone().addScaledVector(na,.12),
+  ...(route.length?route:[mid]),b.clone().addScaledVector(nb,.12),b.clone()];
+ return {curve:new THREE.CatmullRomCurve3(pts,false,'centripetal',.45),route};
+}
+/* No Powerpanel geometry is asserted here: the blue mesh only surrounds
+   the two PDF cables with known endpoints; red rings locate the four
+   currently one-sided OLA occurrences. All sizes are visual symbols. */
+function drawPdfProtectionGuide(){
+ if(!exploreMode||!pdfView()||!exploreProtectionGuide||viewMode!=='3D')return;
+ for(const c of project.cables){
+  if(!['MS','OLA'].includes(c.group)||
+   (exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus))continue;
+  const color=c.group==='MS'?'#2b8eef':'#ed4151';
+  const a=cableDisplayPoint(c.a,c),b=cableDisplayPoint(c.b,c);
+  if(a&&b){
+   const {curve}=cableRenderPath(c,a,b);
+   // Deliberately open wire-mesh corridor; NOT a closed fire-rated assembly.
+   const shell=new THREE.Mesh(new THREE.TubeGeometry(curve,64,.055,8,false),
+    new THREE.MeshBasicMaterial({color,wireframe:true,transparent:true,
+     opacity:.34,depthTest:false,depthWrite:false}));
+   shell.userData={type:'concept-only',group:c.group};
+   models.add(shell);
+  }else{
+   const ref=a?c.a:b?c.b:null;
+   if(!ref)continue;
+   const w=project.walls.find(w=>w.id===ref.wall);
+   const hole=w?.holes.find(h=>h.id===ref.hole);
+   if(!hole)continue;
+   // An unresolved endpoint is highlighted at its documented pipe, not
+   // extended into an invented route or a fictitious Powerpanel box.
+   const ring=new THREE.Mesh(new THREE.TorusGeometry(openingRadius(h)+.045,
+    .008,8,32),new THREE.MeshBasicMaterial({color,transparent:true,
+    opacity:.9,depthTest:false,depthWrite:false}));
+   const direction=normal(ref.wall);
+   ring.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),direction);
+   ring.position.copy(endpoint(ref)).addScaledVector(direction,.065);
+   ring.userData={type:'concept-only',group:c.group};
+   models.add(ring);
+  }
+ }
+}
 function drawCable(c){
  if(exploreMode&&exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus)return;
  const a=cableDisplayPoint(c.a,c),b=cableDisplayPoint(c.b,c);
@@ -543,14 +594,9 @@ function drawCable(c){
   return;
  }
  if(viewMode.startsWith('SW')&&c.a.wall!==viewMode&&c.b.wall!==viewMode)return;
- const chosen=c.id===cableId,sz=sizes(),na=normal(c.a.wall),nb=normal(c.b.wall);
+ const chosen=c.id===cableId;
  const thickness=Math.max(.004,(Number(c.diameter)||12)/2000);
- const mid=a.clone().add(b).multiplyScalar(.5);
- mid.y=clamp(mid.y+.04,.18,sz.h*.85);mid.z=clamp(mid.z+.08,-sz.d/2+.18,sz.d/2-.14);
- const route=(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000));
- const pts=[a.clone(),a.clone().addScaledVector(na,.12),
- ...(route.length?route:[mid]),b.clone().addScaledVector(nb,.12),b.clone()];
- const curve=new THREE.CatmullRomCurve3(pts,false,'centripetal',.45);
+ const {curve,route}=cableRenderPath(c,a,b);
  const cableRadius=exploreMode?Math.max(.006,thickness)*(chosen?1.75:1.08):
  chosen?thickness*1.22:thickness;
  const cableMaterial=exploreMode?
@@ -575,7 +621,7 @@ function drawCable(c){
  }
  }
 }
-function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);view();draw2D();}
+function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);drawPdfProtectionGuide();view();draw2D();}
 function renderAll(){fixSelection();renderUI();rebuild();renderNetworkUI();renderQualityUI();renderExplorerUI();drawNetwork();}
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
@@ -1154,7 +1200,8 @@ function renderExplorerUI(){
  $('exploreSourceLine').textContent=pdfView()?
   openings+' Leerrohre · '+project.cables.length+' Kabelobjekte · '+
   (project.cables.length-project.cables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length)+
-  ' ungeklärte Verläufe · Konzeptstand':
+  ' ungeklärte Verläufe · Konzeptstand'+
+  (exploreProtectionGuide?' · MS/OLA-Konzeptmarkierungen sichtbar':''):
   openings+' Rohröffnungen · schematische Darstellung';
  $('exploreCableCoverage').textContent='3D-Kabelwege mit beiden Rohranschlüssen: '+
   routedCount+' / '+presentedCables.length+
@@ -1167,6 +1214,21 @@ function renderExplorerUI(){
   solid:'⊘ Platten ausblenden'
  };
  $('exploreConstructionMode').textContent=labels[exploreConstructionMode];
+ $('exploreProtectionGuide').textContent=exploreProtectionGuide?
+  '🔵🔴 3D-Konzeptmarkierungen ausblenden':'🔵🔴 MS/OLA im 3D markieren';
+ $('exploreProtectionGuide').setAttribute('aria-pressed',String(exploreProtectionGuide));
+ $('exploreProtectionGuide').hidden=!pdfView();
+ $('exploreProtectionStatus').hidden=!pdfView();
+ const protectedGroups=['MS','OLA'].map(group=>{
+  const list=project.cables.filter(c=>c.group===group);
+  const known=list.filter(c=>endpoint(c.a)&&endpoint(c.b)).length;
+  return {group,known,total:list.length};
+ });
+ $('exploreProtectionStatus').textContent=pdfView()?
+  protectedGroups.map(x=>x.group+': '+x.known+'/'+x.total+' Endpunktpaare').join(' · ')+
+  '. Blaue Gitter = schematische MS-Kabelwege. Rote Ringe = offene OLA-Anschlüsse.'+
+  ' Keine geschlossenen Powerpanel-Kanäle, keine bestätigte Trennung.':'';
+
  $('exploreConstructionMode').setAttribute('aria-pressed',String(exploreConstructionMode!=='hidden'));
  const selectedGroups=['OLA','MS'].filter(k=>exploreSystemFocus==='all'||exploreSystemFocus===k);
  const shown=selectedGroups.filter(k=>project.enclosures[k]?.visible);
@@ -1279,6 +1341,12 @@ $('exploreConstructionMode').addEventListener('click',()=>{
   (CONSTRUCTION_MODES.indexOf(exploreConstructionMode)+1)%CONSTRUCTION_MODES.length];
  viewMode='3D';exploreCameraShot='overview';renderAll();
 });
+$('exploreProtectionGuide').addEventListener('click',()=>{
+ if(!pdfView())return;
+ exploreProtectionGuide=!exploreProtectionGuide;
+ if(exploreProtectionGuide){viewMode='3D';networkOpen=false;}
+ renderAll();
+});
 $('exploreSystemFilters').addEventListener('click',event=>{
  const button=event.target.closest('[data-presentation-group]');
  if(!button||!PRESENTATION_GROUPS.includes(button.dataset.presentationGroup))return;
@@ -1320,7 +1388,8 @@ $('startPitch').addEventListener('click',()=>{
  try{localStorage.setItem(EXPLORE_MODE_KEY,'explore');}catch(_){}
  networkOpen=false;presentationFocus=true;sceneInfoCompact=true;
  exploreWith2D=false;exploreCutawayWall=null;exploreSystemFocus='all';
- exploreConstructionMode='hidden';viewMode='3D';exploreCameraShot='overview';
+ exploreConstructionMode='hidden';exploreProtectionGuide=true;
+ viewMode='3D';exploreCameraShot='overview';
  azimuth=.72;elevation=.42;zoom=.86;
  renderAll();requestAnimationFrame(resize);
 });

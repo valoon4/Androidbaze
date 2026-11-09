@@ -93,6 +93,14 @@ assert.deepEqual(pp('SW2',1,10).map(c=>c.name).sort(),
 assert.equal(pp('SW2',3,1).length,5);
 assert.equal(pp('SW2',3,2).length,0);
 assert.equal(pp('SW3',1,18).length,16);
+const msCablePaths=pdf.cables.filter(c=>c.group==='MS');
+const olaCablePaths=pdf.cables.filter(c=>c.group==='OLA');
+assert.equal(msCablePaths.length,2,'Two named MS cable runs in PDF V2');
+assert.ok(msCablePaths.every(c=>c.a&&c.b),'MS connections need source-confirmed endpoints');
+assert.equal(olaCablePaths.length,4,'Four OLA occurrences in PDF V2');
+assert.ok(olaCablePaths.every(c=>c.a&&!c.b),
+ 'Never invent unreferenced OLA destinations for Powerpanel presentation');
+assert.equal(pdf.supports.length,0,'No fabricated Powerpanel supports in source reference');
 assert.equal(pdf.enclosures.MS.visible,false);
 assert.equal(pdf.enclosures.OLA.visible,false);
 assert.ok(pdf.sourceInfo.warning.includes('Platzhalter'));
