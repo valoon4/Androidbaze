@@ -43,5 +43,5 @@ assert.equal(station.network.routes.length,3);
 assert.ok(station.network.shafts.every(s=>s.snapshot.supports.length>=2));
 assert.ok(station.network.shafts.every(s=>s.snapshot.enclosures.OLA.panels.length===6));
 assert.ok(station.network.shafts.every(s=>s.snapshot.enclosures.MS.panels.length===6));
-assert.equal(samples.manifest.length,6);
+assert.equal(samples.manifest.length,7);
 console.log('OK – 3 sample projects, 4 shafts, 64 cables, 376 openings, routes, JSON roundtrip, deliberate QA conflicts');

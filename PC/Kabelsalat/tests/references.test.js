@@ -48,9 +48,41 @@ assert.ok(u.cables.some(c=>c.referenceGroup==='TK'&&c.group==='Weitere'),'Origin
 const t=validProject(examples.create('source-t021'));
 assert.equal(t.cables.filter(c=>c.mappingStatus==='shown').length,1);
 assert.ok(t.cables.every(c=>c.a&&c.b),'All shown T reference endpoints must be geometrically present in imported model');
-assert.equal(examples.manifest.length,6);
+assert.equal(examples.manifest.length,7);
 const net=validProject(examples.create('source-both')).network;
 const switched=validProject({...net.shafts[1].snapshot,network:net,activeShaftId:'13_U_028'});
 assert.equal(switched.sourceInfo.shaft,'13_U_028');
 assert.equal(switched.network.shafts[0].snapshot.sourceInfo.shaft,'13_T_021');
-console.log('OK: 2 original sources, 126 physical holes, 34 cables, 15 plan-only markers, 7 unconfirmed endpoints and JSON roundtrips');
+const pdf=validProject(examples.create('pdf-u028'));
+assert.deepEqual(pdf.walls.map(w=>w.holes.length),[29,13,26,23]);
+const ph=(w,t,lr)=>w+'_T'+t+'_LR'+String(lr).padStart(2,'0');
+const pp=(w,t,lr)=>pdf.cables.filter(c=>[c.a,c.b].some(end=>end?.hole===ph(w,t,lr)));
+for(const w of pdf.walls)for(const h of w.holes)
+ assert.equal(pdf.cables.filter(c=>[c.a,c.b].some(e=>e?.hole===h.id)).length,
+  h.sourceCount,'PDF occupancy '+h.id);
+const nominal=(w,t,lr)=>pdf.walls.find(x=>x.id===w).holes.find(h=>h.id===ph(w,t,lr)).dn;
+assert.equal(nominal('SW1',1,27),160);
+assert.equal(nominal('SW1',1,21),160);
+assert.equal(nominal('SW2',1,5),160);
+assert.equal(nominal('SW2',3,1),75);
+assert.equal(nominal('SW1',2,1),63);
+assert.equal(nominal('SW3',1,26),160);
+for(const [name,start,end] of [
+ ['MS-SNG-0056',ph('SW1',1,27),ph('SW2',1,5)],
+ ['MS-SNG-0038',ph('SW1',1,21),ph('SW3',1,26)]])
+ assert.ok(pdf.cables.some(c=>c.name===name&&c.a?.hole===start&&c.b?.hole===end));
+assert.equal(pp('SW1',1,8).filter(c=>c.group==='MS').length,0);
+assert.equal(pp('SW1',1,9).filter(c=>c.group==='MS').length,0);
+assert.deepEqual(pp('SW2',1,9).map(c=>c.name).sort(),
+ ['OLSP 2060','OLSP 2061','OLSP 2062','OLSP 2063']);
+assert.deepEqual(pp('SW2',1,10).map(c=>c.name).sort(),
+ ['OLSP 2960','OLSP 2961','OLSP 2962','OLSP 2963']);
+assert.equal(pp('SW2',3,1).length,5);
+assert.equal(pp('SW2',3,2).length,0);
+assert.equal(pp('SW3',1,18).length,16);
+assert.equal(pdf.enclosures.MS.visible,false);
+assert.equal(pdf.enclosures.OLA.visible,false);
+assert.ok(pdf.sourceInfo.warning.includes('Platzhalter'));
+assert.ok(pdf.cables.some(c=>!c.b));
+assert.deepEqual(validProject(JSON.parse(JSON.stringify(pdf))),pdf);
+console.log('OK: original HTML datasets unchanged; PDF V2 91 nominal LRs and 4 walls correctly transcribed');

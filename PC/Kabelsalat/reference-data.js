@@ -14,13 +14,181 @@ const RECORDS={"13_T_021":{"name":"13_T_021","refFile":"13_T_021_Kabeleditor_202
 const manifest=[
  {id:'source-t021',name:'4 · 13_T_021 · Referenzdaten',description:'Originales Schacht-HTML: 48 sichtbare Rohre, 16 Kabel, 2 getrennte Systeme, schematische Maße'},
  {id:'source-u028',name:'5 · 13_U_028 · Referenzdaten',description:'Originales Schacht-HTML: 78 sichtbare Rohre, 18 Kabel, 15 Planmarker (nicht physisch bestätigt)'},
- {id:'source-both',name:'6 · Beide Referenzschächte (Vergleich)',description:'Beide Datenquellen in einem Projekt; Kartenpositionen nur zur Ansicht erfunden, ohne bestätigte Verbindung'}
+ {id:'source-both',name:'6 · Beide Referenzschächte (Vergleich)',description:'Beide Datenquellen in einem Projekt; Kartenpositionen nur zur Ansicht erfunden, ohne bestätigte Verbindung'},
+ {id:'pdf-u028',name:'★ 13_U_028 · PDF V2 Sollbild (91 LR)',description:'PDF S.21–24: vier Wandbilder, nominale DN und dokumentierte Belegungen, XYZ offen'}
 ];
 const round=v=>Math.round(v*100000)/100000;
 const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
 const pick=p=>p?.length?p[0]:null;
+
+/* PDF V2 pp.21-24: transcribed nominal DN and cable allocations.
+   Normalized coordinates and bounding dimensions are illustrative only. */
+function createPdfU028(){
+ const shaftId='13_U_028',dims={w:2750,d:2350,h:1850};
+ const rows={
+ SW1:[
+ [1,[1,2,3,4,5],[.12,.27,.42,.57,.72],.81],
+ [1,[6,7,8,9,10],[.12,.27,.42,.57,.72],.66],
+ [1,[11,12,13,14,15],[.12,.27,.42,.57,.72],.51],
+ [1,[16,17,18,19,20,21],[.12,.27,.42,.57,.72,.87],.36],
+ [1,[22,23,24,25,26,27],[.12,.27,.42,.57,.72,.87],.21],
+ [2,[1,2],[.93,.987],.81]],
+ SW2:[
+ [1,[11,10,9],[.30,.46,.62],.78],
+ [1,[5,8,7,6],[.13,.30,.46,.62],.59],
+ [1,[1,4,3,2],[.13,.30,.46,.62],.40],
+ [3,[1],[.88],.78],[3,[2],[.88],.59]],
+ SW3:[
+ [1,[5,4,3,2,1],[.18,.33,.48,.63,.78],.81],
+ [1,[10,9,8,7,6],[.18,.33,.48,.63,.78],.66],
+ [1,[15,14,13,12,11],[.18,.33,.48,.63,.78],.51],
+ [1,[20,19,18,17,16],[.18,.33,.48,.63,.78],.36],
+ [1,[26,25,24,23,22,21],[.04,.18,.33,.48,.63,.78],.21]],
+ SW4:[
+ [1,[6,5,4,3,2,1],[.12,.27,.42,.57,.72,.87],.79],
+ [1,[12,11,10,9,8,7],[.12,.27,.42,.57,.72,.87],.61],
+ [1,[18,17,16,15,14,13],[.12,.27,.42,.57,.72,.87],.43],
+ [1,[23,22,21,20,19],[.27,.42,.57,.72,.87],.25]]};
+ const key=(w,t,r)=>w+'_T'+t+'_LR'+String(r).padStart(2,'0'),byId=new Map(),walls=[];
+ for(const [w,grid] of Object.entries(rows)){
+  const holes=[],page={SW1:21,SW2:22,SW3:23,SW4:24}[w];
+  for(const [trasse,numbers,x,v] of grid)for(let col=0;col<numbers.length;col++){
+   const lr=numbers[col],dn=w==='SW1'&&trasse===2?63:
+    w==='SW2'&&trasse===3&&lr===1?75:
+    w==='SW2'&&trasse===1&&lr===5?160:
+    w==='SW1'&&trasse===1&&[21,27].includes(lr)?160:
+    w==='SW3'&&lr===26?160:110;
+   const hole={id:key(w,trasse,lr),row:Math.round((1-v)*10),
+    col:col+1,u:x[col],v,dn,
+    sourceAddress:'Trasse '+trasse+' / LR '+String(lr).padStart(2,'0'),
+    sourcePage:page,sourceCount:0,sourceCategory:'Trasse '+trasse,
+    nominalDnConfirmed:false,origin:'pdf-v2-nominal-dn-unverified'};
+   holes.push(hole);byId.set(hole.id,hole);
+  }
+  walls.push({id:w,name:w,visible:true,rows:5,cols:6,thickness:120,dn:110,holes});
+ }
+ const named={
+  'SW1/1/1':'SK6.0',
+  'SW1/1/3':"LWL-St1-F7279_96'|LWL-St1-F772835_96_02|LWL-St1-F772863_60'",
+  'SW1/1/5':'OLA TST 25.1- KEV25_01',
+  'SW1/1/12':'Cu F4734/20',
+  'SW1/1/14':"LWL_F7279_96'_02|LWL_F772863_60'_02|LWL-St1-F772874_24'",
+  'SW1/1/15':'NS-HUP-0201',
+  'SW1/1/16':'Begleiterde S05+S06|S01AZ-F15.f',
+  'SW1/1/18':'Feederkabel S05|Feederkabel S06',
+  'SW1/1/20':'Sek 6_SK_b',
+  'SW1/1/21':'MS-SNG-0038|NS-HUP-0203',
+  'SW1/1/27':'MS-SNG-0056',
+  'SW2/1/10':'OLSP 2960|OLSP 2961|OLSP 2962|OLSP 2963',
+  'SW2/1/9':'OLSP 2060|OLSP 2061|OLSP 2062|OLSP 2063',
+  'SW2/1/5':'MS-SNG-0056',
+  'SW2/1/1':"LWL_F7279_96'_02|LWL_F772863_60'_02|LWL_F772840_24 Hin",
+  'SW2/1/4':'Cu F4734/20',
+  'SW2/1/3':'S01AZ-F15.a|S01AZ-F20.1',
+  'SW3/1/5':"LWL-St1-F7279_96'|LWL-St1-F772835_96_02|LWL-St1-F772874_24'",
+  'SW3/1/4':'F772623',
+  'SW3/1/3':'FB 420107 TS',
+  'SW3/1/2':'OLSP 100 SK|OLSP 200 SK',
+  'SW3/1/10':'TSB-HUP-2203_01|TÜZ-HUP-2406_04',
+  'SW3/1/8':'St1AA8763173M1/2_Strom|St2AA8763176M1/2_Strom',
+  'SW3/1/7':"LWL-St1-F772863_60'",
+  'SW3/1/17':'SK6.0',
+  'SW3/1/26':'MS-SNG-0038',
+  'SW3/1/25':'NS-HUP-0201',
+  'SW4/1/6':'Begleiterde S05+S06',
+  'SW4/1/5':'Sek 6_SK_b',
+  'SW4/1/3':'F772623',
+  'SW4/1/1':'TSB-HUP-2104|TSB-HUP-2104|TÜZ-HUP-2406_03',
+  'SW4/1/11':'S01AZ-F15.f|S01AZ-F15.a|S01AZ-F20.1',
+  'SW4/1/10':'Feederkabel S05|Feederkabel S06',
+  'SW4/1/9':'LWL_F772840_24 Hin'
+ };
+ // Names absent from the supplied document are kept as explicitly unnamed entries.
+ const missing={
+  'SW1/1/22':['OLSP',8],'SW1/1/24':['Weitere',2],
+  'SW1/1/25':['TK/LWL',1],'SW1/1/26':['OLA',1],
+  'SW1/1/27':['Weitere',4],'SW1/2/1':['OLSP',2],
+  'SW2/3/1':['EEA',5],'SW3/1/1':['GSM-P',4],
+  'SW3/1/18':['OLSP',16],'SW3/1/24':['EEA',1],
+  'SW3/1/23':['OLA',1],'SW3/1/22':['OLA',1]
+ };
+ const category=name=>name.startsWith('MS-')?'MS':
+  name.startsWith('OLA ')?'OLA':name.startsWith('OLSP')?'OLSP':
+  /^(LWL|Cu |F772623)/.test(name)?'TK/LWL':
+  /^(S01AZ|FB )/.test(name)?'LST':
+  /^(TSB|TÜZ|NS-)/.test(name)?'EEA':'Weitere';
+ const colors={MS:'#247dc5',OLA:'#d62f48',OLSP:'#9351b5',
+  'TK/LWL':'#119e91',LST:'#a06a46',EEA:'#c58c16',
+  'GSM-P':'#79899c',Weitere:'#82929f'};
+ const entries=[];
+ function add(address,name,kind,unknown){
+  const [w,t,lr]=address.split('/'),hole=byId.get(key(w,+t,+lr));
+  if(!hole)throw Error('PDF V2: Missing documented pipe '+address);
+  entries.push({w,name,kind,unknown,hole,page:hole.sourcePage});
+  hole.sourceCount++;
+ }
+ for(const [address,text] of Object.entries(named))
+  for(const name of text.split('|'))add(address,name,category(name),false);
+ for(const [address,[kind,count]] of Object.entries(missing))
+  for(let i=1;i<=count;i++)add(address,kind+' · Bezeichnung offen '+i+'/'+count,kind,true);
+ const byName=new Map();
+ for(const e of entries)if(!e.unknown)byName.set(e.name,[...(byName.get(e.name)||[]),e]);
+ const used=new Set(),endpoint=e=>({wall:e.w,hole:e.hole.id}),cables=[];
+ for(let i=0;i<entries.length;i++){
+  const e=entries[i];if(used.has(e))continue;
+  const matches=byName.get(e.name)||[];
+  const peer=!e.unknown&&matches.length===2&&matches[0].w!==matches[1].w?
+   matches.find(x=>x!==e):null;
+  used.add(e);if(peer)used.add(peer);
+  cables.push({id:'PDF28-'+String(i+1).padStart(3,'0'),name:e.name,
+   group:['MS','OLA'].includes(e.kind)?e.kind:'Weitere',
+   color:colors[e.kind]||colors.Weitere,diameter:12,route:[],
+   a:endpoint(e),b:peer?endpoint(peer):null,
+   referenceGroup:e.kind,sourceOriginalA:e.hole.id,
+   sourceOriginalB:peer?.hole.id||'',sourceA:e.w+'/'+e.hole.sourceAddress,
+   sourceB:peer?peer.w+'/'+peer.hole.sourceAddress:'',
+   source:'AvL0116 V2 PDF S. '+e.page+(peer?' / '+peer.page:''),
+   sourcePages:peer?[e.page,peer.page]:[e.page],
+   mappingStatus:e.unknown?'Einzelidentität offen (nur Anzahl im PDF)':
+    peer?'Gleichnamige Wandangaben, 3D-Verbindung schematisch / Rmin ungeprüft':
+    'Nur eine Wandbelegung; anderer Kabelanschluss offen',
+   sourceKind:'pdf-v2-wall',drawingDiameterOnly:true
+  });
+ }
+ const enclosures=components.defaults(dims);
+ for(const g of ['OLA','MS']){
+  enclosures[g].visible=false; // No invented route or verified mounting.
+  for(const plate of enclosures[g].panels){
+   plate.material='fermacell Powerpanel H2O (nur Konzept/ungeprüft)';
+   plate.thickness=24; // generic editor placeholder, not a certified dimension
+  }
+ }
+ const sourceInfo={shaft:shaftId,sourceFile:'AVL0116_Fachkonzept_Eugen_NEU.pdf',
+  savedAt:'2026-11-08',document:'AvL0116 Fachkonzept V2, 08.11.2026',
+  sourceVersion:'PDF V2 (Konzept, kein Ausführungsplan)',
+  sourcePages:[21,22,23,24],geometryStatus:'schematic',
+  warning:'91 nominale DN und Rohrbelegungen aus PDF S.21–24. Reale XYZ-Abstände und Schachtmaße fehlen. 2750/2350/1850/120 mm aus HTML nur Platzhalter. Kabellängen, Rmin, Powerpanel-Kanäle und Auflager ungeprüft.',
+  originalNote:'PDF S.13 nennt SW2/Trasse 3 TSB/TÜZ, Detailseite S.22 dagegen 5 EEA. Hier Detailseite S.22 abgebildet; Klärung offen. Vollständiges angekündigtes Kabelverzeichnis nicht enthalten; keine realen Kanalpositionen.',
+  planAnchors:[],unmatchedEndpointCount:cables.filter(c=>!c.b).length,
+  originalCableCount:cables.length,originalPhysicalPortCount:91
+ };
+ const project={version:5,name:'13_U_028 · PDF-V2-Sollbild (schematisch)',
+  dims,walls,cables,opacity:42,showBox:false,showLabels:true,splitEnabled:true,
+  enclosures,supports:[],variants:[],sourceInfo};
+ const shaft={id:shaftId,name:project.name,x:0,z:0,snapshot:network.snapshot(project)};
+ return {...project,activeShaftId:shaftId,network:{
+  version:1,shafts:[shaft],links:[],routes:[],audit:[],
+  quality:{minPipeGapMm:null,minEdgeMm:null,minBendRadiusMm:null},
+  reviews:[{shaftId,entityType:'shaft',entityId:shaftId,
+   status:'Zur Prüfung',source:'PDF AvL0116 V2, Seiten 21–24',
+   checkedBy:'Konzeptübernahme',checkedAt:'2026-11-08T00:00:00Z',
+   note:'Nominale Rohrgrößen und Belegungen aus Wandbildern; reale Geometrie und Powerpanel-Konstruktion offen.'}]
+ }};
+}
+
 function create(id){
  if(!components||!network)throw Error('Kabelsalat-Referenzdaten benötigen Komponenten und Netzmodell');
+ if(id==='pdf-u028')return createPdfU028();
  if(id==='source-both'){
   const first=create('source-t021'),second=create('source-u028');
   const other={...second.network.shafts[0],x:15000,z:0};
@@ -107,6 +275,9 @@ function create(id){
    audit:[]}};
 }
 function describe(id){
+ if(id==='pdf-u028'){const p=createPdfU028();return {
+ shaft:p.name,cables:p.cables.length,physicalPorts:91,planAnchors:0,
+ pendingEndpoints:p.cables.filter(c=>!c.b).length};}
  const d=RECORDS[id==='source-t021'?'13_T_021':'13_U_028'];
  return {shaft:d.name,cables:d.cables.length,physicalPorts:d.ports.length,
  planAnchors:d.planPorts.length,pendingEndpoints:d.cables.reduce((n,c)=>n+
