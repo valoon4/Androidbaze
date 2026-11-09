@@ -127,6 +127,10 @@ object D05TrainingSession {
             "frage nicht erst, welches Szenario geübt werden soll. " +
             "Schwierigkeitsgrad: ${D051LearningGuide.level.value.label}. " +
             "Passende Reaktion: ${D051LearningGuide.instructionFor(scenario.id, D051LearningGuide.level.value)} " +
+            "Diese Dialogrunde: ${D051LearningGuide.responseCue(
+                scenario.id, D051LearningGuide.level.value,
+                history.count { it.role == "user" }
+            )} " +
             "Halte deine Antwort kurz (1–3 Sätze), natürlich und realistisch. " +
             "Bleibe respektvoll, stelle höchstens eine Frage. " +
             "Keine Therapie, Diagnosen oder Bewertungen der trainierenden Person. " +
