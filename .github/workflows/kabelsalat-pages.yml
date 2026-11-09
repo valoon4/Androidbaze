@@ -34,8 +34,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p _site/vendor _site/examples
-          cp PC/Kabelsalat/{index.html,recovery.js,pdf-geometry.js,pdf-visual.js,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js} _site/
+          mkdir -p _site/vendor _site/examples _site/pitch
+          cp PC/Kabelsalat/{index.html,pitch.html,recovery.js,pdf-geometry.js,pdf-visual.js,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js} _site/
+          cp PC/Kabelsalat/pitch/{13_T_021.html,13_U_028.html} _site/pitch/
           cp PC/Kabelsalat/vendor/{three.min.js,LICENSE.threejs} _site/vendor/
           cp PC/Kabelsalat/examples/*.json _site/examples/
           touch _site/.nojekyll
