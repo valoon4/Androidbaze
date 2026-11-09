@@ -227,7 +227,18 @@ function state(){return{format:'avl0116-shaft-cables',version:4,shaft:'13_T_021'
 function portName(p,short=false){return short?`SW${p.wall} · LR${p.number}`:`SW${p.wall} · T1 / LR${p.number} · DN offen`;}
 function endpoint(c,side){const p=portMap.get(c[side]),out=p.pos.slice(),occ=occupants(p.id),index=occ.findIndex(x=>x.id===c.id&&x.side===side);if(occ.length>1){const r=Math.min(p.radius*.55,.011*Math.sqrt(occ.length)),t=index*2*Math.PI/occ.length;out[p.wall===1||p.wall===3?2:0]+=Math.cos(t)*r;out[1]+=Math.sin(t)*r;}return vadd(out,mul(p.normal,.016));}
 function cableRadius(c,selectedToo=true){const base=c.group==='LWL'?.0075:['OLA','MS'].includes(c.group)?.022:.011;return base+(selectedToo&&c.id===selected?.0015:0);}
-// Pitch-Variante: JEDES Kabel ist eine einzige gerade 3D-Verbindung zwischen seinen Rohranschlüssen.\n// Keine Wegpunkte, Knie, Catmull-Rom-Interpolation oder versteckten Richtungswechsel.\n// Nur schematische Visualisierung; bauliche Durchführbarkeit bleibt zu prüfen.\nfunction cablePoints(c,i){\n let a=endpoint(c,'a'),b=endpoint(c,'b');\n if(drag?.cableId===c.id){\n  if(drag.side==='a')a=drag.preview;\n  else b=drag.preview;\n }\n return [a,b];\n}\nfunction buildStaticMeshes(){const result=[];const put=(panel,color,name,wall=0)=>{const data=EnclosureGeometry.mesh(panel),m=upload(data.positions,data.normals,color,name);m.wall=wall;m.bore=false;m.rim=false;result.push(m);return m;};
+// Pitch-Variante: JEDES Kabel ist eine einzige gerade 3D-Verbindung zwischen seinen Rohranschlüssen.
+// Keine Wegpunkte, Knie, Catmull-Rom-Interpolation oder versteckten Richtungswechsel.
+// Nur schematische Visualisierung; bauliche Durchführbarkeit bleibt zu prüfen.
+function cablePoints(c,i){
+ let a=endpoint(c,'a'),b=endpoint(c,'b');
+ if(drag?.cableId===c.id){
+  if(drag.side==='a')a=drag.preview;
+  else b=drag.preview;
+ }
+ return [a,b];
+}
+function buildStaticMeshes(){const result=[];const put=(panel,color,name,wall=0)=>{const data=EnclosureGeometry.mesh(panel),m=upload(data.positions,data.normals,color,name);m.wall=wall;m.bore=false;m.rim=false;result.push(m);return m;};
  const floor=-MODEL.height/2-.15,t=.13;put({axis:1,low:[-MODEL.width/2-t,floor-.10,-MODEL.depth/2-t],high:[MODEL.width/2+t,floor,MODEL.depth/2+t],holes:[]},[.78,.82,.84],'Schachtboden');
  for(let wall=1;wall<=4;wall++){const axis=wall===1||wall===3?0:2,tangent=axis===0?2:0,half=axis===0?MODEL.width/2:MODEL.depth/2,span=tangent===0?MODEL.width/2:MODEL.depth/2,sign=wall===1||wall===2?-1:1;const ps=ports.filter(p=>p.wall===wall),rows=[...new Set(ps.map(p=>p.pos[1]))].sort((a,b)=>a-b);for(let r=0;r<rows.length;r++){const list=ps.filter(p=>p.pos[1]===rows[r]).sort((a,b)=>a.pos[tangent]-b.pos[tangent]),loY=r?(rows[r-1]+rows[r])/2:floor,hiY=r<rows.length-1?(rows[r+1]+rows[r])/2:MODEL.height/2;for(let j=0;j<list.length;j++){const p=list[j],loU=j?(list[j-1].pos[tangent]+p.pos[tangent])/2:-span,hiU=j<list.length-1?(list[j+1].pos[tangent]+p.pos[tangent])/2:span;const low=[],high=[];low[axis]=sign<0?-half-t:half;high[axis]=sign<0?-half:half+t;low[1]=loY;high[1]=hiY;low[tangent]=loU;high[tangent]=hiU;const panel={axis,low,high,holes:[{pos:p.pos,radius:p.radius}]};put(panel,[.78,.82,.84],`SW${wall}_Wand_${p.number}`,wall);
   const faces=EnclosureGeometry.faces({panels:[panel]}).filter(f=>f.bore),positions=[],normals=[];for(const f of faces){const a=f.points[0],b=f.points[1],c=f.points[2],normal=norm(cross(vsub(b,a),vsub(c,a)));for(const k of [0,1,2,0,2,3]){positions.push(...f.points[k]);normals.push(...normal);}}const bore=upload(new Float32Array(positions),new Float32Array(normals),[.28,.34,.38],`SW${wall}_Rohrinnenwand_${p.number}`);bore.wall=wall;bore.bore=true;result.push(bore);
