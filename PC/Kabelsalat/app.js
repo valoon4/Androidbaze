@@ -11,6 +11,9 @@ const samples=globalThis.KabelsalatSamples;
 if(!samples)throw Error('Kabelsalat-Beispielmodul fehlt');
 const pdfGeometry=globalThis.KabelsalatPdfGeometry;
 if(!pdfGeometry)throw Error('Kabelsalat-PDF-Geometriemodul fehlt');
+const constructionV2=globalThis.KabelsalatConstructionV2;
+if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
+const avlReference=()=>['13_T_021','13_U_028'].includes(project?.sourceInfo?.shaft);
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
 const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'}; // Pre-V2 projects unchanged.
 const PDF_WALLS={
@@ -481,6 +484,7 @@ function highlightBox(mesh,color='#eec657'){
 function drawHousing(key){
  const e=project.enclosures[key];
  if(!e?.visible||viewMode.startsWith('SW')||
+  (exploreMode&&exploreProtectionGuide&&avlReference())||
   (exploreMode?(exploreConstructionMode==='hidden'||
     (exploreSystemFocus!=='all'&&exploreSystemFocus!==key)):!project.showBox))return;
  for(const p of e.panels){
@@ -576,15 +580,14 @@ function cableDisplayPoint(ref,c){
 /* Shared render path for both real cable drawing and the explicitly schematic
    3D protection-route guide. It does not establish a manufacturer bend radius. */
 function cableRenderPath(c,a,b){
- const sz=sizes(),na=normal(c.a.wall),nb=normal(c.b.wall);
- const mid=a.clone().add(b).multiplyScalar(.5);
- mid.y=clamp(mid.y+.04,.18,sz.h*.85);
- mid.z=clamp(mid.z+.08,-sz.d/2+.18,sz.d/2-.14);
- const route=(c.route||[]).map(p=>
-  new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000));
- const pts=[a.clone(),a.clone().addScaledVector(na,.12),
-  ...(route.length?route:[mid]),b.clone().addScaledVector(nb,.12),b.clone()];
- return {curve:new THREE.CatmullRomCurve3(pts,false,'centripetal',.45),route};
+ const route=(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000));
+ const spec=constructionV2.cablePath(a.toArray(),b.toArray(),c.a.wall,c.b.wall,
+  normal(c.a.wall).toArray(),normal(c.b.wall).toArray(),route.map(p=>p.toArray()));
+ let curve;
+ if(spec.kind==='straight')curve=new THREE.LineCurve3(a.clone(),b.clone());
+ else if(spec.kind==='smooth-side')curve=new THREE.CubicBezierCurve3(...spec.points.map(p=>new THREE.Vector3(...p)));
+ else curve=new THREE.CatmullRomCurve3(spec.points.map(p=>new THREE.Vector3(...p)),false,'centripetal',.5);
+ return{curve,route,routeKind:spec.kind,routeWarnings:spec.warnings};
 }
 /* No Powerpanel geometry is asserted here: the blue mesh only surrounds
    the two PDF cables with known endpoints; red rings locate the four
