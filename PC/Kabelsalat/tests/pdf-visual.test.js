@@ -87,6 +87,12 @@ for(const [w,expected] of Object.entries(expectedOrientation)){
   assert.deepEqual(basis.normal,expected.normal);
   assert.equal(transform.rotationY,expected.rotation);
   assert.equal(transform.span,geo.span(w,sizes));
+  for(const angle of [0,1.2,2.7]){
+   const fan=geo.tangentOffset(w,angle,.03);
+   const dot=fan.reduce((sum,v,i)=>sum+v*expected.normal[i],0);
+   assert.ok(Math.abs(dot)<1e-10,'Cable strand leaves source pipe face');
+   assert.ok(Math.abs(Math.hypot(...fan)-.03)<1e-10);
+  }
   assert.ok(camera.position.every(Number.isFinite));
   assert.ok(diagram.render(source,w).includes('aria-label="'+w+' – '),
    'PDF side view missing');
@@ -125,6 +131,8 @@ const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 assert.ok(app.includes('new THREE.CylinderGeometry(r+.010,r+.010,.20'),'3D pipe sleeves absent');
 assert.ok(app.includes("opacity:chosen?1:(pdfView()?.94"),'3D source cables not emphasized');
 assert.ok(app.includes('pdfGeometry.hole(wid,h,s)'),'3D editor must use tested geometry');
+assert.ok(app.includes('pdfGeometry.tangentOffset(ref.wall,a,r)'),
+ 'PDF cable strands must use wall-tangent displacement vectors');
 assert.ok(app.includes('pdfGeometry.transform(w.id,s)'),'3D wall mesh must use tested orientation');
 assert.ok(app.includes('pdfGeometry.camera(viewMode,d)'),'PDF side camera must use tested orientation');
 assert.ok(html.includes('id="oldProjectNotice"'),'Old browser project must be clearly identified');
