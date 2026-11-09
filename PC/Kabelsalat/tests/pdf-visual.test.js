@@ -59,17 +59,19 @@ for(const [wallId,rows] of Object.entries(expectedRows)){
    assert.ok(hole,'missing source pipe '+key);
    assert.equal(hole.sourcePage,sourcePages[wallId]);
    assert.equal(hole.dn,dnFor(wallId,trasse,lr),'source DN wrong');
-   assert.equal(hole.u,u,'PDF vector X changed');
-   assert.equal(hole.v,v,'PDF vector Y changed');
+   assert.equal(hole.sourceU,u,'PDF vector X changed');
+   assert.equal(hole.sourceV,v,'PDF vector Y changed');
+   assert.equal(hole.u,Math.round((.5+(u-.5)*.62)*1e5)/1e5,'compact X wrong');
+   assert.equal(hole.v,Math.round((.5+(v-.5)*.62)*1e5)/1e5,'compact Y wrong');
    assert.ok(allSvg.includes('data-pipe="'+key+'"'),'2D SVG missing pipe');
    assert.ok(allSvg.includes(key+' DN '+hole.dn+' mit '),'accessible SVG label missing');
    const cableCount=(occupation.get(key)||[]).length;
    assert.equal(cableCount,hole.sourceCount,'PDF occupancy mismatch');
    const world=geo.hole(wallId,hole,sizes);
    assert.ok(world.every(Number.isFinite),'invalid 3D pipe');
-   assert.ok(Math.abs(geo.inverse(wallId,world,sizes)-u)<1e-9,'2D↔3D mirror mismatch');
+   assert.ok(Math.abs(geo.inverse(wallId,world,sizes)-hole.u)<1e-9,'2D↔3D mirror mismatch');
    assert.ok(world[1]>=0&&world[1]<=sizes.h,'pipe leaves floor/roof');
-   const edge=geo.span(wallId,sizes)*(Math.min(u,1-u));
+   const edge=geo.span(wallId,sizes)*(Math.min(hole.u,1-hole.u));
    assert.ok(edge>hole.dn/2000,'pipe touches/overflows lateral wall edge');
   });
  }
