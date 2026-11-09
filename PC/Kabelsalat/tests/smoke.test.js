@@ -4,7 +4,7 @@ const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 assert.ok(html.includes('Kabelsalat'), 'UI must display Kabelsalat brand');
 for(const asset of ['recovery.js','app.js','vendor/three.min.js'])
- assert.ok(html.includes('src="'+asset+'?v=1.9.0-beta.1"'),'Cache-busted script missing: '+asset);
+ assert.ok(html.includes('src="'+asset+'?v=1.9.2-beta.1"'),'Cache-busted script missing: '+asset);
 for(const id of ['startupRecovery','reloadFresh','resetDisplay','recoveryReason'])
  assert.ok(html.includes('id="'+id+'"'),'Recovery interface missing: '+id);
 const recovery=fs.readFileSync(path.resolve(__dirname,'../recovery.js'),'utf8');
@@ -12,17 +12,32 @@ assert.ok(recovery.includes('kabelsalat_sidebar_layout_v1')&&recovery.includes('
  'Display reset must only clear UI preferences');
 assert.ok(!recovery.includes("removeItem('eugi.schachtwand.3d.v1')"),
  'Display reset must not touch saved projects');
+for(const asset of ['pdf-geometry.js','pdf-visual.js'])
+ assert.ok(html.includes('src="'+asset+'?v=1.9.2-beta.1"'),
+  'New visual source asset missing: '+asset);
+for(const id of ['pdfVisualPanel','pdfOpen','pdfClose','oldProjectNotice','switchToPdf'])
+ assert.ok(html.includes('id="'+id+'"'),'PDF visual UI missing: '+id);
+assert.ok(app.includes('pdfGeometry.hole(wid,h,s)')&&
+ app.includes('pdfGeometry.transform(w.id,s)')&&
+ app.includes('pdfGeometry.camera(viewMode,d)'),
+ '3D must use correct PDF-world wall coordinates on every view');
+assert.ok(app.includes('new THREE.CylinderGeometry(r+.010,r+.010,.20'),
+ 'DN pipes must be visually modelled, not only described as text');
+assert.ok(app.includes('cableDisplayPoint(c.a,c)')&&app.includes("pdfView()?.94"),
+ 'Kabel strands must be visible and individually fanned out');
+assert.ok(app.includes("oldProjectNotice').hidden=pdfView()"),
+ 'Older browser-saved shaft projects must be visibly identified');
 assert.ok(app.includes("document.body.classList.add('app-ready')"),
  '3D app must mark successful boot');
 assert.ok(html.includes('id="draftCanvas"'), 'Parallel 2D canvas missing');
 assert.ok(html.includes('id="splitEnabled"'), '2D toggle missing');
-assert.ok(html.includes('src="editor2d.js?v=1.9.0-beta.1"'), '2D module not loaded');
-assert.ok(html.includes('src="components.js?v=1.9.0-beta.1"'), 'Components module not loaded');
-assert.ok(html.includes('src="network.js?v=1.9.0-beta.1"'), 'Network module not loaded');
-assert.ok(html.includes('src="quality.js?v=1.9.0-beta.1"'), 'Quality module not loaded');
-assert.ok(html.includes('src="reports.js?v=1.9.0-beta.1"'), 'Report module not loaded');
-assert.ok(html.includes('src="examples.js?v=1.9.0-beta.1"'), 'Examples module not loaded');
-assert.ok(html.includes('src="reference-data.js?v=1.9.0-beta.1"'), 'Reference data module not loaded');
+assert.ok(html.includes('src="editor2d.js?v=1.9.2-beta.1"'), '2D module not loaded');
+assert.ok(html.includes('src="components.js?v=1.9.2-beta.1"'), 'Components module not loaded');
+assert.ok(html.includes('src="network.js?v=1.9.2-beta.1"'), 'Network module not loaded');
+assert.ok(html.includes('src="quality.js?v=1.9.2-beta.1"'), 'Quality module not loaded');
+assert.ok(html.includes('src="reports.js?v=1.9.2-beta.1"'), 'Report module not loaded');
+assert.ok(html.includes('src="examples.js?v=1.9.2-beta.1"'), 'Examples module not loaded');
+assert.ok(html.includes('src="reference-data.js?v=1.9.2-beta.1"'), 'Reference data module not loaded');
 assert.ok(html.includes('id="exampleSelect"'), 'Example selector missing');
 assert.ok(html.includes('id="loadExample"'), 'Example action missing');
 for(const id of ['toggleExpert','exploreGuide','questNetwork','questShaft','questCable',
