@@ -9,13 +9,15 @@ const qualityModel=globalThis.KabelsalatQuality,reportModel=globalThis.Kabelsala
 if(!qualityModel||!reportModel)throw Error('Kabelsalat-Prüf- oder Berichtmodul fehlt');
 const samples=globalThis.KabelsalatSamples;
 if(!samples)throw Error('Kabelsalat-Beispielmodul fehlt');
+const pdfGeometry=globalThis.KabelsalatPdfGeometry;
+if(!pdfGeometry)throw Error('Kabelsalat-PDF-Geometriemodul fehlt');
 const COLORS=['#e75160','#1aa676','#398bdb','#e3ad3f','#9a6dcd','#12a5ae'];
-const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'};
+const WALL_NAMES={SW1:'Linke Schachtwand',SW2:'Rückwand',SW3:'Rechte Schachtwand',SW4:'Vordere Schachtwand'}; // Pre-V2 projects unchanged.
 const PDF_WALLS={
- SW1:'13_U_042 / Gleis · Trasse 1 + 2 · PDF S. 21',
- SW2:'21_B_010 / Tunnelwand · Trasse 1 + 3 · PDF S. 22',
- SW3:'13_U_032 · gespiegelte LR-Reihenfolge · PDF S. 23',
- SW4:'13_U_021 · Trasse 1 · PDF S. 24'
+ SW1:'Stirnwand · 13_U_042 / Gleis · Trasse 1 + 2 · PDF S. 21',
+ SW2:'Rechte Wand · 21_B_010 / Tunnelwand · Trasse 1 + 3 · PDF S. 22',
+ SW3:'Gegenüber SW1 · 13_U_032 · gespiegelte LR-Reihenfolge · PDF S. 23',
+ SW4:'Linke Wand · 13_U_021 · Trasse 1 · PDF S. 24'
 };
 const pdfView=()=>project.sourceInfo?.sourceVersion?.startsWith('PDF V2')===true;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -364,7 +366,7 @@ const sizes=()=>({w:project.dims.w/1000,d:project.dims.d/1000,h:project.dims.h/1
 /* PDF V2 p.4 is authoritative:
    SW1 = Stirnwand (z-), SW2 = rechts (x+), SW3 = gegenüber (z+),
    SW4 = links (x-). Earlier demos retain their original axes. */
-const pdfWallWidth=(id,s)=>['SW1','SW3'].includes(id)?s.w:s.d;
+const pdfWallWidth=(id,s)=>pdfGeometry.span(id,s);
 function view(){
  const d=sizes(),aspect=Math.max(.3,$('scene').clientWidth/Math.max(1,$('scene').clientHeight));
  if(viewMode==='3D'){
@@ -381,11 +383,9 @@ function view(){
  }else{
  span=viewMode==='SW1'||viewMode==='SW3'?d.d:d.w;
  if(pdfView()){
-  span=pdfWallWidth(viewMode,d);
-  if(viewMode==='SW1'){pos.set(0,d.h/2,d.d/2+4);target.set(0,d.h/2,-d.d/2);}
-  if(viewMode==='SW2'){pos.set(-d.w/2-4,d.h/2,0);target.set(d.w/2,d.h/2,0);}
-  if(viewMode==='SW3'){pos.set(0,d.h/2,-d.d/2-4);target.set(0,d.h/2,d.d/2);}
-  if(viewMode==='SW4'){pos.set(d.w/2+4,d.h/2,0);target.set(-d.w/2,d.h/2,0);}
+  const referenceCamera=pdfGeometry.camera(viewMode,d);
+  span=referenceCamera.span;
+  pos.set(...referenceCamera.position);target.set(...referenceCamera.target);
  }else{
   if(viewMode==='SW1'){pos.set(d.w/2+4,d.h/2,0);target.set(-d.w/2,d.h/2,0);}
   if(viewMode==='SW3'){pos.set(-d.w/2-4,d.h/2,0);target.set(d.w/2,d.h/2,0);}
@@ -410,20 +410,14 @@ function createLabel(text,pos){const c=document.createElement('canvas');c.width=
 
 function holePosition(wid,h){
  const s=sizes(),u=clamp(h.u,0,1),y=s.h*clamp(h.v,0,1);
- if(pdfView()){
-  if(wid==='SW1')return new THREE.Vector3(-s.w/2+s.w*u,y,-s.d/2+.024);
-  if(wid==='SW2')return new THREE.Vector3(s.w/2-.024,y,-s.d/2+s.d*u);
-  if(wid==='SW3')return new THREE.Vector3(s.w/2-s.w*u,y,s.d/2-.024);
-  if(wid==='SW4')return new THREE.Vector3(-s.w/2+.024,y,s.d/2-s.d*u);
- }
+ if(pdfView())return new THREE.Vector3(...pdfGeometry.hole(wid,h,s));
  if(wid==='SW1')return new THREE.Vector3(-s.w/2+.024,y,-s.d/2+s.d*u);
  if(wid==='SW2')return new THREE.Vector3(-s.w/2+s.w*u,y,-s.d/2+.024);
  if(wid==='SW3')return new THREE.Vector3(s.w/2-.024,y,-s.d/2+s.d*u);
  return new THREE.Vector3(-s.w/2+s.w*u,y,s.d/2-.024);
 }
 function normal(wid){
- if(pdfView())return new THREE.Vector3(wid==='SW4'?1:wid==='SW2'?-1:0,0,
-  wid==='SW1'?1:wid==='SW3'?-1:0);
+ if(pdfView())return new THREE.Vector3(...pdfGeometry.wall(wid).normal);
  return new THREE.Vector3(wid==='SW1'?1:wid==='SW3'?-1:0,0,
   wid==='SW2'?1:wid==='SW4'?-1:0);
 }
@@ -536,10 +530,9 @@ function drawWalls(){
  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:w.thickness/1000,bevelEnabled:false,curveSegments:12,steps:1}),
  material(exploreMode?'#52788b':(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4'),op));
  if(pdfView()){
-  if(w.id==='SW1')mesh.position.z=-s.d/2;
-  else if(w.id==='SW2'){mesh.rotation.y=-Math.PI/2;mesh.position.x=s.w/2;}
-  else if(w.id==='SW3'){mesh.rotation.y=Math.PI;mesh.position.z=s.d/2;}
-  else{mesh.rotation.y=Math.PI/2;mesh.position.x=-s.w/2;}
+  const transform=pdfGeometry.transform(w.id,s);
+  mesh.rotation.y=transform.rotationY;
+  mesh.position.set(...transform.position);
  }else{
   if(w.id==='SW1'){mesh.rotation.y=-Math.PI/2;mesh.position.x=-s.w/2;}
   else if(w.id==='SW3'){mesh.rotation.y=Math.PI/2;mesh.position.x=s.w/2;}
@@ -679,10 +672,7 @@ function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientR
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
 function wallCoords(wid,p){
  const s=sizes();
- const u=pdfView()?
-  wid==='SW1'?p.x/s.w+.5:
-  wid==='SW2'?p.z/s.d+.5:
-  wid==='SW3'?.5-p.x/s.w:.5-p.z/s.d:
+ const u=pdfView()?pdfGeometry.inverse(wid,[p.x,p.y,p.z],s):
   (wid==='SW2'||wid==='SW4')?p.x/s.w+.5:p.z/s.d+.5;
  return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};
 }
@@ -866,12 +856,8 @@ function projectedCablePoints(c,m){
  if(!a||!b)return [];
  const points=[a,...(c.route||[]).map(p=>new THREE.Vector3(p[0]/1000,p[1]/1000,p[2]/1000)),b];
  return points.map(p=>{
-  const along=pdfView()?
-   (wallId==='SW1'?p.x*1000+project.dims.w/2:
-    wallId==='SW2'?p.z*1000+project.dims.d/2:
-    wallId==='SW3'?project.dims.w/2-p.x*1000:
-    project.dims.d/2-p.z*1000):
-   (wallId==='SW1'||wallId==='SW3'?
+  const along=pdfView()?pdfGeometry.along(wallId,[p.x,p.y,p.z],sizes())*1000:
+  (wallId==='SW1'||wallId==='SW3'?
     p.z*1000+project.dims.d/2:p.x*1000+project.dims.w/2);
   return geom2d.toPixels(m,along,p.y*1000);
  });
@@ -1422,7 +1408,7 @@ $('exploreCutawayWall').addEventListener('change',()=>{
  exploreCutawayWall=Object.hasOwn(CUTAWAY_AZIMUTH,selected)?selected:null;
  if(exploreCutawayWall){
   // Face the missing wall to reveal the interior, without moving any object.
-  azimuth=pdfView()?({SW1:Math.PI,SW2:Math.PI/2,SW3:0,SW4:-Math.PI/2})[exploreCutawayWall]:
+  azimuth=pdfView()?pdfGeometry.wall(exploreCutawayWall).azimuth:
    CUTAWAY_AZIMUTH[exploreCutawayWall];
   elevation=.46;zoom=.9;
   exploreCameraShot='custom';
