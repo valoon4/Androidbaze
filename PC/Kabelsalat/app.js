@@ -212,7 +212,12 @@ function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if
  if(!project.variants.some(v=>v.id===variantId))variantId=project.variants[0]?.id||null;
  if(!project.network.routes.some(v=>v.id===netRouteId))netRouteId=project.network.routes[0]?.id||null;
  if(!project.network.shafts.some(v=>v.id===netSegmentShaftId))netSegmentShaftId=project.activeShaftId;}
-function wallSpanMm(id){return id==='SW1'||id==='SW3'?project.dims.d:project.dims.w;}
+function wallSpanMm(id){
+ // PDF V2 S.4: SW1/SW3 span shaft width; SW2/SW4 span depth.
+ // Legacy HTML examples preserve their older axis convention.
+ return pdfView()?pdfGeometry.span(id,project.dims):
+  id==='SW1'||id==='SW3'?project.dims.d:project.dims.w;
+}
 function geometryWarnings(){
  let overlaps=0,edges=0;
  for(const w of project.walls){
@@ -1438,6 +1443,18 @@ function exitPresentation(){
  presentationFocus=false;sceneInfoCompact=false;
  renderAll();requestAnimationFrame(resize);
 }
+/* Read-only home navigation for network, PDF, quality and presentations. */
+function returnToShaft(){
+ window.KabelsalatPdfVisual?.hide?.();
+ networkOpen=false;
+ presentationFocus=false;sceneInfoCompact=false;
+ viewMode='3D';exploreWith2D=false;
+ mode='orbit';grab=null;draftDrag=null;
+ $('leftSidebar').scrollTop=0;$('rightSidebar').scrollTop=0;
+ renderAll();requestAnimationFrame(resize);
+}
+for(const id of ['returnToShaft','qualityBackToShaft','pdfGoShaft'])
+ $(id).addEventListener('click',returnToShaft);
 $('startPitch').addEventListener('click',()=>{
  // Different source projects still use the existing unsaved-work warning.
  if(!pdfView()){
@@ -1460,7 +1477,9 @@ $('toggleSceneInfo').addEventListener('click',()=>{
 });
 $('exitPitch').addEventListener('click',exitPresentation);
 document.addEventListener('keydown',event=>{
- if(event.key==='Escape'&&presentationFocus){event.preventDefault();exitPresentation();}
+ if(event.key!=='Escape')return;
+ if(presentationFocus){event.preventDefault();exitPresentation();}
+ else if(networkOpen){event.preventDefault();returnToShaft();}
 });
 $('explorePresentationFocus').addEventListener('click',()=>{
  presentationFocus=!presentationFocus;
@@ -1484,7 +1503,7 @@ function setNetworkOpen(next){
  networkOpen=next;renderAll();requestAnimationFrame(resize);
 }
 $('toggleNetwork').addEventListener('click',()=>setNetworkOpen(!networkOpen));
-$('netBackEditor').addEventListener('click',()=>setNetworkOpen(false));
+$('netBackEditor').addEventListener('click',returnToShaft);
 $('netOpenShaft').addEventListener('click',()=>setNetworkOpen(false));
 $('netShaftSelect').addEventListener('change',()=>switchShaft($('netShaftSelect').value));
 $('netNewShaft').addEventListener('click',()=>{

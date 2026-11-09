@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="kabelsalat-version" content="1.9.2-beta.1">
+<meta name="kabelsalat-version" content="1.9.2-beta.2">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -13,7 +13,10 @@ body{margin:0;overflow:hidden}button,input,select{font:inherit}button{cursor:poi
 header{grid-column:1/4;background:#fff;border-bottom:1px solid #dfe6eb;display:flex;align-items:center;padding:0 24px;gap:18px;z-index:3}
 .mark{width:35px;height:35px;border-radius:11px;background:#183e45;color:#c1f7d6;display:grid;place-items:center;font-size:21px;font-weight:800}
 .brand{font-size:15px;font-weight:800;letter-spacing:-.4px}.subtitle{font-size:11px;color:#7b8996;margin-top:3px}
-.header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}.pill{border-radius:99px;background:#ebf8ef;color:#32815e;padding:7px 11px;font-size:11px}
+.header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.shaft-return{background:#e7f4ef;border-color:#83bda9;color:#145849;font-weight:800;white-space:nowrap}
+.shaft-return:hover{background:#d4ede2}
+@media(max-width:1230px){.shaft-return{font-size:10px;padding:7px 8px}}.pill{border-radius:99px;background:#ebf8ef;color:#32815e;padding:7px 11px;font-size:11px}
 .sidebar{background:#fff;overflow:auto;padding:20px 18px 35px;border-right:1px solid #e0e7eb}.sidebar.right{border-right:0;border-left:1px solid #e0e7eb}
 .section{margin-bottom:23px;padding-bottom:19px;border-bottom:1px solid #eef1f3}.section:last-child{border:0}
 .eyebrow{color:#8c9aa4;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;margin-bottom:8px}
@@ -306,8 +309,9 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.9.2 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.9.2 β2 · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
+<button id="returnToShaft" class="btn shaft-return" type="button" title="Zurück zur 3D-Hauptansicht ohne Projektdaten zu ändern">↩ Zum 3D-Schacht</button>
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="startPitch" class="btn primary" type="button" title="PDF-V2-Schacht 13_U_028 als Präsentation öffnen">▶ Präsentieren</button>
  <button id="toggleExpert" class="btn mode-toggle" title="Zwischen Basic-Ansicht und Profi-Bearbeitung wechseln" aria-pressed="false">🛠 Profi-Modus</button>
@@ -459,7 +463,10 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
  <div class="pdf-visual-head">
   <div><h2>13_U_028 · Schacht und Kabel direkt aus PDF</h2>
    <div id="pdfVisualSummary" class="small">Vier Wandansichten · Daten werden geladen.</div></div>
-  <button id="pdfClose" class="btn soft" type="button" aria-label="Wandbilder schließen">✕ Schließen</button>
+  <div class="row" style="gap:7px;flex-wrap:wrap">
+   <button id="pdfGoShaft" class="btn primary" type="button">↩ Zurück zum 3D-Schacht</button>
+   <button id="pdfClose" class="btn soft" type="button" aria-label="Wandbilder schließen">✕ Schließen</button>
+  </div>
  </div>
  <div class="pdf-visual-controls" role="group" aria-label="Wand aus der PDF auswählen">
   <button data-pdf-wall="all" class="active" aria-pressed="true">Alle vier Wände</button>
@@ -566,7 +573,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <section id="networkPane" aria-label="Schachtnetz als Vogelperspektive">
 <div class="net-map-heading">
 <div><strong>Schachtnetz · Vogelperspektive</strong><div class="small">Schächte mit Lagekoordinaten in mm · Linien sind schematische Verbindungen</div></div>
-<button id="netBackEditor" class="btn primary">Zum Schachteditor</button>
+<button id="netBackEditor" class="btn primary">↩ Zurück zum 3D-Schacht</button>
 </div>
 <div class="net-canvas-wrap"><canvas id="networkCanvas" aria-label="Interaktive Schachtnetzkarte"></canvas></div>
 <div class="net-map-foot">
@@ -595,6 +602,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <section class="section" id="qualityPanel">
 <div class="eyebrow">Datenqualität & Dokumentation</div>
 <div class="row spread"><h2 style="margin:0">Prüfübersicht</h2><button id="runQuality" class="btn soft tiny">Prüfen</button></div>
+<button id="qualityBackToShaft" class="btn soft full tiny" type="button" style="margin-top:9px">↩ Zurück zur 3D-Hauptansicht</button>
 <div id="qualitySummary" class="hint">Projektdaten prüfen. Keine automatische Fachfreigabe.</div>
 <div id="qualityList" style="max-height:210px;overflow:auto;margin-top:9px"></div>
 <h3 style="margin-top:16px">Manueller Prüfvermerk</h3>
@@ -733,6 +741,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=1.9.2-beta.1"></script><script src="vendor/three.min.js?v=1.9.2-beta.1"></script><script src="editor2d.js?v=1.9.2-beta.1"></script><script src="components.js?v=1.9.2-beta.1"></script><script src="network.js?v=1.9.2-beta.1"></script><script src="quality.js?v=1.9.2-beta.1"></script><script src="reports.js?v=1.9.2-beta.1"></script><script src="reference-data.js?v=1.9.2-beta.1"></script><script src="examples.js?v=1.9.2-beta.1"></script><script src="pdf-geometry.js?v=1.9.2-beta.1"></script><script src="pdf-visual.js?v=1.9.2-beta.1"></script><script src="app.js?v=1.9.2-beta.1"></script>
+<script src="recovery.js?v=1.9.2-beta.2"></script><script src="vendor/three.min.js?v=1.9.2-beta.2"></script><script src="editor2d.js?v=1.9.2-beta.2"></script><script src="components.js?v=1.9.2-beta.2"></script><script src="network.js?v=1.9.2-beta.2"></script><script src="quality.js?v=1.9.2-beta.2"></script><script src="reports.js?v=1.9.2-beta.2"></script><script src="reference-data.js?v=1.9.2-beta.2"></script><script src="examples.js?v=1.9.2-beta.2"></script><script src="pdf-geometry.js?v=1.9.2-beta.2"></script><script src="pdf-visual.js?v=1.9.2-beta.2"></script><script src="app.js?v=1.9.2-beta.2"></script>
 </body>
 </html>

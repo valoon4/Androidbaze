@@ -135,6 +135,8 @@ assert.ok(app.includes('pdfGeometry.tangentOffset(ref.wall,a,r)'),
  'PDF cable strands must use wall-tangent displacement vectors');
 assert.ok(app.includes('pdfGeometry.transform(w.id,s)'),'3D wall mesh must use tested orientation');
 assert.ok(app.includes('pdfGeometry.camera(viewMode,d)'),'PDF side camera must use tested orientation');
+assert.ok(app.includes('pdfView()?pdfGeometry.span(id,project.dims)'),
+ 'PDF 2D SW1/SW3 width, SW2/SW4 depth must match world mapping');
 assert.ok(html.includes('id="oldProjectNotice"'),'Old browser project must be clearly identified');
 assert.ok(html.includes('id="pdfVisualPanel"'),'PDF visual fallback must be available');
 assert.ok(html.includes('id="pdfOpen"'),'PDF fallback must be accessible');

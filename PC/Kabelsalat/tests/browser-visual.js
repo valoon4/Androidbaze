@@ -28,6 +28,20 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   }));
   assert.ok(data.canvasWidth>300&&data.canvasHeight>100,'Visible 3D canvas must be dimensioned');
   assert.ok(data.visualToggle);
+  // Real Chromium regression for the Fachanwender: no trapping in subviews.
+  await page.locator('#questNetwork').click();
+  await page.waitForFunction(()=>document.querySelector('#viewport').classList.contains('network-open'));
+  await page.locator('#returnToShaft').click();
+  assert.equal(await page.locator('#viewport').evaluate(el=>el.classList.contains('network-open')),false);
+  assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
+  await page.locator('#pdfOpen').click();
+  await page.locator('#pdfGoShaft').click();
+  assert.equal(await page.locator('#pdfVisualPanel').evaluate(el=>el.hidden),true);
+  await page.locator('#toggleExpert').click();
+  await page.locator('#runQuality').click();
+  await page.locator('#qualityBackToShaft').click();
+  assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
+  await page.locator('#toggleExpert').click();
   await page.screenshot({path:path.join(out,'shaft-3d.png'),fullPage:true});
   console.log('WebGL scene initialized:',JSON.stringify(data));
  }else{

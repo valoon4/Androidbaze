@@ -1,7 +1,7 @@
 {
   "name": "kabelsalat",
-  "version": "1.9.2-beta.1",
-  "description": "Kabelsalat 1.9.2 Beta – PDF-genaue Schachtwand-Orientierung, echte visuelle Leerrohr-/Kabelbelegung und 2D-Notansicht",
+  "version": "1.9.2-beta.2",
+  "description": "Kabelsalat 1.9.2 Beta 2 – PDF-orientierte 2D/3D-Geometrie und sicherer Rückweg zum Schacht",
   "main": "main.js",
   "author": "Kabelsalat",
   "license": "MIT",
