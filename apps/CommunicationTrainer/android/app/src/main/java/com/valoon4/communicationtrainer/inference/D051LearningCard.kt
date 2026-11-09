@@ -96,6 +96,7 @@ fun D051ReflectionControls(scenarioId: String, working: Boolean) {
     val selections by D051LocalReflection.selectedObservations.collectAsState()
     val note by D051LocalReflection.note.collectAsState()
     val acknowledged by D051LocalReflection.acknowledged.collectAsState()
+    var showIdeas by remember(scenarioId) { mutableStateOf(false) }
     val objective = D051LearningGuide.objectiveFor(scenarioId)
     Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
         HorizontalDivider()
@@ -120,6 +121,27 @@ fun D051ReflectionControls(scenarioId: String, working: Boolean) {
                     )
                     Text(statement, modifier = Modifier.padding(start = 4.dp),
                         style = MaterialTheme.typography.bodySmall)
+                }
+            }
+            TextButton(
+                enabled = !working,
+                onClick = { showIdeas = !showIdeas }
+            ) {
+                Text(if (showIdeas) "Denkimpulse ausblenden"
+                     else "Du weißt nicht, was du schreiben sollst? Denkimpulse")
+            }
+            if (showIdeas) {
+                Text(
+                    "Es gibt hier keine richtige Antwort. Vielleicht hilft dir eine dieser Fragen:",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                D051LearningGuide.reflectionIdeasFor(scenarioId).forEach { idea ->
+                    Text(
+                        "• " + idea,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
             OutlinedTextField(
