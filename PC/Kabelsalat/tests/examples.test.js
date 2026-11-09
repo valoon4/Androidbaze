@@ -10,6 +10,7 @@ globalThis.KabelsalatReports=require('../reports.js');
 globalThis.KabelsalatReferences=require('../reference-data.js').factory(components,network);
 const samples=require('../examples.js').factory(components,network);
 globalThis.KabelsalatSamples=samples;
+globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
 const before=app.split('let project;')[0].replace(/^\(\(\) => \{\s*/,'');
 const {validProject}=new Function(before+'\nreturn {validProject};')();
