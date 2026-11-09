@@ -15,10 +15,25 @@
  const scale=(a,n)=>a.map(x=>x*n);
  const length=v=>Math.hypot(...v);
  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+ const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+ function approximateBendRadius(c){
+  const [a,b,d,e]=c;
+  let smallest=Infinity;
+  for(let i=1;i<40;i++){
+   const t=i/40,u=1-t;
+   const tangent=add(add(scale(subtract(b,a),3*u*u),
+    scale(subtract(d,b),6*u*t)),scale(subtract(e,d),3*t*t));
+   const second=add(scale(add(subtract(d,scale(b,2)),a),6*u),
+    scale(add(subtract(e,scale(d,2)),b),6*t));
+   const curvature=length(cross(tangent,second));
+   if(curvature>1e-10)smallest=Math.min(smallest,length(tangent)**3/curvature);
+  }
+  return Number.isFinite(smallest)?smallest:null;
+ }
  const opposite=(a,b)=>!!a&&!!b&&
   ((a==='SW1'&&b==='SW3')||(a==='SW3'&&b==='SW1')||
    (a==='SW2'&&b==='SW4')||(a==='SW4'&&b==='SW2'));
- function cablePath(a,b,wallA,wallB,normalA,normalB,waypoints=[]){
+ function cablePath(a,b,wallA,wallB,normalA,normalB,waypoints=[],minRadiusMm=null){
   if(!a||!b)return{kind:'unresolved',points:[],warnings:['Mindestens ein Kabelanschluss fehlt']};
   a=toVec(a);b=toVec(b);
   const userPoints=(waypoints||[]).filter(p=>Array.isArray(p)&&p.length===3&&p.every(Number.isFinite)).map(toVec);
@@ -33,8 +48,15 @@
   const reach=clamp(distance*.38,.18,.75);
   const c1=add(a,scale(toVec(normalA),reach));
   const c2=add(b,scale(toVec(normalB),reach));
-  return{kind:'smooth-side',points:[a,c1,c2,b],
-   warnings:['Seitlicher Abgang: schematischer großer Bogen; Mindestbiegeradius mangels Herstellerwert offen']};
+  const minimum=approximateBendRadius([a,c1,c2,b]);
+  const threshold=Number(minRadiusMm);
+  const warnings=['Seitlicher Abgang: Biegeradius aus schematischem Bézier-Bogen nur näherungsweise'];
+  if(minRadiusMm===null||!Number.isFinite(threshold)||threshold<=0)
+   warnings.push('Hersteller-Mindestbiegeradius nicht hinterlegt');
+  else if(minimum!==null&&minimum*1000<threshold)
+   warnings.push('Geometrischer Biegeradius ca. '+Math.round(minimum*1000)+' mm unterschreitet den eingegebenen Projektwert '+threshold+' mm');
+  else warnings.push('Projektwert grob verglichen, tatsächlicher Radius und Einbau ungeprüft');
+  return{kind:'smooth-side',points:[a,c1,c2,b],minRadiusApproxM:minimum,warnings};
  }
  const rect=(name,kind,low,high)=>({name,kind,low,high});
  function construction(group,cables,ports,dims){
