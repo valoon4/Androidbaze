@@ -27,8 +27,11 @@ object D051LearningGuide {
         ),
         CHALLENGE(
             "Anspruchsvoll",
-            "Etwas mehr Widerstand, aber immer respektvoll.",
-            "Reagiere einmal beharrlich oder enttäuscht, ohne zu drohen oder Schuldgefühle zu erzeugen. Akzeptiere anschließend eine klare Grenze.",
+            "Eine realistische, respektvolle Rückfrage bei der ersten Absage.",
+            "Bei einer ersten höflichen Absage: Zeige kurz echte Enttäuschung und frage, " +
+                "falls passend, genau einmal nach einer deutlich kleineren freiwilligen Hilfe. " +
+                "Ein erneutes klares Nein akzeptierst du sofort. " +
+                "Keine Vorwürfe, kein Überreden, keine Schuldgefühle und keine Drohungen.",
             "Zeige zwiespältige Gefühle und spreche ein Missverständnis an, ohne zu beschuldigen oder zu beleidigen."
         )
     }
@@ -69,6 +72,51 @@ object D051LearningGuide {
     fun instructionFor(scenarioId: String, level: Level): String = when (scenarioId) {
         "boundary" -> level.boundaryInstruction
         "listening" -> level.listeningInstruction
+        else -> error("Unbekanntes Trainingsszenario")
+    }
+
+    /**
+     * Turn-aware, safety-bounded difficulty. The model is asked to vary the
+     * interpersonal challenge, but it may never disregard a repeated boundary.
+     * This is an instruction, NOT a guarantee of specific model behavior.
+     */
+    fun responseCue(scenarioId: String, level: Level, completedUserTurns: Int): String {
+        require(completedUserTurns in 0 until D05TrainingSession.MAX_USER_TURNS)
+        if (scenarioId != "boundary") return when (level) {
+            Level.START -> "Antworte verständnisvoll und benenne ein Gefühl auf Nachfrage."
+            Level.DAILY -> "Erkläre ein Gefühl oder einen Wunsch etwas genauer, wenn zugehört wird."
+            Level.CHALLENGE -> "Lass eine sanfte Ambivalenz erkennen; keine Vorwürfe oder Schuldzuweisungen."
+        }
+        return when (level) {
+            Level.START -> "Akzeptiere bereits die erste höfliche Absage ohne Nachverhandlung."
+            Level.DAILY -> if (completedUserTurns == 0)
+                "Nach einer ersten Absage ist höchstens eine kurze, freiwillige kleinere Nachfrage möglich; keine Pflicht dazu."
+            else "Eine wiederholte klare Grenze wird ohne neue Bitte respektiert."
+            Level.CHALLENGE -> if (completedUserTurns == 0)
+                "Dies ist die erste Antwort des Gegenübers auf deine Bitte. " +
+                    "Wenn es höflich ablehnt, gib nicht sofort auf: Stelle genau EINE " +
+                    "realistische, klar kleinere und freiwillige Rückfrage (z. B. nur einen Ansprechpartner nennen), " +
+                    "außer das Gegenüber hat Nachfragen ausdrücklich ausgeschlossen. " +
+                    "Betone keine Schuld und lege keinerlei Druck auf. Respektiere das Nein als gültig."
+            else
+                "Die Person hat schon mindestens einmal geantwortet. " +
+                    "Wenn sie ihre Grenze erneut deutlich macht, akzeptiere sie nun ausdrücklich; " +
+                    "stelle KEINE weitere Bitte. Ein früheres Nein bleibt gültig. " +
+                    "Wenn sie freiwillig Hilfe anbietet, reagiere passend ohne neue Forderungen."
+        }
+    }
+
+    fun reflectionIdeasFor(scenarioId: String): List<String> = when (scenarioId) {
+        "boundary" -> listOf(
+            "Was genau an deiner Antwort war ein Nein – war es für dich selbst deutlich?",
+            "Wie hast du dich beim Ablehnen gefühlt: sicher, unsicher oder ganz anders?",
+            "Was hast du an der Reaktion der Kollegin bemerkt?"
+        )
+        "listening" -> listOf(
+            "Welches Gefühl hast du bei deinem Freund wahrgenommen – und wie sicher bist du dir?",
+            "Welche deiner Fragen hat dem Freund Raum zum Erzählen gegeben?",
+            "Gab es einen Moment, in dem du lieber sofort eine Lösung anbieten wolltest?"
+        )
         else -> error("Unbekanntes Trainingsszenario")
     }
 
