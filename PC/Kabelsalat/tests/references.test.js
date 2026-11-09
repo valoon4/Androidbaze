@@ -65,10 +65,18 @@ for(const [wid,hid,u,v] of [
 ]){
  const hole=pdf.walls.find(w=>w.id===wid).holes.find(h=>h.id===hid);
  assert.ok(hole,'Missing PDF vector-coordinate reference '+hid);
- assert.equal(hole.u,u,'Relative PDF x-center '+hid);
- assert.equal(hole.v,v,'Relative PDF y-center '+hid);
+ assert.equal(hole.sourceU,u,'Relative PDF source x-center '+hid);
+ assert.equal(hole.sourceV,v,'Relative PDF source y-center '+hid);
+ assert.equal(hole.u,Math.round((.5+(u-.5)*.62)*1e5)/1e5,'Compact schematic X '+hid);
+ assert.equal(hole.v,Math.round((.5+(v-.5)*.62)*1e5)/1e5,'Compact schematic Y '+hid);
 }
 assert.ok(pdf.sourceInfo.warning.includes('PDF-Vektorgrafik'));
+assert.ok(pdf.sourceInfo.warning.includes('62 %'));
+for(const w of pdf.walls)for(let i=0;i<w.holes.length;i++)for(let j=0;j<i;j++){
+ const a=w.holes[i],b=w.holes[j],span=['SW1','SW3'].includes(w.id)?pdf.dims.w:pdf.dims.d;
+ const distance=Math.hypot((a.u-b.u)*span,(a.v-b.v)*pdf.dims.h);
+ assert.ok(distance>(a.dn+b.dn)/2,'Compacted pipes overlap: '+a.id+' / '+b.id);
+}
 const ph=(w,t,lr)=>w+'_T'+t+'_LR'+String(lr).padStart(2,'0');
 const pp=(w,t,lr)=>pdf.cables.filter(c=>[c.a,c.b].some(end=>end?.hole===ph(w,t,lr)));
 for(const w of pdf.walls)for(const h of w.holes)
