@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v1.4.1-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v1.5.0-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-1.4.1-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-1.4.1-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.5.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.5.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -98,6 +98,15 @@ Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Ausw
 
 **Abnahme:** Siehe [EUGI_MODE_ACCEPTANCE.md](./EUGI_MODE_ACCEPTANCE.md). Der echte Windows-GUI-Test einschließlich Lesbarkeit/Interaktionsweg steht noch aus.
 
+## Neu in 1.5: PDF V2 – Schacht 13_U_028
+
+- Neue Vorlage **„★ 13_U_028 · PDF V2 Sollbild (91 LR)“** aus dem Fachkonzept vom 08.11.2026, Seiten 21–24. Vier Wandbilder mit zusammen 91 nummerierten Leerrohren, Nenn-DN und den dokumentierten Kabelbelegungen. Die alte HTML-Referenz bleibt separat erhalten.
+- **86 Kabelobjekte** aus 106 Wand-Vorkommen: 20 per eindeutigem Namen zugeordnete Paare und 66 offene/ungenannte Verläufe. Bei offenen Verläufen wird **nur ein kurzes Kabelstück mit gelbem Endpunkt** gezeigt, statt eine fiktive Verbindung durch den Schacht zu erfinden.
+- Korrigierte MS-SNG-0056 (SW1 LR27 / SW2 LR5) und MS-SNG-0038 (SW1 LR21 / SW3 LR26), OLSP 2060–2063 (SW2 LR9), OLSP 2960–2963 (SW2 LR10), fünf EEA in SW2 Trasse 3 LR1; LR2 bleibt leer.
+- 2D zeigt LR-Nummern, Kabelbelegung sowie farbige Rohrringe; 3D hebt belegte Rohre hervor. Ein Klick zeigt die dokumentierten Einzelkabel.
+- **Powerpanel H2O und Brandschutz**: MS/OLA müssen jeweils separat geschlossen eingehaust werden. Die PDF enthält **keine verbindlichen exakten Kanalmaße und Montagepositionen**. Deshalb sind generische Platten und Auflager für diese PDF-Vorlage *nicht als Ausführung eingeblendet*, sondern ausdrücklich offen.
+- **Kein exakter Bauplan**: Die Wandbilder und Nenn-DN sind aus dem PDF transkribiert, aber Koordinaten, Schachtmaße, Abstände, Biegeradien und Befestigungen nicht bestätigt. SW2/Trasse 3 widerspricht zwischen S.13 und S.22; hier gilt vorläufig Detailseite 22. 75-mm-Grenze für Varianten A/B benötigt belastbare Höhenangaben.
+
 ## Neu in 1.4.1: Mehr Platz für den Schacht – Sofort-Fix nach Fachanwender-Feedback
 
 - **Beide Optionsfenster unabhängig einklappen:** Ein schmaler Pfeil **❮** am linken und **❯** am rechten Rand der 3D-Ansicht blendet die jeweilige Seitenleiste aus. Der Pfeil bleibt sichtbar und öffnet die Leiste auf erneuten Klick wieder. Auch beide gleichzeitig einklappen ist möglich.
@@ -150,6 +159,6 @@ Eine zusätzliche öffentlich erreichbare GitHub-Pages-Webseite ist als Workflow
 
 ## Einzeldatei fürs direkte Öffnen in Chrome/Edge (ohne ZIP und Installation)
 
-Die Release-Datei `Kabelsalat-1.4.1-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
+Die Release-Datei `Kabelsalat-1.5.0-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
 
 **Hinweis:** Ob `localStorage` für `file://` funktioniert, hängt von Browser- und IT-Sicherheitsrichtlinien ab. Eigene Projekte deshalb immer mit „Projekt speichern“ als JSON exportieren, um Datenverlust auszuschließen. Eine Firmenrichtlinie kann auch lokale HTML-Dateien blockieren; dann IT-Abstimmung oder eine freigegebene GitHub-Pages-/Intranet-Webseite verwenden. **Keine Sicherheitsbarrieren umgehen.**

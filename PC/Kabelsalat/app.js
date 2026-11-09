@@ -126,8 +126,8 @@ function validProject(o){
 let project;
 try{
  const previous=localStorage.getItem(STORAGE);
- project=validProject(previous?JSON.parse(previous):samples.create('station'));
-}catch(_){project=validProject(samples.create('reference'));}
+ project=validProject(previous?JSON.parse(previous):samples.create('pdf-u028'));
+}catch(_){project=validProject(samples.create('pdf-u028'));}
 let wallId='SW1',holeId=null,cableId=project.cables[0]?.id||null,filter='all',mode='orbit',grab=null;
 let panelKey='OLA-floor',supportId=null,variantId=null;
 let networkOpen=false,netRouteId=null,netSegmentShaftId=null,netLinkId=null;
@@ -216,7 +216,11 @@ function geometryWarnings(){
  }
  return {overlaps,edges};
 }
-function holeText(w,h){return w.id+' · '+(h.row?'Reihe '+h.row+', Öffnung '+h.col:'Frei platziert');}
+function holeText(w,h){
+ if(project.sourceInfo?.sourceVersion?.startsWith('PDF V2')&&h.sourceAddress)
+  return w.id+' · '+h.sourceAddress;
+ return w.id+' · '+(h.row?'Reihe '+h.row+', Öffnung '+h.col:'Frei platziert');
+}
 function referenceText(r){if(!r)return 'Nicht zugeordnet';const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holeText(w,h):'Nicht zugeordnet';}
 function hueGroup(color){
  const r=parseInt(color.slice(1,3),16)/255,g=parseInt(color.slice(3,5),16)/255,b=parseInt(color.slice(5,7),16)/255;
@@ -235,7 +239,9 @@ function renderUI(){
  const totalCables=project.network.shafts.reduce((n,s)=>n+s.snapshot.cables.length,0);
  $('exampleInfo').textContent=totalShafts+' Schächte · '+totalCables+
  ' Kabel im Projekt · aktuelle Ansicht: '+project.activeShaftId+
- (project.sourceInfo?' · Aus HTML-Referenz: Maße, DN und Wege nicht fachlich bestätigt.':' · Fiktive Beispieldaten.');
+ (project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
+ ' · PDF V2: DN und Belegung aus Wandzeichnungen, Abstände und Brandschutz ungeprüft.':
+ project.sourceInfo?' · HTML-Referenz: Maße, DN und Wege nicht fachlich bestätigt.':' · Fiktive Beispieldaten.');
  $('projectName').value=project.name;$('width').value=project.dims.w;$('depth').value=project.dims.d;$('height').value=project.dims.h;
  $('rows').value=wall().rows;$('cols').value=wall().cols;$('wallThickness').value=wall().thickness;$('wallDn').value=wall().dn;$('wallTitle').textContent=wallId+' · Konfiguration';
  $('copyHole').disabled=!hole();$('draftCopy').disabled=!hole();
@@ -255,7 +261,12 @@ function renderUI(){
  $('holeDn').value=h.dn;
  const occupied=project.cables.filter(c=>
   c.a?.wall===wallId&&c.a?.hole===h.id||c.b?.wall===wallId&&c.b?.hole===h.id);
- $('holeOccupancy').innerHTML=(project.sourceInfo&&h.nominalDnConfirmed!==true?'<div class="small" style="color:#995e36">⚠ Der angezeigte Rohrdurchmesser stammt aus der grafischen Öffnung; DN ist nicht bestätigt. '+esc(h.sourceAddress||'')+'</div>':'')+(occupied.length?occupied.map(c=>
+ $('holeOccupancy').innerHTML=(project.sourceInfo&&h.nominalDnConfirmed!==true?
+ '<div class="small" style="color:#995e36">⚠ '+
+ (project.sourceInfo.sourceVersion?.startsWith('PDF V2')?
+  'DN aus PDF-Wandbild; reale Lage und Maße nicht bestätigt. ':
+  'Rohrdurchmesser aus grafischer HTML-Öffnung; DN nicht bestätigt. ')+
+ esc(h.sourceAddress||'')+'</div>':'')+(occupied.length?occupied.map(c=>
   '<div class="search-hit" data-occupied-cable="'+esc(c.id)+'">'+
   '<span class="dot" style="background:'+c.color+'"></span>'+
   esc(c.name)+' ('+esc(c.group)+', '+c.diameter+' mm)</div>').join(''):
@@ -391,7 +402,11 @@ function drawOpening(w,h){
  const circle=new THREE.Mesh(new THREE.CircleGeometry(r,30),new THREE.MeshBasicMaterial({
  color:selected?'#267d75':'#486c7d',transparent:true,opacity:selected?.35:(exploreMode?.20:.045),depthWrite:false,side:THREE.DoubleSide}));
  group.add(circle);circle.userData={type:'hole',wall:w.id,hole:h.id};
- const ring=new THREE.Mesh(new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32),new THREE.MeshBasicMaterial({color:selected?'#f3bb48':(exploreMode?'#426f7c':'#cad6d9')}));
+ const occupants=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
+ project.cables.filter(c=>[c.a,c.b].some(e=>e?.wall===w.id&&e?.hole===h.id)):[];
+ const ringColor=occupants.length?occupants[0].color:(exploreMode?'#426f7c':'#cad6d9');
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32),
+ new THREE.MeshBasicMaterial({color:selected?'#f3bb48':ringColor}));
  ring.position.z=.004;group.add(ring);models.add(group);hitObjects.push(circle);
 }
 function highlightBox(mesh,color='#eec657'){
@@ -468,7 +483,24 @@ function drawWalls(){
 function endpoint(r){if(!r)return null;const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holePosition(w.id,h):null;}
 function drawCable(c){
  if(exploreMode&&exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus)return;
- const a=endpoint(c.a),b=endpoint(c.b);if(!a||!b)return;
+ const a=endpoint(c.a),b=endpoint(c.b);
+ if(!a||!b){
+  if(!project.sourceInfo?.sourceVersion?.startsWith('PDF V2')||!(a||b))return;
+  // Incomplete: only show a short stub, NOT an invented full cable route.
+  const known=c.a&&a?c.a:c.b,start=a||b;
+  if(viewMode.startsWith('SW')&&known.wall!==viewMode)return;
+  const end=start.clone().addScaledVector(normal(known.wall),.24);
+  const selected=c.id===cableId;
+  const stub=new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(start,end),12,
+   selected?.012:.007,8,false),
+   new THREE.MeshBasicMaterial({color:c.color,transparent:true,
+    opacity:selected?1:.78,depthWrite:false}));
+  stub.userData={type:'cable',id:c.id};models.add(stub);hitObjects.push(stub);
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(.018,10,8),
+   new THREE.MeshBasicMaterial({color:'#f0ad36'}));
+  cap.position.copy(end);models.add(cap);
+  return;
+ }
  if(viewMode.startsWith('SW')&&c.a.wall!==viewMode&&c.b.wall!==viewMode)return;
  const chosen=c.id===cableId,sz=sizes(),na=normal(c.a.wall),nb=normal(c.b.wall);
  const thickness=Math.max(.004,(Number(c.diameter)||12)/2000);
@@ -737,6 +769,19 @@ function draw2D(){
  ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);
  ctx.fillStyle=selected?'#b7e9d7':'#e5eff2';ctx.fill();
  ctx.lineWidth=selected?3:1.5;ctx.strokeStyle=selected?'#18745e':'#708b97';ctx.stroke();
+ if(project.sourceInfo?.sourceVersion?.startsWith('PDF V2')){
+  const occupants=project.cables.filter(c=>[c.a,c.b].some(e=>e?.wall===wallId&&e?.hole===h.id));
+  if(occupants.length){
+   ctx.beginPath();ctx.arc(p.x,p.y,r+2,0,Math.PI*2);
+   ctx.strokeStyle=occupants[0].color;ctx.lineWidth=3;ctx.stroke();
+  }
+  ctx.font='bold 9px Segoe UI,Arial';ctx.textAlign='center';ctx.fillStyle='#1b3142';
+  ctx.fillText(String(Number(h.id.split('_LR')[1])),p.x,p.y+3);
+  if(occupants.length){
+   ctx.font='bold 9px Segoe UI,Arial';ctx.textAlign='left';ctx.fillStyle='#9a5718';
+   ctx.fillText(String(occupants.length),p.x+r+3,p.y-r-3);
+  }
+ }
  if(cable()?.a?.wall===wallId&&cable()?.a?.hole===h.id||
  cable()?.b?.wall===wallId&&cable()?.b?.hole===h.id){
  ctx.beginPath();ctx.arc(p.x,p.y,r+5,0,Math.PI*2);ctx.strokeStyle=cable().color;
@@ -766,7 +811,9 @@ function draw2D(){
  const clear=geom2d.clearance(w.holes,span,height),sel=hole();
  const pos=sel?geom2d.holeMillimetres(sel,span,height):null;
  $('draftCoords').textContent=sel?
- w.id+' · '+Math.round(pos.x)+' mm horizontal · '+Math.round(pos.y)+' mm Höhe · DN '+sel.dn:
+ (project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
+  w.id+' · '+sel.sourceAddress+' · schematische Lage · DN '+sel.dn:
+  w.id+' · '+Math.round(pos.x)+' mm horizontal · '+Math.round(pos.y)+' mm Höhe · DN '+sel.dn):
  w.id+' · '+w.holes.length+' Rohre · Mindest-Randabstand: '+(clear.minEdge===null?'–':clear.minEdge+' mm')+
  ' · kleinster Rohrabstand: '+(clear.minPairGap===null?'–':clear.minPairGap+' mm');
  $('draftCoords').style.background=clear.overlaps||clear.minEdge!==null&&clear.minEdge<0?'#fff1e7':'#edf7f3';
@@ -981,7 +1028,7 @@ $('exportPdf').addEventListener('click',async()=>{
 /* Samples are bundled as JavaScript data, so file:// offline installations require no fetch. */
 $('exampleSelect').innerHTML=samples.manifest.map(example=>
  '<option value="'+esc(example.id)+'">'+esc(example.name)+'</option>').join('');
-$('exampleSelect').value='station';
+$('exampleSelect').value='pdf-u028';
 $('loadExample').addEventListener('click',()=>{
  const selected=$('exampleSelect').value;
  const meta=samples.manifest.find(x=>x.id===selected);
@@ -1060,13 +1107,16 @@ function renderExplorerUI(){
  const selectedGroups=['OLA','MS'].filter(k=>exploreSystemFocus==='all'||exploreSystemFocus===k);
  const shown=selectedGroups.filter(k=>project.enclosures[k]?.visible);
  const missing=selectedGroups.filter(k=>!project.enclosures[k]?.visible);
+ $('pdfProtectionNote').hidden=!project.sourceInfo?.sourceVersion?.startsWith('PDF V2');
  $('exploreConstructionNote').textContent=exploreConstructionMode==='hidden'?
   'Für die Vorführung: vorhandene Platten und Auflager einblenden (nur Ansicht).':
   (shown.length?shown.join(' / ')+'-Platten im 3D-Modell sichtbar. ':'Keine Einhausung aktiv. ')+
   (missing.length?missing.join(' / ')+' ist im Projekt ausgeblendet. ':'')+
   (exploreSystemFocus!=='all'?'Auflager ohne Gewerkszuordnung im Filter ausgeblendet. ':
    project.supports.some(s=>s.visible)?'Vorhandene Auflager sichtbar. ':'Keine Auflager hinterlegt. ')+
-  'Schematische Konstruktion – kein geprüfter Brandschutz.';
+  'Schematische Konstruktion – kein geprüfter Brandschutz.'+
+ (project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
+  ' Powerpanel-Maße und Montagepositionen sind nicht bestätigt.':'');
  const tips={
   network:'🗺️ Die Kreise sind Schächte. Linien verbinden sie schematisch. Tippe auf einen Kreis oder doppelklicke, um einen Schacht zu öffnen.',
   shaft:'🏗️ Der graublaue Kasten ist ein Schacht. Kleine Kreise sind Rohröffnungen; die Kabel laufen als bunte Linien hindurch. Mit der Maus drehen, mit dem Rad zoomen.',
@@ -1100,7 +1150,9 @@ function renderExplorerUI(){
  }else{
   target.textContent='Noch kein Kabel ausgewählt. Klick rechts auf einen farbigen Eintrag.';
  }
- $('exploreSceneText').textContent=exploreStage==='cable'&&c?
+ $('exploreSceneText').textContent=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
+ 'PDF V2: Belegungen und DN laut Konzept, Positionen schematisch. Gelbe Kabel-Endmarkierung = Fortsetzung ungeklärt.':
+ exploreStage==='cable'&&c?
   'Der kräftige farbige Weg gehört zu „'+c.name+'“. Start und Ziel siehst du rechts.':
   'Runde Öffnungen nehmen Rohre auf. Die Linien zeigen schematische Kabelwege. Ziehe mit der Maus, um den Schacht zu drehen.';
 }

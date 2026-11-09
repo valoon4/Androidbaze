@@ -25,6 +25,16 @@ assert.ok(app.includes("exploreConstructionMode==='hidden'?.34:.76"),
  'Explorer needs saturated cables when showing a translucent construction');
 assert.ok(html.includes('id="exploreConstructionMode"'), 'Presentation button missing');
 assert.ok(html.includes('id="exploreConstructionNote"'), 'Presentation state explanation missing');
+assert.ok(html.includes('id="pdfProtectionNote"'),
+ 'PDF concept must disclose the unresolved protective channel geometry');
+assert.ok(app.includes("samples.create('pdf-u028')"), 'Fresh installs must load PDF V2 demo');
+assert.ok(app.includes("const occupants=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')"),
+ 'Occupied PDF conduits must be visually distinguishable');
+assert.ok(app.includes("new THREE.LineCurve3(start,end)"),
+ 'Unpaired PDF cables must appear as clearly incomplete stubs');
+assert.ok(app.includes("Gelbe Kabel-Endmarkierung"),
+ 'Unresolved cable ends must be explained to the presenter');
+assert.ok(app.includes("h.id.split('_LR')"), 'PDF view must include LR numbering');
 for(const side of ['Left','Right']){
  assert.ok(html.includes('id="sidebarToggle'+side+'"'),'Missing independently accessible '+side+' pane toggle');
  assert.ok(app.includes("$('sidebarToggle"+side+"').addEventListener('click'"),

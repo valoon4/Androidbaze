@@ -198,6 +198,10 @@ body.explore-mode .explore-scene-overlay{max-height:calc(100% - 65px);overflow-y
 .explore-demo-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:8px}
 .explore-demo-controls .chip{font-size:10px;padding:7px 4px;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .explore-demo-caption{font-size:10px;color:#4e6670;font-weight:750;margin-top:10px}
+.pdf-separated-channels{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.pdf-separated-channels span{display:block;padding:7px 5px;background:white;
+ border:1px solid #d0e2e4;border-radius:6px;text-align:center;font-size:10px;font-weight:700}
+#pdfProtectionNote{font-size:10px;line-height:1.5}
 #explorePresentationFocus{width:100%;margin-top:10px;font-size:10.5px}
 body.presentation-focus #app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 body.presentation-focus #app>header,body.presentation-focus #app>.sidebar{display:none}
@@ -217,7 +221,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.4.1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.5 β1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="toggleExpert" class="btn mode-toggle" title="Zwischen Entdecken und Bearbeiten wechseln" aria-pressed="false">🛠 Profi-Modus</button>
@@ -373,6 +377,14 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
   <option value="SW4">SW4 ausblenden und hineinschauen</option>
  </select>
  <div id="exploreCableCoverage" class="small" role="status">3D-Kabelwege: wird ermittelt.</div>
+ <div id="pdfProtectionNote" class="hint" hidden>
+  <b>PDF-V2-Konzept · Powerpanel-Trennung:</b>
+  <div class="pdf-separated-channels"><span>🔵 MS · eigener Kanal</span><span>🔴 OLA · eigener Kanal</span></div>
+  Beide Gewerke müssen vollständig eingefasst sowie voneinander und von LST/TK/fremden Rohren getrennt werden.
+  <b>Die PDF enthält keine bestätigten Kanalmaße, Befestigungen oder Auflagerpositionen.</b>
+  Die vorhandenen generischen Platten sind hier nicht als vermeintliche Ausführung eingeblendet.
+  Keine Brandschutzfreigabe.
+ </div>
  <button id="explorePresentationFocus" class="btn soft" type="button" aria-pressed="false">▣ Fokusansicht ohne Seitenleisten</button>
 </div>
 </div>
