@@ -1,0 +1,49 @@
+name: Kabelsalat – echte Browser- und 3D-Sichtprüfung
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PC/Kabelsalat/**'
+      - '.github/workflows/kabelsalat-visual.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kabelsalat-visual
+  cancel-in-progress: true
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Chromium ermitteln
+        shell: bash
+        run: |
+          set -e
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$CHROME" || { echo "Kein Chrome/Chromium im Runner"; exit 1; }
+          echo "CHROME_BIN=$CHROME" >> "$GITHUB_ENV"
+          echo "Chromium: $CHROME"
+      - name: Playwright-Core nur für visuelle Qualitätssicherung installieren
+        shell: bash
+        run: |
+          mkdir -p /tmp/kabel-visual
+          npm --prefix /tmp/kabel-visual install --no-audit --no-fund --no-save playwright-core@1.56.1
+          echo "PLAYWRIGHT_CORE=/tmp/kabel-visual/node_modules/playwright-core" >> "$GITHUB_ENV"
+      - name: PDF-Schacht in echtem Browser öffnen, abbilden und prüfen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-visual.js
+      - name: Screenshots für fachlichen PDF-Vergleich bereitstellen
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kabelsalat-1.9.2-visuelle-Pruefung
+          path: PC/Kabelsalat/dist/visual-qa/*.png
+          if-no-files-found: warn
