@@ -1,13 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v1.6.0-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v1.7.0-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
 
 ## Herunterladen und starten
 
 Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-1.6.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-1.6.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-1.7.0-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-1.7.0-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -84,19 +84,28 @@ Beim ersten Start ohne lokale Daten wird ein synthetisches Bahnhofsnetz mit vier
 
 Die drei separat ladbaren JSON-Dateien liegen in examples/. Hinweise und Prüfschritte stehen in examples/README.md. Die verbindliche Bewertung der Anforderungen aus dem Original-Konzept steht in CONCEPT_AUDIT.md. **Diese Beta ist nicht zu 100 % konzeptkonform.**
 
-## Eugi-Modus – fokussierter Einstieg (Beta 3)
+## Basic-Modus – fokussierter Einstieg (Beta 3)
 
 **Warum?** Der erste realistische Bedienungsscreenshot zeigte zu viele Fachbegriffe und Prüfmasken und ein zu blasses 3D-Modell. Ein Erstnutzer soll sofort erkennen, **was ein Schacht ist, wo Kabel verlaufen und wie die Schächte zusammenhängen**, bevor er Maße oder Prüfdaten bearbeiten muss.
 
-**Neu:** Die Software startet standardmäßig im **Eugi-Modus** (3 Auswahlmöglichkeiten: Netzkarte, Schacht verstehen, Kabel verfolgen). Rechts werden nur der aktuell erklärte Kabelweg und anklickbare Kabel gezeigt. Ein Glossar erklärt „Schacht“, „Schachtwand“, „Leerrohr“ und „DN“. Die Missionen haben einfache, dauerhaft gespeicherte Häkchen; niemand muss sie in einer bestimmten Reihenfolge absolvieren.
+**Neu:** Die Software startet standardmäßig im **Basic-Modus** (3 Auswahlmöglichkeiten: Netzkarte, Schacht verstehen, Kabel verfolgen). Rechts werden nur der aktuell erklärte Kabelweg und anklickbare Kabel gezeigt. Ein Glossar erklärt „Schacht“, „Schachtwand“, „Leerrohr“ und „DN“. Die Missionen haben einfache, dauerhaft gespeicherte Häkchen; niemand muss sie in einer bestimmten Reihenfolge absolvieren.
 
-**Visuelle Klarheit:** Eine breitere 3D-Ansicht, dunklere erkennbare Schachtwände, kräftige, im Fokus hervorgehobene Kabel, klarere Rohröffnungen. Ein 2D-Wandplan lässt sich mit einem eigenen Button zuschalten. Komplexe Einhausungsplatten und Konsolen sind im Eugi-Modus nur in der Anzeige ausgeblendet, **nicht aus dem Projekt gelöscht**.
+**Visuelle Klarheit:** Eine breitere 3D-Ansicht, dunklere erkennbare Schachtwände, kräftige, im Fokus hervorgehobene Kabel, klarere Rohröffnungen. Ein 2D-Wandplan lässt sich mit einem eigenen Button zuschalten. Komplexe Einhausungsplatten und Konsolen sind im Basic-Modus nur in der Anzeige ausgeblendet, **nicht aus dem Projekt gelöscht**.
 
 **Profi-Modus:** Über die Schaltfläche oben rechts sind alle bisherigen vollständigen Editoren, Prüfvermerke, Einhausungsplatten, Netz- und Materialeinstellungen wieder sichtbar. Der gewählte Modus ist eine **lokale UI-Einstellung** und beeinflusst weder Projektdaten noch JSON-Export, Undo/Redo oder technische Prüfhinweise. Bestehende lokal gespeicherte Projekte bleiben erhalten.
 
 Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Auswahlmöglichkeiten; **eine medizinisch geprüfte ADHS-Wirksamkeit wird nicht behauptet**.
 
-**Abnahme:** Siehe [EUGI_MODE_ACCEPTANCE.md](./EUGI_MODE_ACCEPTANCE.md). Der echte Windows-GUI-Test einschließlich Lesbarkeit/Interaktionsweg steht noch aus.
+**Abnahme:** Siehe [Abnahmekriterien Basic-Modus](./EUGI_MODE_ACCEPTANCE.md). Der echte Windows-GUI-Test einschließlich Lesbarkeit/Interaktionsweg steht noch aus.
+
+## Neu in 1.7: Basic-Modus und professionelle Pitch-Ansicht
+
+- Der sichtbare persönliche Editionsname wurde entfernt. Der UI-Wechsel heißt jetzt **Basic-Modus / Profi-Modus**. Der Basic-Modus schützt weiterhin vor versehentlicher Bearbeitung.
+- Mit **„▶ Präsentieren“** startet die große 3D-Ansicht von **13_U_028 (PDF V2)**. Ist eine andere Planung geladen, wird die bereits vorhandene Rückfrage vor dem Laden der PDF-Referenz angezeigt. Die aktuelle Planung sollte vorher als JSON gesichert werden.
+- In der Präsentationsansicht ist die Information zunächst **platzsparend eingeklappt**. Über **„▤ Steuerung“** wird sie wieder angezeigt. **„↩ Präsentation beenden“** bleibt immer erreichbar; **Esc** führt ebenfalls zurück.
+- Der kompakte Kopf des Infofelds nennt die Rohr- und Kabelanzahl und die Anzahl ungeklärter Verläufe. Die Darstellung bleibt ausdrücklich als **Konzeptstand** gekennzeichnet.
+- Die drei Einstiegsbereiche heißen jetzt **Übersicht, Schachtansicht und Kabelbelegung** statt spielerischer Missionsbezeichnungen.
+- Die bislang verwendeten internen App-/LocalStorage-IDs bleiben absichtlich erhalten, damit bestehende Windows-Daten und lokal gespeicherte Projekte kompatibel bleiben. **1.7 ist keine fachliche Freigabe** der nur schematischen Kanalgeometrie.
 
 ## Neu in 1.6: Bessere PDF-Bildtreue und lesbare Kabelbelegung
 
@@ -126,7 +135,7 @@ Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Ausw
 
 ## Neu in 1.4: Demo-Sprint – Schacht-Durchblick und sichtbare Datenlücken
 
-- Im **Eugi-Modus** lässt sich unter **„Schacht öffnen“** eine einzelne Wand SW1–SW4 nur für die 3D-Ansicht ausblenden. Die Kamera springt auf diese Schachtseite, um Rohre, Kabelverläufe und vorhandene Platten im Inneren zu zeigen.
+- Im **Basic-Modus** lässt sich unter **„Schacht öffnen“** eine einzelne Wand SW1–SW4 nur für die 3D-Ansicht ausblenden. Die Kamera springt auf diese Schachtseite, um Rohre, Kabelverläufe und vorhandene Platten im Inneren zu zeigen.
 - **„Alle vorhandenen Wände zeigen“** stellt die normale Darstellung wieder her. Keine Wände oder Öffnungen werden gelöscht oder verschoben; die Projektdatei, Varianten, Prüfvermerke und Undo-Historie bleiben davon unberührt.
 - Der Präsentationsbereich nennt die **Zahl der Kabel mit zwei zugeordneten sichtbaren Rohranschlüssen**. Nur solche Kabel zeichnet die aktuelle 3D-Ansicht als durchgehende Kurven. Nicht vollständig zugeordnete Kabel werden nicht mit erfundenen Wegen dargestellt.
 - Beispielsweise hat die HTML-Referenz **13_U_028** weiterhin 18 Kabel, davon **7 ohne vollständige Anschlusszuordnung**. Die Durchblickfunktion ändert daran nichts. Maßstab, Kabelverläufe, Auflager und Brandschutz bleiben schematisch beziehungsweise ungeprüft.
@@ -134,7 +143,7 @@ Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Ausw
 
 ## Neu in 1.3: Demo-Sprint – Fokusansicht und Gewerke-Filter
 
-- Im **Eugi-Modus** lassen sich die gezeigten Kabel und bereits vorhandenen Platten nach **Alle / Nur MS / Nur OLA** filtern. Filter ändern keine Kabelzuordnung, Einhausung oder andere Projektdaten. Nicht eindeutig gewerkbezogene Auflager werden in Einzelfiltern absichtlich ausgeblendet.
+- Im **Basic-Modus** lassen sich die gezeigten Kabel und bereits vorhandenen Platten nach **Alle / Nur MS / Nur OLA** filtern. Filter ändern keine Kabelzuordnung, Einhausung oder andere Projektdaten. Nicht eindeutig gewerkbezogene Auflager werden in Einzelfiltern absichtlich ausgeblendet.
 - Drei **Kamerapositionen** (Schräg / Nah / Oben) führen mit einem Klick zur passenden Ansicht. Danach kann wie bisher frei gedreht und gezoomt werden.
 - **Fokusansicht ohne Seitenleisten** maximiert den Schacht für die Präsentation; derselbe Button bringt die Bedienleisten zurück.
 - Kein fachlicher Geometrie-Nachweis: 13_U_028 ist noch ein schematisches Referenzmodell; fehlende oder im Projekt ausgeblendete Brandschutzbauteile werden nicht erfunden. Für eine Vorführung mit vorhandenen Platten und Auflagern eignet sich der **ausdrücklich fiktive** Beispielschacht 13_T_021 (DEMO).
@@ -142,15 +151,15 @@ Die Gestaltung orientiert sich am schnellen Entscheidungsansatz mit wenigen Ausw
 
 ## Neu in 1.2: Demo-Sprint – Einhausungen direkt vorführen
 
-- Im **Eugi-Modus** über dem 3D-Schacht auf **„Platten transparent zeigen“** klicken. Die Einhausung wird als vorhandene **Einzelplatten** durchsichtig dargestellt; vorhandene Auflager werden eingeblendet. Ein weiterer Klick macht die Platten deckend, ein dritter blendet sie wieder aus.
+- Im **Basic-Modus** über dem 3D-Schacht auf **„Platten transparent zeigen“** klicken. Die Einhausung wird als vorhandene **Einzelplatten** durchsichtig dargestellt; vorhandene Auflager werden eingeblendet. Ein weiterer Klick macht die Platten deckend, ein dritter blendet sie wieder aus.
 - Für die Einhausungsvorführung wird die Schachtwand optisch durchlässiger. Die Anzeigeumschaltung ist **rein visuell**: Sie ändert weder Plattenmaße, Kabelzuordnungen noch gespeicherte Projektdateien, Varianten oder das Änderungsprotokoll.
-- Im Eugi-Modus können Kabel und Rohre angeklickt, aber **nicht versehentlich verschoben oder neu angelegt** werden. Bauteile bearbeiten geht weiterhin im Profi-Modus.
+- Im Basic-Modus können Kabel und Rohre angeklickt, aber **nicht versehentlich verschoben oder neu angelegt** werden. Bauteile bearbeiten geht weiterhin im Profi-Modus.
 - Nur im Projekt vorhandene und sichtbare Konstruktionen werden gezeigt. Insbesondere bei **13_U_028** ist die MS-Einhausung in den bisherigen Quelldaten ausgeblendet und es sind **keine Auflager** vorhanden. Die Anzeige benennt das ausdrücklich, statt eine verifizierte Konstruktion vorzutäuschen.
 - Die 3D-Kanäle sind schematisch und weder brandtechnisch noch statisch geprüft. Die physische Vollständigkeit/Geometrie muss fachlich abgestimmt werden.
 
 ## Neu in 1.1: HTML-Referenzdaten statt nur erfundene Demo-Geometrie
 
-Die zwei beigefügten, eigenständigen **Original-HTML-Editoren** vom 05.11.2026 wurden mit ihren eingebetteten strukturierten Daten ausgewertet, ohne deren sehr große Bilder/Mesh-Base64-Daten in die Anwendung zu kopieren. Im Eugi-Modus stehen nun **sechs** Beispiele bereit:
+Die zwei beigefügten, eigenständigen **Original-HTML-Editoren** vom 05.11.2026 wurden mit ihren eingebetteten strukturierten Daten ausgewertet, ohne deren sehr große Bilder/Mesh-Base64-Daten in die Anwendung zu kopieren. Im Basic-Modus stehen nun **sechs** Beispiele bereit:
 
 - 13_T_021 aus HTML: 48 physisch dargestellte Öffnungen, 16 Kabel, Originalöffnungs-IDs und Quellen-/Seitenangaben.
 - 13_U_028 aus HTML: 78 physisch dargestellte Öffnungen, 18 Kabel, dazu 15 **nur im Plan bezeichnete Marker**, die ausdrücklich nicht als reale Rohröffnungen angelegt werden. Sieben Kabelenden benötigen weiterhin eine bestätigte Zuordnung.
@@ -168,6 +177,6 @@ Eine zusätzliche öffentlich erreichbare GitHub-Pages-Webseite ist als Workflow
 
 ## Einzeldatei fürs direkte Öffnen in Chrome/Edge (ohne ZIP und Installation)
 
-Die Release-Datei `Kabelsalat-1.6.0-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
+Die Release-Datei `Kabelsalat-1.7.0-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
 
 **Hinweis:** Ob `localStorage` für `file://` funktioniert, hängt von Browser- und IT-Sicherheitsrichtlinien ab. Eigene Projekte deshalb immer mit „Projekt speichern“ als JSON exportieren, um Datenverlust auszuschließen. Eine Firmenrichtlinie kann auch lokale HTML-Dateien blockieren; dann IT-Abstimmung oder eine freigegebene GitHub-Pages-/Intranet-Webseite verwenden. **Keine Sicherheitsbarrieren umgehen.**

@@ -140,7 +140,7 @@ let panelKey='OLA-floor',supportId=null,variantId=null;
 let networkOpen=false,netRouteId=null,netSegmentShaftId=null,netLinkId=null;
 let mapZoom=1,mapOffsetX=0,mapOffsetY=0,mapDrag=null;
 let netLinkFromId=null,netLinkToId=null,reviewKey='shaft';
-/* Eugi UI preferences are separate from project data and never affect engineering exports. */
+/* Basic-mode UI preferences are separate from project data and never affect engineering exports. */
 const EXPLORE_MODE_KEY='kabelsalat_ui_mode_v1';
 const EXPLORE_PROGRESS_KEY='kabelsalat_explore_progress_v1';
 let exploreMode=true,exploreWith2D=false,exploreStage='shaft';
@@ -149,6 +149,7 @@ let exploreConstructionMode='hidden';
 const CONSTRUCTION_MODES=['hidden','transparent','solid'];
 /* Pure presentation controls, never serialized to the project. */
 let exploreSystemFocus='all',presentationFocus=false,exploreCameraShot='overview';
+let sceneInfoCompact=false; // View-only; not persisted into project or exported.
 let exploreCutawayWall=null; // Temporary 3D cutaway; never persisted or exported.
 /* Pane layout lives in browser UI preferences, never in project JSON. */
 const SIDEBAR_LAYOUT_KEY='kabelsalat_sidebar_layout_v1';
@@ -1123,6 +1124,12 @@ function renderExplorerUI(){
  document.body.classList.toggle('explore-mode',exploreMode);
  document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
  document.body.classList.toggle('presentation-focus',exploreMode&&presentationFocus);
+ document.body.classList.toggle('scene-info-compact',exploreMode&&sceneInfoCompact);
+ $('toggleSceneInfo').textContent=sceneInfoCompact?'▤ Steuerung':'–';
+ $('toggleSceneInfo').setAttribute('aria-expanded',String(!sceneInfoCompact));
+ $('toggleSceneInfo').setAttribute('aria-label',
+  sceneInfoCompact?'Schachtinformationen und Steuerung aufklappen':'Schachtinformationen und Steuerung einklappen');
+ $('startPitch').setAttribute('aria-pressed',String(exploreMode&&presentationFocus));
  $('explorePresentationFocus').textContent=presentationFocus?'↙ Seitenleisten wieder anzeigen':'▣ Fokusansicht ohne Seitenleisten';
  $('explorePresentationFocus').setAttribute('aria-pressed',String(presentationFocus));
  document.querySelectorAll('#exploreSystemFilters [data-presentation-group]').forEach(btn=>{
@@ -1135,13 +1142,20 @@ function renderExplorerUI(){
   btn.classList.toggle('active',active);
   btn.setAttribute('aria-pressed',String(active));
  });
- $('toggleExpert').textContent=exploreMode?'🛠 Profi-Modus':'✨ Eugi-Modus';
+ $('toggleExpert').textContent=exploreMode?'🛠 Profi-Modus':'◉ Basic-Modus';
  $('toggleExpert').setAttribute('aria-pressed',String(!exploreMode));
  $('explore2DToggle').textContent=exploreWith2D?'▢ 2D-Plan ausblenden':'▤ Wand als 2D-Plan sehen';
  $('exploreCutawayWall').value=exploreCutawayWall||'none';
  const presentedCables=project.cables.filter(c=>
   exploreSystemFocus==='all'||c.group===exploreSystemFocus);
  const routedCount=presentedCables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length;
+ const openings=project.walls.reduce((sum,w)=>sum+w.holes.length,0);
+ $('exploreSceneTitle').textContent=pdfView()?'13_U_028 · PDF V2':'Kabelschacht · 3D';
+ $('exploreSourceLine').textContent=pdfView()?
+  openings+' Leerrohre · '+project.cables.length+' Kabelobjekte · '+
+  (project.cables.length-project.cables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length)+
+  ' ungeklärte Verläufe · Konzeptstand':
+  openings+' Rohröffnungen · schematische Darstellung';
  $('exploreCableCoverage').textContent='3D-Kabelwege mit beiden Rohranschlüssen: '+
   routedCount+' / '+presentedCables.length+
   (routedCount<presentedCables.length?
@@ -1236,7 +1250,7 @@ $('questCable').addEventListener('click',()=>openQuest('cable'));
 $('toggleExpert').addEventListener('click',()=>{
  exploreMode=!exploreMode;
  if(exploreMode){mode='orbit';grab=null;draftDrag=null;}
- else presentationFocus=false;
+ else{presentationFocus=false;sceneInfoCompact=false;}
  try{localStorage.setItem(EXPLORE_MODE_KEY,exploreMode?'explore':'expert');}catch(_){}
  renderAll();requestAnimationFrame(resize);
 });
@@ -1291,8 +1305,36 @@ $('exploreCameraPresets').addEventListener('click',event=>{
  azimuth=shot.azimuth;elevation=shot.elevation;zoom=shot.zoom;viewMode=shot.view;
  networkOpen=false;renderAll();
 });
+function exitPresentation(){
+ presentationFocus=false;sceneInfoCompact=false;
+ renderAll();requestAnimationFrame(resize);
+}
+$('startPitch').addEventListener('click',()=>{
+ // Different source projects still use the existing unsaved-work warning.
+ if(!pdfView()){
+  $('exampleSelect').value='pdf-u028';
+  $('loadExample').click();
+  if(!pdfView())return; // User declined to replace the current project.
+ }
+ exploreMode=true;mode='orbit';grab=null;draftDrag=null;
+ try{localStorage.setItem(EXPLORE_MODE_KEY,'explore');}catch(_){}
+ networkOpen=false;presentationFocus=true;sceneInfoCompact=true;
+ exploreWith2D=false;exploreCutawayWall=null;exploreSystemFocus='all';
+ exploreConstructionMode='hidden';viewMode='3D';exploreCameraShot='overview';
+ azimuth=.72;elevation=.42;zoom=.86;
+ renderAll();requestAnimationFrame(resize);
+});
+$('toggleSceneInfo').addEventListener('click',()=>{
+ sceneInfoCompact=!sceneInfoCompact;
+ renderExplorerUI();requestAnimationFrame(resize);
+});
+$('exitPitch').addEventListener('click',exitPresentation);
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape'&&presentationFocus){event.preventDefault();exitPresentation();}
+});
 $('explorePresentationFocus').addEventListener('click',()=>{
  presentationFocus=!presentationFocus;
+ sceneInfoCompact=presentationFocus;
  networkOpen=false;
  renderAll();requestAnimationFrame(resize);
 });

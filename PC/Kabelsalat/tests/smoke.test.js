@@ -16,7 +16,7 @@ assert.ok(html.includes('id="exampleSelect"'), 'Example selector missing');
 assert.ok(html.includes('id="loadExample"'), 'Example action missing');
 for(const id of ['toggleExpert','exploreGuide','questNetwork','questShaft','questCable',
  'exploreTip','exploreSceneOverlay','explore2DToggle','exploreSelectionBody','cablesOverview'])
- assert.ok(html.includes('id="'+id+'"'),'Eugi-Mode UI missing: '+id);
+ assert.ok(html.includes('id="'+id+'"'),'Basic-Mode UI missing: '+id);
 assert.ok(html.includes('body.explore-mode .sidebar.right'), 'Expert panels are not progressively hidden');
 assert.ok(app.includes('EXPLORE_MODE_KEY'), 'Mode preference must be independent of project');
 assert.ok(app.includes('function openQuest(which)'), 'Guided quests must be wired');
@@ -36,6 +36,22 @@ assert.ok(app.includes('cableDisplayPoint(c.a,c)')&&app.includes('cableDisplayPo
 assert.ok(app.includes('PDF_WALLS[wallId]'),'Source wall context missing');
 assert.ok(html.includes('pdf-crosssection')&&html.includes('Variante A:'),
  'Powerpanel schema and 75mm variants not explained');
+for(const id of ['startPitch','exitPitch','toggleSceneInfo','exploreSceneTitle','exploreSourceLine'])
+ assert.ok(html.includes('id="'+id+'"'),'1.7 presentation UI missing: '+id);
+assert.ok(!html.includes('Eugi-Edition')&&!html.includes('Eugi-Modus'),
+ 'Personal branding must not appear in public interface');
+assert.ok(html.includes('Basic-Modus')&&app.includes("'◉ Basic-Modus'"),
+ 'Neutral Basic-Modus must be present');
+assert.ok(app.includes("$('loadExample').click()")&&app.includes('if(!pdfView())return;'),
+ 'Presentation loading must respect the existing overwrite confirmation');
+assert.ok(app.includes("event.key==='Escape'&&presentationFocus"),
+ 'Escape must always exit the presentation');
+assert.ok(html.includes('body.scene-info-compact .explore-scene-overlay>:not(.explore-scene-bar)'),
+ 'Compact control state must leave the toggle reachable');
+assert.ok(html.includes('body.presentation-focus #exitPitch{display:block}'),
+ 'Presentation exit control must stay visible');
+assert.ok(!app.includes('project.sceneInfoCompact')&&!app.includes('project.presentationFocus'),
+ 'View preferences must never enter engineering JSON');
 assert.ok(html.includes('id="pdfProtectionNote"'),
  'PDF concept must disclose the unresolved protective channel geometry');
 assert.ok(app.includes("samples.create('pdf-u028')"), 'Fresh installs must load PDF V2 demo');

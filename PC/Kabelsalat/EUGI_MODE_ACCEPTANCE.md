@@ -1,4 +1,4 @@
-# Kabelsalat – Eugi-Modus: nutzerorientierte Abnahme
+# Kabelsalat – Basic-Modus: nutzerorientierte Abnahme
 
 **Version:** 1.0.0-beta.3. Anlass: Ein Erstnutzer konnte auf dem Screenshot nicht erkennen, wozu der Schachteditor dient. Ziel: die Anwendung von der sichtbaren fachlichen Vollansicht in einen erklärenden, fokusorientierten Einstieg übersetzen, ohne Fachfunktionen zu entfernen.
 
@@ -13,7 +13,7 @@ Weitere Prüfungen:
 - Glossar aufklappen, ohne die Anwendung zu verlassen.
 - Häkchen in den Missionen erscheinen beim Klick und bleiben beim Neustart vorhanden.
 - Oben **„Profi-Modus“** klicken: alle bekannten Bearbeitungsfelder, Einhausungen, Konsolen und Prüfdokumentation sind da.
-- Wieder auf **„Eugi-Modus“** klicken; kein Projektinhalt darf verschwinden. Die Moduswahl bleibt beim Neustart erhalten.
+- Wieder auf **„Basic-Modus“** klicken; kein Projektinhalt darf verschwinden. Die Moduswahl bleibt beim Neustart erhalten.
 - Ein Projekt als JSON exportieren, Modus wechseln, erneut exportieren: Alle fachlichen Projektdaten bleiben unverändert. Die separat gespeicherte UI-Moduswahl gehört nicht zur Projektdatei.
 - Bestehende persönliche Projektdateien dürfen weder durch den Moduswechsel noch beim Neustart überschrieben werden.
 - Bedienung mit Maus und Tastatur (Tab, Enter, Leertaste), Schriftlesbarkeit bei Windows-Skalierung 125–150 % prüfen.

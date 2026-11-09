@@ -129,7 +129,7 @@ background:radial-gradient(ellipse at center,#fff,#eaf3f6)}
 #qualityList .quality-hit.info{border-left:3px solid #709bb0}
 #qualityPanel textarea{resize:vertical;min-height:55px}
 
-/* Eugi mode: progressive disclosure. All original expert forms remain mounted and functional. */
+/* Basic mode: progressive disclosure. Existing professional editing stays available. */
 .mode-toggle{font-size:12px;padding:9px 13px;background:#f1f7f4;border-color:#b6d3c8;color:#164e43;white-space:nowrap}
 #exploreGuide,#exploreSelection{display:none}
 body.explore-mode #exploreGuide,body.explore-mode #exploreSelection{display:block}
@@ -220,7 +220,17 @@ body.explore-mode .explore-scene-overlay{max-height:calc(100% - 65px);overflow-y
 body.presentation-focus #app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 body.presentation-focus #app>header,body.presentation-focus #app>.sidebar{display:none}
 body.presentation-focus #viewport{grid-column:1;grid-row:1}
-body.presentation-focus .explore-scene-overlay{max-width:315px}
+body.presentation-focus .explore-scene-overlay{max-width:360px}
+.explore-scene-bar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.explore-scene-bar .btn{min-width:34px;flex:none}
+.explore-source-line{font-size:10px;color:#607b81;line-height:1.35;margin-top:3px}
+body.scene-info-compact .explore-scene-overlay>:not(.explore-scene-bar){display:none!important}
+body.scene-info-compact .explore-scene-overlay{padding:9px 11px}
+#exitPitch{display:none;position:absolute;right:18px;top:17px;z-index:10;
+ background:#ffffffed;border-color:#c2dbd1;box-shadow:0 4px 16px #1c414929}
+body.presentation-focus #exitPitch{display:block}
+@media(max-width:920px){#startPitch{padding:7px 8px;font-size:11px}
+ .header-actions{gap:4px}#exitPitch{right:11px;top:10px}}
 body.explore-mode #draft2d .row{display:none}
 body.explore-mode .view-top{top:14px}
 body.explore-mode .view-controls{margin-left:auto}
@@ -235,10 +245,11 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.6 β1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">v1.7 Beta · PDF-V2-Referenz</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
-<button id="toggleExpert" class="btn mode-toggle" title="Zwischen Entdecken und Bearbeiten wechseln" aria-pressed="false">🛠 Profi-Modus</button>
+<button id="startPitch" class="btn primary" type="button" title="PDF-V2-Schacht 13_U_028 als Präsentation öffnen">▶ Präsentieren</button>
+ <button id="toggleExpert" class="btn mode-toggle" title="Zwischen Basic-Ansicht und Profi-Bearbeitung wechseln" aria-pressed="false">🛠 Profi-Modus</button>
 <button id="undo" class="btn tiny" title="Rückgängig (Strg+Z)">↶</button><button id="redo" class="btn tiny" title="Wiederholen (Strg+Y)">↷</button>
 <button id="newProject" class="btn">Neu</button><button id="openProject" class="btn">Öffnen</button>
 <button id="saveProject" class="btn primary">↓ Projekt speichern</button><input id="fileInput" type="file" accept=".json,application/json" hidden>
@@ -246,18 +257,18 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 </header>
 <aside class="sidebar" id="leftSidebar">
 <section class="section" id="exploreGuide">
-<div class="eyebrow">Eugi-Modus · Weniger suchen, mehr entdecken</div>
-<h2>Was willst du entdecken?</h2>
-<p class="small">Drei Mini-Missionen. Klick einfach irgendwo rein – du kannst nichts versehentlich umbauen.</p>
+<div class="eyebrow">Basic-Modus · Schacht und Kabel im Blick</div>
+<h2>Modell erkunden</h2>
+<p class="small">Schacht, Rohrbelegung und Kabelwege ansehen. Im Basic-Modus bleiben die Planungsdaten vor versehentlichen Änderungen geschützt.</p>
 <div class="quest-list" role="group" aria-label="Drei kurze Entdeckungsmissionen">
 <button class="quest" id="questNetwork" data-quest="network">
- <span class="quest-icon">🗺️</span><span class="quest-copy"><strong>1 · Das große Ganze</strong><small>Wo sind die Schächte und wie hängen sie zusammen?</small></span><span class="quest-check" aria-hidden="true">○</span>
+ <span class="quest-icon">🗺️</span><span class="quest-copy"><strong>1 · Übersicht</strong><small>Schächte und vorhandene Netzverbindungen anzeigen.</small></span><span class="quest-check" aria-hidden="true">○</span>
 </button>
 <button class="quest" id="questShaft" data-quest="shaft">
- <span class="quest-icon">🏗️</span><span class="quest-copy"><strong>2 · Rein in den Schacht</strong><small>Was sind Wände, Rohre und Öffnungen?</small></span><span class="quest-check" aria-hidden="true">○</span>
+ <span class="quest-icon">🏗️</span><span class="quest-copy"><strong>2 · Schachtansicht</strong><small>Wände, Trassen und Rohröffnungen vergleichen.</small></span><span class="quest-check" aria-hidden="true">○</span>
 </button>
 <button class="quest" id="questCable" data-quest="cable">
- <span class="quest-icon">🔴</span><span class="quest-copy"><strong>3 · Ein Kabel verfolgen</strong><small>Ein farbiger Weg von Anschluss A nach B.</small></span><span class="quest-check" aria-hidden="true">○</span>
+ <span class="quest-icon">🔴</span><span class="quest-copy"><strong>3 · Kabelbelegung</strong><small>Belegte Rohröffnungen und dokumentierte Anschlüsse prüfen.</small></span><span class="quest-check" aria-hidden="true">○</span>
 </button>
 </div>
 <div class="quest-progress" aria-label="Entdeckte Themen"><span></span><span></span><span></span></div>
@@ -273,7 +284,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <section class="section" id="quickstartPanel">
 <div class="eyebrow">Sofort ausprobieren · 2 neue Vorlagen</div>
 <h2>Beispielprojekte</h2>
-<p class="small">Wähle zwischen fiktiven Demos und den HTML-Referenzen 13_T_021 / 13_U_028. Die Referenzgeometrie und Rohrgrößen sind nur schematisch.</p>
+<p class="small">Für den PDF-Abgleich: <b>★ 13_U_028 · PDF V2</b>. Weitere Beispiele sind fiktiv oder ältere HTML-Referenzen. Reale Maße und Brandschutzkonstruktionen sind noch nicht freigegeben.</p>
 <label class="field">Beispiel auswählen<select id="exampleSelect" class="selector">
 <option value="station">Bahnhofsnetz mit 4 Schächten</option>
 <option value="reference">Referenzschacht 13_T_021</option>
@@ -360,10 +371,15 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 </section>
 </aside>
 <main id="viewport" class="with-2d"><canvas id="scene"></canvas><div id="tooltip"></div>
+<button id="exitPitch" class="btn soft" type="button" title="Präsentation verlassen (Esc)">↩ Präsentation beenden · Esc</button>
 <button id="sidebarToggleLeft" class="sidebar-edge-toggle" type="button" aria-controls="leftSidebar" aria-expanded="true" aria-label="Linke Seitenleiste einklappen" title="Linke Seitenleiste einklappen">❮</button>
 <button id="sidebarToggleRight" class="sidebar-edge-toggle" type="button" aria-controls="rightSidebar" aria-expanded="true" aria-label="Rechte Seitenleiste einklappen" title="Rechte Seitenleiste einklappen">❯</button>
 <div id="exploreSceneOverlay" class="explore-scene-overlay">
-<div class="explore-scene-label">🧱 Das ist ein Kabelschacht</div>
+<div class="explore-scene-bar">
+ <div><div class="explore-scene-label" id="exploreSceneTitle">Schachtansicht</div>
+ <div class="explore-source-line" id="exploreSourceLine" role="status">Schematische Darstellung · keine Freigabe</div></div>
+ <button id="toggleSceneInfo" class="btn tiny" type="button" aria-expanded="true" aria-label="Informationen einklappen">–</button>
+</div>
 <p id="exploreSceneText">Du siehst vier Wände mit runden Rohröffnungen. Die farbigen Linien sind Kabel.</p>
 <div class="explore-legend"><span><i class="swatch-wall"></i> Schachtwand</span><span><i class="swatch-hole"></i> Leerrohr</span><span><i class="swatch-wire"></i> Kabel</span></div>
 <div class="explore-views"><button id="explore2DToggle" class="btn tiny">▤ Wand als 2D-Plan sehen</button><button id="exploreCameraReset" class="btn tiny">⟳ Ansicht zurücksetzen</button></div>
@@ -452,7 +468,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <aside class="sidebar right" id="rightSidebar">
 <section class="section" id="exploreSelection">
 <div class="eyebrow">Was du gerade ansiehst</div>
-<h2>Ein Kabel, ein Weg</h2>
+<h2>Kabelinformationen</h2>
 <div id="exploreSelectionBody" class="selection-help">Klicke rechts auf eines der farbigen Kabel, um seinen Verlauf hervorzuheben.</div>
 </section>
 <section class="section" id="qualityPanel">
