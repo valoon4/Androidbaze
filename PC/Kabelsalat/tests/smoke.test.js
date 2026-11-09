@@ -195,6 +195,7 @@ new Function(app);
 const ids=[...app.matchAll(/\$\('([A-Za-z0-9_-]+)'\)/g)].map(m=>m[1]);
 for(const id of new Set(ids))assert.ok(html.includes('id="'+id+'"'),'UI element missing: '+id);
 globalThis.KabelsalatComponents=require('../components.js');
+globalThis.KabelsalatConstructionV2=require('../construction-v2.js');
 globalThis.KabelsalatNetwork=require('../network.js');
 globalThis.KabelsalatQuality=require('../quality.js');
 globalThis.KabelsalatReports=require('../reports.js');
