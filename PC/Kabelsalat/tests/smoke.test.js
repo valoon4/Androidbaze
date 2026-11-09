@@ -25,6 +25,16 @@ assert.ok(app.includes("exploreConstructionMode==='hidden'?.34:.76"),
  'Explorer needs saturated cables when showing a translucent construction');
 assert.ok(html.includes('id="exploreConstructionMode"'), 'Presentation button missing');
 assert.ok(html.includes('id="exploreConstructionNote"'), 'Presentation state explanation missing');
+for(const id of ['exploreCutawayWall','exploreCableCoverage'])
+ assert.ok(html.includes('id="'+id+'"'), 'Demo v1.4 UI missing: '+id);
+assert.ok(app.includes("exploreMode&&viewMode==='3D'&&exploreCutawayWall===w.id"),
+ 'Cutaway must hide a wall only for 3D explorer view');
+assert.ok(app.includes("exploreCutawayWall=Object.hasOwn(CUTAWAY_AZIMUTH,selected)?selected:null"),
+ 'Wall cutaway must validate wall IDs');
+assert.ok(app.includes("const routedCount=presentedCables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length"),
+ 'Cable visibility must report incomplete assignments');
+assert.ok(!app.includes("project.exploreCutawayWall"),
+ 'Presentation-only cutaway must not modify serialized project');
 for(const id of ['exploreSystemFilters','exploreCameraPresets','explorePresentationFocus'])
  assert.ok(html.includes('id="'+id+'"'),'Demo v1.3 UI missing: '+id);
 for(const state of ['exploreSystemFocus','presentationFocus','exploreCameraShot'])

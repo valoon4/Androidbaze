@@ -180,6 +180,9 @@ body.explore-mode #viewport:not(.network-open) .explore-scene-overlay{display:bl
 .explore-construction{margin-top:9px;border-top:1px solid #dcebe6;padding-top:9px}
 .explore-construction .btn{width:100%;font-size:11px;font-weight:700}
 .explore-construction .small{margin-top:7px;color:#5a6f78;line-height:1.4}
+.explore-construction .selector{margin-top:6px}
+#exploreCableCoverage{border-top:1px solid #dcebe6;padding-top:8px}
+body.explore-mode .explore-scene-overlay{max-height:calc(100% - 65px);overflow-y:auto}
 .explore-demo-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:8px}
 .explore-demo-controls .chip{font-size:10px;padding:7px 4px;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .explore-demo-caption{font-size:10px;color:#4e6670;font-weight:750;margin-top:10px}
@@ -202,7 +205,7 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.3 β1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span style="color:#87a99b">Eugi-Edition · v1.4 β1</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <span id="saveStatus" class="pill">● Lokal gespeichert</span>
 <button id="toggleExpert" class="btn mode-toggle" title="Zwischen Entdecken und Bearbeiten wechseln" aria-pressed="false">🛠 Profi-Modus</button>
@@ -347,6 +350,15 @@ body.explore-mode #viewport{background:radial-gradient(ellipse at 50% 42%,#f7fcf
   <button class="chip" type="button" data-camera-shot="close" aria-pressed="false">Nah</button>
   <button class="chip" type="button" data-camera-shot="top" aria-pressed="false">Oben</button>
  </div>
+ <div class="explore-demo-caption">Schacht öffnen – Wand nur optisch ausblenden</div>
+ <select id="exploreCutawayWall" class="selector" aria-label="Schachtwand für 3D-Durchblick wählen">
+  <option value="none">Alle vorhandenen Wände zeigen</option>
+  <option value="SW1">SW1 ausblenden und hineinschauen</option>
+  <option value="SW2">SW2 ausblenden und hineinschauen</option>
+  <option value="SW3">SW3 ausblenden und hineinschauen</option>
+  <option value="SW4">SW4 ausblenden und hineinschauen</option>
+ </select>
+ <div id="exploreCableCoverage" class="small" role="status">3D-Kabelwege: wird ermittelt.</div>
  <button id="explorePresentationFocus" class="btn soft" type="button" aria-pressed="false">▣ Fokusansicht ohne Seitenleisten</button>
 </div>
 </div>

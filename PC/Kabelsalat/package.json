@@ -1,7 +1,7 @@
 {
   "name": "kabelsalat",
-  "version": "1.3.0-beta.1",
-  "description": "Kabelsalat 1.3 Beta – Demo-Fokusansicht, drei Kamerapositionen und visuelle MS/OLA-Filter",
+  "version": "1.4.0-beta.1",
+  "description": "Kabelsalat 1.4 Beta – reversible Schachtwand-Durchblicke und sichtbare Anschlussabdeckung",
   "main": "main.js",
   "author": "Eugi",
   "license": "MIT",

@@ -42,6 +42,8 @@ for(const [id,name,shafts,ports,cables,markers,missing] of cases){
 const u=validProject(examples.create('source-u028'));
 assert.equal(u.cables.filter(c=>c.sourceOriginalA?.startsWith('PLAN_')||c.sourceOriginalB?.startsWith('PLAN_')).length,7);
 assert.ok(u.sourceInfo.planAnchors.length===15);
+assert.equal(u.cables.filter(c=>c.a&&c.b).length,11,
+ 'U_028: show 11 fully connected 3D paths and report 7 incomplete cable routes');
 assert.ok(u.cables.some(c=>c.referenceGroup==='TK'&&c.group==='Weitere'),'Original source group must be retained');
 const t=validProject(examples.create('source-t021'));
 assert.equal(t.cables.filter(c=>c.mappingStatus==='shown').length,1);

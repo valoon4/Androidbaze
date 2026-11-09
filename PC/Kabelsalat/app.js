@@ -142,6 +142,8 @@ let exploreConstructionMode='hidden';
 const CONSTRUCTION_MODES=['hidden','transparent','solid'];
 /* Pure presentation controls, never serialized to the project. */
 let exploreSystemFocus='all',presentationFocus=false,exploreCameraShot='overview';
+let exploreCutawayWall=null; // Temporary 3D cutaway; never persisted or exported.
+const CUTAWAY_AZIMUTH={SW1:-Math.PI/2,SW2:Math.PI,SW3:Math.PI/2,SW4:0};
 const PRESENTATION_GROUPS=['all','OLA','MS'];
 const CAMERA_SHOTS={
  overview:{azimuth:.72,elevation:.42,zoom:1,view:'3D'},
@@ -429,7 +431,8 @@ function drawWalls(){
  const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
  floor.position.y=-.096;models.add(floor);
  for(const w of project.walls){
- if(!w.visible||(viewMode.startsWith('SW')&&w.id!==viewMode))continue;
+ if(!w.visible||(viewMode.startsWith('SW')&&w.id!==viewMode)||
+  (exploreMode&&viewMode==='3D'&&exploreCutawayWall===w.id))continue;
  const span=(w.id==='SW2'||w.id==='SW4')?s.w:s.d,half=span/2;
  const shape=new THREE.Shape();
  shape.moveTo(-half,0);shape.lineTo(half,0);shape.lineTo(half,s.h);shape.lineTo(-half,s.h);shape.closePath();
@@ -983,6 +986,7 @@ $('loadExample').addEventListener('click',()=>{
   variantId=project.variants[0]?.id||null;netRouteId=project.network.routes[0]?.id||null;
   netSegmentShaftId=project.activeShaftId;netLinkFromId=null;netLinkToId=null;netLinkId=null;
   filter='all';viewMode='3D';zoom=1;networkOpen=selected==='station';
+  exploreCutawayWall=null;exploreSystemFocus='all';exploreCameraShot='overview';
   mapZoom=1;mapOffsetX=0;mapOffsetY=0;reviewKey='shaft';
  },'Beispiel '+selected+' geladen');
  requestAnimationFrame(resize);
@@ -1010,6 +1014,15 @@ function renderExplorerUI(){
  $('toggleExpert').textContent=exploreMode?'🛠 Profi-Modus':'✨ Eugi-Modus';
  $('toggleExpert').setAttribute('aria-pressed',String(!exploreMode));
  $('explore2DToggle').textContent=exploreWith2D?'▢ 2D-Plan ausblenden':'▤ Wand als 2D-Plan sehen';
+ $('exploreCutawayWall').value=exploreCutawayWall||'none';
+ const presentedCables=project.cables.filter(c=>
+  exploreSystemFocus==='all'||c.group===exploreSystemFocus);
+ const routedCount=presentedCables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length;
+ $('exploreCableCoverage').textContent='3D-Kabelwege mit beiden Rohranschlüssen: '+
+  routedCount+' / '+presentedCables.length+
+  (routedCount<presentedCables.length?
+   ' · '+(presentedCables.length-routedCount)+' ohne vollständigen sichtbaren Verlauf.':'')+
+  ' Keine bautechnische Bestätigung.';
  const labels={
   hidden:'👁 Platten transparent zeigen',
   transparent:'▣ Platten deckend zeigen',
@@ -1108,6 +1121,17 @@ $('exploreSystemFilters').addEventListener('click',event=>{
  exploreSystemFocus=button.dataset.presentationGroup;
  if(exploreConstructionMode==='hidden')exploreConstructionMode='transparent';
  renderAll();
+});
+$('exploreCutawayWall').addEventListener('change',()=>{
+ const selected=$('exploreCutawayWall').value;
+ exploreCutawayWall=Object.hasOwn(CUTAWAY_AZIMUTH,selected)?selected:null;
+ if(exploreCutawayWall){
+  // Face the missing wall to reveal the interior, without moving any object.
+  azimuth=CUTAWAY_AZIMUTH[exploreCutawayWall];
+  elevation=.46;zoom=.9;
+  exploreCameraShot='custom';
+ }
+ viewMode='3D';networkOpen=false;renderAll();
 });
 $('exploreCameraPresets').addEventListener('click',event=>{
  const button=event.target.closest('[data-camera-shot]');
