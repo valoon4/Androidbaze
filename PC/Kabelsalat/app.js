@@ -94,7 +94,9 @@ function validProject(o){
  sourceCount:Number.isFinite(h.sourceCount)?h.sourceCount:null,
  sourceCategory:cleanReferenceText(h.sourceCategory,50),
  nominalDnConfirmed:h.nominalDnConfirmed===true,
- origin:cleanReferenceText(h.origin,70)
+ origin:cleanReferenceText(h.origin,70),
+ ...(Number.isFinite(h.sourceU)&&Number.isFinite(h.sourceV)?{
+  sourceU:clamp(h.sourceU,0,1),sourceV:clamp(h.sourceV,0,1)}:{})
  })):grid(w);
  return {id,name:id,visible:w.visible!==false,rows:clamp(Number(w.rows)||5,1,20),
  cols:clamp(Number(w.cols)||5,1,20),thickness,dn,holes};
@@ -1314,7 +1316,7 @@ function renderExplorerUI(){
  $('exploreSourceLine').textContent=pdfView()?
   openings+' Leerrohre · '+project.cables.length+' Kabelobjekte · '+
   (project.cables.length-project.cables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length)+
-  ' ungeklärte Verläufe · Konzeptstand'+
+  ' ungeklärte Verläufe · Konzeptstand · verdichtete Demo-Rohrabstände'+
   (exploreProtectionGuide?' · MS/OLA-Konzeptmarkierungen sichtbar':''):
   openings+' Rohröffnungen · schematische Darstellung';
  $('exploreCableCoverage').textContent='3D-Kabelwege mit beiden Rohranschlüssen: '+
@@ -1356,9 +1358,10 @@ function renderExplorerUI(){
  const missing=selectedGroups.filter(k=>!project.enclosures[k]?.visible);
  $('pdfProtectionNote').hidden=!pdfView();
  $('pdfWallSection').hidden=!pdfView();
- $('loadPdfV2').hidden=pdfView();
+ $('loadPdfV2').hidden=false;
+ $('loadPdfV2').textContent=pdfView()?'↻ Aktuelle PDF-Wandbelegung (91 LR) neu laden':'📄 PDF-Referenz 13_U_028 öffnen';
  $('pdfWallContext').textContent=pdfView()?wallId+' · '+PDF_WALLS[wallId]+
-  ' · '+wall().holes.length+' LR · relative PDF-Positionen, keine vermessenen mm':'';
+  ' · '+wall().holes.length+' LR · PDF-Belegung erhalten, Demo-Rohrabstände enger (keine vermessenen mm)':'';
  document.querySelectorAll('#pdfWallViews [data-pdf-view]').forEach(btn=>{
   const active=btn.dataset.pdfView===viewMode;
   btn.classList.toggle('active',active);
