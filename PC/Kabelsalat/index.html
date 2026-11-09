@@ -257,6 +257,14 @@ body.app-ready:not(.startup-failed) #startupRecovery{display:none!important}
 #pdfOpen{position:absolute;z-index:12;right:16px;bottom:18px;border:2px solid #27786d;
  background:#f8fffded;color:#18584b;font-weight:800;box-shadow:0 4px 15px #143d4537}
 body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
+#oldProjectNotice[hidden],#pdfVisualPanel[hidden]{display:none!important}
+#oldProjectNotice{position:absolute;z-index:13;left:36px;bottom:20px;max-width:440px;
+ padding:12px 15px;background:#fffaf0f2;border:2px solid #e2b768;border-radius:10px;
+ box-shadow:0 6px 24px #193d4936;color:#765327;line-height:1.5}
+#oldProjectNotice strong{display:block;font-size:13px}
+#oldProjectNotice .small{font-size:11px;margin:7px 0}
+#oldProjectNotice .row{display:flex;flex-wrap:wrap;gap:6px}
+@media(max-width:880px){#oldProjectNotice{left:12px;right:12px;bottom:65px;max-width:none}}
 #pdfVisualPanel[hidden]{display:none!important}
 #pdfVisualPanel{position:absolute;inset:9px 9px 9px 9px;z-index:25;
  background:#f3f7fa;overflow:auto;border:2px solid #9bb3c2;border-radius:12px;
@@ -434,6 +442,16 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
  <div class="small">Setzt nur Anzeigeeinstellungen zurück. Gespeicherte Schachtprojekte bleiben erhalten.</div>
 </div>
 
+<div id="oldProjectNotice" hidden role="status">
+ <strong>⚠ Du siehst noch ein älteres gespeichertes Schachtmodell.</strong>
+ <div class="small">Die neuen PDF-Wände und Kabel werden erst im Modell sichtbar, wenn du
+  <b>„PDF V2 laden“</b> bestätigst. Deine bisherige Planung bleibt bis dahin unverändert.</div>
+ <div class="row">
+  <button id="switchToPdf" class="btn primary tiny" type="button">📄 PDF V2 als 3D-Modell laden</button>
+  <button id="previewPdfNow" class="btn soft tiny" type="button">👁 PDF-Wandbilder ansehen</button>
+  <button id="dismissPdfNotice" class="btn tiny" type="button">Später</button>
+ </div>
+</div>
 <button id="pdfOpen" class="btn tiny" type="button" aria-controls="pdfVisualPanel" aria-expanded="false">
  📐 PDF-Wandbilder anzeigen
 </button>
