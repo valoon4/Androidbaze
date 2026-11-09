@@ -13,8 +13,8 @@ android {
         applicationId = "com.valoon4.communicationtrainer"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "0.5.2-d051-learning"
+        versionCode = 9
+        versionName = "0.5.3-d051-guided"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -22,7 +22,7 @@ android {
         // D04 is separately installable beside D03 because the CI debug certificate
         // is ephemeral. Release identity stays unchanged.
         getByName("debug") {
-            applicationIdSuffix = ".d051learningpreview"
+            applicationIdSuffix = ".d051guidedpreview"
             versionNameSuffix = "-preview"
         }
         release { isMinifyEnabled = false }
