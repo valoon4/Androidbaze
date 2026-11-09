@@ -15,6 +15,20 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const page=await browser.newPage({viewport:{width:1500,height:930},deviceScaleFactor:1});
  const errors=[];
  page.on('pageerror',e=>errors.push(e.message));
+ const sample3D=()=>page.evaluate(()=>{
+  const c=document.querySelector('#scene');
+  const gl=c.getContext('webgl2')||c.getContext('webgl');
+  if(!gl)return {uniqueColors:0,visible:false,width:c.width,height:c.height};
+  const w=gl.drawingBufferWidth,h=gl.drawingBufferHeight,buf=new Uint8Array(w*h*4);
+  gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,buf);
+  const colors=new Set();
+  for(let y=0;y<h;y+=Math.max(1,Math.floor(h/28)))
+   for(let x=0;x<w;x+=Math.max(1,Math.floor(w/28))){
+    const n=(y*w+x)*4;
+    colors.add(buf[n]+','+buf[n+1]+','+buf[n+2]);
+   }
+  return {uniqueColors:colors.size,visible:getComputedStyle(c).display!=='none',width:w,height:h};
+ });
  await page.goto('file://'+path.resolve(__dirname,'../index.html'),{waitUntil:'load',timeout:40000});
  await page.waitForTimeout(3000);
  const ready=await page.evaluate(()=>document.body.classList.contains('app-ready'));
@@ -28,12 +42,20 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   }));
   assert.ok(data.canvasWidth>300&&data.canvasHeight>100,'Visible 3D canvas must be dimensioned');
   assert.ok(data.visualToggle);
+  const beforeOverview=await sample3D();
+  assert.ok(beforeOverview.visible&&beforeOverview.uniqueColors>15,
+   '3D canvas must contain actual colored walls and pipes, not just a blank rectangle: '+
+   JSON.stringify(beforeOverview));
   // Real Chromium regression for the Fachanwender: no trapping in subviews.
   await page.locator('#questNetwork').click();
   await page.waitForFunction(()=>document.querySelector('#viewport').classList.contains('network-open'));
   await page.locator('#returnToShaft').click();
   assert.equal(await page.locator('#viewport').evaluate(el=>el.classList.contains('network-open')),false);
   assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
+  await page.waitForTimeout(200);
+  const afterOverview=await sample3D();
+  assert.ok(afterOverview.visible&&afterOverview.uniqueColors>15,
+   'Returned 3D view must STILL draw pipes/walls, not only labels: '+JSON.stringify(afterOverview));
   await page.locator('#pdfOpen').click();
   await page.locator('#pdfGoShaft').click();
   assert.equal(await page.locator('#pdfVisualPanel').evaluate(el=>el.hidden),true);
@@ -68,6 +90,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   await page.locator('#undo').click();
   assert.equal(await page.locator('#projectName').inputValue(),oldName,
    'Undo must restore original project data');
+  const afterEditing=await sample3D();
+  assert.ok(afterEditing.visible&&afterEditing.uniqueColors>15,
+   '3D rendering must still work after switching from Basic to real editing: '+JSON.stringify(afterEditing));
   await page.screenshot({path:path.join(out,'shaft-editable.png'),fullPage:true});
   await page.locator('#toggleExpert').click();
   await page.screenshot({path:path.join(out,'shaft-3d.png'),fullPage:true});
