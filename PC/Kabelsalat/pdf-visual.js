@@ -34,7 +34,9 @@
   return walls;
  }
  function pipe(h,items){
-  const x=37+h.u*740,y=54+(1-h.v)*470,r=Math.max(13,Number(h.dn)*.23);
+  // Original PDF-wall comparison remains uncompressed; 3D/2D editors are schematic.
+  const x=37+(h.sourceU??h.u)*740,y=54+(1-(h.sourceV??h.v))*470,
+   r=Math.max(13,Number(h.dn)*.23);
   const count=items.length,colors=new Map();
   for(const c of items)colors.set(c.color||'#687e91',(colors.get(c.color||'#687e91')||0)+1);
   const circ=2*Math.PI*(r+4);let offset=0;
