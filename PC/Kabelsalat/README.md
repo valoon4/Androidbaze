@@ -9,6 +9,10 @@
 - Über **„Aktuelle PDF-Wandbelegung (91 LR) neu laden“** ist die Referenz bewusst neu ladbar, auch wenn im Browser ein altes Modell gespeichert ist. Die vorhandene Rückfrage schützt eigene Projektänderungen. Bestehende Autosaves und importierte JSON-Projekte werden nicht stillschweigend überschrieben.
 - Fehlende Endpunkte, Biegeradien und Brandschutzfreigaben bleiben offen.
 
+## 828 konkrete Tasks – ab 10.11.2026
+
+Der kanonische [Task-Tracker mit 828 nummerierten Aufgaben](./TASKS/README.md) enthält P0 (Quellen/Pitch), P1 (Editor/Netz), P2 (Import/Qualität/Fachprüfung), P3 (QA/Betrieb/Feedback). Alle Aufgaben sind zunächst offen; die alten Entwicklungsmeilensteine und die 97 PDF-Tests werden nicht als erledigte Task-IDs gezählt. Der Testlauf validiert zusätzlich lückenlose IDs und den aktuellen Taskzähler. Zusätzliche Aufgaben aus Bros Chat erhalten fortlaufend neue IDs ab KAB-0829.
+
 ## Herunterladen und starten
 
 Die folgenden Downloads sind noch historische 1.9.3-Builds; die aktuelle 2.0.1-Quellversion steht in diesem Repository. Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
