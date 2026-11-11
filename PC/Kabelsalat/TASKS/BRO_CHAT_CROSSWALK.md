@@ -42,4 +42,8 @@
 3. **Schemata liefern:** KAB-0853–0864 auf zunächst einem Schacht prüfen; anschließend auf alle nachweisbar verfügbaren Schächte skalieren.
 4. **Nach jedem Sprint:** bestehende KAB-0793–0810 (Feedback) und automatisierte Tests/Visualläufe berücksichtigen.
 
+## Zweite Granularitätsprüfung (11.11.2026)
+
+Der erste Abgleich erzeugte **36** neue Aufgaben (KAB-0829–0864). Auf erneute Nachfrage wurden **12 weitere, spezifische Nachweis- und Artefaktprüfungen** (KAB-0865–0876) angelegt. Besonders wichtig ist **KAB-0867**: Jeder der im Chat erwähnten 92 Schächte soll als eigenständiger, korrekt identifizierter Prüffall geführt werden, **erst nachdem** die echte Originalliste vorliegt. Es wurden keine 92 Schacht-IDs erfunden. Die früheren Aussagen zu 274 PDF-Seiten, 35 Querschnitten und 276 Excel-Bildern sind Prüfgegenstand, nicht bestätigte Fakten. [Detailtasks](./06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md).
+
 **Erledigungsstand durch diesen Quellabgleich:** Es wurden Aufgaben ergänzt und präzisiert; **keine** fachliche Implementierungsaufgabe gilt damit als abgeschlossen.
