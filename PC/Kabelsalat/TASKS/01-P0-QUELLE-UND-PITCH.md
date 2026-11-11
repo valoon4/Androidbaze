@@ -52,11 +52,11 @@
 
 ## P0-03 · Rohrabstände und Wandbelegung in der Demo (KAB-0037–KAB-0054)
 
-**Quelle:** v2.0.1, E04. **Definition of Done:** Schematische Darstellung klar markiert, keine Überlappung, Originalkoordinaten unverändert.
+**Quelle:** v2.0.1, E04. **Definition of Done:** Schematische Darstellung klar markiert, keine Überlappung; Original- und Planungskoordinaten dürfen durch rein visuelle Rohrverdichtung nicht eigenmächtig verändert werden.
 
 - [ ] **KAB-0037** – Original-PDF-Mittelpunkte sourceU/sourceV im Projekt-Roundtrip absichern
-- [ ] **KAB-0038** – Verdichtete Demo-Koordinaten getrennt von Quellkoordinaten speichern
-- [ ] **KAB-0039** – 62-Prozent-Demo-Skalierung als editierbaren Ansichtsparameter konzipieren
+- [ ] **KAB-0038** – Demo-Verdichtung als optionale Ansichtstransformation von Quell- und Planungskoordinaten trennen, ohne Rohre im Datenmodell zu verschieben
+- [ ] **KAB-0039** – Historische 62-Prozent-Demo-Verdichtung nur in explizit schematischer Vorschau anbieten und im Fachmodell deaktivieren
 - [ ] **KAB-0040** – Unabhängige horizontale Rohrabstandsregel je Schachtwand prüfen
 - [ ] **KAB-0041** – Unabhängige vertikale Rohrabstandsregel je Schachtwand prüfen
 - [ ] **KAB-0042** – Sonderabstände für Trasse 2 auf SW1 berücksichtigen
@@ -165,13 +165,13 @@
 - [ ] **KAB-0125** – Gespeicherten Radius nach JSON-Reimport bytegetreu erhalten
 - [ ] **KAB-0126** – Biegeradiusbericht mit Quelle und noch offener Fachfreigabe ergänzen
 
-## P0-08 · OLA-Variante A: rote Einhausung (KAB-0127–KAB-0144)
+## P0-08 · OLA-Demofall: roter Kanal mit historischer A-Darstellung (KAB-0127–KAB-0144)
 
-**Quelle:** V2_0_STATUS, E08. **Definition of Done:** Sechs Einzelplatten und fünf Stapelauflager nur bei vollständig belegbaren Anschlüssen, sonst offen.
+**Quelle:** V2_0_STATUS, E08. **Definition of Done:** OLA bleibt ein eigenständiger Kanal. Die fünf horizontalen Stapelplatten sind ein bisheriger **Demofall**, keine feste OLA-Regel. Bauart A/B ist abhängig von belegter Höhenvorgabe; bei fehlendem Aufmaß bleibt sie ungeklärt.
 
-- [ ] **KAB-0127** – OLA-Variante A ausschließlich bei passenden Projektdaten aktivieren
+- [ ] **KAB-0127** – Für OLA sowohl Bauart A als auch B anhand bestätigter Höhenkriterien ermöglichen, statt OLA fest Bauart A zuzuweisen
 - [ ] **KAB-0128** – OLA-Rot als eigene Konstruktion unabhängig von MS rendern
-- [ ] **KAB-0129** – Fünf gestapelte horizontale Auflagerplatten geometrisch anordnen
+- [ ] **KAB-0129** – Fünf gestapelte horizontale Auflagerplatten als historischen OLA-Demofall testen; reale Stapelhöhe nur aus belegten Maßen ableiten
 - [ ] **KAB-0130** – OLA-Bodenplatte als eigenständiges Objekt erzeugen
 - [ ] **KAB-0131** – OLA-Deckelplatte als eigenständiges Objekt erzeugen
 - [ ] **KAB-0132** – OLA-linke Seitenplatte als eigenständiges Objekt erzeugen
@@ -188,13 +188,13 @@
 - [ ] **KAB-0143** – OLA-Konstruktion bei fehlendem Endpunkt ausdrücklich ausblenden
 - [ ] **KAB-0144** – OLA-Variante-A-Screenshot mit Bros rotem Referenzkasten vergleichen
 
-## P0-09 · MS-Variante B: blaue Einhausung (KAB-0145–KAB-0162)
+## P0-09 · MS-Demofall: blauer Kanal mit historischer B-Darstellung (KAB-0145–KAB-0162)
 
-**Quelle:** V2_0_STATUS, E08. **Definition of Done:** Zwei Systeme getrennt, vier Stützen und sechs Platten nur unter validierten Geometrieannahmen.
+**Quelle:** V2_0_STATUS, E08. **Definition of Done:** MS bleibt unabhängig von OLA. Vier Stützen sind nur der historische **Demofall**, nicht die feste MS-Regel. Bauart A/B richtet sich nach bestätigtem Höhenkriterium; offene Schwellen dürfen nicht als verbindlich ausgegeben werden.
 
-- [ ] **KAB-0145** – MS-Variante B unabhängig von OLA-Geometrie erzeugen
+- [ ] **KAB-0145** – Für MS sowohl Bauart A als auch B anhand bestätigter Höhenkriterien ermöglichen und MS getrennt von OLA halten
 - [ ] **KAB-0146** – MS-Blau als eigenes Konstruktionsmodell mit IDs rendern
-- [ ] **KAB-0147** – Vier senkrechte Stützelemente geometrisch positionieren
+- [ ] **KAB-0147** – Drei bis vier vertikale Stützelemente je nach belegter Kanallänge vorsehen; vier als bisherigen MS-Demofall absichern
 - [ ] **KAB-0148** – Durchgehende MS-Kanalbodenplatte erzeugen
 - [ ] **KAB-0149** – MS-Deckelplatte eigenständig modellieren
 - [ ] **KAB-0150** – MS-linke Seitenplatte eigenständig modellieren
