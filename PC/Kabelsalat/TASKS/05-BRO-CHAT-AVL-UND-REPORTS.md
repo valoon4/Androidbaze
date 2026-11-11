@@ -1,0 +1,57 @@
+# Kabelsalat · zusätzliche Bro-Chat-Tasks (KAB-0829–KAB-0864)
+
+**Quelle:** Nutzerupload `dumm.txt` am 11.11.2026 (historischer Bro-/ChatGPT-Gesprächsexport). Die im Chat genannten PDF-/Excel-Dateien, 1.957 Planseiten und 92 geprüften Schächte sind **Berichte aus dem Chat, keine hier unabhängig geprüften Originale**. Quellenbezogene Tatsachen erfordern nachgereichte Originalpläne und AVL0116. Alle 36 Tasks starten **offen**. Die bestehenden KAB-0001–KAB-0828 bleiben erhalten.
+
+**Kritische Sperre:** Die alte 100-mm-Vorgabe und spätere 75-mm-Bildvorgabe widersprechen sich. Die bisherige Produkt-Zuordnung `OLA=A, MS=B` ersetzt nicht den fachlichen Abstandsentscheid. Die 62-%-Rohrverdichtung der 3D-Demo ist keine vermessene Rohrposition. Bis zur Klärung dürfen daraus keine technischen Zusicherungen oder grüne Freigaben folgen.
+
+## P0-13 · Bros 3D-Korrekturen – Abweichungen v2.0.1 (KAB-829–KAB-840)
+
+**Ursprung:** hochgeladener Bro-Chat, Abschnitt „Technische Korrekturen der 3D-Schachtmodelle 13_U_028 und 13_T_021“, Punkte 1–5; V2_0_STATUS.md. **Definition of Done:** Für beide Schächte anhand vorhandener Originalpläne reproduzierbar; bei fehlenden echten Maßen als blockiert/unbestätigt, niemals scheinbar freigegeben.
+
+- [ ] **KAB-829** – Variantenwahl A/B von der Gewerkezuordnung OLA/MS entkoppeln: jede Trasse darf je nach geprüfter Höhenlage A oder B benötigen
+- [ ] **KAB-830** – Anforderungskonflikt 100 mm (alter Chat) gegenüber 75 mm (spätere Bildvorgabe) samt Quelle und gültiger Versionsentscheidung fachlich klären
+- [ ] **KAB-831** – Bei unbekannter Höhe Schachtboden → Leerrohr-Unterkante keine automatische Variante A/B als technisch richtig behaupten
+- [ ] **KAB-832** – Die 62-%-Verdichtung in 13_U_028 als reine optionale Demonstrationsansicht isolieren; reale Modell-/Kabelanschluss-Koordinaten nicht stillschweigend verschieben
+- [ ] **KAB-833** – Originale Wandzuordnung und Rohranzahl bei 13_T_021 vor/nach Geometriekorrektur als unveränderliche Vergleichsfixture sichern
+- [ ] **KAB-834** – Originale Wandzuordnung und Rohranzahl bei 13_U_028 für HTML- und PDF-V2-Quelle separat als unveränderliche Vergleichsfixture sichern
+- [ ] **KAB-835** – Den Abstand Boden → Unterkante Leerrohr aus echter Bodenhöhe und bestätigtem Rohraußendurchmesser explizit und mit Einheiten berechnen
+- [ ] **KAB-836** – Variante A bei bestätigtem Grenzwert exakt 100 mm auf Grenzfallverhalten testen, sofern 100 mm fachlich verbindlich bestätigt wird
+- [ ] **KAB-837** – Variante B bei bestätigtem Grenzwert oberhalb 100 mm testen, ohne diesen Wert vor Konfliktentscheidung als verbindlich auszugeben
+- [ ] **KAB-838** – Das ungeklärte Intervall 75–100 mm als Entscheidungssperre mit dokumentiertem Konflikt behandeln
+- [ ] **KAB-839** – Brandschutzkanalführung an bereits korrekt gerouteten Kabeln ausrichten und verhindern, dass der Kanal einen zusätzlichen Kabelknick erzwingt
+- [ ] **KAB-840** – Die bestehenden Interaktionen beider 3D-Schachtmodelle nach jeder fachlichen Geometrieänderung auf Verlust von Auswahl, Kamera, Editierung und Export prüfen
+
+## P2-13 · AVL0116-92-Schacht-Neuprüfung – konkrete Fehlerfälle (KAB-841–KAB-852)
+
+**Ursprung:** hochgeladener Bro-Chat, Gespräch über 92 OLA-Schächte, AVL0116-Neuprüfung und alte Prüfungsfehler; Pläne und Original-AVL liegen hier nicht vor. **Definition of Done:** Jede Feststellung mit überprüfbarem Originalplandokument, Seite, Kabeltyp und AVL-Wortlaut; ungeklärte Fälle nicht als konform oder nicht konform endgültig einstufen.
+
+- [ ] **KAB-841** – Den im Altchat genannten Plansatz mit angeblich 1.957 Seiten anhand tatsächlich bereitgestellter Originaldateien, Ausgabe und Blattindex verifizieren
+- [ ] **KAB-842** – Die vollständige AVL0116 inklusive Originalwortlaut und eventueller Anlagen beschaffen und Prüfregeln aus dem Original versionieren
+- [ ] **KAB-843** – Die angebliche 92-Schacht-Auswertung mit Original-Schachtliste und Version des Excel-Registers auf Vollständigkeit und Duplikate abgleichen
+- [ ] **KAB-844** – Bei AVL0116-Prüfung den konkreten 15-kV-Kabelnachweis statt bloßer Gewerkekennung OLA als Eingangskriterium definieren
+- [ ] **KAB-845** – Die im Altchat genannten zehn OLA-Schächte ohne ausgewiesenes 15-kV-Kabel einzeln identifizieren und Quellseiten belegen
+- [ ] **KAB-846** – 13_F_041 und 13_G_011 erneut auf nachgewiesene 15-kV-Belegung prüfen und einen unbelegten Negativbefund zurücknehmen
+- [ ] **KAB-847** – 13_W_027 und 13_W_033 auf tatsächliche gemeinsame Belegung in Trasse 1 / Leerrohr 5 mit Planseiten nachprüfen
+- [ ] **KAB-848** – Für die beiden LST-LWL bei 13_W_027 / 13_W_033 Herstelleraufbau bzw. metallische Armierung und AVL-Relevanz getrennt belegen
+- [ ] **KAB-849** – 11_A_011: einbetonierten Teilbereich räumlich abgrenzen und keine pauschale Schachtfreigabe daraus ableiten
+- [ ] **KAB-850** – 12_A_001.1 bis 12_A_001.3: bisher übersehenen TK/BOS-Feeder nach Planbeleg berücksichtigen
+- [ ] **KAB-851** – Historischen Betrachtungsabschnitt bis 11_L_011 / QN-010 als reproduzierbaren Netz-/Berichtsfilter anbieten
+- [ ] **KAB-852** – Je geprüftem Schacht gemeinsame Trasse, gemeinsames Leerrohr, tatsächliches 15-kV-Vorkommen und offenen Nachweis als getrennte Prüffelder erfassen
+
+## P1-13 · 2D-Schachtschemata und professionelle PDF-/Excel-Prüfberichte (KAB-853–KAB-864)
+
+**Ursprung:** hochgeladener Bro-Chat, Feedback zum Rechteckschema, Querschnitt und Prüfbefund, professionellen PDF- und Excel-Register. **Definition of Done:** Verständliche, fachlich korrekt beschriftete Beispieldateien; nicht aus Planlagen ableitbare reale Kreuzungen und Höhen bleiben schematisch/offen.
+
+- [ ] **KAB-853** – Jeden ausgewählten Schacht als Rechteck-Grundriss mit eindeutig zugeordneten Schachtwänden darstellen
+- [ ] **KAB-854** – Farbige Kabelverbindungen innerhalb des Rechtecks an belegten Wandrohren starten und enden lassen, ohne ins Leere laufende Fantasielinien
+- [ ] **KAB-855** – Im Rechteckschema sichtbar zwischen belegtem Wandanschluss, Höhenversatz und nur schematisch möglicher Kabelkreuzung unterscheiden
+- [ ] **KAB-856** – Für reale Überkreuzung und Aufstieg zur Schachtwand eine Quellenbestätigung verlangen, statt 2D-Linien als gemessenen 3D-Verlauf auszugeben
+- [ ] **KAB-857** – Den vom Bro ausdrücklich akzeptierten Titel „Kabelverbindung im Schacht“ im Schema beibehalten
+- [ ] **KAB-858** – Die Berichtsrubrik einheitlich „Querschnitt und Prüfbefund“ nennen und „korrigiert“ aus offiziellen Blattüberschriften weglassen
+- [ ] **KAB-859** – Gemeinsames physisches Leerrohr als roten Befund mit sachlicher Textbezeichnung und Prüffallkennzeichnung darstellen
+- [ ] **KAB-860** – Gemeinsame Trasse bei getrennten Leerrohren als orangefarbenen Prüfbedarf mit sachlicher Textbezeichnung darstellen
+- [ ] **KAB-861** – Grünen AVL-Erfüllungsstatus ausschließlich bei vollständig belegtem Originalregelabgleich und dokumentierter Fachentscheidung vergeben
+- [ ] **KAB-862** – Fehlenden AVL-Nachweis neutral/weiß kennzeichnen und von tatsächlichem Nichtbestehen trennen; Farbwörter nicht als professionelle Feldüberschriften verwenden
+- [ ] **KAB-863** – Mehrseitiges PDF-Prüfheft aus Rechteckschema, Querschnitt, Wandbelegung, Originalplanreferenz und offenem Nachweis je ausgewähltem Schacht aufbauen
+- [ ] **KAB-864** – Filterbares Excel-Schachtregister mit denselben Statusdefinitionen, eindeutig referenzierten Querschnittsbildern, verlinkten Planseiten und neutralem Dateinamen exportieren
+
