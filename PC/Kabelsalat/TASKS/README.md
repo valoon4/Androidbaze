@@ -1,6 +1,6 @@
 # Kabelsalat · Aufgabensteuerung ab v2.0.1
 
-**Kanonischer Tasktracker:** vier unten verlinkte Markdown-Dateien mit **828 eindeutig nummerierten Einzelaufgaben**, gegliedert in 46 fachliche Arbeitspakete. Erstellt am 10.11.2026 anhand `ROADMAP.md`, `CONCEPT_AUDIT.md`, `V2_0_STATUS.md`, `EUGI_MODE_ACCEPTANCE.md` und der vorhandenen Referenzdaten. **Zusätzliches Feedback von Bro ist noch nicht eingearbeitet.**
+**Kanonischer Tasktracker:** fünf verlinkte Markdown-Dateien mit **864 eindeutig nummerierten Einzelaufgaben** in 49 Arbeitspaketen. Basis: 828 Tasks am 10.11.2026 aus Roadmap, Konzept und Referenzdaten; **36 aus dem hochgeladenen älteren Bro-Chat abgeleitete Aufgaben am 11.11.2026**. [Quellabgleich / wichtige Widersprüche](./BRO_CHAT_CROSSWALK.md).
 
 | Bereich | Aufgaben | ID-Bereich | Live-Datei |
 |---|---:|---|---|
@@ -8,7 +8,8 @@
 | P1 · Frei editierbarer Schacht, 2D/3D, Netz und Dateien | 216 | KAB-0217–KAB-0432 | [02-P1-EDITOR-UND-NETZ.md](./02-P1-EDITOR-UND-NETZ.md) |
 | P2 · Geometrieprüfung, Herkunft, Import und Freigabegrenzen | 216 | KAB-0433–KAB-0648 | [03-P2-DATEN-UND-PRUEFUNG.md](./03-P2-DATEN-UND-PRUEFUNG.md) |
 | P3 · QA, Security, Performance, Veröffentlichung, Feedback | 180 | KAB-0649–KAB-0828 | [04-P3-QA-BETRIEB-UND-FEEDBACK.md](./04-P3-QA-BETRIEB-UND-FEEDBACK.md) |
-| **Gesamt bei Anlage** | **828** | **KAB-0001–KAB-0828** | |
+| P0/P1/P2 · Bro-Chat: korrigierte 3D-Vorgaben, 92-Schacht-Prüfung, PDF/Excel | 36 | KAB-0829–KAB-0864 | [05-BRO-CHAT-AVL-UND-REPORTS.md](./05-BRO-CHAT-AVL-UND-REPORTS.md) |
+| **Gesamt aktuell (11.11.2026)** | **864** | **KAB-0001–KAB-0864** | |
 
 ## Initialer Status am 10.11.2026
 
@@ -17,6 +18,13 @@
 - **Offen:** 828. **Nächster Kandidat:** KAB-0001 – PDF-Index für Schacht 13_U_028 eindeutig versionieren. Danach KAB-0002 ff., wobei abhängige oder blockierte Aufgaben dokumentiert übersprungen werden dürfen.
 - **Wichtig:** P3 enthält QA/CI/Security, die bereits bei jedem passenden P0/P1/P2-Sprint erledigt werden müssen; Priorität P3 heißt nicht, bis zum Schluss mit Tests zu warten.
 
+## Nachtrag aus Bros altem Chat · 11.11.2026
+
+- **Trackerstand nach Übernahme:** **0 erledigt / 864 offen / 864 gesamt**. Wir haben die Chat-Quellen geprüft und Aufgaben **angelegt**, nicht die Softwareaufgaben umgesetzt.
+- **Neue Tasks:** KAB-0829–0864. **Vorrangiger Klärungsblocker:** KAB-0829–0832 (Höhenregel A/B, 75-mm-/100-mm-Konflikt, 62-%-Demo-Belegung). Die ursprüngliche KAB-0001 ist weiter der erste offene numerische Task.
+- **Neuprüfungs-Daten:** Im Chat werden 92 Schächte und ein 1.957-seitiger Plansatz erwähnt; weder diese Originaldateien noch die vollständige AVL0116 lagen hier vor. Deshalb sind die Neuprüfungen **nicht** als erledigt markiert.
+- **Quelle:** [BRO_CHAT_CROSSWALK.md](./BRO_CHAT_CROSSWALK.md). Das historische Gespräch und Assistentenbehauptungen sind **keine fachliche Freigabe**.
+
 ## Ein Task nach dem anderen – Arbeitsregel
 
 1. **Aufgabe wählen:** niedrigste sinnvoll bearbeitbare offene ID aus P0, unter Berücksichtigung von fachlichen Blockern, Fehlern aus Bro-Feedback und notwendigen QA-Tasks. Vorher aktualisierten Repository-Stand sowie den betreffenden Task lesen.
@@ -24,7 +32,7 @@
 3. **Arbeiten:** Genau den abgegrenzten Task liefern. Beim Commit die ID `KAB-0001` o.ä. nennen. Quellannahmen strikt von vermessener oder fachlich bestätigter Geometrie unterscheiden. Bei fachlichen Abhängigkeiten kein Ergebnis fingieren.
 4. **Abnehmen:** Nur auf `[x]` wechseln, wenn die **Definition of Done des Arbeitspakets**, der konkrete Task, Tests und soweit relevant die Sichtprüfung erfüllt sind. Commit-/Issue-Nachweis mit dokumentieren. Ein grüner Build ist keine technische Brandschutz- oder Ausführungsfreigabe.
 5. **Zählen:** `node TASKS/check-backlog.js` aus `PC/Kabelsalat` ausführen. Dieses Skript liest **die echten Checkboxen** und meldet `offen / erledigt / gesamt` sowie doppelte oder fehlende IDs.
-6. **Ergänzen:** Bro-Chat, Bildkorrekturen und neue Konzepte als **neue Task-IDs ab KAB-0829** anlegen, sofern nicht eindeutig bereits abgedeckt. IDs werden nie recycelt. Der Nenner darf über 828 wachsen. Bei Überschneidung bestehende Aufgabe aktualisieren und Quelle verlinken, statt künstliche Duplikate zu zählen.
+6. **Ergänzen:** Weitere Bro-Chats, Bildkorrekturen und neue Konzepte als **neue Task-IDs ab KAB-0865** anlegen, sofern nicht eindeutig bereits abgedeckt. IDs werden nie recycelt. Der Nenner darf über 828 wachsen. Bei Überschneidung bestehende Aufgabe aktualisieren und Quelle verlinken, statt künstliche Duplikate zu zählen.
 
 ## Status- und Qualitätsregeln
 
