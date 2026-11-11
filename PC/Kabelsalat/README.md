@@ -9,9 +9,11 @@
 - Über **„Aktuelle PDF-Wandbelegung (91 LR) neu laden“** ist die Referenz bewusst neu ladbar, auch wenn im Browser ein altes Modell gespeichert ist. Die vorhandene Rückfrage schützt eigene Projektänderungen. Bestehende Autosaves und importierte JSON-Projekte werden nicht stillschweigend überschrieben.
 - Fehlende Endpunkte, Biegeradien und Brandschutzfreigaben bleiben offen.
 
-## 828 konkrete Tasks – ab 10.11.2026
+## 864 konkrete Tasks – Stand 11.11.2026
 
-Der kanonische [Task-Tracker mit 828 nummerierten Aufgaben](./TASKS/README.md) enthält P0 (Quellen/Pitch), P1 (Editor/Netz), P2 (Import/Qualität/Fachprüfung), P3 (QA/Betrieb/Feedback). Alle Aufgaben sind zunächst offen; die alten Entwicklungsmeilensteine und die 97 PDF-Tests werden nicht als erledigte Task-IDs gezählt. Der Testlauf validiert zusätzlich lückenlose IDs und den aktuellen Taskzähler. Zusätzliche Aufgaben aus Bros Chat erhalten fortlaufend neue IDs ab KAB-0829.
+Der kanonische [Task-Tracker mit 864 nummerierten Aufgaben](./TASKS/README.md) enthält den 828er-Basisplan und 36 spezifische Ergänzungen aus Bros altem Chat ([Quellabgleich](./TASKS/BRO_CHAT_CROSSWALK.md)). **Alle 864 sind derzeit offen**; frühere Meilensteine und 97 PDF-Visualtests sind keine erledigten Tasks. Neue zusätzliche Aufgaben folgen ab KAB-0865. `npm test` validiert Task-IDs und Statuszähler.
+
+**Fachlicher Hinweis zu v2.0.1:** Die aktuelle visuelle Zuordnung OLA=A und MS=B ist ein **historischer Demofall**, kein fachliches Auswahlkriterium: Im älteren Chat hängt A/B von der Höhe der Rohrunterkante über Schachtboden ab (bis 100 mm versus darüber). Eine spätere 75-mm-Bildvorgabe widerspricht dem; beide Werte sind bis zum belastbaren Abgleich **ungeklärt**. Die 62-%-Rohrverdichtung verändert Demo-Anzeigekoordinaten und darf **nicht** als reales Aufmaß oder unveränderte Rohrachsen im 3D-Fachmodell interpretiert werden. Siehe KAB-0829–0840.
 
 ## Herunterladen und starten
 
