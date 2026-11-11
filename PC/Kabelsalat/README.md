@@ -9,9 +9,11 @@
 - Über **„Aktuelle PDF-Wandbelegung (91 LR) neu laden“** ist die Referenz bewusst neu ladbar, auch wenn im Browser ein altes Modell gespeichert ist. Die vorhandene Rückfrage schützt eigene Projektänderungen. Bestehende Autosaves und importierte JSON-Projekte werden nicht stillschweigend überschrieben.
 - Fehlende Endpunkte, Biegeradien und Brandschutzfreigaben bleiben offen.
 
-## 876 konkrete Tasks – Stand 11.11.2026
+## 884 konkrete Tasks – nach Bros jüngstem Feedback, Stand 11.11.2026
 
-Der kanonische [Task-Tracker mit 876 nummerierten Aufgaben](./TASKS/README.md) enthält den 828er-Basisplan und 48 spezifische Ergänzungen aus Bros altem Chat ([Quellabgleich](./TASKS/BRO_CHAT_CROSSWALK.md)). **Alle 876 sind derzeit offen**; frühere Meilensteine und 97 PDF-Visualtests sind keine erledigten Tasks. Neue zusätzliche Aufgaben folgen ab KAB-0877. Die zuletzt hinzugefügten [12 Detailaufgaben](./TASKS/06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) prüfen insbesondere historische PDF-/Excel-Ergebnisse und die echte 92-Schacht-Prüfliste. `npm test` validiert Task-IDs und Statuszähler.
+Der kanonische [Task-Tracker mit 884 nummerierten Aufgaben](./TASKS/README.md) enthält den 828er-Basisplan, 48 Aufgaben aus Bros altem Chat und 8 weitere Anforderungen zu Betonblock-Optik und DM/DN-Erkennung ([Quellabgleich](./TASKS/BRO_CHAT_CROSSWALK.md)). **Alle 884 sind derzeit offen**; frühere Meilensteine und 97 PDF-Visualtests sind keine erledigten Tasks. Neue zusätzliche Aufgaben folgen ab KAB-0885. Die zuletzt hinzugefügten [12 Detailaufgaben](./TASKS/06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) prüfen insbesondere historische PDF-/Excel-Ergebnisse und die echte 92-Schacht-Prüfliste. `npm test` validiert Task-IDs und Statuszähler.
+
+**Neue Umsetzungsvorgabe:** Die [Priorisierung aller 884 Tasks](./TASKS/PRIORITIES.md) und [globale Rangliste](./TASKS/PRIORITY_ORDER.csv) richten sich vorrangig nach Bros jüngstem Praxisfeedback: klassischer dunklerer Betonblock mit echten unterschiedlich großen Öffnungen, sichtbaren Rohrmaßen und überprüfbarer PDF-/Foto-Erkennung. **Als Erstes KAB-0877.**
 
 **Fachlicher Hinweis zu v2.0.1:** Die aktuelle visuelle Zuordnung OLA=A und MS=B ist ein **historischer Demofall**, kein fachliches Auswahlkriterium: Im älteren Chat hängt A/B von der Höhe der Rohrunterkante über Schachtboden ab (bis 100 mm versus darüber). Eine spätere 75-mm-Bildvorgabe widerspricht dem; beide Werte sind bis zum belastbaren Abgleich **ungeklärt**. Die 62-%-Rohrverdichtung verändert Demo-Anzeigekoordinaten und darf **nicht** als reales Aufmaß oder unveränderte Rohrachsen im 3D-Fachmodell interpretiert werden. Siehe KAB-0829–0840.
 
