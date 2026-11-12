@@ -41,6 +41,10 @@ const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 assert.match(app,/addScaledVector\(normal\(known\.wall\),\.16\)/,
  'Open-ended cables should be a short 160 mm graphic marker, not 360 mm');
+assert.ok(app.includes("if(exploreMode&&exploreStage==='shaft')return;"),
+ 'Basic shaft exploration must not render long cable paths as apparent LR');
+assert.ok(app.includes("exploreMode&&exploreStage==='shaft'?[]:project.cables"),
+ '2D shaft diagram must agree with bore-only 3D scene');
 assert.ok(!app.includes('addScaledVector(normal(known.wall),.36)'),
  'Long 360 mm free cable mark must be gone');
 assert.ok(app.includes('knownHole?openingRadius(knownHole)*.48:.009'),
