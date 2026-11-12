@@ -49,5 +49,17 @@ assert.equal(station.network.routes.length,3);
 assert.ok(station.network.shafts.every(s=>s.snapshot.supports.length>=2));
 assert.ok(station.network.shafts.every(s=>s.snapshot.enclosures.OLA.panels.length===6));
 assert.ok(station.network.shafts.every(s=>s.snapshot.enclosures.MS.panels.length===6));
-assert.equal(samples.manifest.length,7);
+assert.equal(samples.manifest.length,8);
+const diameterDemo=validProject(samples.create('diameters'));
+assert.ok(diameterDemo.name.includes('FIKTIVE DEMO'));
+assert.equal(diameterDemo.sourceInfo,null,'Synthetic DN sample must not impersonate a source plan');
+const sampleDN=diameterDemo.walls.flatMap(w=>w.holes.map(h=>h.dn));
+assert.equal(sampleDN.length,94);
+for(const dn of [30,50,60,110,116,160])
+ assert.ok(sampleDN.includes(dn),'Synthetic sample missing DN '+dn);
+assert.ok(sampleDN.every(dn=>dn>=30&&dn<=160));
+assert.deepEqual(validProject(JSON.parse(JSON.stringify(diameterDemo))),diameterDemo,
+ 'DN30–160 demo must survive save/load with consistent pipe IDs');
+assert.ok(!diameterDemo.walls.some(w=>w.holes.some(h=>h.dimensionSpec?.status==='reviewed')),
+ 'Synthetic diameters must never become verified physical bore data');
 console.log('OK – 3 sample projects, 4 shafts, 64 cables, 376 openings, routes, JSON roundtrip, deliberate QA conflicts');
