@@ -237,19 +237,9 @@ function wallSpanMm(id){
   id==='SW1'||id==='SW3'?project.dims.d:project.dims.w;
 }
 function geometryWarnings(){
- let overlaps=0,edges=0;
- for(const w of project.walls){
- const span=wallSpanMm(w.id),height=project.dims.h;
- for(let i=0;i<w.holes.length;i++){
- const a=w.holes[i],ax=a.u*span,ay=a.v*height,ar=pipeDimensions.apertureMm(a)/2;
- if(ax-ar<0||ax+ar>span||ay-ar<0||ay+ar>height)edges++;
- for(let j=0;j<i;j++){
- const b=w.holes[j],dx=ax-b.u*span,dy=ay-b.v*height;
- if(Math.hypot(dx,dy)<ar+pipeDimensions.apertureMm(b)/2)overlaps++;
- }
- }
- }
- return {overlaps,edges};
+ const report=qualityModel.auditWallOpenings(project,visualHole);
+ return {overlaps:report.overlaps.length,edges:report.edgeCrossings.length,
+  minGapMm:report.minGapMm,minEdgeMm:report.minEdgeMm,invalidIds:report.invalidIds};
 }
 function holeText(w,h){
  if(project.sourceInfo?.sourceVersion?.startsWith('PDF V2')&&h.sourceAddress)
@@ -376,7 +366,9 @@ function renderUI(){
  const problems=geometryWarnings();
  $('collisionInfo').textContent=(problems.overlaps||problems.edges?'⚠ Geometrischer Hinweis: ':'✓ Geometrie: ')+
  problems.overlaps+' überlappende Rohrpaare, '+problems.edges+' Randüberschreitungen.'+
- ' Keine DIN-, VDE- oder Brandschutzprüfung.';
+ (problems.minGapMm===null?'':' Geringste lichte Modellweite: '+problems.minGapMm.toFixed(1)+' mm.')+
+ (problems.minEdgeMm===null?'':' Geringster Randabstand: '+problems.minEdgeMm.toFixed(1)+' mm.')+
+ ' Nur schematische Abstände aus Plan-/Modelldaten, kein Aufmaß und keine Normfreigabe.';
  $('collisionInfo').style.background=problems.overlaps||problems.edges?'#fff1e7':'#edf8f1';
  $('viewInfo').textContent=project.name;$('undo').disabled=!undo.length;$('redo').disabled=!redo.length;
 }
@@ -392,6 +384,7 @@ const light=new THREE.DirectionalLight(0xffffff,1.1);light.position.set(-4,8,6);
 scene.add(new THREE.AmbientLight(0xffffff,.15));
 const models=new THREE.Group();scene.add(models);
 const hitObjects=[],wallObjects=[],raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+let visibleClearance=null; // View-only alert state, never serialized into engineering data.
 let azimuth=.72,elevation=.42,zoom=1.0,viewMode='3D';
 const sizes=()=>({w:project.dims.w/1000,d:project.dims.d/1000,h:project.dims.h/1000});
 /* PDF V2 p.4 is authoritative:
@@ -484,6 +477,12 @@ function drawOpening(w,h){
   const focus=new THREE.Mesh(new THREE.TorusGeometry(r+.011,.004,6,32),
    new THREE.MeshBasicMaterial({color:'#f3bb48'}));
   focus.position.z=.005;group.add(focus);
+ }
+ if(visibleClearance?.invalidIds.has(w.id+'|'+h.id)){
+  // KAB-0048: visibly disclose compact-preview collisions; do not move any pipe.
+  const conflict=new THREE.Mesh(new THREE.TorusGeometry(r+.014,.008,8,36),
+   new THREE.MeshBasicMaterial({color:'#d91e2b',depthTest:false}));
+  conflict.position.z=.010;group.add(conflict);
  }
  models.add(group);hitObjects.push(circle);
 }
@@ -734,7 +733,8 @@ function drawCable(c){
  }
  }
 }
-function rebuild(){disposeModel();drawWalls();project.cables.forEach(drawCable);drawPdfProtectionGuide();view();draw2D();}
+function rebuild(){disposeModel();visibleClearance=qualityModel.auditWallOpenings(project,visualHole);
+ drawWalls();project.cables.forEach(drawCable);drawPdfProtectionGuide();view();draw2D();}
 function renderAll(){
  fixSelection();renderUI();
  // The network pane toggles the 3D canvas's CSS display state. Restore it
@@ -979,6 +979,10 @@ function draw2D(){
  ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);
  ctx.fillStyle=selected?'#b7e9d7':'#e5eff2';ctx.fill();
  ctx.lineWidth=selected?3:1.5;ctx.strokeStyle=selected?'#18745e':'#708b97';ctx.stroke();
+ if(visibleClearance?.invalidIds.has(wallId+'|'+h.id)){
+  ctx.save();ctx.beginPath();ctx.arc(p.x,p.y,r+4,0,Math.PI*2);
+  ctx.strokeStyle='#d91e2b';ctx.lineWidth=3;ctx.setLineDash([4,3]);ctx.stroke();ctx.restore();
+ }
  if(project.sourceInfo?.sourceVersion?.startsWith('PDF V2')){
   const occupants=project.cables.filter(c=>[c.a,c.b].some(e=>e?.wall===wallId&&e?.hole===h.id));
   if(occupants.length){
