@@ -458,7 +458,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </div>
 <div class="dim-editor" role="group" aria-label="Vorschläge aus beschriftetem PDF-Plantext">
  <h3>Planbeschriftung auswerten (lokal)</h3>
- <p class="small">Beschrifteten PDF-Text einfügen oder als TXT laden. Das ist **keine** automatische OCR/Binär-PDF-Erkennung.</p>
+ <p class="small">Beschrifteten PDF-Text einfügen oder als TXT laden. Das ist keine automatische OCR/Binär-PDF-Erkennung.</p>
  <input id="planTextFile" type="file" accept=".txt,text/plain">
  <label class="field">Quelle / Dateiname<input id="planDimensionSource" maxlength="240" placeholder="Planseite / Plandatei"></label>
  <label class="field">Text der Rohrbeschriftungen<textarea id="planDimensionText" rows="4" placeholder="SW1/T1/LR05 DN 110&#10;SW2/T3/LR01 Ø 75 mm"></textarea></label>
@@ -470,7 +470,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <div class="dim-editor" role="group" aria-label="Bildbasierte Öffnungsgrößen-Vorschläge">
  <h3>Foto untersuchen (lokal, heuristisch)</h3>
  <p class="small">Runde dunkle Öffnungen im Foto als Kandidaten markieren. Kein KI-Modell, keine automatische Rohrtyp-Garantie. Absolute Millimeter erst nach Referenzkalibrierung.</p>
- <input id="photoDimensionFile" type="file" accept="image/*">
+ <input id="photoDimensionFile" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
  <canvas id="photoDimensionPreview" width="320" height="180" aria-label="Foto mit erkannten Kreiskandidaten"></canvas>
  <p id="photoAnalysisStatus" class="small" role="status">Noch kein Bild untersucht.</p>
  <label class="field">Runder Bildkandidat<select id="photoCandidates" class="selector"></select></label>

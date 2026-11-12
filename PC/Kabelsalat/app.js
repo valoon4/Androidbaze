@@ -1046,6 +1046,12 @@ function copySelectedHole(){
  const span=wallSpanMm(w.id),height=project.dims.h,x=selected.u*span;
  const dx=x+100+(selected.dn||70)/2<=span?100:-100;
  const clone={id:uid(w.id+'-copy'),...geom2d.copyOffset(selected,span,height,dx,0)};
+ if(selected.dimensionSpec){
+  const old=pipeDimensions.forHole(selected);
+  clone.dimensionSpec=pipeDimensions.normalize({...old,source:'',reviewer:'',
+   status:'unverified',method:'manual',candidateMm:null,
+   note:'Geometrische Kopie; Maß- und Quellbestätigung nicht mitkopiert'},clone.dn);
+ }
  change(()=>{w.holes.push(clone);holeId=clone.id;});
 }
 function draftPoint(e){
@@ -1841,7 +1847,7 @@ function showPhotoCandidates(){
 }
 $('photoDimensionFile').addEventListener('change',async()=>{
  const file=$('photoDimensionFile').files[0];if(!file)return;
- if(!file.type.startsWith('image/')||file.size>10000000){
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>10000000){
   alert('Bitte ein Bild bis 10 MB verwenden.');return;
  }
  try{

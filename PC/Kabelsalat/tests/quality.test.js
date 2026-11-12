@@ -24,4 +24,19 @@ assert.equal(q.normalizeReviews([{shaftId:'S1',entityType:'cable',entityId:'BAD'
 assert.equal(q.normalizeSettings({minPipeGapMm:'',minEdgeMm:-12}).minPipeGapMm,null);
 assert.equal(q.normalizeSettings({minEdgeMm:-12}).minEdgeMm,null);
 assert.ok(Number.isFinite(q.circumradius([0,0,0],[1,1,0],[2,0,0])));
-console.log('OK: global search, programmable warnings, review metadata and bend-radius proxy');
+const measured=JSON.parse(JSON.stringify(net));
+const bore=measured.shafts[0].snapshot.walls[0].holes;
+bore[0].dn=60;bore[1].dn=60;
+bore[0].dimensionSpec={openingMm:116,innerMm:45};
+bore[1].dimensionSpec={openingMm:116,innerMm:45};
+assert.ok(q.evaluate(measured,{}).issues.some(x=>x.code==='PIPE_OVERLAP'),
+ 'Opening collision uses bore Ø 116 and not nominal DN 60');
+assert.ok(q.evaluate(measured,{}).issues.some(x=>x.code==='CABLE_TOO_WIDE'),
+ 'Cable clearance must compare against documented inside Ø when present');
+const sourcePdf={shafts:[{id:'13_U_028',snapshot:{
+ dims:{w:2750,d:2350,h:1850},sourceInfo:{sourceVersion:'PDF V2 (Konzept)'},
+ walls:[{id:'SW1',holes:[{id:'near',u:.98,v:.5,dn:110}]}],cables:[]
+}}]};
+assert.equal(q.evaluate(sourcePdf,{}).issues.some(x=>x.code==='OUTSIDE_WALL'),false,
+ 'PDF SW1 source span is 2750 mm: mirror/width mismatch caused false edge warnings');
+console.log('OK: global search, physical-bore warnings, PDF wall axes, review metadata and bend proxy');

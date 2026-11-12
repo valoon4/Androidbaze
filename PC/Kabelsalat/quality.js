@@ -68,6 +68,12 @@ function mmPosition(p,r){
  const wall=p.walls.find(x=>x.id===r.wall),hole=wall?.holes.find(x=>x.id===r.hole);
  if(!hole)return null;
  const u=hole.u,v=hole.v;
+ if(p.sourceInfo?.sourceVersion?.startsWith('PDF V2')){
+  if(r.wall==='SW1')return [-w/2+w*u,h*v,-d/2+24];
+  if(r.wall==='SW2')return [w/2-24,h*v,-d/2+d*u];
+  if(r.wall==='SW3')return [w/2-w*u,h*v,d/2-24];
+  if(r.wall==='SW4')return [-w/2+24,h*v,d/2-d*u];
+ }
  if(r.wall==='SW1')return [-w/2,h*v,-d/2+d*u];
  if(r.wall==='SW3')return [w/2,h*v,-d/2+d*u];
  if(r.wall==='SW2')return [-w/2+w*u,h*v,-d/2];
@@ -81,6 +87,14 @@ function circumradius(a,b,c){
  const doubleArea=Math.hypot(...cross);
  if(doubleArea<.000001)return Infinity;
  return l*m*p/(2*doubleArea);
+}
+function physicalOpening(h){
+ const val=h?.dimensionSpec?.openingMm;
+ return Number.isFinite(val)&&val>=20&&val<=600?val:Number(h?.dn)||70;
+}
+function effectiveInner(h){
+ const val=h?.dimensionSpec?.innerMm;
+ return Number.isFinite(val)&&val>=20&&val<=600?val:Number(h?.dn)||70;
 }
 function evaluate(net,settings){
  const cfg=normalizeSettings(settings),issues=[];
@@ -98,9 +112,11 @@ function evaluate(net,settings){
    }
   }
   for(const wall of p.walls||[]){
-   const span=wall.id==='SW1'||wall.id==='SW3'?p.dims.d:p.dims.w;
+   const pdf=p.sourceInfo?.sourceVersion?.startsWith('PDF V2');
+   const span=wall.id==='SW1'||wall.id==='SW3'?
+    (pdf?p.dims.w:p.dims.d):(pdf?p.dims.d:p.dims.w);
    for(let i=0;i<wall.holes.length;i++){
-    const a=wall.holes[i],r=Number(a.dn||70)/2,ax=a.u*span,ay=a.v*p.dims.h;
+    const a=wall.holes[i],r=physicalOpening(a)/2,ax=a.u*span,ay=a.v*p.dims.h;
     const edge=Math.min(ax-r,span-ax-r,ay-r,p.dims.h-ay-r);
     if(edge<0)add('error','OUTSIDE_WALL',shaft.id,a.id,
      wall.id+' / '+a.id+': Rohröffnung überschreitet Wandrand um '+Math.round(-edge)+' mm');
@@ -108,7 +124,7 @@ function evaluate(net,settings){
      add('warning','EDGE_CLEARANCE',shaft.id,a.id,
       wall.id+' / '+a.id+': Randabstand '+Math.round(edge)+' mm unter Projektwert '+cfg.minEdgeMm+' mm');
     for(let j=0;j<i;j++){
-     const b=wall.holes[j],br=Number(b.dn||70)/2;
+     const b=wall.holes[j],br=physicalOpening(b)/2;
      const gap=Math.hypot(ax-b.u*span,ay-b.v*p.dims.h)-r-br;
      if(gap<0)add('error','PIPE_OVERLAP',shaft.id,a.id,
       wall.id+': '+a.id+' und '+b.id+' überschneiden sich geometrisch ('+Math.round(-gap)+' mm)');
@@ -123,9 +139,11 @@ function evaluate(net,settings){
     const end=cable[key],wall=p.walls.find(x=>x.id===end?.wall),
       hole=wall?.holes.find(x=>x.id===end?.hole);
     if(!hole){add('warning','MISSING_END',shaft.id,cable.id,cable.name+': Anschluss '+key.toUpperCase()+' fehlt');continue;}
-    if(Number(cable.diameter)>Number(hole.dn))
+    if(Number(cable.diameter)>effectiveInner(hole))
      add('error','CABLE_TOO_WIDE',shaft.id,cable.id,
-      cable.name+': Kabel-Ø '+cable.diameter+' mm größer als Leerrohr-DN '+hole.dn+' mm ('+key.toUpperCase()+')');
+      cable.name+': Kabel-Ø '+cable.diameter+' mm größer als '+
+      (hole.dimensionSpec?.innerMm?'dokumentierter Rohr-Innen-Ø ':'schematischer Leerrohr-DN ')+
+      effectiveInner(hole)+' mm ('+key.toUpperCase()+')');
    }
    if(cfg.minBendRadiusMm!==null){
     const points=[];
