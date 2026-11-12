@@ -8,6 +8,7 @@ globalThis.KabelsalatReferences=refs;
 const examples=require('../examples.js').factory(components,network);
 globalThis.KabelsalatSamples=examples;
 globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
+globalThis.KabelsalatConcreteWall=require('../concrete-wall.js');
 globalThis.KabelsalatConstructionV2=require('../construction-v2.js');
 const app=fs.readFileSync(path.join(__dirname,'../app.js'),'utf8');
 const before=app.split('let project;')[0].replace(/^\(\(\) => \{\s*/,'');
