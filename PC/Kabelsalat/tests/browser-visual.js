@@ -42,6 +42,15 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   }));
   assert.ok(data.canvasWidth>300&&data.canvasHeight>100,'Visible 3D canvas must be dimensioned');
   assert.ok(data.visualToggle);
+  const shaftCaption=await page.locator('#exploreSceneText').innerText();
+  assert.match(shaftCaption,/Lange Kabelwege sind hier ausgeblendet/,
+   'Basic shaft step must explain that LR holes and long cables are different');
+  await page.screenshot({path:path.join(out,'bro-lr-only-shaft-step.png'),fullPage:true});
+  await page.locator('#questCable').click();
+  assert.match(await page.locator('#exploreSceneText').innerText(),/KABEL, nicht LR/,
+   'Cable step must identify long strands as cables, not Leerrohre');
+  await page.screenshot({path:path.join(out,'bro-cable-routes-separate-step.png'),fullPage:true});
+  await page.locator('#questShaft').click();
   const beforeOverview=await sample3D();
   assert.ok(await page.locator('#demoCompactionToggle').isVisible(),
    'PDF demo must offer a reversible, non-destructive source-vs-compact switch');
