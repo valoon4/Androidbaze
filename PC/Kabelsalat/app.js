@@ -685,6 +685,9 @@ function drawPdfProtectionGuide(){
  }
 }
 function drawCable(c){
+ // LR are the circular wall apertures, not the long colored cable paths.
+ // Basic shaft stage shows bores only, cable stage shows full cable paths.
+ if(exploreMode&&exploreStage==='shaft')return;
  if(exploreMode&&exploreSystemFocus!=='all'&&c.group!==exploreSystemFocus)return;
  const a=cableDisplayPoint(c.a,c),b=cableDisplayPoint(c.b,c);
  if(!a||!b){
@@ -968,7 +971,7 @@ function draw2D(){
  ctx.fillText(span+' mm',cw/2,Math.min(ch-7,p1.y+18));
  ctx.save();ctx.translate(Math.max(11,p1.x-13),ch/2);ctx.rotate(-Math.PI/2);ctx.fillText(height+' mm',0,0);ctx.restore();
  // Orthographic projection for visual cross-check only; not a verified cable route.
- for(const c of project.cables){
+ for(const c of (exploreMode&&exploreStage==='shaft'?[]:project.cables)){
   if(c.a?.wall!==wallId&&c.b?.wall!==wallId)continue;
   const projected=projectedCablePoints(c,m);
   if(projected.length<2)continue;
@@ -1407,7 +1410,7 @@ function renderExplorerUI(){
   ' Powerpanel-Maße und Montagepositionen sind nicht bestätigt.':'');
  const tips={
   network:'🗺️ Die Kreise sind Schächte. Linien verbinden sie schematisch. Tippe auf einen Kreis oder doppelklicke, um einen Schacht zu öffnen.',
-  shaft:'🏗️ Der graublaue Kasten ist ein Schacht. Kleine Kreise sind Rohröffnungen; die Kabel laufen als bunte Linien hindurch. Mit der Maus drehen, mit dem Rad zoomen.',
+  shaft:'🏗️ Die runden Löcher im Beton sind LR. Lange farbige Linien sind Kabel und erscheinen erst bei „3 · Kabelbelegung“. Mit Maus drehen / Rad zoomen.',
   cable:'🔴 Das kräftige Kabel ist ausgewählt. Die anderen Linien treten in den Hintergrund. Rechts kannst du ein anderes Kabel anklicken.'
  };
  $('exploreTip').textContent=tips[exploreStage];
@@ -1438,8 +1441,10 @@ function renderExplorerUI(){
  }else{
   target.textContent='Noch kein Kabel ausgewählt. Klick rechts auf einen farbigen Eintrag.';
  }
- $('exploreSceneText').textContent=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
- 'PDF V2: Belegungen und DN laut Konzept, Positionen schematisch. Gelbe Kabel-Endmarkierung = Fortsetzung ungeklärt.':
+ $('exploreSceneText').textContent=exploreMode&&exploreStage==='shaft'?
+ 'LR = runde Öffnungen direkt im Beton. Lange Kabelwege sind hier ausgeblendet; unter „3 · Kabelbelegung“ sehen. DN zeigt schematische Größen, keine gemessenen Lochmaße.':
+ project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
+ 'PDF V2: Belegungen und DN laut Konzept, Positionen schematisch. Lange farbige Stränge = KABEL, nicht LR. Gelbe Kabel-Endmarkierung = Fortsetzung ungeklärt.':
  exploreStage==='cable'&&c?
   'Der kräftige farbige Weg gehört zu „'+c.name+'“. Start und Ziel siehst du rechts.':
   'Runde Öffnungen nehmen Rohre auf. Die Linien zeigen schematische Kabelwege. Ziehe mit der Maus, um den Schacht zu drehen.';
