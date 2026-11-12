@@ -37,4 +37,12 @@ assert.deepEqual(source.cases.map(c=>c.cables.length),[16,18,86]);
 const pdf=samples['13_U_028_PDF_V2'];
 assert.ok(pdf.walls.every(w=>w.holes.every(h=>h.u===h.sourceU&&h.v===h.sourceV)),
  'PDF data layer must store original vector centers, not compressed display positions');
-console.log('OK KAB-0833/0834/0037: 48+78+91 locked pipes, 4 walls and 120 source cable IDs/endpoints');
+const visual=require('../pdf-visual.js'),positions=require('../schematic-positions.js');
+const referenceSvg=visual.render(pdf,'all'),compactProject=JSON.parse(JSON.stringify(pdf));
+for(const wall of compactProject.walls)for(const h of wall.holes){
+ h.u=positions.compact(h.sourceU);h.v=positions.compact(h.sourceV);
+}
+assert.equal(visual.render(compactProject,'all'),referenceSvg,
+ 'KAB-0050: source PDF wall images may not change when schematic 3D coordinates change');
+assert.equal(visual.render(pdf,'all'),referenceSvg,'Rendering may not mutate source PDF imagery');
+console.log('OK KAB-0833/0834/0037/0050: 48+78+91 locked pipes, 120 cable IDs and unmodified source-PDF wall images');
