@@ -54,7 +54,7 @@ assert.ok(u.cables.some(c=>c.referenceGroup==='TK'&&c.group==='Weitere'),'Origin
 const t=validProject(examples.create('source-t021'));
 assert.equal(t.cables.filter(c=>c.mappingStatus==='shown').length,1);
 assert.ok(t.cables.every(c=>c.a&&c.b),'All shown T reference endpoints must be geometrically present in imported model');
-assert.equal(examples.manifest.length,7);
+assert.equal(examples.manifest.length,8,'Four original sample categories plus four source references including synthetic DN demo');
 const net=validProject(examples.create('source-both')).network;
 const switched=validProject({...net.shafts[1].snapshot,network:net,activeShaftId:'13_U_028'});
 assert.equal(switched.sourceInfo.shaft,'13_U_028');
