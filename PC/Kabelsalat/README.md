@@ -1,6 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.3-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.4-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.4-beta.1 · Bros Wandachsen und lichten Rohrabstände · 12.11.2026
+
+- **Wandlage und Ansichten SW1–SW4** werden nun separat gegen den PDF-V2-Weltachsenbezug geprüft; feste 3D-Normalen, kameraseitige Blickrichtung und reversible U/V↔XYZ-Transformation (KAB-0019–0023).
+- **Schematische Rohrabstand-Analyse** zeigt die geringste lichte Weite und den geringsten Wandrandabstand aus Modell- und Bildpunkten. DN160/DN110-Nachbarn, DN75 in SW2-Trasse-3 und DN63 in SW1-Trasse-2 werden mit getrennten Radien behandelt (KAB-0044–0047).
+- **Geometrische Überschneidungen** werden im 2D-Wandplan und 3D-Schacht als rote Warnringe sichtbar, auch in der optionalen 62-%-Vorschau, **ohne** Rohrachsen oder Anschluss-IDs zu verändern (KAB-0048).
+- **Verbindliche Grenzen:** Diese Werte stammen aus schematischen Plan-/Modellkoordinaten und sind **keine gemessenen Betonabstände oder Norm-/Brandschutzprüfung**. Details und Testergebnisse: [Wandachsen und Rohrabstandsprüfung](./WALL_COORDINATES_AND_CLEARANCE.md).
 
 ## 2.0.3-beta.1 · Bros 10er-Sprint – 12.11.2026
 
