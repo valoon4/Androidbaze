@@ -35,7 +35,7 @@ for(const id of Object.keys(normals)){
  const zRot=[Math.sin(rotation[id]),0,Math.cos(rotation[id])];
  close(Math.hypot(...diff(zRot,normal)),0,id+' extrusion must point INSIDE');
  const forward=direction(camera.target,camera.position);
- close(dot(forward,outer(normal)),0,id+' interior camera looks toward wall');
+ close(dot(forward,outer(normal)),1,id+' interior camera points outwards toward wall');
  for(const u of [.05,.21,.5,.79,.95])for(const v of [.12,.5,.88]){
   const point=geo.hole(id,{u,v},size);
   close(geo.inverse(id,point,size),u,id+' 3D->U inverse');
