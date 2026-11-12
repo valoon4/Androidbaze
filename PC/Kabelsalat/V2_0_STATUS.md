@@ -54,3 +54,7 @@ Die v2.0.2-Betonwand wurde um **dunklere, dezente, deterministisch erzeugte Beto
 ## KAB-0049 · Schematische Koordinaten im Export kenntlich (12.11.2026)
 
 Der HTML-Offline-Viewer und der druckbare Prüfbericht dürfen schematische PDF-Vektorpositionen, nominelle Rohr-Ø oder unbestätigte Modellabmessungen nicht als vermessene Millimeterwerte ausgeben. Die Exporttexte kennzeichnen sie jetzt als „schematisch/nicht vermessen“, und die PDF-V2-Wandachsen werden mit der korrekten Breite bzw. Tiefe behandelt. Die Quell-Metadaten und Rohr-IDs bleiben erhalten; das ersetzt keine Bauplanung. Regression `tests/reports.test.js`.
+
+## 12.11.2026 · v2.0.6-beta.1 – LR-Längen-Eindruck
+
+Das neueste Bro-Feedback („LR da drin ... so lang“) ist bislang nicht als geprüfte Real-LR-Längenforderung spezifiziert. Die im Schacht lang sichtbaren farbigen Rohre stammen im Renderer überwiegend von **schematischen Kabelpfaden**; die tatsächlichen LR sind Aussparungen im Betonblock. Die frühere Kürzung eines offenen Kabelendstutzens auf 160 mm betrifft nicht die durchgehenden Kabelpfade. Damit das in der Anwendung deutlich wird, ist die **Basic-Schachtansicht jetzt auf Beton/Lochöffnungen beschränkt**, die vollständigen Kabelrouten sind erst unter „3 · Kabelbelegung“ zu sehen. Die Prüfscreenshots für beide Ansichten sind in `tests/browser-visual.js` vorgesehen. Keine Änderung am originalen Schachtwand-Aufmaß, keinen künstlichen Rohrkürzungswert beschlossen.
