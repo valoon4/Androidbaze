@@ -28,3 +28,7 @@
 - [ ] **KAB-0884** – Automatisierte Render- und Datenregression für Betonblock mit gemischten Öffnungen (60/110/116 als Testdaten), korrekte DN-/DM-Trennung, Schatten/Helligkeit und geschützte Originalrohrpositionen aufbauen
 
 **Verwandt, nicht dupliziert:** KAB-0037–0054 (unveränderte Originalkoordinaten), KAB-0235–0252 (Rohrmodell), KAB-0523–0558 (Plan-/Bilderkennung), KAB-0829–0840 (fachliche Bauartlogik). Die hier neuen Tasks sind die expliziten Abnahmekriterien aus dem **jüngsten** Feedback.
+
+## Zwischenstand KAB-0877 · 12.11.2026
+
+Die neue Darstellung der zusammenhängenden Betonwand mit durchgängigen ausgeschnittenen Öffnungen, entfernten hervorstehenden Demo-Hülsen und weiterhin anklickbaren Rohr-IDs ist **implementiert** in `concrete-wall.js` und `app.js`. Für `13_T_021`, `13_U_028` HTML und PDF V2 existiert der neue automatisierte Geometrie-/Unverändertheitstest `tests/concrete-wall.test.js`; die 3D-Browserprüfung läuft zusätzlich über GitHub Actions. **KAB-0877 bleibt offen**, bis die Sichtprüfung mit Bros Rückmeldung und die Build-/Browser-Ergebnisse nachweisbar bestanden sind. [Issue #70](https://github.com/valoon4/Androidbaze/issues/70).
