@@ -1,6 +1,6 @@
 # Kabelsalat · Aufgabensteuerung ab v2.0.1
 
-**Kanonischer Tasktracker:** sieben verlinkte Markdown-Dateien mit **884 eindeutig nummerierten Einzelaufgaben** in 54 Arbeitspaketen. Basis: 828 Tasks am 10.11.2026 aus Roadmap, Konzept und Referenzdaten; **48 aus dem hochgeladenen älteren Bro-Chat abgeleitete Aufgaben am 11.11.2026** (36 direkt plus 12 nach vertieftem Artefakt-/Prüffall-Abgleich). [Quellabgleich / wichtige Widersprüche](./BRO_CHAT_CROSSWALK.md).
+**Kanonischer Tasktracker:** acht verlinkte Markdown-Dateien mit **888 eindeutig nummerierten Einzelaufgaben** in 55 Arbeitspaketen. Basis: 828 Tasks am 10.11.2026 aus Roadmap, Konzept und Referenzdaten; **48 aus dem hochgeladenen älteren Bro-Chat abgeleitete Aufgaben am 11.11.2026** (36 direkt plus 12 nach vertieftem Artefakt-/Prüffall-Abgleich). [Quellabgleich / wichtige Widersprüche](./BRO_CHAT_CROSSWALK.md).
 
 | Bereich | Aufgaben | ID-Bereich | Live-Datei |
 |---|---:|---|---|
@@ -11,7 +11,8 @@
 | P0/P1/P2 · Bro-Chat: korrigierte 3D-Vorgaben, 92-Schacht-Prüfung, PDF/Excel | 36 | KAB-0829–KAB-0864 | [05-BRO-CHAT-AVL-UND-REPORTS.md](./05-BRO-CHAT-AVL-UND-REPORTS.md) |
 | P2/P1 · Historische 92-Schacht-Fälle und Berichtsversionen | 12 | KAB-0865–KAB-0876 | [06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md](./06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) |
 | P0 · Bros jüngstes Feedback: klassischer Betonblock, DM/DN und Erkennung | 8 | KAB-0877–KAB-0884 | [07-BRO-BETON-ROHR-DM.md](./07-BRO-BETON-ROHR-DM.md) |
-| **Gesamt aktuell (12.11.2026)** | **884** | **KAB-0001–KAB-0884** | |
+| P0 · Bros neuer Nachtrag: LR-Vorschau kürzer, DN30–160 proportional | 4 | KAB-0885–KAB-0888 | [08-BRO-KURZE-LR-DN30-160.md](./08-BRO-KURZE-LR-DN30-160.md) |
+| **Gesamt aktuell (12.11.2026)** | **888** | **KAB-0001–KAB-0888** | |
 
 ## Initialer Status am 10.11.2026
 
@@ -37,9 +38,13 @@
 
 **[Zweiter 10-Aufgaben-Sprint](./SPRINT_2026-11-12_BRO_WALL_10.md):** SW1–SW4-Normalen, Weltachsen, DN160-/DN110-/DN75-/DN63-Abstände und minimale lichte Weiten. Neun KAB-Aufgaben mit Unit- und Windows-Build-Nachweis abgeschlossen; KAB-0048 (rote 2D-/3D-Kollisionswarnungen) implementiert, **visuelle Browserkontrolle noch ausstehend**. 19 erledigt/865 offen/884 gesamt; keine vermessenen Originalabstände.
 
+## Bros aktueller DN-Nachtrag · 12.11.2026
+
+**Neu, höchste Priorität:** [KAB-0885–0888](./08-BRO-KURZE-LR-DN30-160.md). Kürzere ausschließlich visuelle Kabelend-Stutzen, DN30–160 im Editor, eine **separate fiktive Vergleichs-Demo** mit DN30/50/110/160 und automatisierte Größen-/Quelltests. Die ursprünglichen 91 PDF-V2-LR bleiben unverändert; reale Betonlochmaße werden nicht aus DN abgeleitet. **Zwischenstand vor neuer Bro-Sichtprüfung:** 19 bereits abgeschlossene Tasks + vier neue offene = **19 erledigt / 869 offen / 888 gesamt**.
+
 ## Gesamtpriorität nach Bros neuesten Praxistests (11.11.2026)
 
-- **Verbindliche Abarbeitungsreihenfolge:** [PRIORITIES.md](./PRIORITIES.md) mit der [vollständigen Rangliste aller 884 Tasks](./PRIORITY_ORDER.csv). **IDs sind stabil, Reihenfolge ist Rang 1–884, nicht die Nummer der KAB-ID.**
+- **Verbindliche Abarbeitungsreihenfolge:** [PRIORITIES.md](./PRIORITIES.md) mit der [vollständigen Rangliste aller 888 Tasks](./PRIORITY_ORDER.csv). **IDs sind stabil, Reihenfolge ist Rang 1–884, nicht die Nummer der KAB-ID.**
 - **Heute priorisiert:** KAB-0877 (Betonblock mit echten Löchern) → KAB-0878 (dunklere Betonoptik) → KAB-0880 (Durchmesser-Datenmodell) → KAB-0879 (gemischte Öffnungsgrößen) → KAB-0883 (sichtbare Dimension) → KAB-0881/0882 (PDF-/Foto-Erkennung mit Quellabgleich).
 - **Aktueller Zähler nach zwei Bro-Sprints:** **19 erledigt / 865 offen / 884 gesamt**, einschließlich bestehender, jetzt durch die Tests belegter Quell-/Ansichtsaufgaben. Die grundlegende Schachtsoftware existierte schon vorher; nur tatsächliche Einzelabnahmen zählen hier.
 - **Live prüfen:** `node TASKS/check-backlog.js` zählt den Status, `node TASKS/check-priorities.js --next=20` validiert alle Ränge und zeigt die nächsten offenen Tasks.
@@ -52,7 +57,7 @@
 3. **Arbeiten:** Genau den abgegrenzten Task liefern. Beim Commit die ID `KAB-0001` o.ä. nennen. Quellannahmen strikt von vermessener oder fachlich bestätigter Geometrie unterscheiden. Bei fachlichen Abhängigkeiten kein Ergebnis fingieren.
 4. **Abnehmen:** Nur auf `[x]` wechseln, wenn die **Definition of Done des Arbeitspakets**, der konkrete Task, Tests und soweit relevant die Sichtprüfung erfüllt sind. Commit-/Issue-Nachweis mit dokumentieren. Ein grüner Build ist keine technische Brandschutz- oder Ausführungsfreigabe.
 5. **Zählen und priorisieren:** `node TASKS/check-backlog.js` zählt den Live-Status; `node TASKS/check-priorities.js --next=20` prüft alle individuellen Ränge/IDs und listet die nächsten offenen Aufgaben.
-6. **Ergänzen:** Weitere Bro-Chats, Bildkorrekturen und neue Konzepte als **neue Task-IDs ab KAB-0885** anlegen, sofern nicht eindeutig bereits abgedeckt. IDs werden nie recycelt. Der Nenner darf über 828 wachsen. Bei Überschneidung bestehende Aufgabe aktualisieren und Quelle verlinken, statt künstliche Duplikate zu zählen.
+6. **Ergänzen:** Weitere Bro-Chats, Bildkorrekturen und neue Konzepte als **neue Task-IDs ab KAB-0889** anlegen, sofern nicht eindeutig bereits abgedeckt. IDs werden nie recycelt. Der Nenner darf über 828 wachsen. Bei Überschneidung bestehende Aufgabe aktualisieren und Quelle verlinken, statt künstliche Duplikate zu zählen.
 
 ## Status- und Qualitätsregeln
 
