@@ -54,9 +54,9 @@
 
 **Quelle:** v2.0.1, E04. **Definition of Done:** Schematische Darstellung klar markiert, keine Überlappung; Original- und Planungskoordinaten dürfen durch rein visuelle Rohrverdichtung nicht eigenmächtig verändert werden.
 
-- [ ] **KAB-0037** – Original-PDF-Mittelpunkte sourceU/sourceV im Projekt-Roundtrip absichern
-- [ ] **KAB-0038** – Demo-Verdichtung als optionale Ansichtstransformation von Quell- und Planungskoordinaten trennen, ohne Rohre im Datenmodell zu verschieben
-- [ ] **KAB-0039** – Historische 62-Prozent-Demo-Verdichtung nur in explizit schematischer Vorschau anbieten und im Fachmodell deaktivieren
+- [x] **KAB-0037** – Original-PDF-Mittelpunkte sourceU/sourceV im Projekt-Roundtrip absichern · Nachweis: https://github.com/valoon4/Androidbaze/commit/aaa96ab73d5ab53dea97eaa3d4456d4a1a5ae638
+- [x] **KAB-0038** – Demo-Verdichtung als optionale Ansichtstransformation von Quell- und Planungskoordinaten trennen, ohne Rohre im Datenmodell zu verschieben · Nachweis: https://github.com/valoon4/Androidbaze/commit/aaa96ab73d5ab53dea97eaa3d4456d4a1a5ae638
+- [x] **KAB-0039** – Historische 62-Prozent-Demo-Verdichtung nur in explizit schematischer Vorschau anbieten und im Fachmodell deaktivieren · Nachweis: https://github.com/valoon4/Androidbaze/commit/aaa96ab73d5ab53dea97eaa3d4456d4a1a5ae638
 - [ ] **KAB-0040** – Unabhängige horizontale Rohrabstandsregel je Schachtwand prüfen
 - [ ] **KAB-0041** – Unabhängige vertikale Rohrabstandsregel je Schachtwand prüfen
 - [ ] **KAB-0042** – Sonderabstände für Trasse 2 auf SW1 berücksichtigen
@@ -67,7 +67,7 @@
 - [ ] **KAB-0047** – Mindestlichte zwischen zwei Kreisöffnungen berechnen
 - [ ] **KAB-0048** – Kollisionen bei engerer Vorschau sichtbar kennzeichnen
 - [ ] **KAB-0049** – Schematische Rohrpositionen nicht als vermessene Millimeter exportieren
-- [ ] **KAB-0050** – PDF-Originaldarstellung bei Parameteränderung unangetastet lassen
+- [x] **KAB-0050** – PDF-Originaldarstellung bei Parameteränderung unangetastet lassen · Nachweis: https://github.com/valoon4/Androidbaze/commit/79a3c69b6e145c1836ac8032cea2075d4c486f7f
 - [ ] **KAB-0051** – Rohrabstand-Regler mit Undo/Redo koppeln
 - [ ] **KAB-0052** – Rohrabstand-Regler ohne Veränderung von Kabelanschluss-IDs umsetzen
 - [ ] **KAB-0053** – Geometrie-Vergleich vor und nach Abstandsanpassung anbieten
@@ -280,3 +280,7 @@
 - [ ] **KAB-0215** – Verlassen der Präsentation ohne Verlust des aktiven Projekts prüfen
 - [ ] **KAB-0216** – Bros letzte Abnahme mit Bildpaaren und offenen Einwänden dokumentieren
 
+
+## Quellpositions-Nachweise 12.11.2026
+
+KAB-0037/0038/0039 und KAB-0050 wurden mit eigenen Source-/View-/Roundtriptests abgenommen: `sourceU/sourceV` bleiben in JSON und Planvergleich unverändert, die 62-%-Vorschau ist Basic-only, PDF-Vektor-Wandbilder werden von der Vorschau nicht beeinflusst. **PDF-Diagrammkoordinaten sind weiterhin keine realen Aufmaße.** [Sprintbericht](./SPRINT_2026-11-12_BRO_10.md).

@@ -56,4 +56,8 @@
 3. Pro Änderung: Source-SHA lesen, Akiyama-Check, Code/Test/Screenshots, Rückmeldung des Bros, dann Checkbox inkl. Nachweis abhaken.
 4. Vor jedem Folgesprint `node TASKS/check-priorities.js` benutzen: niedrigste **offene, praktisch umsetzbare** Priorität zuerst. Die globalen Ränge bleiben stabil, selbst wenn neue Tasks ab **KAB-0885** folgen.
 
-**Live-Status beim Erstellen:** 0 von 884 in den Taskdateien als erledigt markiert. Das ist kein Urteil über die bereits vorhandene Software, sondern über die **noch nicht einzeln abgeschlossenen** Akzeptanzaufgaben.
+**Historischer Status beim Erstellen:** 0 von 884 in den Taskdateien als erledigt markiert. Das ist kein Urteil über die bereits vorhandene Software, sondern über die **noch nicht einzeln abgeschlossenen** Akzeptanzaufgaben.
+
+## Fortschritt nach Bros 10er-Sprint · 12.11.2026
+
+[Ausführlicher Bericht](./SPRINT_2026-11-12_BRO_10.md) · **9 abgeschlossene, nachgewiesene Tasks / 875 offene / 884 gesamt**. Bisher wurden KAB-0880, KAB-0883, KAB-0832–0834, KAB-0037–0039 und KAB-0050 abgeschlossen. **KAB-0877/0878/0879** warten trotz funktionierender Rendering-Implementierung auf Bros visuelles Feedback. **KAB-0881/0882** sind nur konservative PDF-Text- bzw. Foto-Kandidatenprototypen, noch keine vollständige KI- oder Dokumentenerkennung. **KAB-0884** benötigt die Endkontrolle des zusätzlichen realen Browser-Screenshots mit synthetischen 60/110/116-mm-Öffnungen.

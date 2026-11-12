@@ -11,9 +11,9 @@
 - [ ] **KAB-0829** – Variantenwahl A/B von der Gewerkezuordnung OLA/MS entkoppeln: jede Trasse darf je nach geprüfter Höhenlage A oder B benötigen
 - [ ] **KAB-0830** – Anforderungskonflikt 100 mm (alter Chat) gegenüber 75 mm (spätere Bildvorgabe) samt Quelle und gültiger Versionsentscheidung fachlich klären
 - [ ] **KAB-0831** – Bei unbekannter Höhe Schachtboden → Leerrohr-Unterkante keine automatische Variante A/B als technisch richtig behaupten
-- [ ] **KAB-0832** – Die 62-%-Verdichtung in 13_U_028 als reine optionale Demonstrationsansicht isolieren; reale Modell-/Kabelanschluss-Koordinaten nicht stillschweigend verschieben
-- [ ] **KAB-0833** – Originale Wandzuordnung und Rohranzahl bei 13_T_021 vor/nach Geometriekorrektur als unveränderliche Vergleichsfixture sichern
-- [ ] **KAB-0834** – Originale Wandzuordnung und Rohranzahl bei 13_U_028 für HTML- und PDF-V2-Quelle separat als unveränderliche Vergleichsfixture sichern
+- [x] **KAB-0832** – Die 62-%-Verdichtung in 13_U_028 als reine optionale Demonstrationsansicht isolieren; reale Modell-/Kabelanschluss-Koordinaten nicht stillschweigend verschieben · Nachweis: https://github.com/valoon4/Androidbaze/commit/aaa96ab73d5ab53dea97eaa3d4456d4a1a5ae638
+- [x] **KAB-0833** – Originale Wandzuordnung und Rohranzahl bei 13_T_021 vor/nach Geometriekorrektur als unveränderliche Vergleichsfixture sichern · Nachweis: https://github.com/valoon4/Androidbaze/commit/132d2285612244eaf4413dc8d25d25bed3850a72
+- [x] **KAB-0834** – Originale Wandzuordnung und Rohranzahl bei 13_U_028 für HTML- und PDF-V2-Quelle separat als unveränderliche Vergleichsfixture sichern · Nachweis: https://github.com/valoon4/Androidbaze/commit/132d2285612244eaf4413dc8d25d25bed3850a72
 - [ ] **KAB-0835** – Den Abstand Boden → Unterkante Leerrohr aus echter Bodenhöhe und bestätigtem Rohraußendurchmesser explizit und mit Einheiten berechnen
 - [ ] **KAB-0836** – Variante A bei bestätigtem Grenzwert exakt 100 mm auf Grenzfallverhalten testen, sofern 100 mm fachlich verbindlich bestätigt wird
 - [ ] **KAB-0837** – Variante B bei bestätigtem Grenzwert oberhalb 100 mm testen, ohne diesen Wert vor Konfliktentscheidung als verbindlich auszugeben
@@ -55,3 +55,7 @@
 - [ ] **KAB-0863** – Mehrseitiges PDF-Prüfheft aus Rechteckschema, Querschnitt, Wandbelegung, Originalplanreferenz und offenem Nachweis je ausgewähltem Schacht aufbauen
 - [ ] **KAB-0864** – Filterbares Excel-Schachtregister mit denselben Statusdefinitionen, eindeutig referenzierten Querschnittsbildern, verlinkten Planseiten und neutralem Dateinamen exportieren
 
+
+## Erledigungsnachweise aus Entwicklungssprint 12.11.2026
+
+**KAB-0832/0833/0834**: Quellpositions-Trennung im PDF-V2-Projekt, reversible reine Vorschauverdichtung, feste HTML/PDF-Snapshots für 13_T_021 und 13_U_028 mit 48/78/91 Leerrohren, Wand-IDs, Quelle und Kabelendpunkten. Weitere A/B- und AVL-Fachfragen sind unverändert offen. [Sprintbericht](./SPRINT_2026-11-12_BRO_10.md).

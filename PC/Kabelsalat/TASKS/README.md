@@ -11,7 +11,7 @@
 | P0/P1/P2 · Bro-Chat: korrigierte 3D-Vorgaben, 92-Schacht-Prüfung, PDF/Excel | 36 | KAB-0829–KAB-0864 | [05-BRO-CHAT-AVL-UND-REPORTS.md](./05-BRO-CHAT-AVL-UND-REPORTS.md) |
 | P2/P1 · Historische 92-Schacht-Fälle und Berichtsversionen | 12 | KAB-0865–KAB-0876 | [06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md](./06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) |
 | P0 · Bros jüngstes Feedback: klassischer Betonblock, DM/DN und Erkennung | 8 | KAB-0877–KAB-0884 | [07-BRO-BETON-ROHR-DM.md](./07-BRO-BETON-ROHR-DM.md) |
-| **Gesamt aktuell (11.11.2026)** | **884** | **KAB-0001–KAB-0884** | |
+| **Gesamt aktuell (12.11.2026)** | **884** | **KAB-0001–KAB-0884** | |
 
 ## Initialer Status am 10.11.2026
 
@@ -30,11 +30,15 @@
 - **Quelle:** [BRO_CHAT_CROSSWALK.md](./BRO_CHAT_CROSSWALK.md). Das historische Gespräch und Assistentenbehauptungen sind **keine fachliche Freigabe**.
 
 
+## Aktueller Sprintstand · 12.11.2026
+
+**[Bros 10-Aufgaben-Entwicklungssprint](./SPRINT_2026-11-12_BRO_10.md)** lieferte echte Änderungen an Rendering, Maßdaten, unbestätigter Plan-/Bild-Kandidatenerkennung, Quellenfixtures und Demo-Geometrietrennung. **9 KAB-Tasks wurden mit konkret zugeordneten Commits/Tests abgeschlossen**, weitere 10+ Arbeitspakete technisch begonnen oder vertieft. Nicht abschließbar bleiben Bros visuelle Abnahme, fehlende Originalmaßquellen, trainierte KI bzw. echte PDF-/Foto-Rohrtyp-Erkennung und die 75-/100-mm-Bauartregel. Die ID-Rangfolge bleibt unverändert.
+
 ## Gesamtpriorität nach Bros neuesten Praxistests (11.11.2026)
 
 - **Verbindliche Abarbeitungsreihenfolge:** [PRIORITIES.md](./PRIORITIES.md) mit der [vollständigen Rangliste aller 884 Tasks](./PRIORITY_ORDER.csv). **IDs sind stabil, Reihenfolge ist Rang 1–884, nicht die Nummer der KAB-ID.**
 - **Heute priorisiert:** KAB-0877 (Betonblock mit echten Löchern) → KAB-0878 (dunklere Betonoptik) → KAB-0880 (Durchmesser-Datenmodell) → KAB-0879 (gemischte Öffnungsgrößen) → KAB-0883 (sichtbare Dimension) → KAB-0881/0882 (PDF-/Foto-Erkennung mit Quellabgleich).
-- **Aktueller Zähler:** 0 als erledigt markiert / 884 offen / 884 gesamt. Der vorhandene Softwarestand bleibt unberührt; diese Zahl erfasst nur die noch nicht einzeln abgenommenen Tasks.
+- **Aktueller Zähler nach erstem Bro-Sprint:** **9 erledigt / 875 offen / 884 gesamt**, einschließlich bestehender, jetzt durch die Tests belegter Quell-/Ansichtsaufgaben. Die grundlegende Schachtsoftware existierte schon vorher; nur tatsächliche Einzelabnahmen zählen hier.
 - **Live prüfen:** `node TASKS/check-backlog.js` zählt den Status, `node TASKS/check-priorities.js --next=20` validiert alle Ränge und zeigt die nächsten offenen Tasks.
 - **Quellenstopps:** 100-mm-/75-mm-Regel, Original-Maße, 92 Schacht-IDs und echte Rohrdurchmesser sind nicht aus dem Chat heraus fachlich bestätigbar. Dennoch können Betonrendering, sichere Demo und Tests sofort umgesetzt werden.
 

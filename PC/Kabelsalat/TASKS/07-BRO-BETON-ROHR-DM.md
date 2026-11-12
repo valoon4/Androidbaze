@@ -1,6 +1,6 @@
 # Kabelsalat · jüngstes Bro-Feedback: Betonblock und Rohrdurchmesser
 
-**Eingang:** Eugis Wiedergabe von Bros Praxistest am 11.11.2026: Rohre wirken unnatürlich; Ziel ist ein klassischer, weniger heller Betonblock mit runden, unterschiedlich großen Löchern. Die KI soll Rohrarten und Rohrmaße (beispielhaft 60, 110, 116) erkennen. **Alle 8 Aufgaben offen.**
+**Eingang:** Eugis Wiedergabe von Bros Praxistest am 11.11.2026: Rohre wirken unnatürlich; Ziel ist ein klassischer, weniger heller Betonblock mit runden, unterschiedlich großen Löchern. Die KI soll Rohrarten und Rohrmaße (beispielhaft 60, 110, 116) erkennen. **Bei Erfassung waren alle acht Aufgaben offen.** Den Live-Status zeigen die Checkboxen sowie [Sprintbericht](./SPRINT_2026-11-12_BRO_10.md) und [Gesamtzähler](./README.md).
 
 **Abnahmeregel:** 60/110/116 sind vom Bro genannte Beispiele, keine bestätigten Bestandswerte. DN (Nennweite), Rohr-Innen-/Außendurchmesser und Lochdurchmesser sind technisch zu unterscheiden. Bild-/PDF-Pixelgröße allein ohne Maßreferenz liefert keine echte Millimeterdimension. Originalpläne, Rohr-IDs, Positionen und Kabelanschlüsse nicht unbemerkt verändern.
 
@@ -16,10 +16,10 @@
 
 **Definition of Done:** Automatische Kandidaten sind quellengebunden, falsche Maße korrigierbar und ohne Nutzerbestätigung nicht als echte Maße klassifiziert.
 
-- [ ] **KAB-0880** – Rohr-Nennweite DN, Innendurchmesser, Außendurchmesser, erkannte Maßangabe und bestätigte Maßangabe mit Einheit und Quellenstatus getrennt modellieren; DN und tatsächliches Lochmaß nicht gleichsetzen
+- [x] **KAB-0880** – Rohr-Nennweite DN, Innendurchmesser, Außendurchmesser, erkannte Maßangabe und bestätigte Maßangabe mit Einheit und Quellenstatus getrennt modellieren; DN und tatsächliches Lochmaß nicht gleichsetzen · Nachweis: https://github.com/valoon4/Androidbaze/commit/78968adfc6f684890ef13976ceb429ed1d676ea6
 - [ ] **KAB-0881** – PDF-/Planerkennung: Rohranzahl, Rohrtyp und Maßangaben wie 60, 110, 116 aus Dokumentbeschriftung als Kandidaten mit eindeutiger Rohrzuordnung erkennen; ohne Maßstab keine Durchmesser aus Pixeln behaupten
 - [ ] **KAB-0882** – Foto-/Bilderkennung: Öffnungsgröße und Rohrtyp mit explizitem Maßstab/Referenzkörper oder sichtbarer Beschriftung als prüfbare Kandidaten vorschlagen; ohne Referenz nur relative Größen schätzen
-- [ ] **KAB-0883** – Erkannte, manuell gesetzte und bestätigte Rohrdimension mit Einheit und Quelle im Tooltip, Eigenschaftenpanel, 2D-Wandplan und 3D-Inspektion gut lesbar anzeigen
+- [x] **KAB-0883** – Erkannte, manuell gesetzte und bestätigte Rohrdimension mit Einheit und Quelle im Tooltip, Eigenschaftenpanel, 2D-Wandplan und 3D-Inspektion gut lesbar anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/commit/78968adfc6f684890ef13976ceb429ed1d676ea6
 
 ## P0-17 · Darstellung und Erkennung dauerhaft absichern (KAB-0884)
 
@@ -32,3 +32,11 @@
 ## Zwischenstand KAB-0877 · 12.11.2026
 
 Die neue Darstellung der zusammenhängenden Betonwand mit durchgängigen ausgeschnittenen Öffnungen, entfernten hervorstehenden Demo-Hülsen und weiterhin anklickbaren Rohr-IDs ist **implementiert** in `concrete-wall.js` und `app.js`. Für `13_T_021`, `13_U_028` HTML und PDF V2 existiert der neue automatisierte Geometrie-/Unverändertheitstest `tests/concrete-wall.test.js`; die 3D-Browserprüfung läuft zusätzlich über GitHub Actions. **KAB-0877 bleibt offen**, bis die Sichtprüfung mit Bros Rückmeldung und die Build-/Browser-Ergebnisse nachweisbar bestanden sind. [Issue #70](https://github.com/valoon4/Androidbaze/issues/70).
+
+## Entwicklungssprint vom 12.11.2026 · v2.0.3-beta.1
+
+- **KAB-0880 und KAB-0883:** Quellgebundenes Rohrmaßmodell und Größen-/Statusanzeige in Profi-Editor, 2D und 3D sind implementiert, per automatisierten Tests abgenommen. Echte physische Daten sind weiterhin keine automatisch bestätigten Maße.
+- **KAB-0878 und KAB-0879:** Dunklere texturierte Betonwände und unterschiedliche Lochgrößen sind technisch umgesetzt. **Sichtabnahme von Bro und reale Maßquellen fehlen weiterhin**; beide Aufgaben bleiben offen.
+- **KAB-0881:** Lokale Erkennung von DN/DM/Ø aus klar beschriftetem TXT-Plantext mit Manueller Prüfung – **keine automatische PDF-Binärverarbeitung/OCR/KI**, deshalb nicht vollständig erledigt.
+- **KAB-0882:** Offline-Kreiserkennung aus Foto mit relativer Größe oder ausdrücklich kalibriertem Referenzkreis; **nur Kandidaten, kein trainiertes KI-Modell und keine sichere Rohrtypklassifikation**. Task bleibt offen.
+- **KAB-0884:** Automatisierte 60/110/116-mm-Regression und Browser-Screenshot eines **ausdrücklich synthetischen Beispiels** ergänzt. Endabnahme erfolgt erst nach abgeschlossenem echten Chromium-Browserlauf. [Sprintbericht](./SPRINT_2026-11-12_BRO_10.md).

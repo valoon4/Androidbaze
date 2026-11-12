@@ -1,6 +1,15 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.2-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.3-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.3-beta.1 · Bros 10er-Sprint – 12.11.2026
+
+- **Betonblock:** Dunkelgraue, dezent gekörnte Betonoberfläche im Offline-WebGL-Rendering; echte Lochdurchbrüche statt hervorstehender Metalldemo-Rohre. Optisches Feedback von Bro zu Farbe/Form weiterhin offen.
+- **Rohrdimensionen:** DN/Nennangabe, Innen-Ø, Außen-Ø, Beton-Loch-Ø, Erkennungskandidat und prüfbare Quelle/Prüfer als getrennte Eigenschaften. Unterschiedliche Öffnungsmaße steuern Geometrie, 2D-Auswahl und Kollisionen. 60/110/116 mm sind hier synthetische Beispiele, keine real bestätigten Schachtmaße.
+- **Plantext/Fotos:** Prototypische **lokale** Erkennung von beschrifteten DN-/DM-/Ø-Textzeilen (TXT oder Eingabefeld) und visuellen Kreiskandidaten (Bild mit manueller Referenzmaß-Kalibrierung). **Keine** automatische PDF-Binärerkennung, trainierte KI, OCR oder verlässliche Rohrtypklassifikation; die Quellfreigabe bleibt manuell.
+- **Originalpläne geschützt:** 62-%-Verdichtung wird ausschließlich als umschaltbare Basic-Ansichtstransformation verwendet. Gespeicherte PDF-Quellmittelpunkte und ältere manuell verschobene Rohre werden nicht stillschweigend angepasst. Feste Regressionen zu 48 + 78 + 91 Rohrpositionen und 120 Kabelanschlüssen.
+- **Tests/Builds:** Node-Modultests, 97 PDF-Quellprüfungen und 17 lokale CSP-geprüfte Offline-Skripte über GitHub Actions. Aktuelle Einzelabnahmen und offene Blocker: [Sprintbericht](./TASKS/SPRINT_2026-11-12_BRO_10.md).
+- **Entwicklungsstatus:** [aktuelle Checkboxen und Nachweise](./TASKS/README.md), [Rangliste aller 884 Tasks](./TASKS/PRIORITY_ORDER.csv); Bauartgrenze 75/100 mm und tatsächliche AVL-Konformität nicht abschließend geklärt.
 
 ## 2.0.2-beta.1 · KAB-0877 – Betonblock mit runden Durchbrüchen
 
@@ -18,15 +27,15 @@
 
 ## 884 konkrete Tasks – nach Bros jüngstem Feedback, Stand 11.11.2026
 
-Der kanonische [Task-Tracker mit 884 nummerierten Aufgaben](./TASKS/README.md) enthält den 828er-Basisplan, 48 Aufgaben aus Bros altem Chat und 8 weitere Anforderungen zu Betonblock-Optik und DM/DN-Erkennung ([Quellabgleich](./TASKS/BRO_CHAT_CROSSWALK.md)). **Alle 884 sind derzeit offen**; frühere Meilensteine und 97 PDF-Visualtests sind keine erledigten Tasks. Neue zusätzliche Aufgaben folgen ab KAB-0885. Die zuletzt hinzugefügten [12 Detailaufgaben](./TASKS/06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) prüfen insbesondere historische PDF-/Excel-Ergebnisse und die echte 92-Schacht-Prüfliste. `npm test` validiert Task-IDs und Statuszähler.
+Der kanonische [Task-Tracker mit 884 nummerierten Aufgaben](./TASKS/README.md) enthält den 828er-Basisplan, 48 Aufgaben aus Bros altem Chat und 8 weitere Anforderungen zu Betonblock-Optik und DM/DN-Erkennung ([Quellabgleich](./TASKS/BRO_CHAT_CROSSWALK.md)). **Der Live-Status der 884 Tasks steht im Tasktracker (9 erledigt / 875 offen beim Sprint)**; frühere Meilensteine und 97 PDF-Visualtests sind keine erledigten Tasks. Neue zusätzliche Aufgaben folgen ab KAB-0885. Die zuletzt hinzugefügten [12 Detailaufgaben](./TASKS/06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) prüfen insbesondere historische PDF-/Excel-Ergebnisse und die echte 92-Schacht-Prüfliste. `npm test` validiert Task-IDs und Statuszähler.
 
-**Neue Umsetzungsvorgabe:** Die [Priorisierung aller 884 Tasks](./TASKS/PRIORITIES.md) und [globale Rangliste](./TASKS/PRIORITY_ORDER.csv) richten sich vorrangig nach Bros jüngstem Praxisfeedback: klassischer dunklerer Betonblock mit echten unterschiedlich großen Öffnungen, sichtbaren Rohrmaßen und überprüfbarer PDF-/Foto-Erkennung. **Als Erstes KAB-0877.**
+**Neue Umsetzungsvorgabe:** Die [Priorisierung aller 884 Tasks](./TASKS/PRIORITIES.md) und [globale Rangliste](./TASKS/PRIORITY_ORDER.csv) richten sich vorrangig nach Bros jüngstem Praxisfeedback: klassischer dunklerer Betonblock mit echten unterschiedlich großen Öffnungen, sichtbaren Rohrmaßen und überprüfbarer PDF-/Foto-Erkennung. **KAB-0877 ist technisch umgesetzt, aber Bros Sichtabnahme noch offen.**
 
 **Fachlicher Hinweis zu v2.0.1:** Die aktuelle visuelle Zuordnung OLA=A und MS=B ist ein **historischer Demofall**, kein fachliches Auswahlkriterium: Im älteren Chat hängt A/B von der Höhe der Rohrunterkante über Schachtboden ab (bis 100 mm versus darüber). Eine spätere 75-mm-Bildvorgabe widerspricht dem; beide Werte sind bis zum belastbaren Abgleich **ungeklärt**. Die 62-%-Rohrverdichtung verändert Demo-Anzeigekoordinaten und darf **nicht** als reales Aufmaß oder unveränderte Rohrachsen im 3D-Fachmodell interpretiert werden. Siehe KAB-0829–0840.
 
 ## Herunterladen und starten
 
-Die folgenden Downloads sind noch historische 1.9.3-Builds; die aktuelle 2.0.1-Quellversion steht in diesem Repository. Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
+Die aktuellen Dateien werden automatisiert im GitHub-Release veröffentlicht, sobald der Windows-/Offline-Build für `v2.0.3-beta.1` erfolgreich endet. Die darunter genannten Versionen `1.9.3` sind **nur historische Beispiele**; die tatsächlich angebotenen Artefaktnamen im Release prüfen. Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
 - `Kabelsalat-1.9.3-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
 - `Kabelsalat-1.9.3-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
