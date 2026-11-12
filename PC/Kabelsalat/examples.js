@@ -11,6 +11,7 @@ const manifest=[
  {id:'reference',name:'1 · Referenzschacht 13_T_021 (DEMO)',description:'Vier Wände, 94 Leerrohre, 16 farbige Kabel, OLA/MS, Konsolen und Variante'},
  {id:'station',name:'2 · Bahnhofsnetz mit 4 Schächten (DEMO)',description:'Vier Schächte, 64 Kabel, Netzverbindungen und drei schachtübergreifende Kabelwege'},
  {id:'quality',name:'3 · Prüffall mit absichtlichen Fehlern (DEMO)',description:'Überschneidungen, unvollständiges Kabel und Geometriehinweise zum Nachvollziehen'},
+ {id:'diameters',name:'4 · LR-Größen DN 30–160 (FIKTIVE DEMO)',description:'Alle Leerrohre unterschiedlich groß: DN 30, 50, 60, 110, 116, 160 und weitere; keine realen Bestandsmaße'},
  ...(referenceModule?.manifest||[])
 ];
 const groups=[
@@ -85,6 +86,22 @@ function create(id){
   return referenceModule.create(id);
  }
  if(!manifest.some(m=>m.id===id))throw Error('Unbekanntes Beispiel '+id);
+ if(id==='diameters'){
+  // Explicitly SYNTHETIC size range. Never alter PDF/HTML references to achieve
+  // a prettier render. Each LR keeps its ID and coordinate.
+  const p=shaft('DN-DEMO');
+  p.name='FIKTIVE DEMO · LR-Durchmesser DN 30–160 (keine Bestandsmaße)';
+  const sizes=[30,40,50,60,63,75,90,110,116,125,140,160];
+  for(let wi=0;wi<p.walls.length;wi++)p.walls[wi].holes.forEach((h,i)=>{
+   h.dn=sizes[(i+wi*3)%sizes.length];
+   // No physical openingMm: DN is just a labeled visual proxy.
+  });
+  p.opacity=70;
+  const entry={id:'DN-DEMO',name:p.name,x:0,z:0,snapshot:network.snapshot(p)};
+  const result=assemble(p,[entry]);
+  result.network.quality={minPipeGapMm:null,minEdgeMm:null,minBendRadiusMm:null};
+  return result;
+ }
  if(id==='reference'){
   const p=shaft('13_T_021');p.name='DEMO Referenzschacht 13_T_021 · KEINE REALDATEN';
   const before=components.snapshot({...p,showBox:false,supports:p.supports.slice(0,2)});
