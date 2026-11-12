@@ -42,6 +42,10 @@
 
 **Neu, höchste Priorität:** [KAB-0885–0888](./08-BRO-KURZE-LR-DN30-160.md). Kürzere ausschließlich visuelle Kabelend-Stutzen, DN30–160 im Editor, eine **separate fiktive Vergleichs-Demo** mit DN30/50/110/160 und automatisierte Größen-/Quelltests. Die ursprünglichen 91 PDF-V2-LR bleiben unverändert; reale Betonlochmaße werden nicht aus DN abgeleitet. **Zwischenstand vor neuer Bro-Sichtprüfung:** 19 bereits abgeschlossene Tasks + vier neue offene = **19 erledigt / 869 offen / 888 gesamt**.
 
+## Atomare Mikroaufgaben · 13.11.2026
+
+**[Erster Block: 42 konkrete Schritte à 2–10 Minuten](./ATOMIC_TASKS.md)**, unter bestehenden KAB-IDs und mit einem eindeutigen Fertig-Kriterium pro Schritt. 888 Parent-Tickets bleiben erhalten und werden **nicht** mit Unteraufgaben doppelt gezählt. Die übrigen offenen Tickets werden beim Bearbeiten quellen- und codebezogen zerlegt, statt tausende bedeutungslose Platzhalter zu erzeugen.
+
 ## Aufwand je offenem Task · 13.11.2026
 
 **[869 Einzelschätzungen](./TASK_ESTIMATES.csv)** für alle momentan offenen KAB-Aufgaben · optimistisch / typisch / vorsichtig als **mein aktiver KI-/GitHub-Aufwand**, keine Kalenderfristen. [Saubere Übersicht nach S0–S6](./TASK_ESTIMATES.md). 19 abgehakte Tasks sind aus der Liste ausgeschlossen; 75 noch offene Aufgaben tragen kenntliche Quellen-, Browser- oder Fachvoraussetzungen. Schätzungen werden bei Änderungen per `node TASKS/estimate-time.js --write` aktualisiert; `npm test` prüft automatisch, dass **jeder offene Task genau eine aktuelle Schätzung** und Priorität hat.
