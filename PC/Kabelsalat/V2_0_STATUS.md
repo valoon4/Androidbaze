@@ -36,3 +36,9 @@ Aus dem Nutzerupload `dumm.txt` wurden 36 prüfbare Folgeaufgaben KAB-0829–086
 - **Weitere Quellschächte:** Beide Modelle `13_U_028` und `13_T_021` müssen mit ihren jeweiligen Originalbelegungen und interaktiven Funktionen überprüft werden. Die im Chat besprochenen 92-Schacht-PDF/Excel-Auswertungen sind ein **gesonderter Daten- und Berichtsstrang**, dessen frühere Ergebnisse nicht ohne Originalplansatz bestätigt werden können.
 
 **Keine Softwareänderung, technische Abnahme oder AVL0116-Freigabe wurde allein durch das Erfassen dieser Aufgaben durchgeführt.**
+
+## 2.0.2-beta.1 · KAB-0877 – Beton-Wanddarstellung
+
+Die bisherigen extrudierten Wandflächen enthielten bereits kreisförmige Durchbrüche, wurden in der 3D-Demo jedoch stark transparent und mit hervorstehenden Metallhülsen/-kragen gezeigt. Die neue Darstellung nutzt das modulare `concrete-wall.js`, höhere Betondeckkraft in der Referenz-Exploration, einen einheitlichen Betonkörper und dunkler schattierte Lochinnenwände. Die 20-cm-Demohülsen der PDF-Szene entfallen; unsichtbare 3D-Picking-Flächen erhalten die Rohrselektion, farbige Belegungsränder bleiben sichtbar.
+
+**Keine Änderung an Daten und Leitungswegen:** Quellbelegung, `sourceU/sourceV`, Demo-`u/v`, DN, Rohrachsen, Kabelendpunkte und Schachtgeometrie bleiben wie zuvor. **Offen**: 62-%-Schematisierung, reale Rohr-/Lochmaße, finale Betontextur, Bro-Sichtabnahme, fachliche Kontrolle. Details: [TASKS/07-BRO-BETON-ROHR-DM.md](./TASKS/07-BRO-BETON-ROHR-DM.md) und [Issue #70](https://github.com/valoon4/Androidbaze/issues/70).
