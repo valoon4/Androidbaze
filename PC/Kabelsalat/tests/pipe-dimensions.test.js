@@ -14,7 +14,7 @@ assert.deepEqual(pipe.forHole(manual),{
 assert.equal(pipe.apertureMm(manual),118,'Opening bore must not be DN or outer diameter');
 assert.match(pipe.describe(manual),/Öffnung-Ø 118 mm/);
 assert.equal(pipe.forHole({...manual,dimensionSpec:{openingMm:118,status:'reviewed'}}).status,
- 'candidate','Unproven reviewed dimension must be downgraded');
+ 'unverified','Unattributed reviewed dimension must be downgraded to unverified');
 assert.equal(pipe.forHole({...manual,dimensionSpec:{openingMm:119,status:'candidate',source:''}}).status,
  'unverified','Unattributed measurement cannot be a confident candidate');
 assert.equal(pipe.apertureMm({dn:116,dimensionSpec:{openingMm:'evil',candidateMm:60}}),116);
