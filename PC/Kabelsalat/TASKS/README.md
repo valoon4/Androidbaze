@@ -34,11 +34,14 @@
 
 **[Bros 10-Aufgaben-Entwicklungssprint](./SPRINT_2026-11-12_BRO_10.md)** lieferte echte Änderungen an Rendering, Maßdaten, unbestätigter Plan-/Bild-Kandidatenerkennung, Quellenfixtures und Demo-Geometrietrennung. **10 KAB-Tasks wurden mit konkret zugeordneten Commits/Tests abgeschlossen**, weitere 10+ Arbeitspakete technisch begonnen oder vertieft. Nicht abschließbar bleiben Bros visuelle Abnahme, fehlende Originalmaßquellen, trainierte KI bzw. echte PDF-/Foto-Rohrtyp-Erkennung und die 75-/100-mm-Bauartregel. Die ID-Rangfolge bleibt unverändert.
 
+
+**[Zweiter 10-Aufgaben-Sprint](./SPRINT_2026-11-12_BRO_WALL_10.md):** SW1–SW4-Normalen, Weltachsen, DN160-/DN110-/DN75-/DN63-Abstände und minimale lichte Weiten. Neun KAB-Aufgaben mit Unit- und Windows-Build-Nachweis abgeschlossen; KAB-0048 (rote 2D-/3D-Kollisionswarnungen) implementiert, **visuelle Browserkontrolle noch ausstehend**. 19 erledigt/865 offen/884 gesamt; keine vermessenen Originalabstände.
+
 ## Gesamtpriorität nach Bros neuesten Praxistests (11.11.2026)
 
 - **Verbindliche Abarbeitungsreihenfolge:** [PRIORITIES.md](./PRIORITIES.md) mit der [vollständigen Rangliste aller 884 Tasks](./PRIORITY_ORDER.csv). **IDs sind stabil, Reihenfolge ist Rang 1–884, nicht die Nummer der KAB-ID.**
 - **Heute priorisiert:** KAB-0877 (Betonblock mit echten Löchern) → KAB-0878 (dunklere Betonoptik) → KAB-0880 (Durchmesser-Datenmodell) → KAB-0879 (gemischte Öffnungsgrößen) → KAB-0883 (sichtbare Dimension) → KAB-0881/0882 (PDF-/Foto-Erkennung mit Quellabgleich).
-- **Aktueller Zähler nach erstem Bro-Sprint:** **10 erledigt / 874 offen / 884 gesamt**, einschließlich bestehender, jetzt durch die Tests belegter Quell-/Ansichtsaufgaben. Die grundlegende Schachtsoftware existierte schon vorher; nur tatsächliche Einzelabnahmen zählen hier.
+- **Aktueller Zähler nach zwei Bro-Sprints:** **19 erledigt / 865 offen / 884 gesamt**, einschließlich bestehender, jetzt durch die Tests belegter Quell-/Ansichtsaufgaben. Die grundlegende Schachtsoftware existierte schon vorher; nur tatsächliche Einzelabnahmen zählen hier.
 - **Live prüfen:** `node TASKS/check-backlog.js` zählt den Status, `node TASKS/check-priorities.js --next=20` validiert alle Ränge und zeigt die nächsten offenen Tasks.
 - **Quellenstopps:** 100-mm-/75-mm-Regel, Original-Maße, 92 Schacht-IDs und echte Rohrdurchmesser sind nicht aus dem Chat heraus fachlich bestätigbar. Dennoch können Betonrendering, sichere Demo und Tests sofort umgesetzt werden.
 
