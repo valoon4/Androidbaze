@@ -41,7 +41,7 @@ for(const asset of ['pdf-geometry.js','pdf-visual.js'])
   'New visual source asset missing: '+asset);
 for(const id of ['pdfVisualPanel','pdfOpen','pdfClose','oldProjectNotice','switchToPdf'])
  assert.ok(html.includes('id="'+id+'"'),'PDF visual UI missing: '+id);
-assert.ok(app.includes('pdfGeometry.hole(wid,h,s)')&&
+assert.ok(app.includes('pdfGeometry.hole(wid,shown,s)')&&
  app.includes('pdfGeometry.transform(w.id,s)')&&
  app.includes('pdfGeometry.camera(viewMode,d)'),
  '3D must use correct PDF-world wall coordinates on every view');
