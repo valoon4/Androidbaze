@@ -80,7 +80,8 @@ const project=examples.create('pdf-u028'),copy=JSON.stringify(project),sizes=pro
 assert.deepEqual(project.walls.map(w=>w.holes.length),[29,13,26,23]);
 for(const wall of project.walls){
  const width=(wall.id==='SW1'||wall.id==='SW3'?sizes.w:sizes.d)/1000;
- const holes=wall.holes.map(h=>({id:h.id,u:(h.u-.5)*width,y:h.v*sizes.h/1000,r:(h.dn||70)/2000}));
+ const display=require('../schematic-positions.js');
+ const holes=wall.holes.map(h=>{const p=display.display(h,true);return {id:h.id,u:(p.u-.5)*width,y:p.v*sizes.h/1000,r:(h.dn||70)/2000};});
  const built=build(holes,{width,height:sizes.h/1000,depth:wall.thickness/1000});
  assert.equal(built.accepted.length,wall.holes.length,
   'PDF-V2 91 real circular openings must survive the geometry cutter for '+wall.id);

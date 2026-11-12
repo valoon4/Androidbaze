@@ -11,6 +11,12 @@ const samples=globalThis.KabelsalatSamples;
 if(!samples)throw Error('Kabelsalat-Beispielmodul fehlt');
 const pdfGeometry=globalThis.KabelsalatPdfGeometry;
 if(!pdfGeometry)throw Error('Kabelsalat-PDF-Geometriemodul fehlt');
+const schematicPositions=globalThis.KabelsalatSchematicPositions;
+if(!schematicPositions)throw Error('Kabelsalat-Demo-Koordinatenmodul fehlt');
+const pipeDimensions=globalThis.KabelsalatPipeDimensions;
+if(!pipeDimensions)throw Error('Kabelsalat-Rohrmaßmodul fehlt');
+const photoCandidates=globalThis.KabelsalatPhotoCandidates;
+if(!photoCandidates)throw Error('Kabelsalat-Fotoerkennungsmodul fehlt');
 const concreteWall=globalThis.KabelsalatConcreteWall;
 if(!concreteWall)throw Error('Kabelsalat-Betonwandmodul fehlt');
 const constructionV2=globalThis.KabelsalatConstructionV2;
@@ -90,7 +96,10 @@ function validProject(o){
  const thickness=clamp(Number(w.thickness)||120,40,500),dn=clamp(Number(w.dn)||70,20,300);
  const holes=Array.isArray(w.holes)?w.holes.filter(h=>h&&typeof h.id==='string'&&Number.isFinite(+h.u)&&Number.isFinite(+h.v)).slice(0,600).map(h=>({
  id:h.id.slice(0,120),row:clamp(Number(h.row)||0,0,30),col:clamp(Number(h.col)||0,0,30),
- u:clamp(+h.u,0,1),v:clamp(+h.v,0,1),dn:clamp(Number(h.dn)||dn,20,300),
+ u:clamp(+schematicPositions.migrate(h,o.sourceInfo?.sourceVersion?.startsWith('PDF V2')).u,0,1),
+ v:clamp(+schematicPositions.migrate(h,o.sourceInfo?.sourceVersion?.startsWith('PDF V2')).v,0,1),
+ dn:clamp(Number(h.dn)||dn,20,300),
+ ...(h.dimensionSpec?{dimensionSpec:pipeDimensions.normalize(h.dimensionSpec,h.dn)}:{}),
  sourceAddress:cleanReferenceText(h.sourceAddress,140),
  sourcePage:Number.isFinite(h.sourcePage)?h.sourcePage:null,
  sourceCount:Number.isFinite(h.sourceCount)?h.sourceCount:null,
@@ -132,6 +141,7 @@ function validProject(o){
  showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
  enclosures,supports,variants,sourceInfo:normalizeSourceInfo(o.sourceInfo)};
  result.network=networkModel.normalizeNetwork(o.network,networkModel.snapshot(result));
+ schematicPositions.transformProjectShunt(result.network);
  result.network.quality=qualityModel.normalizeSettings(o.network?.quality);
  result.network.reviews=qualityModel.normalizeReviews(o.network?.reviews,result.network.shafts);
  result.network.audit=qualityModel.normalizeAudit(o.network?.audit);
@@ -153,6 +163,7 @@ let netLinkFromId=null,netLinkToId=null,reviewKey='shaft';
 const EXPLORE_MODE_KEY='kabelsalat_ui_mode_v1';
 const EXPLORE_PROGRESS_KEY='kabelsalat_explore_progress_v1';
 let exploreMode=true,exploreWith2D=false,exploreStage='shaft';
+let demoCompactView=true; // Visual-only, never saved in project or source coordinates.
 /* Presentation-only visibility: never included in project JSON, undo or audit logs. */
 let exploreConstructionMode='hidden';
 let exploreProtectionGuide=false; // View-only PDF concept; never saved to project JSON.
@@ -421,9 +432,10 @@ function createLabel(text,pos){const c=document.createElement('canvas');c.width=
  const tex=new THREE.CanvasTexture(c),sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
  sprite.position.copy(pos);sprite.scale.set(.5,.14,1);models.add(sprite);}
 
+function visualHole(h){return pdfView()?schematicPositions.display(h,exploreMode&&demoCompactView):h;}
 function holePosition(wid,h){
- const s=sizes(),u=clamp(h.u,0,1),y=s.h*clamp(h.v,0,1);
- if(pdfView())return new THREE.Vector3(...pdfGeometry.hole(wid,h,s));
+ const s=sizes(),shown=visualHole(h),u=clamp(shown.u,0,1),y=s.h*clamp(shown.v,0,1);
+ if(pdfView())return new THREE.Vector3(...pdfGeometry.hole(wid,shown,s));
  if(wid==='SW1')return new THREE.Vector3(-s.w/2+.024,y,-s.d/2+s.d*u);
  if(wid==='SW2')return new THREE.Vector3(-s.w/2+s.w*u,y,-s.d/2+.024);
  if(wid==='SW3')return new THREE.Vector3(s.w/2-.024,y,-s.d/2+s.d*u);
@@ -520,8 +532,8 @@ function drawWalls(){
   (exploreMode&&viewMode==='3D'&&exploreCutawayWall===w.id))continue;
  const span=pdfView()?pdfWallWidth(w.id,s):(w.id==='SW2'||w.id==='SW4')?s.w:s.d;
  const candidates=w.holes.map(h=>{
-  const p=holePosition(w.id,h);
-  return {id:h.id,u:pdfView()?(h.u-.5)*span:
+  const shown=visualHole(h),p=holePosition(w.id,h);
+  return {id:h.id,u:pdfView()?(shown.u-.5)*span:
    w.id==='SW2'?-p.x:w.id==='SW3'?-p.z:w.id==='SW4'?p.x:p.z,
    y:p.y,r:openingRadius(h)};
  });
@@ -955,7 +967,7 @@ function draw2D(){
   ctx.stroke();ctx.globalAlpha=1;ctx.setLineDash([]);
  }
  for(const h of w.holes){
- const p=geom2d.toPixels(m,h.u*span,h.v*height);
+ const shown=visualHole(h),p=geom2d.toPixels(m,shown.u*span,shown.v*height);
  const r=Math.max(2,Number(h.dn||70)/2*m.scale),selected=h.id===holeId;
  ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);
  ctx.fillStyle=selected?'#b7e9d7':'#e5eff2';ctx.fill();
@@ -1035,7 +1047,7 @@ function draftPoint(e){
 }
 draft.addEventListener('pointerdown',e=>{
  if(e.button!==0||!draftMetrics)return;
- const p=draftPoint(e),selected=geom2d.hitHole(wall().holes,draftMetrics,p.x,p.y);
+ const p=draftPoint(e),selected=geom2d.hitHole(wall().holes.map(visualHole),draftMetrics,p.x,p.y);
  if(selected){
  holeId=selected.id;renderAll();
  if(exploreMode){e.preventDefault();return;}
@@ -1298,6 +1310,9 @@ function renderExplorerUI(){
  $('toggleExpert').setAttribute('aria-pressed',String(!exploreMode));
  $('explore2DToggle').textContent=exploreWith2D?'▢ 2D-Plan ausblenden':'▤ Wand als 2D-Plan sehen';
  $('exploreCutawayWall').value=exploreCutawayWall||'none';
+ $('demoCompactionToggle').hidden=!pdfView();
+ $('demoCompactionToggle').textContent=demoCompactView?'↔ PDF-Originalpunkte ansehen':'↔ 62-%-Vorschau ansehen';
+ $('demoCompactionToggle').setAttribute('aria-pressed',String(demoCompactView));
  const presentedCables=project.cables.filter(c=>
   exploreSystemFocus==='all'||c.group===exploreSystemFocus);
  const routedCount=presentedCables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length;
@@ -1306,7 +1321,8 @@ function renderExplorerUI(){
  $('exploreSourceLine').textContent=pdfView()?
   openings+' Leerrohre · '+project.cables.length+' Kabelobjekte · '+
   (project.cables.length-project.cables.filter(c=>endpoint(c.a)&&endpoint(c.b)).length)+
-  ' ungeklärte Verläufe · Konzeptstand · verdichtete Demo-Rohrabstände'+
+  ' ungeklärte Verläufe · Konzeptstand · '+
+  (demoCompactView&&exploreMode?'62%-Vorschauskalierung (nur Ansicht)':'Original-PDF-Kreismittelpunkte (nicht vermessen)')+
   (exploreProtectionGuide?' · MS/OLA-Konzeptmarkierungen sichtbar':''):
   openings+' Rohröffnungen · schematische Darstellung';
  $('exploreCableCoverage').textContent='3D-Kabelwege mit beiden Rohranschlüssen: '+
@@ -1447,6 +1463,10 @@ $('pdfWallViews').addEventListener('click',event=>{
  if(requested==='3D'){viewMode='3D';exploreWith2D=false;}
  else{wallId=requested;viewMode=requested;exploreWith2D=project.splitEnabled!==false;}
  networkOpen=false;renderAll();requestAnimationFrame(resize);
+});
+$('demoCompactionToggle').addEventListener('click',()=>{
+ if(!pdfView())return;
+ demoCompactView=!demoCompactView;viewMode='3D';renderAll();
 });
 $('explore2DToggle').addEventListener('click',()=>{
  exploreWith2D=!exploreWith2D;

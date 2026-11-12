@@ -69,13 +69,24 @@ for(const [wid,hid,u,v] of [
  assert.ok(hole,'Missing PDF vector-coordinate reference '+hid);
  assert.equal(hole.sourceU,u,'Relative PDF source x-center '+hid);
  assert.equal(hole.sourceV,v,'Relative PDF source y-center '+hid);
- assert.equal(hole.u,Math.round((.5+(u-.5)*.62)*1e5)/1e5,'Compact schematic X '+hid);
- assert.equal(hole.v,Math.round((.5+(v-.5)*.62)*1e5)/1e5,'Compact schematic Y '+hid);
+ assert.equal(hole.u,u,'Store unmodified PDF source X '+hid);
+ assert.equal(hole.v,v,'Store unmodified PDF source Y '+hid);
+ const shown=require('../schematic-positions.js').display(hole,true);
+ assert.equal(shown.u,Math.round((.5+(u-.5)*.62)*1e5)/1e5,'Demo-only scaled X '+hid);
+ assert.equal(shown.v,Math.round((.5+(v-.5)*.62)*1e5)/1e5,'Demo-only scaled Y '+hid);
 }
 assert.ok(pdf.sourceInfo.warning.includes('PDF-Vektorgrafik'));
 assert.ok(pdf.sourceInfo.warning.includes('62 %'));
+assert.ok(pdf.walls.every(w=>w.holes.every(h=>h.u===h.sourceU&&h.v===h.sourceV)));
+const legacyPdf=JSON.parse(JSON.stringify(pdf));
+for(const w of legacyPdf.walls)for(const h of w.holes){h.u=require('../schematic-positions.js').compact(h.sourceU);h.v=require('../schematic-positions.js').compact(h.sourceV);}
+const migratedPdf=validProject(legacyPdf);
+assert.ok(migratedPdf.walls.every(w=>w.holes.every(h=>h.u===h.sourceU&&h.v===h.sourceV)));
+assert.ok(migratedPdf.network.shafts.every(sh=>sh.snapshot.walls.every(w=>w.holes.every(h=>h.u===h.sourceU&&h.v===h.sourceV))));
+assert.deepEqual(validProject(JSON.parse(JSON.stringify(migratedPdf))),migratedPdf);
 for(const w of pdf.walls)for(let i=0;i<w.holes.length;i++)for(let j=0;j<i;j++){
- const a=w.holes[i],b=w.holes[j],span=['SW1','SW3'].includes(w.id)?pdf.dims.w:pdf.dims.d;
+ const pos=require('../schematic-positions.js');
+ const a=pos.display(w.holes[i],true),b=pos.display(w.holes[j],true),span=['SW1','SW3'].includes(w.id)?pdf.dims.w:pdf.dims.d;
  const distance=Math.hypot((a.u-b.u)*span,(a.v-b.v)*pdf.dims.h);
  assert.ok(distance>(a.dn+b.dn)/2,'Compacted pipes overlap: '+a.id+' / '+b.id);
 }
