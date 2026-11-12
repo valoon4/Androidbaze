@@ -27,12 +27,17 @@ function toMillimetres(m,xPx,yPx,step=1){
 function holeMillimetres(h,spanMm,heightMm){
   return {x:Number(h.u)*spanMm,y:Number(h.v)*heightMm};
 }
+function apertureMm(h){
+ // Explicit hole bore size is separate from nominal DN; false/suspect values stay schematic.
+ const v=h?.dimensionSpec?.openingMm;
+ return Number.isFinite(v)&&v>=20&&v<=600?v:Number(h?.dn)||70;
+}
 function hitHole(holes,m,xPx,yPx){
   let closest=null,dist=Infinity;
   for(const h of holes){
     const p=toPixels(m,Number(h.u)*m.spanMm,Number(h.v)*m.heightMm);
     const d=Math.hypot(p.x-xPx,p.y-yPx);
-    const radius=Math.max(9,(Number(h.dn)||70)/2*m.scale+5);
+    const radius=Math.max(9,apertureMm(h)/2*m.scale+5);
     if(d<=radius&&d<dist){closest=h;dist=d;}
   }
   return closest;
@@ -40,11 +45,11 @@ function hitHole(holes,m,xPx,yPx){
 function clearance(holes,spanMm,heightMm){
   let overlaps=0,minEdge=Infinity,minPairGap=Infinity;
   for(let i=0;i<holes.length;i++){
-    const a=holeMillimetres(holes[i],spanMm,heightMm),r=(Number(holes[i].dn)||70)/2;
+    const a=holeMillimetres(holes[i],spanMm,heightMm),r=apertureMm(holes[i])/2;
     minEdge=Math.min(minEdge,a.x-r,a.y-r,spanMm-a.x-r,heightMm-a.y-r);
     for(let j=0;j<i;j++){
       const b=holeMillimetres(holes[j],spanMm,heightMm);
-      const gap=Math.hypot(a.x-b.x,a.y-b.y)-r-(Number(holes[j].dn)||70)/2;
+      const gap=Math.hypot(a.x-b.x,a.y-b.y)-r-apertureMm(holes[j])/2;
       minPairGap=Math.min(gap,minPairGap);
       if(gap<0)overlaps++;
     }
@@ -59,5 +64,5 @@ function copyOffset(h,spanMm,heightMm,dxMm=100,dyMm=0,step=1){
     v:clamp(Math.round(clamp(start.y+dyMm,0,heightMm)/step)*step,0,heightMm)/heightMm,
     dn:Number(h.dn)||70,row:0,col:0};
 }
-return {metrics,toPixels,toMillimetres,holeMillimetres,hitHole,clearance,copyOffset};
+return {metrics,toPixels,toMillimetres,holeMillimetres,apertureMm,hitHole,clearance,copyOffset};
 });
