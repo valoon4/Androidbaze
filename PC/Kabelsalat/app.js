@@ -11,6 +11,8 @@ const samples=globalThis.KabelsalatSamples;
 if(!samples)throw Error('Kabelsalat-Beispielmodul fehlt');
 const pdfGeometry=globalThis.KabelsalatPdfGeometry;
 if(!pdfGeometry)throw Error('Kabelsalat-PDF-Geometriemodul fehlt');
+const concreteWall=globalThis.KabelsalatConcreteWall;
+if(!concreteWall)throw Error('Kabelsalat-Betonwandmodul fehlt');
 const constructionV2=globalThis.KabelsalatConstructionV2;
 if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
 const avlReference=()=>['13_T_021','13_U_028'].includes(project?.sourceInfo?.shaft);
@@ -436,24 +438,12 @@ function openingRadius(h){return clamp(Number(h.dn)||70,20,300)/2000;}
 function drawOpening(w,h){
  const pos=holePosition(w.id,h),n=normal(w.id),r=openingRadius(h),selected=w.id===wallId&&h.id===holeId;
  const group=new THREE.Group();group.position.copy(pos);group.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),n);
- const circle=new THREE.Mesh(new THREE.CircleGeometry(r,30),new THREE.MeshBasicMaterial({
- color:selected?'#267d75':'#486c7d',transparent:true,opacity:selected?.35:(exploreMode?.20:.045),depthWrite:false,side:THREE.DoubleSide}));
+ // Invisible picking disc INSIDE the real hole. It must not visually fill it.
+ const circle=new THREE.Mesh(new THREE.CircleGeometry(r,32),new THREE.MeshBasicMaterial({
+ color:'#506269',colorWrite:false,depthWrite:false,side:THREE.DoubleSide}));
  group.add(circle);circle.userData={type:'hole',wall:w.id,hole:h.id};
- if(pdfView()){
-  // Visible, hollow 3D conduit mouth. DN sets the physical opening radius;
-  // the sleeve extension is illustrative because penetration length is unknown.
-  const lip=new THREE.Mesh(new THREE.TorusGeometry(r+.010,.010,10,32),
-   new THREE.MeshStandardMaterial({color:'#94adba',roughness:.48,metalness:.30,
-    side:THREE.DoubleSide}));
-  lip.position.z=.012;group.add(lip);
-  const sleeve=new THREE.Mesh(new THREE.CylinderGeometry(r+.010,r+.010,.20,32,1,true),
-   new THREE.MeshStandardMaterial({color:'#a9b8c3',transparent:true,
-    opacity:.74,roughness:.55,metalness:.18,side:THREE.DoubleSide,depthWrite:false}));
-  sleeve.rotation.x=Math.PI/2;sleeve.position.z=.10;group.add(sleeve);
-  const innerLip=new THREE.Mesh(new THREE.TorusGeometry(r+.010,.006,8,32),
-   new THREE.MeshBasicMaterial({color:'#506878'}));
-  innerLip.position.z=.20;group.add(innerLip);
- }
+ // No projecting cylinder, metal collar or pipe stub: the concrete wall
+ // itself contains the opening and the bore has its own shaded material.
  const occupants=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
  project.cables.filter(c=>[c.a,c.b].some(e=>e?.wall===w.id&&e?.hole===h.id)):[];
  if(occupants.length&&pdfView()){
@@ -518,29 +508,27 @@ function drawSupports(){
 }
 function drawWalls(){
  const s=sizes(),op=exploreMode?
-  (pdfView()? .19 :
+  (avlReference()? .94 :
    (exploreConstructionMode==='hidden'?Math.max(.52,project.opacity/100):.24)):
   project.opacity/100;
- box(s.w+.16,.085,s.d+.16,0,-.055,0,'#8aa2ad',exploreMode?.9:1);
+ // Schematic reference has a concrete shell, not ghostly translucent pipe rings.
+ box(s.w+.16,.085,s.d+.16,0,-.055,0,'#858d90',exploreMode?.9:1);
  const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
  floor.position.y=-.096;models.add(floor);
  for(const w of project.walls){
  if(!w.visible||(viewMode.startsWith('SW')&&w.id!==viewMode)||
   (exploreMode&&viewMode==='3D'&&exploreCutawayWall===w.id))continue;
- const span=pdfView()?pdfWallWidth(w.id,s):(w.id==='SW2'||w.id==='SW4')?s.w:s.d,half=span/2;
- const shape=new THREE.Shape();
- shape.moveTo(-half,0);shape.lineTo(half,0);shape.lineTo(half,s.h);shape.lineTo(-half,s.h);shape.closePath();
- const included=[];
- for(const h of w.holes){
- const p=holePosition(w.id,h),u=pdfView()?(h.u-.5)*span:
-  w.id==='SW2'?-p.x:w.id==='SW3'?-p.z:w.id==='SW4'?p.x:p.z,r=openingRadius(h);
- if(u-r< -half||u+r>half||p.y-r<0||p.y+r>s.h)continue;
- if(included.some(v=>Math.hypot(v.u-u,v.y-p.y)<v.r+r))continue;
- const path=new THREE.Path();path.absarc(u,p.y,r,0,Math.PI*2,true);shape.holes.push(path);
- included.push({u,y:p.y,r});
- }
- const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(shape,{depth:w.thickness/1000,bevelEnabled:false,curveSegments:12,steps:1}),
- material(exploreMode?'#52788b':(w.id==='SW2'||w.id==='SW4'?'#8296a1':'#899ba4'),op));
+ const span=pdfView()?pdfWallWidth(w.id,s):(w.id==='SW2'||w.id==='SW4')?s.w:s.d;
+ const candidates=w.holes.map(h=>{
+  const p=holePosition(w.id,h);
+  return {id:h.id,u:pdfView()?(h.u-.5)*span:
+   w.id==='SW2'?-p.x:w.id==='SW3'?-p.z:w.id==='SW4'?p.x:p.z,
+   y:p.y,r:openingRadius(h)};
+ });
+ const concrete=concreteWall.build(THREE,{
+  width:span,height:s.h,depth:w.thickness/1000,openings:candidates,opacity:op
+ });
+ const mesh=concrete.mesh;
  if(pdfView()){
   const transform=pdfGeometry.transform(w.id,s);
   mesh.rotation.y=transform.rotationY;
@@ -551,7 +539,9 @@ function drawWalls(){
   else if(w.id==='SW2'){mesh.rotation.y=Math.PI;mesh.position.z=-s.d/2;}
   else mesh.position.z=s.d/2;
  }
- mesh.userData={type:'wall',wall:w.id};models.add(mesh);wallObjects.push(mesh);
+ mesh.userData={type:'wall',wall:w.id,apertures:concrete.accepted.length,
+  excludedApertures:concrete.excluded.length};
+ models.add(mesh);wallObjects.push(mesh);
  if(project.showLabels)createLabel(w.id,pdfView()?
   new THREE.Vector3(w.id==='SW2'?s.w/2:w.id==='SW4'?-s.w/2:0,
    s.h+.15,w.id==='SW1'?-s.d/2:w.id==='SW3'?s.d/2:0):
