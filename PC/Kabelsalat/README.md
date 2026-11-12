@@ -1,6 +1,16 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.5-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.6-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.6-beta.1 · Nachtrag „Warum sind die LR so lang?“ · 12.11.2026
+
+**Ursache im bestehenden 3D-Renderer:** Die langen farbigen Objekte im Schacht sind *Kabelwege*, keine Leerrohre. Echte LR werden hier als **runde Durchbrüche in der Betonwand** gezeichnet (Wanddicke bleibt wie im Projekt, ohne neues Aufmaß). Im vorherigen Update wurde nur das frei endende Kabelstück von 360 auf 160 mm verkürzt; das beseitigte die Verwechslung noch nicht.
+
+- **Basic → „2 · Schachtansicht“:** Jetzt nur Betonwand und echte LR-Öffnungen (ohne lange Kabel-Tubes). 2D- und 3D-Wandübersicht entsprechen sich.
+- **Basic → „3 · Kabelbelegung“:** Hier bleiben alle schematischen farbigen Kabelwege **voll sichtbar**. Beschriftung erklärt ausdrücklich: Kabel ≠ Leerrohre.
+- **Profi-Modus:** Verändert sich nicht; volle Routen für Planung/Bearbeitung sichtbar.
+- **Reiner Präsentationsfilter:** Rohr-ID, DN/Lochdurchmesser, Position, Wand-/Betondicke, Kabelendpunkte und Projektdatei bleiben unverändert.
+- **Offen:** Ob Bro darüber hinaus die tatsächliche **Länge/Tiefe der LR im Beton** kürzer meint, lässt sich ohne visuelle Zuordnung und dokumentiertes Aufmaß nicht fachlich bestimmen. Deshalb keine willkürliche Änderung der Bauteiltiefe. Browser-Screenshots für beide Modi werden in `tests/browser-visual.js` erstellt.
 
 ## 2.0.5-beta.1 · Bros jüngstes LR-Feedback · 12.11.2026
 
