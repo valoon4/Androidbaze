@@ -130,7 +130,10 @@ assert.equal(source.enclosures.OLA.visible,false);
 assert.equal(source.supports.length,0);
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
-assert.ok(app.includes('new THREE.CylinderGeometry(r+.010,r+.010,.20'),'3D pipe sleeves absent');
+assert.ok(!app.includes('new THREE.CylinderGeometry(r+.010'),
+ '3D must use concrete through-openings rather than protruding sleeves');
+assert.ok(app.includes('concreteWall.build(THREE'),
+ 'Actual concrete wall geometry must be rendered in 3D');
 assert.ok(app.includes("opacity:chosen?1:(pdfView()?.94"),'3D source cables not emphasized');
 assert.ok(app.includes('pdfGeometry.hole(wid,h,s)'),'3D editor must use tested geometry');
 assert.ok(app.includes('pdfGeometry.tangentOffset(ref.wall,a,r)'),
