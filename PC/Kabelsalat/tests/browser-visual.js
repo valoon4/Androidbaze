@@ -43,6 +43,15 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   assert.ok(data.canvasWidth>300&&data.canvasHeight>100,'Visible 3D canvas must be dimensioned');
   assert.ok(data.visualToggle);
   const beforeOverview=await sample3D();
+  assert.ok(await page.locator('#demoCompactionToggle').isVisible(),
+   'PDF demo must offer a reversible, non-destructive source-vs-compact switch');
+  const savedBefore=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
+  await page.locator('#demoCompactionToggle').click();
+  await page.locator('#demoCompactionToggle').click();
+  const savedAfter=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
+  assert.equal(savedAfter,savedBefore,'Demo compaction toggle may not alter project JSON');
+  assert.ok(await page.locator('#exploreDimensionInfo').isVisible(),
+   'Basic scene must disclose dimension provenance');
   assert.ok(beforeOverview.visible&&beforeOverview.uniqueColors>15,
    '3D canvas must contain actual colored walls and pipes, not just a blank rectangle: '+
    JSON.stringify(beforeOverview));

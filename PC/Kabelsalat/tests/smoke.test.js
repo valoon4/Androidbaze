@@ -2,9 +2,11 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
+for(const file of ['schematic-positions.js','pipe-dimensions.js','photo-candidates.js'])
+ assert.ok(fs.existsSync(path.resolve(__dirname,'..',file)),'Missing offline recognition/geometry asset '+file);
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 assert.ok(html.includes('Kabelsalat'), 'UI must display Kabelsalat brand');
-assert.ok(html.includes('src="construction-v2.js?v=2.0.2-beta.1"'),
+assert.ok(html.includes('src="construction-v2.js?v=2.0.3-beta.1"'),
  'V2.0 geometry module must load before the 3D editor');
 assert.ok(html.includes('id="enableEditing"')&&html.includes('body:not(.explore-mode) #enableEditing'),
  'Basic users must see a prominent path to actual professional editing');
@@ -26,7 +28,7 @@ assert.ok(app.includes('function returnToShaft()')&&
 assert.ok(app.includes('pdfView()?pdfGeometry.span(id,project.dims)'),
  'PDF 2D wall span must follow the same orientation as 3D world coordinates');
 for(const asset of ['recovery.js','app.js','vendor/three.min.js'])
- assert.ok(html.includes('src="'+asset+'?v=2.0.2-beta.1"'),'Cache-busted script missing: '+asset);
+ assert.ok(html.includes('src="'+asset+'?v=2.0.3-beta.1"'),'Cache-busted script missing: '+asset);
 for(const id of ['startupRecovery','reloadFresh','resetDisplay','recoveryReason'])
  assert.ok(html.includes('id="'+id+'"'),'Recovery interface missing: '+id);
 const recovery=fs.readFileSync(path.resolve(__dirname,'../recovery.js'),'utf8');
@@ -35,7 +37,7 @@ assert.ok(recovery.includes('kabelsalat_sidebar_layout_v1')&&recovery.includes('
 assert.ok(!recovery.includes("removeItem('eugi.schachtwand.3d.v1')"),
  'Display reset must not touch saved projects');
 for(const asset of ['pdf-geometry.js','pdf-visual.js'])
- assert.ok(html.includes('src="'+asset+'?v=2.0.2-beta.1"'),
+ assert.ok(html.includes('src="'+asset+'?v=2.0.3-beta.1"'),
   'New visual source asset missing: '+asset);
 for(const id of ['pdfVisualPanel','pdfOpen','pdfClose','oldProjectNotice','switchToPdf'])
  assert.ok(html.includes('id="'+id+'"'),'PDF visual UI missing: '+id);
@@ -43,12 +45,18 @@ assert.ok(app.includes('pdfGeometry.hole(wid,h,s)')&&
  app.includes('pdfGeometry.transform(w.id,s)')&&
  app.includes('pdfGeometry.camera(viewMode,d)'),
  '3D must use correct PDF-world wall coordinates on every view');
-assert.ok(html.includes('src="concrete-wall.js?v=2.0.2-beta.1"'), 'Concrete wall module must load before the editor');
+assert.ok(html.includes('src="concrete-wall.js?v=2.0.3-beta.1"'), 'Concrete wall module must load before the editor');
+for(const file of ['schematic-positions.js','pipe-dimensions.js','photo-candidates.js'])
+ assert.ok(html.includes('src="'+file+'?v=2.0.3-beta.1"'),'Required source asset missing '+file);
+for(const id of ['holeInnerMm','holeOuterMm','holeOpeningMm','holeDimensionStatus','holeDimensionSource',
+ 'holeDimensionReviewer','saveHoleDimensions','parsePlanDimensions','planDimensionCandidates',
+ 'planDimensionText','photoDimensionFile','photoDimensionPreview','photoCalibrate','demoCompactionToggle'])
+ assert.ok(html.includes('id="'+id+'"'),'Bro dimension/recognition UI missing '+id);
 const pages=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/kabelsalat-pages.yml'),'utf8');
 const release=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/kabelsalat.yml'),'utf8');
-assert.ok(pages.includes('pdf-geometry.js,concrete-wall.js,construction-v2.js'),
+assert.ok(pages.includes('pdf-geometry.js,schematic-positions.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
  'GitHub Pages must deploy concrete-wall.js, otherwise the UI cannot start');
-assert.ok(release.includes('pdf-geometry.js,concrete-wall.js,construction-v2.js'),
+assert.ok(release.includes('pdf-geometry.js,schematic-positions.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
  'Offline ZIP must include the new concrete wall renderer');
 assert.ok(app.includes('concreteWall.build(THREE')&&app.includes('colorWrite:false'),
  'Reference walls must have real empty apertures and invisible selection hit planes');
@@ -62,13 +70,13 @@ assert.ok(app.includes("document.body.classList.add('app-ready')"),
  '3D app must mark successful boot');
 assert.ok(html.includes('id="draftCanvas"'), 'Parallel 2D canvas missing');
 assert.ok(html.includes('id="splitEnabled"'), '2D toggle missing');
-assert.ok(html.includes('src="editor2d.js?v=2.0.2-beta.1"'), '2D module not loaded');
-assert.ok(html.includes('src="components.js?v=2.0.2-beta.1"'), 'Components module not loaded');
-assert.ok(html.includes('src="network.js?v=2.0.2-beta.1"'), 'Network module not loaded');
-assert.ok(html.includes('src="quality.js?v=2.0.2-beta.1"'), 'Quality module not loaded');
-assert.ok(html.includes('src="reports.js?v=2.0.2-beta.1"'), 'Report module not loaded');
-assert.ok(html.includes('src="examples.js?v=2.0.2-beta.1"'), 'Examples module not loaded');
-assert.ok(html.includes('src="reference-data.js?v=2.0.2-beta.1"'), 'Reference data module not loaded');
+assert.ok(html.includes('src="editor2d.js?v=2.0.3-beta.1"'), '2D module not loaded');
+assert.ok(html.includes('src="components.js?v=2.0.3-beta.1"'), 'Components module not loaded');
+assert.ok(html.includes('src="network.js?v=2.0.3-beta.1"'), 'Network module not loaded');
+assert.ok(html.includes('src="quality.js?v=2.0.3-beta.1"'), 'Quality module not loaded');
+assert.ok(html.includes('src="reports.js?v=2.0.3-beta.1"'), 'Report module not loaded');
+assert.ok(html.includes('src="examples.js?v=2.0.3-beta.1"'), 'Examples module not loaded');
+assert.ok(html.includes('src="reference-data.js?v=2.0.3-beta.1"'), 'Reference data module not loaded');
 assert.ok(html.includes('id="exampleSelect"'), 'Example selector missing');
 assert.ok(html.includes('id="loadExample"'), 'Example action missing');
 for(const id of ['toggleExpert','exploreGuide','questNetwork','questShaft','questCable',
@@ -205,6 +213,9 @@ const ids=[...app.matchAll(/\$\('([A-Za-z0-9_-]+)'\)/g)].map(m=>m[1]);
 for(const id of new Set(ids))assert.ok(html.includes('id="'+id+'"'),'UI element missing: '+id);
 globalThis.KabelsalatComponents=require('../components.js');
 globalThis.KabelsalatConcreteWall=require('../concrete-wall.js');
+globalThis.KabelsalatPipeDimensions=require('../pipe-dimensions.js');
+globalThis.KabelsalatPhotoCandidates=require('../photo-candidates.js');
+globalThis.KabelsalatSchematicPositions=require('../schematic-positions.js');
 globalThis.KabelsalatConstructionV2=require('../construction-v2.js');
 globalThis.KabelsalatNetwork=require('../network.js');
 globalThis.KabelsalatQuality=require('../quality.js');

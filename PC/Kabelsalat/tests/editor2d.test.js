@@ -18,4 +18,8 @@ assert.equal(Math.round(cc.v*2100),1075);
 assert.equal(cc.dn,100);
 assert.equal(geom.toMillimetres(m,-500,-500).x,0);
 assert.equal(geom.toMillimetres(m,9000,9000).y,0);
-console.log('OK: 2D mapping, selection, clearance, copy and round-trip in mm');
+const aperture={id:'size',u:.3,v:.5,dn:60,dimensionSpec:{openingMm:116}};
+assert.equal(geom.apertureMm(aperture),116,'Explicit bore must be distinct from nominal DN');
+assert.equal(geom.clearance([{id:'A',u:.5,v:.5,dn:60,dimensionSpec:{openingMm:116}},
+ {id:'B',u:.5+100/2400,v:.5,dn:60,dimensionSpec:{openingMm:116}}],2400,2100).overlaps,1);
+console.log('OK: 2D mapping, separate bore diameter, selection, clearance, copy and round-trip in mm');

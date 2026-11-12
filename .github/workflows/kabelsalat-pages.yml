@@ -35,7 +35,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site/vendor _site/examples _site/pitch
-          cp PC/Kabelsalat/{index.html,pitch.html,recovery.js,pdf-geometry.js,concrete-wall.js,construction-v2.js,pdf-visual.js,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js} _site/
+          cp PC/Kabelsalat/{index.html,pitch.html,recovery.js,pdf-geometry.js,schematic-positions.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js,pdf-visual.js,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js} _site/
           cp PC/Kabelsalat/pitch/{13_T_021.html,13_T_021_GERADE.html,13_T_021_KONSTRUKTION.html,13_U_028.html} _site/pitch/
           cp PC/Kabelsalat/vendor/{three.min.js,LICENSE.threejs} _site/vendor/
           cp PC/Kabelsalat/examples/*.json _site/examples/
