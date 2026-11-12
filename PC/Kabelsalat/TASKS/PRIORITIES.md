@@ -2,7 +2,11 @@
 
 **Entscheidung:** Priorität richtet sich ab jetzt nach Bros tatsächlicher praktischer Nutzung, vor allem den **jüngsten** Beanstandungen (Betonblock zu hell / Rohröffnungen wirken künstlich / Größen 60, 110, 116 und automatische Rohrmaß-Erkennung). Die alte KAB-ID ist eine **dauerhafte Identität**, **nicht** mehr die Abarbeitungsreihenfolge.
 
-**Vollständige globale Rangliste aller 884 Aufgaben:** [PRIORITY_ORDER.csv](./PRIORITY_ORDER.csv) (sortiert nach `Rang`, jeder Task genau einmal; sieben priorisierte Arbeitswellen S0–S6). **Live-Fortschritt + nächste offene Aufgaben:** `node TASKS/check-priorities.js --next=20` aus `PC/Kabelsalat/`. Die Checkboxen und Quellbeschreibungen bleiben in den sieben einzelnen Backlogdateien kanonisch.
+**Vollständige globale Rangliste aller 888 Aufgaben:** [PRIORITY_ORDER.csv](./PRIORITY_ORDER.csv) (sortiert nach `Rang`, jeder Task genau einmal; sieben priorisierte Arbeitswellen S0–S6). **Live-Fortschritt + nächste offene Aufgaben:** `node TASKS/check-priorities.js --next=20` aus `PC/Kabelsalat/`. Die Checkboxen und Quellbeschreibungen bleiben in den acht einzelnen Backlogdateien kanonisch.
+
+## Neuester Stand · DN30–160 und kürzere Endmarkierungen (12.11.2026)
+
+**Top 4 der Gesamtrangliste jetzt KAB-0885 → 0886 → 0887 → 0888**, direkt nach Bros erneutem Praxistest: Endmarkierungen kürzer, DN30/50/110/160 visuell proportional, separate fiktive Muster-Demo, Roundtrip-/Browser-Regression. [Taskdetails](./08-BRO-KURZE-LR-DN30-160.md). Die folgenden historischen Start-Ränge werden in der CSV jetzt um vier Plätze nach hinten verschoben; die **stabile Task-ID** ändert sich nicht. Die vier neuen Aufgaben bleiben bis zur Code-/Visualprüfung offen. **Gesamtstand 888**, nicht 884.
 
 ## Warum diese Reihenfolge?
 
@@ -13,7 +17,7 @@
 5. **AVL0116-92-Schacht-Audit und Profi-Berichte danach:** Rechteckschemata, reale Nachweise und PDF/Excel sind wichtig; die alten 92 Schachtfälle, 1.957 Planseiten und 35/276 Abbildungen aus dem Chat sind **unabhängig zu verifizieren**, bevor man technische Bewertungen als erfüllt ausgibt.
 6. **Netzweit skalieren, CAD/BIM, Mehrbenutzer und Performance später:** Erst die Schachtdarstellung und Datenqualität stabilisieren, dann ausbauen.
 
-## Ab jetzt: erste sieben Arbeitsaufträge in dieser Reihenfolge
+## Historische Startreihenfolge vor Bros jüngstem DN-Nachtrag
 
 | Rang | Task | Umsetzung | Quellabhängigkeit |
 |---:|---|---|---|
@@ -27,18 +31,18 @@
 
 **Frühe Pflichtbegleiter (als Nächstes nach obiger Prioritätenfolge in S0):** KAB-0833/0834 (beide Schachtquellen konservieren), KAB-0832 + KAB-0037–0039 (62-%-Demo vom Fachmodell entkoppeln), KAB-0019–0022 (Wandorientierung), KAB-0054 (Bros 3D-Abnahme), KAB-0884 (gemischte Maße + Betonlook regressionssicher testen). Diese QA-Arbeit darf zeitgleich mit der Feature-Arbeit erfolgen – die Rangliste ist keine Aufforderung, Tests bis zum Schluss zu verschieben.
 
-## Alle 884 Tasks sind priorisiert
+## Alle 888 Tasks sind priorisiert
 
 | Welle | Aufgaben | Position | Inhalt / Ziel |
 |---|---:|---:|---|
-| **S0 · Bro jetzt** | **106** | 1–106 | Jüngste Beton-/DM-Forderungen, sichtbare Wandbelegung, sicherer 3D-Pitch und dazugehörige Soforttests |
-| **S1 · Referenzen & Erkennung** | **126** | 107–232 | PDF-Wand-/Rohrbelegung, Kabelzuordnungen, Rohrtypen, Import-/Bildkandidaten |
-| **S2 · Kabel & Kanäle** | **166** | 233–398 | Kabelführung, Mindestbiegeradien, Platten, Kollisionen, Varianten A/B |
-| **S3 · AVL & Profi-Berichte** | **108** | 399–506 | Historische AVL-Neuprüfung, 92-Schacht-Datensätze, Rechteckschemata, PDF-/Excel-Prüfbefunde |
-| **S4 · Editor & Bedienung** | **162** | 507–668 | 2D/3D-Bearbeitung, flexible Wände, Projektspeicherung, Navigation |
-| **S5 · Schachtnetz** | **54** | 669–722 | Globale Schächte, Netzlinks, physische Kabelkontinuität |
-| **S6 · Ausbau & Betrieb** | **162** | 723–884 | CAD/BIM, Rollen, Performance, allgemeine QA/Sicherheit, Doku und Release-Betrieb |
-| **Gesamt** | **884** | **1–884** | Jeder Task hat einen eindeutigen Rang; kein Task gelöscht |
+| **S0 · Bro jetzt** | **110** | 1–110 | Jüngste Beton-/DM-Forderungen, sichtbare Wandbelegung, sicherer 3D-Pitch und dazugehörige Soforttests |
+| **S1 · Referenzen & Erkennung** | **126** | 111–236 | PDF-Wand-/Rohrbelegung, Kabelzuordnungen, Rohrtypen, Import-/Bildkandidaten |
+| **S2 · Kabel & Kanäle** | **166** | 237–402 | Kabelführung, Mindestbiegeradien, Platten, Kollisionen, Varianten A/B |
+| **S3 · AVL & Profi-Berichte** | **108** | 403–510 | Historische AVL-Neuprüfung, 92-Schacht-Datensätze, Rechteckschemata, PDF-/Excel-Prüfbefunde |
+| **S4 · Editor & Bedienung** | **162** | 511–672 | 2D/3D-Bearbeitung, flexible Wände, Projektspeicherung, Navigation |
+| **S5 · Schachtnetz** | **54** | 673–726 | Globale Schächte, Netzlinks, physische Kabelkontinuität |
+| **S6 · Ausbau & Betrieb** | **162** | 727–888 | CAD/BIM, Rollen, Performance, allgemeine QA/Sicherheit, Doku und Release-Betrieb |
+| **Gesamt** | **888** | **1–888** | Jeder Task hat einen eindeutigen Rang; kein Task gelöscht |
 
 **Wichtig:** Die **S0–S6-Wellen sind Geschäfts-/Umsetzungsprioritäten**, nicht die alten Entwicklungslabel `P0–P3` in den Taskdateien. Die Reihenfolge ist ein Plan, **kein behaupteter Entwicklungsfortschritt**. Test-, Security- und Freigabeschritte werden *immer* als passende Abnahmekriterien der jeweiligen Featureaufgabe mitgezogen, auch wenn eine eigene QA-Task später in der CSV steht. Ein Task mit externer Quelle darf bis dahin offen/blockiert bleiben, ohne den restlichen Sprint aufzuhalten.
 
@@ -54,7 +58,7 @@
 1. **KAB-0877** als nächstes aktives GitHub-Issue bearbeiten: realistische, massive Betonoberfläche mit kreisförmigen Öffnungen für die bestehende Demo.
 2. Danach KAB-0878 und KAB-0880, dann KAB-0879 und KAB-0883; bei notwendiger Quellenabhängigkeit KAB-0881/0882 als offenes Feature vorbereiten.
 3. Pro Änderung: Source-SHA lesen, Akiyama-Check, Code/Test/Screenshots, Rückmeldung des Bros, dann Checkbox inkl. Nachweis abhaken.
-4. Vor jedem Folgesprint `node TASKS/check-priorities.js` benutzen: niedrigste **offene, praktisch umsetzbare** Priorität zuerst. Die globalen Ränge bleiben stabil, selbst wenn neue Tasks ab **KAB-0885** folgen.
+4. Vor jedem Folgesprint `node TASKS/check-priorities.js` benutzen: niedrigste **offene, praktisch umsetzbare** Priorität zuerst. Die globalen Ränge bleiben stabil, selbst wenn neue Tasks ab **KAB-0889** folgen.
 
 **Historischer Status beim Erstellen:** 0 von 884 in den Taskdateien als erledigt markiert. Das ist kein Urteil über die bereits vorhandene Software, sondern über die **noch nicht einzeln abgeschlossenen** Akzeptanzaufgaben.
 
