@@ -1,6 +1,14 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.4-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.5-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.5-beta.1 · Bros jüngstes LR-Feedback · 12.11.2026
+
+- **Kürzer:** Bisherige 360-mm-Kabelend-Markierungen bei nur einseitig bekannten Anschlüssen sind in der 3D-**Visualisierung** auf 160 mm verkürzt; End-Symbol und Linienstärke passen sich kleinen Rohröffnungen an. Das sind keine echten Rohrlängen und keine behaupteten realen Kabellängen.
+- **DN30–160 proportional:** Neue/editierte LR im Editor bieten Nennweiten von DN30 bis DN160 in 1-mm-Schritten. Bereits vorhandene importierte Werte außerhalb dieses Eingabebereichs werden beim Laden nicht zerstört.
+- **Fiktiver Vergleichsschacht:** In der Beispielauswahl gibt es „4 · LR-Größen DN30–160 (FIKTIVE DEMO)“ mit DN30/40/50/60/63/75/90/110/116/125/140/160; DN50 ist sichtbar kleiner als DN110, ohne dass Bestandspläne erfundene Werte bekommen.
+- **Test:** `tests/bro-dn-range.test.js` und ein optionaler Screenshot aus dem realen Chromium-Browser vergleichen Größe, Rohr-IDs, offene Quellen und Persistenz. [Neuer Backlogblock](./TASKS/08-BRO-KURZE-LR-DN30-160.md).
+- **Offen:** Bros Sichtabnahme, exakte Rohr-Außen-/Lochdurchmesser und Originalaufmaß; DN ist weiterhin keine bestätigte Betonöffnung.
 
 ## 2.0.4-beta.1 · Bros Wandachsen und lichten Rohrabstände · 12.11.2026
 
@@ -17,7 +25,7 @@
 - **Originalpläne geschützt:** 62-%-Verdichtung wird ausschließlich als umschaltbare Basic-Ansichtstransformation verwendet. Gespeicherte PDF-Quellmittelpunkte und ältere manuell verschobene Rohre werden nicht stillschweigend angepasst. Feste Regressionen zu 48 + 78 + 91 Rohrpositionen und 120 Kabelobjekten mit unveränderten vorhandenen bzw. fehlenden Anschlussreferenzen.
 - **Tests/Builds:** Node-Modultests, 97 PDF-Quellprüfungen und 17 lokale CSP-geprüfte Offline-Skripte über GitHub Actions.
 - **Export-Audit:** Auch Offline-Projektviewer und druckbarer Prüfbericht beschriften PDF-Vektorpositions- und Modell-mm-Werte jetzt ausdrücklich als **nicht vermessen**. Die PDF-V2-Wandspannen (SW1/SW3 Breite; SW2/SW4 Tiefe) werden auch im Viewer korrekt gezeichnet. KAB-0049 getestet und abgeschlossen. Aktuelle Einzelabnahmen und offene Blocker: [Sprintbericht](./TASKS/SPRINT_2026-11-12_BRO_10.md).
-- **Entwicklungsstatus:** [aktuelle Checkboxen und Nachweise](./TASKS/README.md), [Rangliste aller 884 Tasks](./TASKS/PRIORITY_ORDER.csv); Bauartgrenze 75/100 mm und tatsächliche AVL-Konformität nicht abschließend geklärt.
+- **Entwicklungsstatus:** [aktuelle Checkboxen und Nachweise](./TASKS/README.md), [Rangliste aller 888 Tasks](./TASKS/PRIORITY_ORDER.csv); Bauartgrenze 75/100 mm und tatsächliche AVL-Konformität nicht abschließend geklärt.
 
 ## 2.0.2-beta.1 · KAB-0877 – Betonblock mit runden Durchbrüchen
 
@@ -33,11 +41,11 @@
 - Über **„Aktuelle PDF-Wandbelegung (91 LR) neu laden“** ist die Referenz bewusst neu ladbar, auch wenn im Browser ein altes Modell gespeichert ist. Die vorhandene Rückfrage schützt eigene Projektänderungen. Bestehende Autosaves und importierte JSON-Projekte werden nicht stillschweigend überschrieben.
 - Fehlende Endpunkte, Biegeradien und Brandschutzfreigaben bleiben offen.
 
-## 884 konkrete Tasks – nach Bros jüngstem Feedback, Stand 11.11.2026
+## 888 konkrete Tasks – inklusive LR-DN-Nachtrag vom 12.11.2026
 
-Der kanonische [Task-Tracker mit 884 nummerierten Aufgaben](./TASKS/README.md) enthält den 828er-Basisplan, 48 Aufgaben aus Bros altem Chat und 8 weitere Anforderungen zu Betonblock-Optik und DM/DN-Erkennung ([Quellabgleich](./TASKS/BRO_CHAT_CROSSWALK.md)). **Der Live-Status der 884 Tasks steht im Tasktracker (10 erledigt / 874 offen beim Sprint)**; frühere Meilensteine und 97 PDF-Visualtests sind keine erledigten Tasks. Neue zusätzliche Aufgaben folgen ab KAB-0885. Die zuletzt hinzugefügten [12 Detailaufgaben](./TASKS/06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) prüfen insbesondere historische PDF-/Excel-Ergebnisse und die echte 92-Schacht-Prüfliste. `npm test` validiert Task-IDs und Statuszähler.
+Der kanonische [Task-Tracker mit 888 nummerierten Aufgaben](./TASKS/README.md) enthält den 828er-Basisplan, 48 Aufgaben aus Bros altem Chat und 8 weitere Anforderungen zu Betonblock-Optik und DM/DN-Erkennung ([Quellabgleich](./TASKS/BRO_CHAT_CROSSWALK.md)). **Der Live-Status steht im Tasktracker (19 erledigt / 869 offen / 888 gesamt vor der neuen Sichtprüfung)**; frühere Meilensteine und 97 PDF-Visualtests sind keine erledigten Tasks. Neue zusätzliche Aufgaben folgen ab KAB-0889. Die zuletzt hinzugefügten [12 Detailaufgaben](./TASKS/06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md) prüfen insbesondere historische PDF-/Excel-Ergebnisse und die echte 92-Schacht-Prüfliste. `npm test` validiert Task-IDs und Statuszähler.
 
-**Neue Umsetzungsvorgabe:** Die [Priorisierung aller 884 Tasks](./TASKS/PRIORITIES.md) und [globale Rangliste](./TASKS/PRIORITY_ORDER.csv) richten sich vorrangig nach Bros jüngstem Praxisfeedback: klassischer dunklerer Betonblock mit echten unterschiedlich großen Öffnungen, sichtbaren Rohrmaßen und überprüfbarer PDF-/Foto-Erkennung. **KAB-0877 ist technisch umgesetzt, aber Bros Sichtabnahme noch offen.**
+**Neue Umsetzungsvorgabe:** Die [Priorisierung aller 888 Tasks](./TASKS/PRIORITIES.md) und [globale Rangliste](./TASKS/PRIORITY_ORDER.csv) richten sich vorrangig nach Bros jüngstem Praxisfeedback: klassischer dunklerer Betonblock mit echten unterschiedlich großen Öffnungen, sichtbaren Rohrmaßen und überprüfbarer PDF-/Foto-Erkennung. **KAB-0877 ist technisch umgesetzt, aber Bros Sichtabnahme noch offen.**
 
 **Fachlicher Hinweis zu v2.0.1:** Die aktuelle visuelle Zuordnung OLA=A und MS=B ist ein **historischer Demofall**, kein fachliches Auswahlkriterium: Im älteren Chat hängt A/B von der Höhe der Rohrunterkante über Schachtboden ab (bis 100 mm versus darüber). Eine spätere 75-mm-Bildvorgabe widerspricht dem; beide Werte sind bis zum belastbaren Abgleich **ungeklärt**. Die 62-%-Rohrverdichtung verändert Demo-Anzeigekoordinaten und darf **nicht** als reales Aufmaß oder unveränderte Rohrachsen im 3D-Fachmodell interpretiert werden. Siehe KAB-0829–0840.
 
