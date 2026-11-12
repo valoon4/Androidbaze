@@ -12,8 +12,14 @@ class ExtrudeGeometry {
  constructor(shape,options){this.shape=shape;this.options=options;}
 }
 class MeshStandardMaterial {constructor(options){this.options=options;}}
+class DataTexture {
+ constructor(data,width,height,format){
+  this.image={data,width,height};this.format=format;this.repeat={set:(x,y)=>{this.repeat.x=x;this.repeat.y=y;}};
+ }
+ dispose(){this.disposed=true;}
+}
 class Mesh {constructor(geometry,material){this.geometry=geometry;this.material=material;this.userData={};this.position={set(){}};}}
-const THREE={Shape,Path,ExtrudeGeometry,MeshStandardMaterial,Mesh,DoubleSide:2};
+const THREE={Shape,Path,ExtrudeGeometry,MeshStandardMaterial,Mesh,DataTexture,DoubleSide:2,RGBAFormat:1023,RepeatWrapping:1000,SRGBColorSpace:'srgb'};
 const build=(openings,{width=2,height=2,depth=.12,opacity=1}={})=>
  concrete.build(THREE,{width,height,depth,openings,opacity});
 const cases=[
@@ -31,6 +37,13 @@ assert.ok(normal.mesh.geometry.options.curveSegments>=24,'Circle bore edges must
 assert.ok(normal.mesh.material.length===2,'Concrete faces and dark bore must use separate materials');
 assert.notEqual(normal.mesh.material[0].options.color,normal.mesh.material[1].options.color);
 assert.equal(normal.mesh.material[0].options.opacity,1);
+const surface=normal.mesh.material[0].options.map;
+assert.ok(surface instanceof DataTexture,'Concrete surface must use an offline generated procedural texture');
+assert.equal(surface.image.width,128);
+assert.equal(surface.image.height,128);
+assert.ok(surface.repeat.x>0&&surface.repeat.y>0,'Concrete aggregate must tile across wall surface');
+const values=new Set(surface.image.data.filter((_,i)=>i%4===0));
+assert.ok(values.size>20,'Texture must have visibly varied but deterministic concrete grains');
 assert.equal(normal.mesh.material[0].options.transparent,false);
 assert.deepEqual(normal.mesh.geometry.shape.holes.map(x=>x.arc[2]),[.03,.08]);
 assert.deepEqual(normal.accepted.map(x=>x.id),['SMALL','LARGE']);
@@ -50,6 +63,14 @@ assert.deepEqual(bad.accepted.map(x=>x.id),['A']);
 assert.deepEqual(bad.excluded.map(x=>x.reason),['overlap','outside','outside','outside']);
 assert.equal(bad.mesh.geometry.shape.holes.length,1);
 assert.equal(build([]).mesh.geometry.shape.holes.length,0);
+const diameters=[60,110,116],dims=require('../pipe-dimensions.js');
+const mixed=diameters.map((diameter,i)=>({id:'mix-'+i,u:(i-1)*.36,y:1,r:dims.apertureMm({dn:diameter})/2000}));
+const sized=build(mixed);
+assert.equal(sized.mesh.geometry.shape.holes.length,3);
+assert.deepEqual(sized.mesh.geometry.shape.holes.map(p=>Math.round(p.arc[2]*2000)),diameters,
+ 'Opening geometry must show 60/110/116 as distinct circles');
+const withBore=dims.apertureMm({dn:60,dimensionSpec:{openingMm:116}});
+assert.equal(withBore,116,'Real bore replaces illustrative nominal DN when explicitly supplied');
 assert.throws(()=>concrete.build(THREE,{width:0,height:2,depth:.12,openings:[]}));
 
 // Both real reference shaft models must remain unmodified by the new view renderer.
