@@ -35,7 +35,7 @@
 - **Originalpläne geschützt:** 62-%-Verdichtung wird ausschließlich als umschaltbare Basic-Ansichtstransformation verwendet. Gespeicherte PDF-Quellmittelpunkte und ältere manuell verschobene Rohre werden nicht stillschweigend angepasst. Feste Regressionen zu 48 + 78 + 91 Rohrpositionen und 120 Kabelobjekten mit unveränderten vorhandenen bzw. fehlenden Anschlussreferenzen.
 - **Tests/Builds:** Node-Modultests, 97 PDF-Quellprüfungen und 17 lokale CSP-geprüfte Offline-Skripte über GitHub Actions.
 - **Export-Audit:** Auch Offline-Projektviewer und druckbarer Prüfbericht beschriften PDF-Vektorpositions- und Modell-mm-Werte jetzt ausdrücklich als **nicht vermessen**. Die PDF-V2-Wandspannen (SW1/SW3 Breite; SW2/SW4 Tiefe) werden auch im Viewer korrekt gezeichnet. KAB-0049 getestet und abgeschlossen. Aktuelle Einzelabnahmen und offene Blocker: [Sprintbericht](./TASKS/SPRINT_2026-11-12_BRO_10.md).
-- **Entwicklungsstatus:** [aktuelle Checkboxen und Nachweise](./TASKS/README.md), [Rangliste aller 888 Tasks](./TASKS/PRIORITY_ORDER.csv); Bauartgrenze 75/100 mm und tatsächliche AVL-Konformität nicht abschließend geklärt.
+- **Entwicklungsstatus:** [aktuelle Checkboxen und Nachweise](./TASKS/README.md), [Rangliste aller 888 Tasks](./TASKS/PRIORITY_ORDER.csv), [KI-Aufwand je offenem Task](./TASKS/TASK_ESTIMATES.csv) und [Aufwandsübersicht](./TASKS/TASK_ESTIMATES.md); Bauartgrenze 75/100 mm und tatsächliche AVL-Konformität nicht abschließend geklärt.
 
 ## 2.0.2-beta.1 · KAB-0877 – Betonblock mit runden Durchbrüchen
 
