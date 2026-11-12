@@ -32,7 +32,7 @@ const built=concrete.build(THREE,{width:2.2,height:2,depth:.12,openings:specimen
 assert.equal(built.accepted.length,4);
 assert.deepEqual(built.mesh.geometry.shape.holes.map(h=>Math.round(h.arc[2]*2000)),
  [30,50,110,160],'Visually proportional concrete openings follow nominal sizes');
-assert.equal(built.mesh.geometry.shape.holes[2].arc[2]/built.mesh.geometry.shape.holes[1].arc[2],110/50);
+assert.ok(Math.abs(built.mesh.geometry.shape.holes[2].arc[2]/built.mesh.geometry.shape.holes[1].arc[2]-110/50)<1e-12);
 assert.equal(JSON.stringify(project),original,'Renderer may not mutate synthetic data');
 const pdf=examples.create('pdf-u028');
 assert.deepEqual(pdf.walls.map(w=>w.holes.length),[29,13,26,23]);
