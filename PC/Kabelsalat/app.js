@@ -692,14 +692,18 @@ function drawCable(c){
   // Incomplete: only show a short stub, NOT an invented full cable route.
   const known=c.a&&a?c.a:c.b,start=a||b;
   if(viewMode.startsWith('SW')&&known.wall!==viewMode)return;
-  const end=start.clone().addScaledVector(normal(known.wall),.36);
+  // Only a short visual marker for a cable with ONE known end. This does not
+  // extend any physical LR or claim a routed cable beyond the confirmed mouth.
+  const end=start.clone().addScaledVector(normal(known.wall),.16);
   const selected=c.id===cableId;
+  const knownHole=project.walls.find(w=>w.id===known.wall)?.holes.find(h=>h.id===known.hole);
+  const stubRadius=Math.min(selected?.014:.009,knownHole?openingRadius(knownHole)*.48:.009);
   const stub=new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(start,end),12,
-   selected?.019:.012,9,false),
+   stubRadius,9,false),
    new THREE.MeshBasicMaterial({color:c.color,transparent:true,
     opacity:selected?1:.78,depthWrite:false}));
   stub.userData={type:'cable',id:c.id};models.add(stub);hitObjects.push(stub);
-  const cap=new THREE.Mesh(new THREE.SphereGeometry(.027,12,10),
+  const cap=new THREE.Mesh(new THREE.SphereGeometry(Math.max(.008,stubRadius*1.18),12,10),
    new THREE.MeshBasicMaterial({color:'#f0ad36'}));
   cap.position.copy(end);models.add(cap);
   return;
@@ -1785,7 +1789,7 @@ $('deleteHole').addEventListener('click',()=>{const w=wall(),h=hole();if(!h)retu
 });
 $('applyHole').addEventListener('click',()=>{const h=hole();if(!h)return;const span=wallSpanMm(wallId);
  change(()=>{h.u=clamp((Number($('holeU').value)||0)/span,0,1);h.v=clamp((Number($('holeV').value)||0)/project.dims.h,0,1);
- h.dn=clamp(Number($('holeDn').value)||h.dn,20,300);
+ h.dn=clamp(Number($('holeDn').value)||h.dn,30,160);
  if(h.dimensionSpec)h.dimensionSpec.nominalMm=h.dn;},'Rohrposition / Nenn-DN geändert');});
 // Separate physical pipe dimensions from legacy schematic DN (KAB-0880/0883).
 $('saveHoleDimensions').addEventListener('click',()=>{
@@ -1988,7 +1992,7 @@ for(const k of ['ola','ms']){const key=k.toUpperCase();
  $(k+'Opacity').addEventListener('input',()=>{$(k+'OpacityText').textContent=$(k+'Opacity').value+' %';});
  $(k+'Opacity').addEventListener('change',()=>change(()=>{project.enclosures[key].opacity=Number($(k+'Opacity').value);}));
 }
-for(const [el,key,min,max] of [['wallThickness','thickness',40,500],['wallDn','dn',20,300]])
+for(const [el,key,min,max] of [['wallThickness','thickness',40,500],['wallDn','dn',30,160]])
  $(el).addEventListener('change',()=>change(()=>{wall()[key]=clamp(Number($(el).value)||wall()[key],min,max);}));
 
 for(const [field,key] of [['cableA','a'],['cableB','b']])$(field).addEventListener('change',()=>{const c=cable();if(c)change(()=>{c[key]=parseEndpoint($(field).value);});});
