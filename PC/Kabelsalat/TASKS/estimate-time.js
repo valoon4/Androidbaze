@@ -146,6 +146,78 @@ function estimate(task){
   type='UI/Editor';mins=105;
   reason='Bedienlogik, Barriere-/Fehlzustände und Browserregression.';
  }
+ // Tasks phrased only as a verb are anchored to their exact epic, not a
+ // flat blanket estimate. The verb then scales the epic's baseline.
+ if(type==='Einzelfunktion'){
+  const epic=/^(P\d+-\d+)/.exec(task.section)?.[1]||'';
+  const EPICS={
+   'P0-01':['Quellen-/Planabgleich',75],
+   'P0-02':['3D/Geometrie',150],
+   'P0-03':['3D/Geometrie',135],
+   'P0-04':['Rohr-/Kabelbelegung',130],
+   'P0-05':['Rohr-/Kabelbelegung',135],
+   'P0-06':['3D/Kabelrouting',195],
+   'P0-07':['3D/Kabelrouting',180],
+   'P0-08':['Brandschutzgeometrie',195],
+   'P0-09':['Brandschutzgeometrie',195],
+   'P0-10':['Brandschutzgeometrie',160],
+   'P0-11':['Brandschutzgeometrie',150],
+   'P0-12':['Pitch/UX',85],
+   'P1-01':['Editor/Schachtwand',175],
+   'P1-02':['Editor/Leerrohre',125],
+   'P1-03':['Editor/Kabel',135],
+   'P1-04':['Editor/2D',145],
+   'P1-05':['Editor/3D',165],
+   'P1-06':['Pitch/UX',95],
+   'P1-07':['Schachtnetz',155],
+   'P1-08':['Schachtnetz',180],
+   'P1-09':['Schachtnetz',190],
+   'P1-10':['Schachtnetz',110],
+   'P1-11':['Suche/Filter',95],
+   'P1-12':['Projekt/Migration',155],
+   'P2-01':['Geometrie/Qualität',150],
+   'P2-02':['Geometrie/Kollision',215],
+   'P2-03':['Brandschutzprüfung',175],
+   'P2-04':['Provenienz/Daten',115],
+   'P2-05':['Import/Tabellen',170],
+   'P2-06':['Plan/PDF-Abgleich',215],
+   'P2-07':['Bildanalyse',255],
+   'P2-08':['CAD/BIM/Format',510],
+   'P2-09':['Audit/Review',95],
+   'P2-10':['Bericht/Export',235],
+   'P2-11':['Rollen/Rechte',175],
+   'P2-12':['Sicherheitsgrenzen',155],
+   'P3-01':['Test/QA',55],
+   'P3-02':['Visuelle Regression',100],
+   'P3-03':['Performance',200],
+   'P3-04':['Sicherheit',135],
+   'P3-05':['Barrierefreiheit',105],
+   'P3-06':['Build/Offline',105],
+   'P3-07':['Build/CI',105],
+   'P3-08':['Dokumentation',55],
+   'P3-09':['Review/Abstimmung',65],
+   'P3-10':['Projektsteuerung',55],
+   'P0-13':['Brandschutzgeometrie',195],
+   'P2-13':['Fachliche Regel-/AVL-Prüfung',195],
+   'P1-13':['Bericht/Export',240],
+   'P2-14':['Quellen-/Artefaktprüfung',300],
+   'P1-14':['Bericht/Export',220]
+  };
+  if(EPICS[epic]){
+   [type,mins]=EPICS[epic];
+   reason='Arbeitspaket '+epic+': '+type+' mit integriertem Test und Nachweis.';
+  }
+  if(is(/(?:vergleichen|abgleichen|gegenprüfen|nachprüfen|verifizieren|kontrollieren|bewerten)/))
+   {mins=Math.round(mins*.68);reason+=' Referenz- oder Negativabgleich.';}
+  else if(is(/(?:einführen|umstellen|neu entwickeln|integrieren|automatisieren|vollständig erzeugen|aufbauen)/))
+   {mins=Math.round(mins*1.50);reason+=' Architektur-/Integrationsänderung.';}
+  else if(is(/(?:berechnen|simulieren|rekonstruieren|transformieren|zusammenführen)/))
+   {mins=Math.round(mins*1.23);reason+=' Berechnung mit Grenzfällen.';}
+  else if(is(/(?:anzeigen|markieren|benennen|einblenden|ausblenden|beschriften|ausgeben|hinzufügen)/))
+   {mins=Math.round(mins*.68);reason+=' Lokale Anzeige-/Feldanpassung.';}
+  else if(is(/(?:speichern|lösen|löschen|ersetzen|setzen|verschieben|zuordnen|ändern|anpassen)/))
+   {mins=Math.round(mins*1.10);reason+=' Datenzustand und Regression.';}
+ }
  // Granular task-specific weighting (active AI effort, never calendared hours).
  if(is(/\b(?:einzeln|je schacht|je planseite)\b/))mins=Math.round(mins*1.30);
  if(is(/\b(?:vollständig|mehrseitig|durchgehend|versioniert|systemübergreifend|gemeinsam)\b/))mins=Math.round(mins*1.25);
