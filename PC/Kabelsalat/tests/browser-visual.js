@@ -146,6 +146,22 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
    .slice(0,3).map(h=>h.dimensionSpec.openingMm));
   assert.deepEqual(diameters,[60,110,116],'Synthetic bore sizes not kept through project reload');
   await page.screenshot({path:path.join(out,'synthetic-concrete-60-110-116.png'),fullPage:true});
+  // Bro DN30–DN160 test: open the dedicated SYNTHETIC example in actual Chromium.
+  // The PDF reference is restored immediately afterwards.
+  await page.evaluate(()=>{
+   const sample=window.KabelsalatSamples.create('diameters');
+   localStorage.setItem('eugi.schachtwand.3d.v1',JSON.stringify(sample));
+  });
+  await page.reload({waitUntil:'load'});
+  await page.waitForFunction(()=>document.body.classList.contains('app-ready'),{timeout:30000});
+  const widths=await page.evaluate(()=>{
+   const shaft=JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1'));
+   return shaft.walls.flatMap(w=>w.holes.map(h=>h.dn));
+  });
+  for(const dn of [30,50,110,160])
+   assert.ok(widths.includes(dn),'Bro synthetic LR demo must display DN '+dn);
+  assert.equal(widths.length,94,'Synthetic demo must be independent of PDF 91-LR reference');
+  await page.screenshot({path:path.join(out,'synthetic-lr-dn30-50-110-160.png'),fullPage:true});
   await page.evaluate(raw=>localStorage.setItem('eugi.schachtwand.3d.v1',raw),originalRaw);
   console.log('KAB-0884 VISUAL: synthetic 60/110/116 mm bore screenshot captured; original source project restored.');
  }
