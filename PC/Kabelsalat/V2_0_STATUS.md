@@ -50,3 +50,7 @@ Die v2.0.2-Betonwand wurde um **dunklere, dezente, deterministisch erzeugte Beto
 **Kritischer Modellfix:** Die PDF-V2-`u/v`-Koordinaten entsprechen wieder den unveränderten `sourceU/sourceV` aus der PDF-Vektorgrafik. Der alte 62-%-Skalierungsfaktor wird nur im separaten **Basic-Demoansichtsmodus** angewendet; im Profi-Editor gelten die unbearbeiteten PDF-Diagrammkoordinaten. Vor der automatischen Rückmigration alter gespeicherter Projekte wird exakt auf unveränderte frühere Demo-Koordinaten geprüft; individuelle Benutzeränderungen werden nicht rückgängig gemacht. **Auch die unveränderten PDF-Punkte sind nicht vermessene XYZ-Geometrie.** 48/78/91-Source-Snapshots und PDF-Vergleichsbilder werden getestet.
 
 **Offene Fach- und UX-Fragen:** Optische Betonabnahme durch Bro, reales Rohr-/Schachtaufmaß, belastbare Rohr-/Lochdaten und Konstruktionsmaße, 75-/100-mm-Grenze, KI-Foto- und Plan-PDF-Erkennung, Montage-/Brandschutzfreigabe. [Nachweis und Taskstatus](./TASKS/SPRINT_2026-11-12_BRO_10.md).
+
+## KAB-0049 · Schematische Koordinaten im Export kenntlich (12.11.2026)
+
+Der HTML-Offline-Viewer und der druckbare Prüfbericht dürfen schematische PDF-Vektorpositionen, nominelle Rohr-Ø oder unbestätigte Modellabmessungen nicht als vermessene Millimeterwerte ausgeben. Die Exporttexte kennzeichnen sie jetzt als „schematisch/nicht vermessen“, und die PDF-V2-Wandachsen werden mit der korrekten Breite bzw. Tiefe behandelt. Die Quell-Metadaten und Rohr-IDs bleiben erhalten; das ersetzt keine Bauplanung. Regression `tests/reports.test.js`.

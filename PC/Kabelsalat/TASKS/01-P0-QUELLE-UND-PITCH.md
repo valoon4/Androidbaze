@@ -66,7 +66,7 @@
 - [ ] **KAB-0046** – DN-63-Rohre der SW1-Trasse-2 auf Randabstand prüfen
 - [ ] **KAB-0047** – Mindestlichte zwischen zwei Kreisöffnungen berechnen
 - [ ] **KAB-0048** – Kollisionen bei engerer Vorschau sichtbar kennzeichnen
-- [ ] **KAB-0049** – Schematische Rohrpositionen nicht als vermessene Millimeter exportieren
+- [x] **KAB-0049** – Schematische Rohrpositionen nicht als vermessene Millimeter exportieren · Nachweis: https://github.com/valoon4/Androidbaze/commit/c24a6f3818ae0665a1e5c7aff0b03344e02212eb
 - [x] **KAB-0050** – PDF-Originaldarstellung bei Parameteränderung unangetastet lassen · Nachweis: https://github.com/valoon4/Androidbaze/commit/79a3c69b6e145c1836ac8032cea2075d4c486f7f
 - [ ] **KAB-0051** – Rohrabstand-Regler mit Undo/Redo koppeln
 - [ ] **KAB-0052** – Rohrabstand-Regler ohne Veränderung von Kabelanschluss-IDs umsetzen
@@ -284,3 +284,5 @@
 ## Quellpositions-Nachweise 12.11.2026
 
 KAB-0037/0038/0039 und KAB-0050 wurden mit eigenen Source-/View-/Roundtriptests abgenommen: `sourceU/sourceV` bleiben in JSON und Planvergleich unverändert, die 62-%-Vorschau ist Basic-only, PDF-Vektor-Wandbilder werden von der Vorschau nicht beeinflusst. **PDF-Diagrammkoordinaten sind weiterhin keine realen Aufmaße.** [Sprintbericht](./SPRINT_2026-11-12_BRO_10.md).
+
+**KAB-0049 (12.11.2026):** Offline-Projektviewer und Druckbericht nennen Rohr- und Schachtkoordinaten nicht mehr einfach vermessene Millimeter. PDF-V2-Wandbreiten werden richtungsrichtig ausgewertet und die unveränderten sourceU/sourceV-Planpunkte als *schematisch* statt als gemessene XYZ-Positionen erläutert. Unit-Test: `tests/reports.test.js`.
