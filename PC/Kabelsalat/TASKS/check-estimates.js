@@ -9,8 +9,9 @@ const path=require('node:path');
 const estimator=require('./estimate-time.js');
 const root=__dirname,read=name=>fs.readFileSync(path.join(root,name),'utf8');
 const expected=estimator.generate(read);
-const actual=read('TASK_ESTIMATES.csv');
-assert.equal(actual,expected.csv,
+const actual=read('TASK_ESTIMATES.csv').replace(/\r\n/g,'\n');
+// Git on Windows checks CSV out with CRLF; estimates are identical regardless of EOL.
+assert.ok(actual===expected.csv,
  'Task estimates are stale or inconsistent: run node TASKS/estimate-time.js --write');
 const rows=estimator.parseCSV(actual,';');
 assert.deepEqual(rows[0],estimator.HEADERS);
