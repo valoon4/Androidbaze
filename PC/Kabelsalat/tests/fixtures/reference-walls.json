@@ -1,0 +1,2933 @@
+{
+  "schema": "Kabelsalat source wall snapshot v1",
+  "note": "Locked IDs and normalized diagram coordinates; PDF-V2 91 sourceU/V are not surveyed dimensions. Changes require explicit source review.",
+  "cases": [
+    {
+      "id": "13_T_021_HTML",
+      "kind": "html",
+      "sourceShaft": "13_T_021",
+      "origin": "13_T_021_Kabeleditor_2026-11-05_09-05.html",
+      "walls": [
+        {
+          "id": "SW1",
+          "holes": [
+            {
+              "id": "SW1_T1_LR1",
+              "u": 0.81915,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_T1_LR2",
+              "u": 0.60638,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_T1_LR3",
+              "u": 0.39362,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_T1_LR4",
+              "u": 0.18085,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        },
+        {
+          "id": "SW2",
+          "holes": [
+            {
+              "id": "SW2_T1_LR1",
+              "u": 0.12545,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR2",
+              "u": 0.27455,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR3",
+              "u": 0.42364,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR4",
+              "u": 0.57273,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR5",
+              "u": 0.72182,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR6",
+              "u": 0.87091,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR7",
+              "u": 0.12545,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR8",
+              "u": 0.27455,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR9",
+              "u": 0.42364,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR10",
+              "u": 0.57273,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR11",
+              "u": 0.72182,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR12",
+              "u": 0.87091,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR13",
+              "u": 0.12545,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR14",
+              "u": 0.27455,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR15",
+              "u": 0.57273,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR16",
+              "u": 0.72182,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR17",
+              "u": 0.87091,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR18",
+              "u": 0.57273,
+              "v": 0.14865,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR19",
+              "u": 0.72182,
+              "v": 0.14865,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_T1_LR20",
+              "u": 0.87091,
+              "v": 0.14865,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        },
+        {
+          "id": "SW3",
+          "holes": [
+            {
+              "id": "SW3_T1_LR1",
+              "u": 0.81915,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_T1_LR2",
+              "u": 0.60638,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_T1_LR3",
+              "u": 0.39362,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_T1_LR4",
+              "u": 0.18085,
+              "v": 0.52703,
+              "dn": 100,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        },
+        {
+          "id": "SW4",
+          "holes": [
+            {
+              "id": "SW4_T1_LR1",
+              "u": 0.12545,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR2",
+              "u": 0.27455,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR3",
+              "u": 0.42364,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR4",
+              "u": 0.57273,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR5",
+              "u": 0.72182,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR6",
+              "u": 0.87091,
+              "v": 0.82432,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR7",
+              "u": 0.12545,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR8",
+              "u": 0.27455,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR9",
+              "u": 0.42364,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR10",
+              "u": 0.57273,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR11",
+              "u": 0.72182,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR12",
+              "u": 0.87091,
+              "v": 0.63514,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR13",
+              "u": 0.12545,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR14",
+              "u": 0.27455,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR15",
+              "u": 0.57273,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR16",
+              "u": 0.72182,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR17",
+              "u": 0.87091,
+              "v": 0.35946,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR18",
+              "u": 0.57273,
+              "v": 0.14865,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR19",
+              "u": 0.72182,
+              "v": 0.14865,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_T1_LR20",
+              "u": 0.87091,
+              "v": 0.14865,
+              "dn": 122,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        }
+      ],
+      "cables": [
+        {
+          "id": "13_T_021-ola-18",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR18"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR18"
+          }
+        },
+        {
+          "id": "13_T_021-ola-19",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR19"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR19"
+          }
+        },
+        {
+          "id": "13_T_021-ola-20",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR20"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR20"
+          }
+        },
+        {
+          "id": "13_T_021-ms-13",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR13"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR13"
+          }
+        },
+        {
+          "id": "13_T_021-ms-14",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR14"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR14"
+          }
+        },
+        {
+          "id": "13_T_021-lst-h10b",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR5"
+          },
+          "b": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR1"
+          }
+        },
+        {
+          "id": "13_T_021-lwl-5-1",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR5"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR5"
+          }
+        },
+        {
+          "id": "13_T_021-lwl-5-2",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR5"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR5"
+          }
+        },
+        {
+          "id": "13_T_021-lwl-5-3",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR5"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR5"
+          }
+        },
+        {
+          "id": "13_T_021-lwl-5-4",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR5"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR5"
+          }
+        },
+        {
+          "id": "13_T_021-lwl-7-1",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR7"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR7"
+          }
+        },
+        {
+          "id": "13_T_021-lwl-7-2",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR7"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR7"
+          }
+        },
+        {
+          "id": "13_T_021-lwl-7-3",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR7"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR7"
+          }
+        },
+        {
+          "id": "13_T_021-tk-cu-8",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR8"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR8"
+          }
+        },
+        {
+          "id": "13_T_021-other-6",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR6"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR6"
+          }
+        },
+        {
+          "id": "13_T_021-other-9",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR9"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR9"
+          }
+        }
+      ]
+    },
+    {
+      "id": "13_U_028_HTML",
+      "kind": "html",
+      "sourceShaft": "13_U_028",
+      "origin": "13_U_028_Kabeleditor_2026-11-05_08-19.html",
+      "walls": [
+        {
+          "id": "SW1",
+          "holes": [
+            {
+              "id": "SW1_R1_C1",
+              "u": 0.86877,
+              "v": 0.86282,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R1_C2",
+              "u": 0.70842,
+              "v": 0.85864,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R1_C3",
+              "u": 0.55806,
+              "v": 0.84011,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R1_C4",
+              "u": 0.41299,
+              "v": 0.82105,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R1_C5",
+              "u": 0.27541,
+              "v": 0.79787,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R2_C1",
+              "u": 0.87107,
+              "v": 0.68998,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R2_C2",
+              "u": 0.70842,
+              "v": 0.68771,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R2_C3",
+              "u": 0.56033,
+              "v": 0.67914,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R2_C4",
+              "u": 0.41526,
+              "v": 0.66702,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R2_C5",
+              "u": 0.27541,
+              "v": 0.64997,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R3_C1",
+              "u": 0.86877,
+              "v": 0.52438,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R3_C2",
+              "u": 0.70842,
+              "v": 0.51457,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R3_C3",
+              "u": 0.56033,
+              "v": 0.50864,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R3_C4",
+              "u": 0.41751,
+              "v": 0.49336,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R3_C5",
+              "u": 0.27766,
+              "v": 0.48543,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R4_C1",
+              "u": 0.86877,
+              "v": 0.35736,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R4_C2",
+              "u": 0.70842,
+              "v": 0.34802,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R4_C3",
+              "u": 0.56033,
+              "v": 0.33814,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R4_C4",
+              "u": 0.41751,
+              "v": 0.32546,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R4_C5",
+              "u": 0.24393,
+              "v": 0.27624,
+              "dn": 300,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R5_C1",
+              "u": 0.86877,
+              "v": 0.18595,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R5_C2",
+              "u": 0.70842,
+              "v": 0.1727,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R5_C3",
+              "u": 0.55806,
+              "v": 0.16034,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R5_C4",
+              "u": 0.41751,
+              "v": 0.14885,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW1_R5_C5",
+              "u": 0.24393,
+              "v": 0.06755,
+              "dn": 300,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        },
+        {
+          "id": "SW2",
+          "holes": [
+            {
+              "id": "SW2_Oeffnung_01",
+              "u": 0.22744,
+              "v": 0.63203,
+              "dn": 300,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_02",
+              "u": 0.42669,
+              "v": 0.66017,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_03",
+              "u": 0.5188,
+              "v": 0.65584,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_04",
+              "u": 0.60902,
+              "v": 0.65368,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_05",
+              "u": 0.42669,
+              "v": 0.55628,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_06",
+              "u": 0.51692,
+              "v": 0.55195,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_07",
+              "u": 0.6109,
+              "v": 0.54978,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_08",
+              "u": 0.42669,
+              "v": 0.45671,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_09",
+              "u": 0.51692,
+              "v": 0.45238,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_10",
+              "u": 0.61278,
+              "v": 0.45022,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_11",
+              "u": 0.73872,
+              "v": 0.43939,
+              "dn": 102,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW2_Oeffnung_12",
+              "u": 0.81955,
+              "v": 0.43939,
+              "dn": 102,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        },
+        {
+          "id": "SW3",
+          "holes": [
+            {
+              "id": "SW3_R1_C1",
+              "u": 0.30352,
+              "v": 0.80039,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R1_C2",
+              "u": 0.42445,
+              "v": 0.79946,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R1_C3",
+              "u": 0.54563,
+              "v": 0.80505,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R1_C4",
+              "u": 0.67174,
+              "v": 0.81438,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R1_C5",
+              "u": 0.80048,
+              "v": 0.81579,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R1_C6",
+              "u": 0.9295,
+              "v": 0.82594,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R2_C1",
+              "u": 0.30352,
+              "v": 0.63545,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R2_C2",
+              "u": 0.42445,
+              "v": 0.63652,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R2_C3",
+              "u": 0.54563,
+              "v": 0.63324,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R2_C4",
+              "u": 0.67174,
+              "v": 0.63803,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R2_C5",
+              "u": 0.80048,
+              "v": 0.6436,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R2_C6",
+              "u": 0.9295,
+              "v": 0.64919,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R3_C1",
+              "u": 0.30352,
+              "v": 0.47486,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R3_C2",
+              "u": 0.42445,
+              "v": 0.47358,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R3_C3",
+              "u": 0.54563,
+              "v": 0.47883,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R3_C4",
+              "u": 0.67174,
+              "v": 0.47691,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R3_C5",
+              "u": 0.80048,
+              "v": 0.48449,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R3_C6",
+              "u": 0.9295,
+              "v": 0.49426,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R4_C1",
+              "u": 0.22691,
+              "v": 0.21529,
+              "dn": 300,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R4_C2",
+              "u": 0.42445,
+              "v": 0.31281,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R4_C3",
+              "u": 0.54563,
+              "v": 0.31571,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R4_C4",
+              "u": 0.66941,
+              "v": 0.31503,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R4_C5",
+              "u": 0.79579,
+              "v": 0.31294,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R4_C6",
+              "u": 0.9248,
+              "v": 0.3247,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R5_C1",
+              "u": 0.42677,
+              "v": 0.14846,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R5_C2",
+              "u": 0.5503,
+              "v": 0.14978,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R5_C3",
+              "u": 0.67174,
+              "v": 0.15034,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R5_C4",
+              "u": 0.79579,
+              "v": 0.15165,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW3_R5_C5",
+              "u": 0.9248,
+              "v": 0.15232,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        },
+        {
+          "id": "SW4",
+          "holes": [
+            {
+              "id": "SW4_Oeffnung_01",
+              "u": 0.22744,
+              "v": 0.63203,
+              "dn": 300,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_02",
+              "u": 0.42669,
+              "v": 0.66017,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_03",
+              "u": 0.5188,
+              "v": 0.65584,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_04",
+              "u": 0.60902,
+              "v": 0.65368,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_05",
+              "u": 0.42669,
+              "v": 0.55628,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_06",
+              "u": 0.51692,
+              "v": 0.55195,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_07",
+              "u": 0.6109,
+              "v": 0.54978,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_08",
+              "u": 0.42669,
+              "v": 0.45671,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_09",
+              "u": 0.51692,
+              "v": 0.45238,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_10",
+              "u": 0.61278,
+              "v": 0.45022,
+              "dn": 142,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_11",
+              "u": 0.73872,
+              "v": 0.43939,
+              "dn": 102,
+              "sourceU": null,
+              "sourceV": null
+            },
+            {
+              "id": "SW4_Oeffnung_12",
+              "u": 0.81955,
+              "v": 0.43939,
+              "dn": 102,
+              "sourceU": null,
+              "sourceV": null
+            }
+          ]
+        }
+      ],
+      "cables": [
+        {
+          "id": "13_U_028-blue-1",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R5_C5"
+          },
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_Oeffnung_01"
+          }
+        },
+        {
+          "id": "13_U_028-blue-2",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R4_C5"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_R4_C1"
+          }
+        },
+        {
+          "id": "13_U_028-blue-3",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R4_C5"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_R4_C1"
+          }
+        },
+        {
+          "id": "13_U_028-red-1",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R5_C2"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_R5_C4"
+          }
+        },
+        {
+          "id": "13_U_028-red-2",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R5_C3"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_R5_C3"
+          }
+        },
+        {
+          "id": "13_U_028-tk-0",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R3_C2"
+          },
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_Oeffnung_09"
+          }
+        },
+        {
+          "id": "13_U_028-tk-3",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R4_C3"
+          },
+          "b": null
+        },
+        {
+          "id": "13_U_028-tk-4",
+          "a": null,
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_Oeffnung_10"
+          }
+        },
+        {
+          "id": "13_U_028-tk-5",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_Oeffnung_10"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_Oeffnung_05"
+          }
+        },
+        {
+          "id": "13_U_028-tk-6",
+          "a": null,
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_Oeffnung_10"
+          }
+        },
+        {
+          "id": "13_U_028-tk-7",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R1_C2"
+          },
+          "b": null
+        },
+        {
+          "id": "13_U_028-tk-8",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R1_C2"
+          },
+          "b": null
+        },
+        {
+          "id": "13_U_028-tk-9",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R1_C2"
+          },
+          "b": null
+        },
+        {
+          "id": "13_U_028-tk-10",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R3_C3"
+          },
+          "b": null
+        },
+        {
+          "id": "13_U_028-lst-11",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_Oeffnung_08"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_Oeffnung_11"
+          }
+        },
+        {
+          "id": "13_U_028-lst-12",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R4_C1"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_Oeffnung_11"
+          }
+        },
+        {
+          "id": "13_U_028-lst-13",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_Oeffnung_08"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_Oeffnung_11"
+          }
+        },
+        {
+          "id": "13_U_028-tk-14",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_R4_C4"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_Oeffnung_12"
+          }
+        }
+      ]
+    },
+    {
+      "id": "13_U_028_PDF_V2",
+      "kind": "pdf-v2",
+      "sourceShaft": "13_U_028",
+      "origin": "AVL0116_Fachkonzept_Eugen_NEU.pdf",
+      "walls": [
+        {
+          "id": "SW1",
+          "holes": [
+            {
+              "id": "SW1_T1_LR01",
+              "u": 0.0513,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.0513,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW1_T1_LR02",
+              "u": 0.1734,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.1734,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW1_T1_LR03",
+              "u": 0.2956,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.2956,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW1_T1_LR04",
+              "u": 0.4178,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.4178,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW1_T1_LR05",
+              "u": 0.54,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.54,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW1_T1_LR06",
+              "u": 0.0513,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.0513,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW1_T1_LR07",
+              "u": 0.1734,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.1734,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW1_T1_LR08",
+              "u": 0.2956,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.2956,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW1_T1_LR09",
+              "u": 0.4178,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.4178,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW1_T1_LR10",
+              "u": 0.54,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.54,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW1_T1_LR11",
+              "u": 0.0513,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.0513,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW1_T1_LR12",
+              "u": 0.1734,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.1734,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW1_T1_LR13",
+              "u": 0.2956,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.2956,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW1_T1_LR14",
+              "u": 0.4178,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.4178,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW1_T1_LR15",
+              "u": 0.54,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.54,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW1_T1_LR16",
+              "u": 0.0513,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.0513,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW1_T1_LR17",
+              "u": 0.1734,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.1734,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW1_T1_LR18",
+              "u": 0.2956,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.2956,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW1_T1_LR19",
+              "u": 0.4178,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.4178,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW1_T1_LR20",
+              "u": 0.54,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.54,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW1_T1_LR21",
+              "u": 0.6621,
+              "v": 0.3436,
+              "dn": 160,
+              "sourceU": 0.6621,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW1_T1_LR22",
+              "u": 0.0513,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.0513,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW1_T1_LR23",
+              "u": 0.1734,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.1734,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW1_T1_LR24",
+              "u": 0.2956,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.2956,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW1_T1_LR25",
+              "u": 0.4178,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.4178,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW1_T1_LR26",
+              "u": 0.54,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.54,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW1_T1_LR27",
+              "u": 0.6621,
+              "v": 0.179,
+              "dn": 160,
+              "sourceU": 0.6621,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW1_T2_LR01",
+              "u": 0.8597,
+              "v": 0.8373,
+              "dn": 63,
+              "sourceU": 0.8597,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW1_T2_LR02",
+              "u": 0.9653,
+              "v": 0.8373,
+              "dn": 63,
+              "sourceU": 0.9653,
+              "sourceV": 0.8373
+            }
+          ]
+        },
+        {
+          "id": "SW2",
+          "holes": [
+            {
+              "id": "SW2_T1_LR11",
+              "u": 0.2489,
+              "v": 0.8174,
+              "dn": 110,
+              "sourceU": 0.2489,
+              "sourceV": 0.8174
+            },
+            {
+              "id": "SW2_T1_LR10",
+              "u": 0.3906,
+              "v": 0.8174,
+              "dn": 110,
+              "sourceU": 0.3906,
+              "sourceV": 0.8174
+            },
+            {
+              "id": "SW2_T1_LR09",
+              "u": 0.5324,
+              "v": 0.8174,
+              "dn": 110,
+              "sourceU": 0.5324,
+              "sourceV": 0.8174
+            },
+            {
+              "id": "SW2_T1_LR05",
+              "u": 0.1071,
+              "v": 0.6528,
+              "dn": 160,
+              "sourceU": 0.1071,
+              "sourceV": 0.6528
+            },
+            {
+              "id": "SW2_T1_LR08",
+              "u": 0.2489,
+              "v": 0.6528,
+              "dn": 110,
+              "sourceU": 0.2489,
+              "sourceV": 0.6528
+            },
+            {
+              "id": "SW2_T1_LR07",
+              "u": 0.3906,
+              "v": 0.6528,
+              "dn": 110,
+              "sourceU": 0.3906,
+              "sourceV": 0.6528
+            },
+            {
+              "id": "SW2_T1_LR06",
+              "u": 0.5324,
+              "v": 0.6528,
+              "dn": 110,
+              "sourceU": 0.5324,
+              "sourceV": 0.6528
+            },
+            {
+              "id": "SW2_T1_LR01",
+              "u": 0.1071,
+              "v": 0.4882,
+              "dn": 110,
+              "sourceU": 0.1071,
+              "sourceV": 0.4882
+            },
+            {
+              "id": "SW2_T1_LR04",
+              "u": 0.2489,
+              "v": 0.4882,
+              "dn": 110,
+              "sourceU": 0.2489,
+              "sourceV": 0.4882
+            },
+            {
+              "id": "SW2_T1_LR03",
+              "u": 0.3906,
+              "v": 0.4882,
+              "dn": 110,
+              "sourceU": 0.3906,
+              "sourceV": 0.4882
+            },
+            {
+              "id": "SW2_T1_LR02",
+              "u": 0.5324,
+              "v": 0.4882,
+              "dn": 110,
+              "sourceU": 0.5324,
+              "sourceV": 0.4882
+            },
+            {
+              "id": "SW2_T3_LR01",
+              "u": 0.8597,
+              "v": 0.8174,
+              "dn": 75,
+              "sourceU": 0.8597,
+              "sourceV": 0.8174
+            },
+            {
+              "id": "SW2_T3_LR02",
+              "u": 0.8597,
+              "v": 0.6528,
+              "dn": 110,
+              "sourceU": 0.8597,
+              "sourceV": 0.6528
+            }
+          ]
+        },
+        {
+          "id": "SW3",
+          "holes": [
+            {
+              "id": "SW3_T1_LR05",
+              "u": 0.1976,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.1976,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW3_T1_LR04",
+              "u": 0.3198,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.3198,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW3_T1_LR03",
+              "u": 0.4419,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.4419,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW3_T1_LR02",
+              "u": 0.5641,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.5641,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW3_T1_LR01",
+              "u": 0.6863,
+              "v": 0.8373,
+              "dn": 110,
+              "sourceU": 0.6863,
+              "sourceV": 0.8373
+            },
+            {
+              "id": "SW3_T1_LR10",
+              "u": 0.1976,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.1976,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW3_T1_LR09",
+              "u": 0.3198,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.3198,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW3_T1_LR08",
+              "u": 0.4419,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.4419,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW3_T1_LR07",
+              "u": 0.5641,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.5641,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW3_T1_LR06",
+              "u": 0.6863,
+              "v": 0.6727,
+              "dn": 110,
+              "sourceU": 0.6863,
+              "sourceV": 0.6727
+            },
+            {
+              "id": "SW3_T1_LR15",
+              "u": 0.1976,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.1976,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW3_T1_LR14",
+              "u": 0.3198,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.3198,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW3_T1_LR13",
+              "u": 0.4419,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.4419,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW3_T1_LR12",
+              "u": 0.5641,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.5641,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW3_T1_LR11",
+              "u": 0.6863,
+              "v": 0.5081,
+              "dn": 110,
+              "sourceU": 0.6863,
+              "sourceV": 0.5081
+            },
+            {
+              "id": "SW3_T1_LR20",
+              "u": 0.1976,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.1976,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW3_T1_LR19",
+              "u": 0.3198,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.3198,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW3_T1_LR18",
+              "u": 0.4419,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.4419,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW3_T1_LR17",
+              "u": 0.5641,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.5641,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW3_T1_LR16",
+              "u": 0.6863,
+              "v": 0.3436,
+              "dn": 110,
+              "sourceU": 0.6863,
+              "sourceV": 0.3436
+            },
+            {
+              "id": "SW3_T1_LR26",
+              "u": 0.0754,
+              "v": 0.179,
+              "dn": 160,
+              "sourceU": 0.0754,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW3_T1_LR25",
+              "u": 0.1976,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.1976,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW3_T1_LR24",
+              "u": 0.3198,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.3198,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW3_T1_LR23",
+              "u": 0.4419,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.4419,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW3_T1_LR22",
+              "u": 0.5641,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.5641,
+              "sourceV": 0.179
+            },
+            {
+              "id": "SW3_T1_LR21",
+              "u": 0.6863,
+              "v": 0.179,
+              "dn": 110,
+              "sourceU": 0.6863,
+              "sourceV": 0.179
+            }
+          ]
+        },
+        {
+          "id": "SW4",
+          "holes": [
+            {
+              "id": "SW4_T1_LR06",
+              "u": 0.0754,
+              "v": 0.8282,
+              "dn": 110,
+              "sourceU": 0.0754,
+              "sourceV": 0.8282
+            },
+            {
+              "id": "SW4_T1_LR05",
+              "u": 0.2127,
+              "v": 0.8282,
+              "dn": 110,
+              "sourceU": 0.2127,
+              "sourceV": 0.8282
+            },
+            {
+              "id": "SW4_T1_LR04",
+              "u": 0.3499,
+              "v": 0.8282,
+              "dn": 110,
+              "sourceU": 0.3499,
+              "sourceV": 0.8282
+            },
+            {
+              "id": "SW4_T1_LR03",
+              "u": 0.4872,
+              "v": 0.8282,
+              "dn": 110,
+              "sourceU": 0.4872,
+              "sourceV": 0.8282
+            },
+            {
+              "id": "SW4_T1_LR02",
+              "u": 0.6244,
+              "v": 0.8282,
+              "dn": 110,
+              "sourceU": 0.6244,
+              "sourceV": 0.8282
+            },
+            {
+              "id": "SW4_T1_LR01",
+              "u": 0.7617,
+              "v": 0.8282,
+              "dn": 110,
+              "sourceU": 0.7617,
+              "sourceV": 0.8282
+            },
+            {
+              "id": "SW4_T1_LR12",
+              "u": 0.0754,
+              "v": 0.6637,
+              "dn": 110,
+              "sourceU": 0.0754,
+              "sourceV": 0.6637
+            },
+            {
+              "id": "SW4_T1_LR11",
+              "u": 0.2127,
+              "v": 0.6637,
+              "dn": 110,
+              "sourceU": 0.2127,
+              "sourceV": 0.6637
+            },
+            {
+              "id": "SW4_T1_LR10",
+              "u": 0.3499,
+              "v": 0.6637,
+              "dn": 110,
+              "sourceU": 0.3499,
+              "sourceV": 0.6637
+            },
+            {
+              "id": "SW4_T1_LR09",
+              "u": 0.4872,
+              "v": 0.6637,
+              "dn": 110,
+              "sourceU": 0.4872,
+              "sourceV": 0.6637
+            },
+            {
+              "id": "SW4_T1_LR08",
+              "u": 0.6244,
+              "v": 0.6637,
+              "dn": 110,
+              "sourceU": 0.6244,
+              "sourceV": 0.6637
+            },
+            {
+              "id": "SW4_T1_LR07",
+              "u": 0.7617,
+              "v": 0.6637,
+              "dn": 110,
+              "sourceU": 0.7617,
+              "sourceV": 0.6637
+            },
+            {
+              "id": "SW4_T1_LR18",
+              "u": 0.0754,
+              "v": 0.4991,
+              "dn": 110,
+              "sourceU": 0.0754,
+              "sourceV": 0.4991
+            },
+            {
+              "id": "SW4_T1_LR17",
+              "u": 0.2127,
+              "v": 0.4991,
+              "dn": 110,
+              "sourceU": 0.2127,
+              "sourceV": 0.4991
+            },
+            {
+              "id": "SW4_T1_LR16",
+              "u": 0.3499,
+              "v": 0.4991,
+              "dn": 110,
+              "sourceU": 0.3499,
+              "sourceV": 0.4991
+            },
+            {
+              "id": "SW4_T1_LR15",
+              "u": 0.4872,
+              "v": 0.4991,
+              "dn": 110,
+              "sourceU": 0.4872,
+              "sourceV": 0.4991
+            },
+            {
+              "id": "SW4_T1_LR14",
+              "u": 0.6244,
+              "v": 0.4991,
+              "dn": 110,
+              "sourceU": 0.6244,
+              "sourceV": 0.4991
+            },
+            {
+              "id": "SW4_T1_LR13",
+              "u": 0.7617,
+              "v": 0.4991,
+              "dn": 110,
+              "sourceU": 0.7617,
+              "sourceV": 0.4991
+            },
+            {
+              "id": "SW4_T1_LR23",
+              "u": 0.2127,
+              "v": 0.3345,
+              "dn": 110,
+              "sourceU": 0.2127,
+              "sourceV": 0.3345
+            },
+            {
+              "id": "SW4_T1_LR22",
+              "u": 0.3499,
+              "v": 0.3345,
+              "dn": 110,
+              "sourceU": 0.3499,
+              "sourceV": 0.3345
+            },
+            {
+              "id": "SW4_T1_LR21",
+              "u": 0.4872,
+              "v": 0.3345,
+              "dn": 110,
+              "sourceU": 0.4872,
+              "sourceV": 0.3345
+            },
+            {
+              "id": "SW4_T1_LR20",
+              "u": 0.6244,
+              "v": 0.3345,
+              "dn": 110,
+              "sourceU": 0.6244,
+              "sourceV": 0.3345
+            },
+            {
+              "id": "SW4_T1_LR19",
+              "u": 0.7617,
+              "v": 0.3345,
+              "dn": 110,
+              "sourceU": 0.7617,
+              "sourceV": 0.3345
+            }
+          ]
+        }
+      ],
+      "cables": [
+        {
+          "id": "PDF28-001",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR01"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR17"
+          }
+        },
+        {
+          "id": "PDF28-002",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR03"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR05"
+          }
+        },
+        {
+          "id": "PDF28-003",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR03"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR05"
+          }
+        },
+        {
+          "id": "PDF28-004",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR03"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR07"
+          }
+        },
+        {
+          "id": "PDF28-005",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR05"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-006",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR12"
+          },
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR04"
+          }
+        },
+        {
+          "id": "PDF28-007",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR14"
+          },
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR01"
+          }
+        },
+        {
+          "id": "PDF28-008",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR14"
+          },
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR01"
+          }
+        },
+        {
+          "id": "PDF28-009",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR14"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR05"
+          }
+        },
+        {
+          "id": "PDF28-010",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR15"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR25"
+          }
+        },
+        {
+          "id": "PDF28-011",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR16"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR06"
+          }
+        },
+        {
+          "id": "PDF28-012",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR16"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR11"
+          }
+        },
+        {
+          "id": "PDF28-013",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR18"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR10"
+          }
+        },
+        {
+          "id": "PDF28-014",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR18"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR10"
+          }
+        },
+        {
+          "id": "PDF28-015",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR20"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR05"
+          }
+        },
+        {
+          "id": "PDF28-016",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR21"
+          },
+          "b": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR26"
+          }
+        },
+        {
+          "id": "PDF28-017",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR21"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-018",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR27"
+          },
+          "b": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR05"
+          }
+        },
+        {
+          "id": "PDF28-019",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR10"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-020",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR10"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-021",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR10"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-022",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR10"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-023",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR09"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-024",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR09"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-025",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR09"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-026",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR09"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-030",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR01"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR09"
+          }
+        },
+        {
+          "id": "PDF28-032",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR03"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR11"
+          }
+        },
+        {
+          "id": "PDF28-033",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T1_LR03"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR11"
+          }
+        },
+        {
+          "id": "PDF28-037",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR04"
+          },
+          "b": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR03"
+          }
+        },
+        {
+          "id": "PDF28-038",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR03"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-039",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR02"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-040",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR02"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-041",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR10"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-042",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR10"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-043",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR08"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-044",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR08"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-052",
+          "a": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-053",
+          "a": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-054",
+          "a": {
+            "wall": "SW4",
+            "hole": "SW4_T1_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-061",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-062",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-063",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-064",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-065",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-066",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-067",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-068",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR22"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-069",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR24"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-070",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR24"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-071",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR25"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-072",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR26"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-073",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR27"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-074",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR27"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-075",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR27"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-076",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T1_LR27"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-077",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T2_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-078",
+          "a": {
+            "wall": "SW1",
+            "hole": "SW1_T2_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-079",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T3_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-080",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T3_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-081",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T3_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-082",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T3_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-083",
+          "a": {
+            "wall": "SW2",
+            "hole": "SW2_T3_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-084",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-085",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-086",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-087",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR01"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-088",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-089",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-090",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-091",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-092",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-093",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-094",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-095",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-096",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-097",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-098",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-099",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-100",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-101",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-102",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-103",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR18"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-104",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR24"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-105",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR23"
+          },
+          "b": null
+        },
+        {
+          "id": "PDF28-106",
+          "a": {
+            "wall": "SW3",
+            "hole": "SW3_T1_LR22"
+          },
+          "b": null
+        }
+      ]
+    }
+  ]
+}
