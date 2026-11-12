@@ -429,7 +429,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <div class="row"><label class="field">Reihen<input id="rows" type="number" min="1" max="20"></label><label class="field">Öffnungen / Reihe<input id="cols" type="number" min="1" max="20"></label></div>
 <div class="row">
 <label class="field">Wandstärke (mm)<input id="wallThickness" type="number" min="40" max="500" step="10"></label>
-<label class="field">Standard-DN (mm)<input id="wallDn" type="number" min="20" max="300" step="10"></label>
+<label class="field">Standard-DN für neue LR (mm)<input id="wallDn" type="number" min="30" max="160" step="1"></label>
 </div>
 <div class="row" style="margin-top:11px"><button id="generate" class="btn soft full">Raster neu erstellen</button><button id="toggleWall" class="btn tiny">Sichtbar</button></div>
 </div>
@@ -443,7 +443,8 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <hr><h3 id="holeTitle">Ausgewähltes Leerrohr</h3>
 <div class="row"><label class="field">Position (mm)<input type="number" id="holeU" min="0" max="12000" step="1"></label>
 <label class="field">Höhe (mm)<input type="number" id="holeV" min="0" max="8000" step="1"></label></div>
-<label class="field">DN / Nennangabe (schematisch)<input type="number" id="holeDn" min="20" max="300" step="5"></label>
+<label class="field">DN des LR (30–160, schematisch)<input type="number" id="holeDn" min="30" max="160" step="1"></label>
+<p class="small">DN 50 wird im 2D-/3D-Demomodell proportional kleiner als DN 110 dargestellt. Die echte Betonöffnung kann einen anderen Ø haben; Original-Referenzdaten bleiben unverändert.</p>
 <div class="dim-editor" role="group" aria-label="Rohr- und Öffnungsmaße">
  <h3>Rohrmaße getrennt erfassen</h3>
  <p class="small" id="holeDimensionSummary">Noch kein Rohr ausgewählt.</p>
