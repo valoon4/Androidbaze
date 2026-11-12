@@ -13,7 +13,7 @@ assert.ok(!csp.includes("script-src 'unsafe-inline'"),'Unsafe script execution m
 assert.ok(csp.includes("'sha256-"),'Inline scripts must be individually hash-authorized');
 const fs=require('node:fs'),path=require('node:path');
 const hashes=[...csp.matchAll(/'sha256-([a-zA-Z0-9+/=]+)'/g)].map(x=>x[1]);
-const sources=['recovery.js','pdf-geometry.js','construction-v2.js','pdf-visual.js','vendor/three.min.js','editor2d.js','components.js','network.js',
+const sources=['recovery.js','pdf-geometry.js','concrete-wall.js','construction-v2.js','pdf-visual.js','vendor/three.min.js','editor2d.js','components.js','network.js',
  'quality.js','reports.js','reference-data.js','examples.js','app.js'];
 assert.equal(hashes.length,sources.length,'CSP must authorize all scripts exactly');
 for(const src of sources){
@@ -23,4 +23,4 @@ for(const src of sources){
  assert.ok(result.includes('<script>'+code+'</script>'),'Complete script embedded: '+src);
 }
 assert.ok(result.includes('HTML-Referenz'));
-console.log('OK: standalone HTML includes 13 scripts, source examples and strict CSP hashes');
+console.log('OK: standalone HTML includes 14 scripts, source examples and strict CSP hashes');
