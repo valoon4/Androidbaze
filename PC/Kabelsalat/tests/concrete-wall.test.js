@@ -74,6 +74,7 @@ for(const [shaft,file,count] of originals){
 // PDF-V2 is a separate, confirmed-by-PDF transcription with 91 schematic centers.
 const components=require('../components.js'),network=require('../network.js');
 const pdf=require('../reference-data.js').factory(components,network);
+globalThis.KabelsalatReferences=pdf; // Source examples load from the canonical reference factory.
 const examples=require('../examples.js').factory(components,network);
 const project=examples.create('pdf-u028'),copy=JSON.stringify(project),sizes=project.dims;
 assert.deepEqual(project.walls.map(w=>w.holes.length),[29,13,26,23]);
