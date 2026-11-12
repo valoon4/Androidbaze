@@ -31,11 +31,11 @@
 
 **Quelle:** PDF S.4, E01, A01. **Definition of Done:** Koordinatenbeispiel, inverse Transformation und 2D/3D-Regression pro Änderung.
 
-- [ ] **KAB-0019** – SW1-Stirnwand auf korrekte Innen-/Außennormale prüfen
-- [ ] **KAB-0020** – SW2-rechte Wand auf korrekte Innen-/Außennormale prüfen
-- [ ] **KAB-0021** – SW3-Gegenwand auf korrekte Innen-/Außennormale prüfen
-- [ ] **KAB-0022** – SW4-linke Wand auf korrekte Innen-/Außennormale prüfen
-- [ ] **KAB-0023** – Rechtshändige Weltachsen für PDF-V2-Schächte dokumentieren
+- [x] **KAB-0019** – SW1-Stirnwand auf korrekte Innen-/Außennormale prüfen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
+- [x] **KAB-0020** – SW2-rechte Wand auf korrekte Innen-/Außennormale prüfen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
+- [x] **KAB-0021** – SW3-Gegenwand auf korrekte Innen-/Außennormale prüfen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
+- [x] **KAB-0022** – SW4-linke Wand auf korrekte Innen-/Außennormale prüfen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
+- [x] **KAB-0023** – Rechtshändige Weltachsen für PDF-V2-Schächte dokumentieren · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
 - [ ] **KAB-0024** – Lokale U/V-Koordinaten für SW1 eindeutig definieren
 - [ ] **KAB-0025** – Lokale U/V-Koordinaten für SW2 eindeutig definieren
 - [ ] **KAB-0026** – Lokale U/V-Koordinaten für SW3 eindeutig definieren
@@ -61,10 +61,10 @@
 - [ ] **KAB-0041** – Unabhängige vertikale Rohrabstandsregel je Schachtwand prüfen
 - [ ] **KAB-0042** – Sonderabstände für Trasse 2 auf SW1 berücksichtigen
 - [ ] **KAB-0043** – Sonderabstände für Trasse 3 auf SW2 berücksichtigen
-- [ ] **KAB-0044** – DN-160-Rohre gegen direkt benachbarte DN-110-Rohre prüfen
-- [ ] **KAB-0045** – DN-75-Rohr auf SW2-Trasse-3 auf Wandrandabstand prüfen
-- [ ] **KAB-0046** – DN-63-Rohre der SW1-Trasse-2 auf Randabstand prüfen
-- [ ] **KAB-0047** – Mindestlichte zwischen zwei Kreisöffnungen berechnen
+- [x] **KAB-0044** – DN-160-Rohre gegen direkt benachbarte DN-110-Rohre prüfen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
+- [x] **KAB-0045** – DN-75-Rohr auf SW2-Trasse-3 auf Wandrandabstand prüfen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
+- [x] **KAB-0046** – DN-63-Rohre der SW1-Trasse-2 auf Randabstand prüfen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
+- [x] **KAB-0047** – Mindestlichte zwischen zwei Kreisöffnungen berechnen · Nachweis: https://github.com/valoon4/Androidbaze/commit/8c384b567e7842adcfcab1c4aeba8938835227c2
 - [ ] **KAB-0048** – Kollisionen bei engerer Vorschau sichtbar kennzeichnen
 - [x] **KAB-0049** – Schematische Rohrpositionen nicht als vermessene Millimeter exportieren · Nachweis: https://github.com/valoon4/Androidbaze/commit/c24a6f3818ae0665a1e5c7aff0b03344e02212eb
 - [x] **KAB-0050** – PDF-Originaldarstellung bei Parameteränderung unangetastet lassen · Nachweis: https://github.com/valoon4/Androidbaze/commit/79a3c69b6e145c1836ac8032cea2075d4c486f7f
@@ -286,3 +286,5 @@
 KAB-0037/0038/0039 und KAB-0050 wurden mit eigenen Source-/View-/Roundtriptests abgenommen: `sourceU/sourceV` bleiben in JSON und Planvergleich unverändert, die 62-%-Vorschau ist Basic-only, PDF-Vektor-Wandbilder werden von der Vorschau nicht beeinflusst. **PDF-Diagrammkoordinaten sind weiterhin keine realen Aufmaße.** [Sprintbericht](./SPRINT_2026-11-12_BRO_10.md).
 
 **KAB-0049 (12.11.2026):** Offline-Projektviewer und Druckbericht nennen Rohr- und Schachtkoordinaten nicht mehr einfach vermessene Millimeter. PDF-V2-Wandbreiten werden richtungsrichtig ausgewertet und die unveränderten sourceU/sourceV-Planpunkte als *schematisch* statt als gemessene XYZ-Positionen erläutert. Unit-Test: `tests/reports.test.js`.
+
+**Bro-Sprint 2 (12.11.2026):** KAB-0019–0023 und KAB-0044–0047 per PDF-Weltachsenaudit, Vektor↔3D-Inversion, modellbasiertem Rohr-Ø-/Randabstand und automatisiertem `tests/pdf-wall-clearance.test.js` abgeschlossen. `npm test` in GitHub Pages und Windows-Workflow bestanden. Die 2D-/3D-Kollisionsmarkierung KAB-0048 ist implementiert, bleibt jedoch **offen bis zur echten visuellen Prüfung**; diese ist getrennt dokumentiert in [WALL_COORDINATES_AND_CLEARANCE.md](../WALL_COORDINATES_AND_CLEARANCE.md). **Kein Vermessungs- oder Normnachweis.**
