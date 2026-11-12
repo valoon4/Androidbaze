@@ -96,6 +96,60 @@ function effectiveInner(h){
  const val=h?.dimensionSpec?.innerMm;
  return Number.isFinite(val)&&val>=20&&val<=600?val:Number(h?.dn)||70;
 }
+/* Source-/view-aware geometric spacing audit (KAB-0044..0048).
+ * All millimetre results are model/schematic distances unless surveyed data exist.
+ * Never mutates pipe coordinates, IDs or documented diameter candidates.
+ */
+function auditWallOpenings(project,projector=null){
+ if(!project?.dims||!Array.isArray(project.walls))throw Error('Schachtwände fehlen');
+ const pdf=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')===true;
+ const getHole=typeof projector==='function'?projector:h=>h;
+ const result={walls:[],pairs:[],overlaps:[],edgeCrossings:[],invalidIds:new Set(),
+  minGapMm:null,minEdgeMm:null,provenance:pdf?
+   'Abstände aus schematischen PDF-Vektorkoordinaten und Modellmaßen; kein Aufmaß':
+   'Abstände aus Modell-/HTML-Schemakoordinaten; kein Aufmaß'};
+ for(const wall of project.walls){
+  const span=wall.id==='SW1'||wall.id==='SW3'?
+   (pdf?project.dims.w:project.dims.d):(pdf?project.dims.d:project.dims.w);
+  const height=project.dims.h;
+  const holes=(wall.holes||[]).map(h=>{
+   const shown=getHole(h);
+   const diameterMm=physicalOpening(h);
+   return {id:h.id,dn:Number(h.dn)||null,u:Number(shown.u),v:Number(shown.v),
+    radiusMm:diameterMm/2,diameterMm,
+    xMm:Number(shown.u)*span,yMm:Number(shown.v)*height};
+  });
+  const summary={id:wall.id,spanMm:span,heightMm:height,openingCount:holes.length,
+   minGapMm:null,minEdgeMm:null,overlaps:0,edgeCrossings:0};
+  for(let i=0;i<holes.length;i++){
+   const a=holes[i],r=a.radiusMm;
+   if(!Number.isFinite(a.xMm)||!Number.isFinite(a.yMm))continue;
+   const edgeMm=Math.min(a.xMm-r,span-a.xMm-r,a.yMm-r,height-a.yMm-r);
+   summary.minEdgeMm=summary.minEdgeMm===null?edgeMm:Math.min(summary.minEdgeMm,edgeMm);
+   result.minEdgeMm=result.minEdgeMm===null?edgeMm:Math.min(result.minEdgeMm,edgeMm);
+   if(edgeMm<0){
+    summary.edgeCrossings++;result.edgeCrossings.push({wall:wall.id,id:a.id,edgeMm});
+    result.invalidIds.add(wall.id+'|'+a.id);
+   }
+   for(let j=0;j<i;j++){
+    const b=holes[j];if(!Number.isFinite(b.xMm)||!Number.isFinite(b.yMm))continue;
+    const centerMm=Math.hypot(a.xMm-b.xMm,a.yMm-b.yMm);
+    const gapMm=centerMm-a.radiusMm-b.radiusMm;
+    const pair={wall:wall.id,a:a.id,b:b.id,dnA:a.dn,dnB:b.dn,
+     diameterA:a.diameterMm,diameterB:b.diameterMm,centerMm,gapMm};
+    result.pairs.push(pair);
+    summary.minGapMm=summary.minGapMm===null?gapMm:Math.min(summary.minGapMm,gapMm);
+    result.minGapMm=result.minGapMm===null?gapMm:Math.min(result.minGapMm,gapMm);
+    if(gapMm<0){
+     summary.overlaps++;result.overlaps.push(pair);
+     result.invalidIds.add(wall.id+'|'+a.id);result.invalidIds.add(wall.id+'|'+b.id);
+    }
+   }
+  }
+  result.walls.push(summary);
+ }
+ return result;
+}
 function evaluate(net,settings){
  const cfg=normalizeSettings(settings),issues=[];
  function add(severity,code,shaftId,ref,detail){
@@ -188,5 +242,5 @@ function evaluate(net,settings){
  advisory:'Nur Daten- und Geometriehinweise. Keine DIN-/VDE-/Brandschutz- oder Abnahmeprüfung.'};
 }
 return {STATES,normalizeSettings,normalizeReviews,normalizeAudit,searchNetwork,mmPosition,
-circumradius,evaluate};
+circumradius,evaluate,auditWallOpenings};
 });
