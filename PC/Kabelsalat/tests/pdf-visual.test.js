@@ -138,7 +138,7 @@ assert.ok(!app.includes('new THREE.CylinderGeometry(r+.010'),
 assert.ok(app.includes('concreteWall.build(THREE'),
  'Actual concrete wall geometry must be rendered in 3D');
 assert.ok(app.includes("opacity:chosen?1:(pdfView()?.94"),'3D source cables not emphasized');
-assert.ok(app.includes('pdfGeometry.hole(wid,h,s)'),'3D editor must use tested geometry');
+assert.ok(app.includes('pdfGeometry.hole(wid,shown,s)'),'3D editor must use tested geometry');
 assert.ok(app.includes('pdfGeometry.tangentOffset(ref.wall,a,r)'),
  'PDF cable strands must use wall-tangent displacement vectors');
 assert.ok(app.includes('pdfGeometry.transform(w.id,s)'),'3D wall mesh must use tested orientation');
