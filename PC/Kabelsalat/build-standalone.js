@@ -12,7 +12,7 @@ function build(){
  html=html.replace(/<script src="([^"]+)"\s*><\/script>/g,(_tag,srcWithVersion)=>{
   const [src,query]=srcWithVersion.split('?');
   if(query!=='v='+pkg.version)throw Error('Ungültige Versionskennung: '+srcWithVersion);
-  if(!/^(?:recovery\.js|pdf-geometry\.js|construction-v2\.js|pdf-visual\.js|vendor\/three\.min\.js|editor2d\.js|components\.js|network\.js|quality\.js|reports\.js|reference-data\.js|examples\.js|app\.js)$/.test(src))
+  if(!/^(?:recovery\.js|pdf-geometry\.js|concrete-wall\.js|construction-v2\.js|pdf-visual\.js|vendor\/three\.min\.js|editor2d\.js|components\.js|network\.js|quality\.js|reports\.js|reference-data\.js|examples\.js|app\.js)$/.test(src))
    throw Error('Unerlaubte externe Script-Abhängigkeit: '+src);
   const full=path.resolve(__dirname,src);
   if(!full.startsWith(__dirname+path.sep))throw Error('Pfad außerhalb des Projekts: '+src);
@@ -21,7 +21,7 @@ function build(){
   found++;
   return '<script>'+js+'</script>';
  });
- if(found!==13)throw Error('13 lokale Script-Abhängigkeiten erwartet, gefunden: '+found);
+ if(found!==14)throw Error('14 lokale Script-Abhängigkeiten erwartet, gefunden: '+found);
  if(!html.includes("script-src 'self'"))throw Error('CSP im Editor nicht gefunden');
  html=html.replace("script-src 'self'","script-src "+hashes.join(' '));
  html=html.replace('</head>',`<!-- Eigenständige Offline-Datei; keine externe Script-Quelle.
