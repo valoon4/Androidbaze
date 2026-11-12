@@ -61,8 +61,11 @@ for(const [wallId,rows] of Object.entries(expectedRows)){
    assert.equal(hole.dn,dnFor(wallId,trasse,lr),'source DN wrong');
    assert.equal(hole.sourceU,u,'PDF vector X changed');
    assert.equal(hole.sourceV,v,'PDF vector Y changed');
-   assert.equal(hole.u,Math.round((.5+(u-.5)*.62)*1e5)/1e5,'compact X wrong');
-   assert.equal(hole.v,Math.round((.5+(v-.5)*.62)*1e5)/1e5,'compact Y wrong');
+   assert.equal(hole.u,u,'stored original PDF X changed');
+   assert.equal(hole.v,v,'stored original PDF Y changed');
+   const shown=require('../schematic-positions.js').display(hole,true);
+   assert.equal(shown.u,Math.round((.5+(u-.5)*.62)*1e5)/1e5,'view-only compact X wrong');
+   assert.equal(shown.v,Math.round((.5+(v-.5)*.62)*1e5)/1e5,'view-only compact Y wrong');
    assert.ok(allSvg.includes('data-pipe="'+key+'"'),'2D SVG missing pipe');
    assert.ok(allSvg.includes(key+' DN '+hole.dn+' mit '),'accessible SVG label missing');
    const cableCount=(occupation.get(key)||[]).length;
