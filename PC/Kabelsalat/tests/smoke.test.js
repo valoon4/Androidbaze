@@ -44,6 +44,12 @@ assert.ok(app.includes('pdfGeometry.hole(wid,h,s)')&&
  app.includes('pdfGeometry.camera(viewMode,d)'),
  '3D must use correct PDF-world wall coordinates on every view');
 assert.ok(html.includes('src="concrete-wall.js?v=2.0.2-beta.1"'), 'Concrete wall module must load before the editor');
+const pages=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/kabelsalat-pages.yml'),'utf8');
+const release=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/kabelsalat.yml'),'utf8');
+assert.ok(pages.includes('pdf-geometry.js,concrete-wall.js,construction-v2.js'),
+ 'GitHub Pages must deploy concrete-wall.js, otherwise the UI cannot start');
+assert.ok(release.includes('pdf-geometry.js,concrete-wall.js,construction-v2.js'),
+ 'Offline ZIP must include the new concrete wall renderer');
 assert.ok(app.includes('concreteWall.build(THREE')&&app.includes('colorWrite:false'),
  'Reference walls must have real empty apertures and invisible selection hit planes');
 assert.ok(!app.includes('new THREE.CylinderGeometry(r+.010'),
