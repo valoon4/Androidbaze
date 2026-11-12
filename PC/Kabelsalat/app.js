@@ -241,11 +241,11 @@ function geometryWarnings(){
  for(const w of project.walls){
  const span=wallSpanMm(w.id),height=project.dims.h;
  for(let i=0;i<w.holes.length;i++){
- const a=w.holes[i],ax=a.u*span,ay=a.v*height,ar=(a.dn||70)/2;
+ const a=w.holes[i],ax=a.u*span,ay=a.v*height,ar=pipeDimensions.apertureMm(a)/2;
  if(ax-ar<0||ax+ar>span||ay-ar<0||ay+ar>height)edges++;
  for(let j=0;j<i;j++){
  const b=w.holes[j],dx=ax-b.u*span,dy=ay-b.v*height;
- if(Math.hypot(dx,dy)<ar+(b.dn||70)/2)overlaps++;
+ if(Math.hypot(dx,dy)<ar+pipeDimensions.apertureMm(b)/2)overlaps++;
  }
  }
  }
@@ -256,7 +256,7 @@ function holeText(w,h){
   return w.id+' · '+h.sourceAddress;
  return w.id+' · '+(h.row?'Reihe '+h.row+', Öffnung '+h.col:'Frei platziert');
 }
-function referenceText(r){if(!r)return 'Nicht zugeordnet';const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holeText(w,h):'Nicht zugeordnet';}
+function referenceText(r){if(!r)return 'Nicht zugeordnet';const w=project.walls.find(x=>x.id===r.wall),h=w?.holes.find(x=>x.id===r.hole);return h?holeText(w,h)+' · '+pipeDimensions.describe(h):'Nicht zugeordnet';}
 function hueGroup(color){
  const r=parseInt(color.slice(1,3),16)/255,g=parseInt(color.slice(3,5),16)/255,b=parseInt(color.slice(5,7),16)/255;
  const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
@@ -294,6 +294,13 @@ function renderUI(){
  $('holeU').value=Math.round(h.u*wallSpanMm(wallId));
  $('holeV').value=Math.round(h.v*project.dims.h);
  $('holeDn').value=h.dn;
+ const dims=pipeDimensions.forHole(h);
+ $('holeDimensionSummary').textContent=pipeDimensions.describe(h);
+ for(const [id,val] of [['holeInnerMm',dims.innerMm],['holeOuterMm',dims.outerMm],
+  ['holeOpeningMm',dims.openingMm]])$(id).value=val??'';
+ $('holeDimensionSource').value=dims.source;
+ $('holeDimensionReviewer').value=dims.reviewer;
+ $('holeDimensionStatus').value=dims.status;
  const occupied=project.cables.filter(c=>
   c.a?.wall===wallId&&c.a?.hole===h.id||c.b?.wall===wallId&&c.b?.hole===h.id);
  $('holeOccupancy').innerHTML=(project.sourceInfo&&h.nominalDnConfirmed!==true?
@@ -446,7 +453,7 @@ function normal(wid){
  return new THREE.Vector3(wid==='SW1'?1:wid==='SW3'?-1:0,0,
   wid==='SW2'?1:wid==='SW4'?-1:0);
 }
-function openingRadius(h){return clamp(Number(h.dn)||70,20,300)/2000;}
+function openingRadius(h){return pipeDimensions.apertureMm(h)/2000;}
 function drawOpening(w,h){
  const pos=holePosition(w.id,h),n=normal(w.id),r=openingRadius(h),selected=w.id===wallId&&h.id===holeId;
  const group=new THREE.Group();group.position.copy(pos);group.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),n);
@@ -524,7 +531,7 @@ function drawWalls(){
    (exploreConstructionMode==='hidden'?Math.max(.52,project.opacity/100):.24)):
   project.opacity/100;
  // Schematic reference has a concrete shell, not ghostly translucent pipe rings.
- box(s.w+.16,.085,s.d+.16,0,-.055,0,'#858d90',exploreMode?.9:1);
+ box(s.w+.16,.085,s.d+.16,0,-.055,0,'#747a79',exploreMode?.9:1);
  const floor=new THREE.GridHelper(Math.max(s.w,s.d)*1.7,18,'#d7e1e5','#e3eaed');
  floor.position.y=-.096;models.add(floor);
  for(const w of project.walls){
@@ -968,7 +975,7 @@ function draw2D(){
  }
  for(const h of w.holes){
  const shown=visualHole(h),p=geom2d.toPixels(m,shown.u*span,shown.v*height);
- const r=Math.max(2,Number(h.dn||70)/2*m.scale),selected=h.id===holeId;
+ const r=Math.max(2,pipeDimensions.apertureMm(h)/2*m.scale),selected=h.id===holeId;
  ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);
  ctx.fillStyle=selected?'#b7e9d7':'#e5eff2';ctx.fill();
  ctx.lineWidth=selected?3:1.5;ctx.strokeStyle=selected?'#18745e':'#708b97';ctx.stroke();
@@ -1018,15 +1025,15 @@ function draw2D(){
  if(hole()){
  const h=hole(),pos=geom2d.holeMillimetres(h,span,height),p=geom2d.toPixels(m,pos.x,pos.y);
  ctx.font='bold 11px Segoe UI,Arial';ctx.textAlign='left';ctx.fillStyle='#1a655a';
- ctx.fillText('DN '+h.dn,p.x+9,p.y-9);
+ ctx.fillText('DN '+h.dn+(pipeDimensions.forHole(h).openingMm!==null?' · Ø '+pipeDimensions.forHole(h).openingMm:'') ,p.x+9,p.y-9);
  }
  ctx.restore();
  const clear=geom2d.clearance(w.holes,span,height),sel=hole();
  const pos=sel?geom2d.holeMillimetres(sel,span,height):null;
  $('draftCoords').textContent=sel?
  (project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
-  w.id+' · '+sel.sourceAddress+' · schematische Lage · DN '+sel.dn:
-  w.id+' · '+Math.round(pos.x)+' mm horizontal · '+Math.round(pos.y)+' mm Höhe · DN '+sel.dn):
+  w.id+' · '+sel.sourceAddress+' · schematische Lage · '+pipeDimensions.describe(sel):
+  w.id+' · '+Math.round(pos.x)+' mm horizontal · '+Math.round(pos.y)+' mm Höhe · '+pipeDimensions.describe(sel)):
  w.id+' · '+w.holes.length+' Rohre · Mindest-Randabstand: '+(clear.minEdge===null?'–':clear.minEdge+' mm')+
  ' · kleinster Rohrabstand: '+(clear.minPairGap===null?'–':clear.minPairGap+' mm');
  $('draftCoords').style.background=clear.overlaps||clear.minEdge!==null&&clear.minEdge<0?'#fff1e7':'#edf7f3';
@@ -1310,6 +1317,8 @@ function renderExplorerUI(){
  $('toggleExpert').setAttribute('aria-pressed',String(!exploreMode));
  $('explore2DToggle').textContent=exploreWith2D?'▢ 2D-Plan ausblenden':'▤ Wand als 2D-Plan sehen';
  $('exploreCutawayWall').value=exploreCutawayWall||'none';
+ $('exploreDimensionInfo').textContent=hole()?pipeDimensions.describe(hole()):
+  'Öffnung anklicken: DN, Öffnungsgröße und Herkunft erscheinen hier. Ungeprüfte Maße sind schematisch.';
  $('demoCompactionToggle').hidden=!pdfView();
  $('demoCompactionToggle').textContent=demoCompactView?'↔ PDF-Originalpunkte ansehen':'↔ 62-%-Vorschau ansehen';
  $('demoCompactionToggle').setAttribute('aria-pressed',String(demoCompactView));
@@ -1766,7 +1775,115 @@ $('deleteHole').addEventListener('click',()=>{const w=wall(),h=hole();if(!h)retu
 });
 $('applyHole').addEventListener('click',()=>{const h=hole();if(!h)return;const span=wallSpanMm(wallId);
  change(()=>{h.u=clamp((Number($('holeU').value)||0)/span,0,1);h.v=clamp((Number($('holeV').value)||0)/project.dims.h,0,1);
- h.dn=clamp(Number($('holeDn').value)||h.dn,20,300);});});
+ h.dn=clamp(Number($('holeDn').value)||h.dn,20,300);
+ if(h.dimensionSpec)h.dimensionSpec.nominalMm=h.dn;},'Rohrposition / Nenn-DN geändert');});
+// Separate physical pipe dimensions from legacy schematic DN (KAB-0880/0883).
+$('saveHoleDimensions').addEventListener('click',()=>{
+ const h=hole();if(!h)return;
+ const prev=pipeDimensions.forHole(h);
+ const source=$('holeDimensionSource').value.trim().slice(0,240);
+ const raw={...prev,nominalMm:h.dn,
+  innerMm:$('holeInnerMm').value,outerMm:$('holeOuterMm').value,
+  openingMm:$('holeOpeningMm').value,source,
+  reviewer:$('holeDimensionReviewer').value.trim().slice(0,240),
+  method:'manual',status:$('holeDimensionStatus').value,
+  note:'Nutzerangabe: noch nicht automatisch vermessen'};
+ const spec=pipeDimensions.normalize(raw,h.dn);
+ if(raw.status==='reviewed'&&spec.status!=='reviewed')
+  alert('Prüfstatus nicht übernommen: Quelle, Prüfer und mindestens ein explizites physisches Maß erforderlich.');
+ change(()=>{h.dimensionSpec=spec;},'Rohrmaße und Herkunft aktualisiert');
+});
+// Text recognized from labelled plan pages is ONLY a candidate. It cannot silently replace nominal DN.
+let planCandidates=[];
+$('planTextFile').addEventListener('change',async()=>{
+ const file=$('planTextFile').files[0];if(!file)return;
+ if(file.size>200000){alert('Textdatei zu groß (maximal 200 KB).');return;}
+ $('planDimensionText').value=await file.text();
+ $('planDimensionSource').value=file.name;
+});
+$('parsePlanDimensions').addEventListener('click',()=>{
+ planCandidates=pipeDimensions.parsePlanText($('planDimensionText').value,
+  {source:$('planDimensionSource').value.trim()||'Manuell eingefügter Plantext'});
+ const s=$('planDimensionCandidates');s.replaceChildren();
+ planCandidates.forEach((c,i)=>{
+  const o=document.createElement('option');o.value=String(i);
+  o.textContent='Zeile '+c.line+' · '+(c.pipeId||'Rohr ungeklärt')+' · '+c.label+' · Kandidat';
+  s.append(o);
+ });
+ $('planDimensionStatus').textContent=planCandidates.length+
+  ' Maßkandidaten aus Beschriftung; PDF-Binärtexte oder Bildtexte werden hier nicht automatisch extrahiert.';
+});
+$('applyPlanDimension').addEventListener('click',()=>{
+ const h=hole(),c=planCandidates[Number($('planDimensionCandidates').value)];
+ if(!h||!c)return;
+ if(c.pipeId&&c.pipeId!==h.id){
+  alert('Kandidat gehört zu '+c.pipeId+', ausgewählt ist '+h.id+'. Keine automatische Zuordnung.');return;
+ }
+ if(!c.pipeId&&!confirm('Die Rohr-ID ist im Text unklar. Kandidat dieser Öffnung zuweisen (ohne Bestätigung)?'))return;
+ const next=pipeDimensions.normalize({...pipeDimensions.forHole(h),candidateMm:c.candidateMm,
+  method:'pdf-label',source:c.source+' / Zeile '+c.line,status:'candidate',
+  note:'Aus Planbeschriftung erkannt, manuell nachprüfen'},h.dn);
+ change(()=>{h.dimensionSpec=next;},'Unbestätigten PDF-Rohrmaßkandidaten übernommen');
+});
+// Deterministic local pixel-circle proposals. Absolute mm only after calibration.
+let photoAnalysis=null;
+function showPhotoCandidates(){
+ const s=$('photoCandidates');s.replaceChildren();
+ for(const c of photoAnalysis?.candidates||[]){
+  const o=document.createElement('option');o.value=String(c.index);
+  o.textContent='#'+(c.index+1)+' · '+c.relativeSize+' · Ø '+c.diameterPx+' px'+
+   (c.candidateMm?' · ca. '+c.candidateMm+' mm (ungeprüft)':'');
+  s.append(o);
+ }
+ $('photoAnalysisStatus').textContent=photoAnalysis?
+  photoAnalysis.candidates.length+' Öffnungs-Kandidaten (heuristisch, keine KI/OCR) · '+
+  'Ohne Referenz nur relative Größe. Perspektivenfehler möglich.':'Noch kein Bild untersucht.';
+}
+$('photoDimensionFile').addEventListener('change',async()=>{
+ const file=$('photoDimensionFile').files[0];if(!file)return;
+ if(!file.type.startsWith('image/')||file.size>10000000){
+  alert('Bitte ein Bild bis 10 MB verwenden.');return;
+ }
+ try{
+  const bitmap=await createImageBitmap(file);
+  const canvas=$('photoDimensionPreview'),scale=Math.min(1,900/Math.max(bitmap.width,bitmap.height));
+  canvas.width=Math.max(16,Math.round(bitmap.width*scale));
+  canvas.height=Math.max(16,Math.round(bitmap.height*scale));
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+  const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
+  photoAnalysis=photoCandidates.detect(pixels.data,canvas.width,canvas.height);
+  photoAnalysis.filename=file.name.slice(0,200);
+  ctx.strokeStyle='#ecba43';ctx.lineWidth=2;ctx.font='bold 14px sans-serif';
+  for(const c of photoAnalysis.candidates){
+   ctx.beginPath();ctx.arc(c.x,c.y,c.diameterPx/2,0,2*Math.PI);ctx.stroke();
+   ctx.fillStyle='#fff6e2';ctx.fillText('#'+(c.index+1),c.x+8,c.y-7);
+  }
+  showPhotoCandidates();
+ }catch(err){
+  photoAnalysis=null;showPhotoCandidates();
+  $('photoAnalysisStatus').textContent='Bild kann nicht analysiert werden: '+err.message;
+ }
+});
+$('photoCalibrate').addEventListener('click',()=>{
+ if(!photoAnalysis)return;
+ try{
+  photoAnalysis.candidates=photoCandidates.calibrate(photoAnalysis.candidates,
+   Number($('photoCandidates').value),Number($('photoReferenceMm').value));
+  showPhotoCandidates();
+ }catch(e){alert(e.message);}
+});
+$('applyPhotoDimension').addEventListener('click',()=>{
+ const h=hole(),c=photoAnalysis?.candidates[Number($('photoCandidates').value)];
+ if(!h||!c||!Number.isFinite(c.candidateMm)){
+  alert('Für einen Millimeter-Kandidaten zuerst einen Referenzkreis kalibrieren.');return;
+ }
+ const next=pipeDimensions.normalize({...pipeDimensions.forHole(h),candidateMm:c.candidateMm,
+  method:'photo-calibrated',source:'Foto: '+photoAnalysis.filename+' (Kreiskandidat '+(c.index+1)+')',
+  status:'candidate',confidence:c.quality,note:c.note||'Perspektivenunsichere Bildkandidaten'},h.dn);
+ change(()=>{h.dimensionSpec=next;},'Unbestätigten Fotomaßkandidaten übernommen');
+});
+
 $('cableList').addEventListener('click',e=>{const card=e.target.closest('[data-cable]');if(card){cableId=card.dataset.cable;renderAll();}});
 $('cableFilters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(b){filter=b.dataset.filter;renderUI();}});
 $('addCable').addEventListener('click',()=>change(()=>{const n=project.cables.length+1,id=uid('c');
