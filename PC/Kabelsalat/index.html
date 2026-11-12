@@ -264,6 +264,15 @@ body.app-ready:not(.startup-failed) #startupRecovery{display:none!important}
  .explore-views{flex-direction:column}
 }
 
+.dim-editor{border:1px solid #d4e3e3;background:#f5f8f7;border-radius:12px;padding:12px;margin-top:13px}
+.dim-editor h3{font-size:12px;margin:4px 0 9px;color:#254b50}
+.dim-editor p.small{line-height:1.5}
+.dim-editor textarea{width:100%;min-height:78px;resize:vertical}
+.dim-editor input[type=file]{width:100%;font-size:10px;margin:7px 0}
+#photoDimensionPreview{display:block;max-width:100%;height:auto;max-height:250px;border:1px solid #c4d4d4;border-radius:6px;background:#d2d3d2}
+#exploreDimensionInfo{border-left:3px solid #a3b5b6;padding:6px 10px;max-height:85px;overflow:auto;background:#eef2ef}
+#demoCompactionToggle[hidden]{display:none!important}
+
 /* PDF V2 visual comparison: independent of WebGL and the editable project. */
 #pdfOpen{position:absolute;z-index:12;right:16px;bottom:18px;border:2px solid #27786d;
  background:#f8fffded;color:#18584b;font-weight:800;box-shadow:0 4px 15px #143d4537}
@@ -434,7 +443,41 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <hr><h3 id="holeTitle">Ausgewähltes Leerrohr</h3>
 <div class="row"><label class="field">Position (mm)<input type="number" id="holeU" min="0" max="12000" step="1"></label>
 <label class="field">Höhe (mm)<input type="number" id="holeV" min="0" max="8000" step="1"></label></div>
-<label class="field">DN / Durchmesser (mm)<input type="number" id="holeDn" min="20" max="300" step="5"></label>
+<label class="field">DN / Nennangabe (schematisch)<input type="number" id="holeDn" min="20" max="300" step="5"></label>
+<div class="dim-editor" role="group" aria-label="Rohr- und Öffnungsmaße">
+ <h3>Rohrmaße getrennt erfassen</h3>
+ <p class="small" id="holeDimensionSummary">Noch kein Rohr ausgewählt.</p>
+ <div class="row"><label class="field">Innen-Ø (mm)<input id="holeInnerMm" type="number" min="20" max="600" step="0.1" placeholder="unbekannt"></label>
+ <label class="field">Außen-Ø (mm)<input id="holeOuterMm" type="number" min="20" max="600" step="0.1" placeholder="unbekannt"></label></div>
+ <label class="field">Loch-Ø im Beton (mm) <input id="holeOpeningMm" type="number" min="20" max="600" step="0.1" placeholder="nur DN als Demo"></label>
+ <label class="field">Maßquelle / Planreferenz<input id="holeDimensionSource" maxlength="240" placeholder="Dokument + Seite oder Aufmaß"></label>
+ <label class="field">Prüfstatus<select id="holeDimensionStatus"><option value="unverified">Unbestätigt</option><option value="candidate">Kandidat</option><option value="reviewed">Mit Quelle geprüft</option></select></label>
+ <label class="field">Prüfperson (nur bei geprüft)<input id="holeDimensionReviewer" maxlength="240" placeholder="noch keine fachliche Abnahme"></label>
+ <button id="saveHoleDimensions" class="btn soft full" type="button">Rohrmaße getrennt speichern</button>
+ <p class="small">DN ist nicht automatisch der reale Innen-, Außen- oder Lochdurchmesser. Quelle, Prüfer und physisches Maß werden für „geprüft“ verlangt.</p>
+</div>
+<div class="dim-editor" role="group" aria-label="Vorschläge aus beschriftetem PDF-Plantext">
+ <h3>Planbeschriftung auswerten (lokal)</h3>
+ <p class="small">Beschrifteten PDF-Text einfügen oder als TXT laden. Das ist **keine** automatische OCR/Binär-PDF-Erkennung.</p>
+ <input id="planTextFile" type="file" accept=".txt,text/plain">
+ <label class="field">Quelle / Dateiname<input id="planDimensionSource" maxlength="240" placeholder="Planseite / Plandatei"></label>
+ <label class="field">Text der Rohrbeschriftungen<textarea id="planDimensionText" rows="4" placeholder="SW1/T1/LR05 DN 110&#10;SW2/T3/LR01 Ø 75 mm"></textarea></label>
+ <button id="parsePlanDimensions" class="btn soft full" type="button">DN/DM-Kandidaten erkennen</button>
+ <p class="small" id="planDimensionStatus" role="status">Noch kein Text analysiert.</p>
+ <label class="field">Erkannte Kandidaten<select id="planDimensionCandidates" class="selector"></select></label>
+ <button id="applyPlanDimension" class="btn tiny full" type="button">Kandidat dieser Öffnung zuordnen (unbestätigt)</button>
+</div>
+<div class="dim-editor" role="group" aria-label="Bildbasierte Öffnungsgrößen-Vorschläge">
+ <h3>Foto untersuchen (lokal, heuristisch)</h3>
+ <p class="small">Runde dunkle Öffnungen im Foto als Kandidaten markieren. Kein KI-Modell, keine automatische Rohrtyp-Garantie. Absolute Millimeter erst nach Referenzkalibrierung.</p>
+ <input id="photoDimensionFile" type="file" accept="image/*">
+ <canvas id="photoDimensionPreview" width="320" height="180" aria-label="Foto mit erkannten Kreiskandidaten"></canvas>
+ <p id="photoAnalysisStatus" class="small" role="status">Noch kein Bild untersucht.</p>
+ <label class="field">Runder Bildkandidat<select id="photoCandidates" class="selector"></select></label>
+ <label class="field">Bekannter Ø des ausgewählten Referenzkreises (mm)<input id="photoReferenceMm" type="number" min="20" max="600" placeholder="benötigt für mm"></label>
+ <button id="photoCalibrate" class="btn soft full" type="button">Mit Referenzkreis skalieren</button>
+ <button id="applyPhotoDimension" class="btn tiny full" type="button">Skalierten Kandidaten zuordnen (unbestätigt)</button>
+</div>
 <div style="margin-top:11px"><strong>Rohrbelegung</strong><div id="holeOccupancy" class="small" style="margin-top:6px">Noch kein Rohr ausgewählt.</div></div>
 <div class="row" style="margin-top:11px"><button id="applyHole" class="btn soft full">Position übernehmen</button><button id="copyHole" class="btn soft">Kopieren</button><button id="deleteHole" class="btn danger">Entfernen</button></div>
 </div>
@@ -516,9 +559,11 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
  <button id="toggleSceneInfo" class="btn tiny" type="button" aria-expanded="true" aria-label="Informationen einklappen">–</button>
 </div>
 <p id="exploreSceneText">Du siehst vier Wände mit runden Rohröffnungen. Die farbigen Linien sind Kabel.</p>
+<p id="exploreDimensionInfo" class="small" role="status">Öffnung anklicken: Rohrmaße und deren Herkunft prüfen.</p>
 <div class="explore-legend"><span><i class="swatch-wall"></i> Schachtwand</span><span><i class="swatch-hole"></i> Leerrohr</span><span><i class="swatch-wire"></i> Kabel</span></div>
 <div class="explore-views"><button id="explore2DToggle" class="btn tiny">▤ Wand als 2D-Plan sehen</button><button id="exploreCameraReset" class="btn tiny">⟳ Ansicht zurücksetzen</button></div>
  <button id="loadPdfV2" class="btn soft tiny full" type="button">📄 PDF-Referenz 13_U_028 öffnen</button>
+ <button id="demoCompactionToggle" class="btn tiny full" type="button" aria-pressed="true" hidden>↔ PDF-Originalpunkte ansehen</button>
  <div id="pdfWallSection" hidden>
   <div class="explore-demo-caption">Wandbild direkt mit PDF vergleichen</div>
   <div id="pdfWallViews" class="pdf-wall-views" role="group" aria-label="PDF-Wandansicht">
@@ -752,6 +797,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.2-beta.1"></script><script src="vendor/three.min.js?v=2.0.2-beta.1"></script><script src="editor2d.js?v=2.0.2-beta.1"></script><script src="components.js?v=2.0.2-beta.1"></script><script src="network.js?v=2.0.2-beta.1"></script><script src="quality.js?v=2.0.2-beta.1"></script><script src="reports.js?v=2.0.2-beta.1"></script><script src="reference-data.js?v=2.0.2-beta.1"></script><script src="examples.js?v=2.0.2-beta.1"></script><script src="pdf-geometry.js?v=2.0.2-beta.1"></script><script src="concrete-wall.js?v=2.0.2-beta.1"></script><script src="construction-v2.js?v=2.0.2-beta.1"></script><script src="pdf-visual.js?v=2.0.2-beta.1"></script><script src="app.js?v=2.0.2-beta.1"></script>
+<script src="recovery.js?v=2.0.3-beta.1"></script><script src="vendor/three.min.js?v=2.0.3-beta.1"></script><script src="editor2d.js?v=2.0.3-beta.1"></script><script src="components.js?v=2.0.3-beta.1"></script><script src="network.js?v=2.0.3-beta.1"></script><script src="quality.js?v=2.0.3-beta.1"></script><script src="reports.js?v=2.0.3-beta.1"></script><script src="reference-data.js?v=2.0.3-beta.1"></script><script src="examples.js?v=2.0.3-beta.1"></script><script src="pdf-geometry.js?v=2.0.3-beta.1"></script><script src="schematic-positions.js?v=2.0.3-beta.1"></script><script src="pipe-dimensions.js?v=2.0.3-beta.1"></script><script src="photo-candidates.js?v=2.0.3-beta.1"></script><script src="concrete-wall.js?v=2.0.3-beta.1"></script><script src="construction-v2.js?v=2.0.3-beta.1"></script><script src="pdf-visual.js?v=2.0.3-beta.1"></script><script src="app.js?v=2.0.3-beta.1"></script>
 </body>
 </html>
