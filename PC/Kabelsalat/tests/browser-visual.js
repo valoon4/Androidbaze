@@ -122,6 +122,33 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('#pdfVisualPanel [data-pdf-wall="SW1"]').click();
  assert.equal(await page.locator('#pdfVisualCanvas [data-pipe]').count(),29);
  await page.screenshot({path:path.join(out,'sw1-pdf-reference.png'),fullPage:true});
+ // KAB-0884: deliberately synthetic mixed-bore fixture, NEVER treated as real shaft dimensions.
+ // Screenshot is generated after all original reference checks to avoid interfering with 91-pipe validation.
+ if(ready){
+  const originalRaw=await page.evaluate(()=>{
+   const key='eugi.schachtwand.3d.v1',raw=localStorage.getItem(key);
+   if(!raw)return null;
+   const project=JSON.parse(raw),holes=project.walls.find(w=>w.id==='SW1')?.holes||[];
+   if(holes.length<3)return null;
+   [60,110,116].forEach((diameter,i)=>{
+    holes[i].dimensionSpec={nominalMm:diameter,openingMm:diameter,
+     status:'candidate',method:'manual',source:'synthetischer KAB-0884-Test; nicht reale Rohrmaße'};
+   });
+   project.name='TEST: Betonblock mit Ø 60 / 110 / 116 (nur Testwerte)';
+   localStorage.setItem(key,JSON.stringify(project));
+   return raw;
+  });
+  assert.ok(originalRaw,'Original project missing when preparing mixed-bore test fixture');
+  await page.reload({waitUntil:'load'});
+  await page.waitForFunction(()=>document.body.classList.contains('app-ready'),{timeout:30000});
+  const diameters=await page.evaluate(()=>JSON.parse(
+   localStorage.getItem('eugi.schachtwand.3d.v1')).walls.find(w=>w.id==='SW1').holes
+   .slice(0,3).map(h=>h.dimensionSpec.openingMm));
+  assert.deepEqual(diameters,[60,110,116],'Synthetic bore sizes not kept through project reload');
+  await page.screenshot({path:path.join(out,'synthetic-concrete-60-110-116.png'),fullPage:true});
+  await page.evaluate(raw=>localStorage.setItem('eugi.schachtwand.3d.v1',raw),originalRaw);
+  console.log('KAB-0884 VISUAL: synthetic 60/110/116 mm bore screenshot captured; original source project restored.');
+ }
  await browser.close();
  if(ready)assert.deepEqual(errors,[],'Browser runtime must not throw errors');
  console.log('VISUAL QA: 91 displayed PDF pipes, 4 walls and SW1 detail; WebGL initialized='+ready);
