@@ -105,7 +105,7 @@ function auditWallOpenings(project,projector=null){
  const pdf=project.sourceInfo?.sourceVersion?.startsWith('PDF V2')===true;
  const getHole=typeof projector==='function'?projector:h=>h;
  const result={walls:[],pairs:[],overlaps:[],edgeCrossings:[],invalidIds:new Set(),
-  minGapMm:null,minEdgeMm:null,provenance:pdf?
+  minGapMm:null,minEdgeMm:null,pairsTruncated:false,provenance:pdf?
    'Abstände aus schematischen PDF-Vektorkoordinaten und Modellmaßen; kein Aufmaß':
    'Abstände aus Modell-/HTML-Schemakoordinaten; kein Aufmaß'};
  for(const wall of project.walls){
@@ -137,7 +137,10 @@ function auditWallOpenings(project,projector=null){
     const gapMm=centerMm-a.radiusMm-b.radiusMm;
     const pair={wall:wall.id,a:a.id,b:b.id,dnA:a.dn,dnB:b.dn,
      diameterA:a.diameterMm,diameterB:b.diameterMm,centerMm,gapMm};
-    result.pairs.push(pair);
+    // A project may contain up to 2,400 holes. Never retain an unbounded
+    // quadratic list in the browser; min gaps and warning IDs stay exact.
+    if(result.pairs.length<16000)result.pairs.push(pair);
+    else result.pairsTruncated=true;
     summary.minGapMm=summary.minGapMm===null?gapMm:Math.min(summary.minGapMm,gapMm);
     result.minGapMm=result.minGapMm===null?gapMm:Math.min(result.minGapMm,gapMm);
     if(gapMm<0){
