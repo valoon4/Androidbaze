@@ -13,6 +13,22 @@ assert.ok(html.includes('&lt;script&gt;alert(1)&lt;/script&gt;'));
 assert.ok(!html.includes('<problem>'));
 const viewer=r.viewerHTML(p);
 assert.ok(viewer.includes('Offline-Projektviewer'));
+assert.ok(viewer.includes('Schematische Rohrpositionen – keine vermessenen Koordinaten'),
+ 'Offline viewer must clearly disclose unsurveyed positions');
+assert.ok(!viewer.includes('Leerrohrpositionen in mm. Darstellung nicht zur Ausführungsplanung geeignet.'),
+ 'Old misleading millimetre claim must disappear');
+assert.ok(viewer.includes("const pdf=p.sourceInfo?.sourceVersion?.startsWith('PDF V2')"),
+ 'PDF viewer must use actual PDF-wall span and not old HTML-wall orientation');
+assert.ok(html.includes('Modell- und PDF-Vektorkoordinaten sind keine vermessenen Rohr- oder Schachtpositionen.'),
+ 'Printed report must declare schematic geometry');
+assert.ok(html.includes('Projektwert, nicht vermessen'),'Print report must not imply measured shaft coordinates');
+const pdfProject=JSON.parse(JSON.stringify(p));pdfProject.network.shafts[0].snapshot.sourceInfo={
+ sourceVersion:'PDF V2 (nicht vermessen)',geometryStatus:'schematic'};
+pdfProject.network.shafts[0].snapshot.walls[0].holes[0].sourceU=.4;
+pdfProject.network.shafts[0].snapshot.walls[0].holes[0].sourceV=.5;
+const pdfViewer=r.viewerHTML(pdfProject);
+assert.ok(pdfViewer.includes('PDF V2 (nicht vermessen)')&&pdfViewer.includes('sourceU'),
+ 'Source data must remain available in offline export without declaring surveyed millimetres');
 assert.ok(viewer.includes('const DATA='));
 assert.ok(!viewer.includes('<img src=x onerror=alert(1)>'));
 assert.ok(viewer.includes('\\\\u003c')||viewer.includes('\\u003c'));
