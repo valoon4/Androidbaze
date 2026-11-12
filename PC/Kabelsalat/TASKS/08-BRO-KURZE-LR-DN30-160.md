@@ -1,0 +1,18 @@
+# Kabelsalat · Bros Nachtrag: kürzere LR-Darstellung und DN 30–160
+
+**Eingang:** Originalfeedback, 12.11.2026: „die müssen etwas kürzer ... verschiedene Leerrohre (LR) ... DN 30 bis DN 160 ... DN 50 entsprechend [kleiner], DN 110 entsprechend [größer]“. Vorrangiger Bro-Bedarf. Dies ist ein **Praxistest-Wunsch zur Ansicht** und kein neues verbindliches Vermessungs- oder Normdokument.
+
+**Technische Interpretation der Kürze:** Die einzige bisher stark herausstehende 3D-Komponente am unbelegten Ende sind die **360-mm-Kabelstutzen für Kabel mit nur einem bekannten Anschluss**. Diese werden auf 160 mm gekürzt. Betonwandtiefe und echtes LR-Längenmaß bleiben **unverändert**, denn sie sind nicht bestätigt. Der Bro prüft visuell, ob das seinem gemeinten „kürzer“ entspricht.
+
+## P0-18 · Kurze Vorschau, LR-DN und gemischte Betonlöcher (KAB-0885–KAB-0888)
+
+**Definition of Done:** DN30 ist sichtbar kleiner als DN50, DN50 sichtbar kleiner als DN110 und DN160 am größten; echte PDF-/HTML-Schachtkoordinaten, Kabelendpunkte und Quellen bleiben identisch; das gemischte Größenbeispiel ist klar **fiktiv**; keine DIN-, VDE- oder Ausführungsaussage.
+
+- [ ] **KAB-0885** – Freie Kabel-Endmarkierungen an nur einseitig bekannten Leerrohren in der 3D-Vorschau von 360 auf 160 mm verkürzen und ihre Stärke an kleine Rohröffnungen anpassen; echte Rohr-/Wandlängen nicht ohne Aufmaß ändern und Optik von Bro abnehmen lassen
+- [ ] **KAB-0886** – Benutzereditierbare LR-Nennweiten DN 30 bis DN 160 in 1-mm-Schritten bereitstellen und Lochkreise in 2D/3D proportional rendern, ohne vorhandene Alt- oder Quellwerte stillschweigend zu begrenzen
+- [ ] **KAB-0887** – Separaten ausdrücklich fiktiven Testschacht mit gemischten DN 30, 40, 50, 60, 63, 75, 90, 110, 116, 125, 140 und 160 für Bros visuellen Größenvergleich bereitstellen, ohne Original-Schächte zu ändern
+- [ ] **KAB-0888** – Automatisierte Vergleichs- und Browseransicht für DN 30/50/110/160, verkürzte nur schematische Endmarkierungen, JSON-Roundtrip und 91-Rohr-PDF-Quellintegrität anlegen
+
+**Verweise:** Bestehende KAB-0877 (Beton mit ausgeschnittenen Löchern), KAB-0878 (dunkle Betonoptik), KAB-0879 (Größen proportional), KAB-0880 (getrennte Innen-/Außen-/Lochmaße), KAB-0883 (Maßangaben mit Quellenstatus). Diese Tasks werden nicht erneut angelegt.
+
+**Unveränderliche Regel:** DN/Nennangabe ist nicht automatisch der reale Außen- oder Lochdurchmesser. `dimensionSpec.openingMm` kann die Anzeigegröße bei einer dokumentierten physikalischen Öffnung explizit ersetzen. Die bestehenden `13_T_021` / `13_U_028` Referenzen dürfen durch die neue fiktive Vergleichsprobe nicht verschoben werden.
