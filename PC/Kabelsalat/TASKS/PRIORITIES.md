@@ -61,3 +61,7 @@
 ## Fortschritt nach Bros 10er-Sprint · 12.11.2026
 
 [Ausführlicher Bericht](./SPRINT_2026-11-12_BRO_10.md) · **10 abgeschlossene, nachgewiesene Tasks / 874 offene / 884 gesamt**. Bisher wurden KAB-0880, KAB-0883, KAB-0832–0834, KAB-0037–0039, KAB-0049 und KAB-0050 abgeschlossen. **KAB-0877/0878/0879** warten trotz funktionierender Rendering-Implementierung auf Bros visuelles Feedback. **KAB-0881/0882** sind nur konservative PDF-Text- bzw. Foto-Kandidatenprototypen, noch keine vollständige KI- oder Dokumentenerkennung. **KAB-0884** benötigt die Endkontrolle des zusätzlichen realen Browser-Screenshots mit synthetischen 60/110/116-mm-Öffnungen.
+
+## Fortschritt nach zweitem Bro-Fokus-Sprint · 12.11.2026
+
+[Details: Koordinaten / Rohrabstände / rote Kollisionen](./SPRINT_2026-11-12_BRO_WALL_10.md) · **19 Tasks abgeschlossen / 865 offen / 884 gesamt**. Für KAB-0019–0023 sind die vier korrekten PDF-V2-Schachtwände samt Weltnormalen, Innenkamera, rechtshändiger Achsdefinition und inverser 2D-/3D-Abbildung anhand der bestehenden Quellen getestet. KAB-0044–0047 berechnen korrekte schematische Leerräume und Wandrandabstände für die Sonder-DN. KAB-0048 ist im 2D-/3D-Renderer implementiert, bleibt bis zum realen visuellen Nachweis offen. Der Gesamtplan bleibt auf Bros Praxiswünsche ausgerichtet: **Quellenmaßangaben dürfen nie automatisch als Vermessungswerte gelten.**
