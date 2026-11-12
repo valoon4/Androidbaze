@@ -1,6 +1,13 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.1-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.2-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.2-beta.1 · KAB-0877 – Betonblock mit runden Durchbrüchen
+
+- **Rendering-Korrektur:** Die zuvor vorhandene Extrusionsgeometrie mit kreisförmigen Löchern wird nun als **zusammenhängende, weitgehend deckende Betonwand** mit getrennt schattierten Durchbruch-Innenflächen dargestellt. Die bisher optisch dominierenden 20-cm-Metallhülsen und aufgesetzten Randkragen sind in der PDF-V2-Ansicht entfernt.
+- **Keine Referenzdatenänderung:** Alle Schachtwand-IDs, Rohranzahlen, Endpunkte, DN, Koordinaten und Belegungen bleiben unverändert. `13_T_021`, `13_U_028` (HTML) und die 91-Rohr-PDF-V2-Demo werden in neuen Regressionstests geprüft.
+- **Weiterhin offen:** KAB-0878 (finale Betonfarbe/Textur nach Bros Geschmack), KAB-0879–0883 (gemischte reale Größen und geprüfte Erkennung), KAB-0832 (Trennung der 62-%-Demo von fachlichen Rohrpositionen). Die aktuelle Rendering-Demo ist **nicht** maßhaltig oder fachlich abgenommen.
+- **Abnahme:** [GitHub Issue #70](https://github.com/valoon4/Androidbaze/issues/70) bleibt bis zur visuellen Rückmeldung von Bro offen.
 
 ## 2.0.1 – PDF-Wandbelegung und kompaktere Leerrohre
 
