@@ -44,7 +44,7 @@
 
 ## Atomare Mikroaufgaben · 13.11.2026
 
-**[Erster Block: 42 konkrete Schritte à 2–10 Minuten](./ATOMIC_TASKS.md)**, unter bestehenden KAB-IDs und mit einem eindeutigen Fertig-Kriterium pro Schritt. 888 Parent-Tickets bleiben erhalten und werden **nicht** mit Unteraufgaben doppelt gezählt. Die übrigen offenen Tickets werden beim Bearbeiten quellen- und codebezogen zerlegt, statt tausende bedeutungslose Platzhalter zu erzeugen.
+**[Vollständige atomare Abarbeitung: 13.012 Mikro-Tasks in sieben Wellen](./ATOMIC_TASKS.md)** für **alle 869 offenen Parent-Tasks**, jeweils 2–10 Minuten Zielaufwand und ein eigenes Fertig-Kriterium. Die 19 bereits erledigten Parent-Tickets werden nicht neu gezählt. **888 kanonische Parent-IDs bleiben stabil**; 13.012 Mikro-IDs sind untergeordnet. [Erledigung mit Datum und Nachweis](./ATOMIC/COMPLETED.csv) bleibt auch nach Neu-Generierung erhalten. Jede Quellen-/Bro-/Fachfreigabe bleibt separat blockiert, bis wirklich vorliegend.
 
 ## Aufwand je offenem Task · 13.11.2026
 
