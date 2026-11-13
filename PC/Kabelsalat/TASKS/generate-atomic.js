@@ -51,6 +51,21 @@ function readTasks(read){
  assert.equal(result.size,888,'erwartete 888 kanonische Parent-IDs');
  return result;
 }
+function completedMicro(read){
+ const rows=parseCSV(read('ATOMIC/COMPLETED.csv'),';');
+ assert.deepEqual(rows.shift(),['Mikro-ID','Abgeschlossen-am','Nachweis']);
+ const completed=new Map();
+ for(const row of rows){
+  assert.equal(row.length,3,'Falsche Abschluss-Spaltenzahl');
+  const [id,date,proof]=row;
+  assert.match(id,/^KAB-\d{4}\/M\d{2,}$/,'Ungültige Mikro-ID');
+  assert.match(date,/^\d{4}-\d{2}-\d{2}$/,'Fehlendes Abschlussdatum');
+  assert.ok(proof.length>=12,'Abschluss ohne konkreten Nachweis: '+id);
+  assert.ok(!completed.has(id),'Doppelt abgeschlossener Schritt: '+id);
+  completed.set(id,{date,proof});
+ }
+ return completed;
+}
 function seedMicro(read){
  const seed=new Map();
  const text=read('ATOMIC/PILOT_ORIGINAL.md');
@@ -560,11 +575,11 @@ function newSteps(t){
  return {type,file,steps};
 }
 function generate(read){
- const tasks=readTasks(read),pilot=seedMicro(read);
+ const tasks=readTasks(read),pilot=seedMicro(read),completed=completedMicro(read);
  const rows=parseCSV(read('PRIORITY_ORDER.csv'));
  assert.equal(rows.length,889,'Rangliste muss exakt 888 Eltern-Tasks enthalten');
  const stage={};for(let k=0;k<=6;k++)stage['S'+k]={parents:[],count:0,mins:0,md:[],csv:[]};
- const allIds=new Set(),seenParents=new Set();
+ const allIds=new Set(),seenParents=new Set();let completedCurrent=0;
  for(const row of rows.slice(1)){
   assert.equal(row.length,7,'falsches Priority-CSV-Format');
   const [rank,id,wave,section,need,title,file]=row;
@@ -600,11 +615,12 @@ function generate(read){
    assert.ok(step.min>=2&&step.min<=10,'Mikrostep über 10 Minuten: '+microId);
    assert.ok(step.action.length>=12&&step.result.length>=10,
     'Triviale/fehlende Handlung oder Abnahme: '+microId);
-   const item='- [ ] **'+microId+'** · **'+step.min+' Min.** – '+
+   const done=completed.has(microId);if(done)completedCurrent++;
+   const item='- ['+(done?'x':' ')+'] **'+microId+'** · **'+step.min+' Min.** – '+
     step.action+' **Fertig, wenn:** '+step.result;
    st.md.push(item);
    st.csv.push([rank,id,microId,wave,t.epic,
-    step.action,step.result,step.min,'offen',need,t.file].map(quote).join(';'));
+    step.action,step.result,step.min,done?'erledigt':'offen',need,t.file].map(quote).join(';'));
    st.count++;st.mins+=step.min;
   }
   st.md.push('');
@@ -637,7 +653,7 @@ function generate(read){
   '# Kabelsalat · alle offenen Tasks atomar zerlegt',
   '',
   '**Vollständig:** '+parentTotal+' von '+parentTotal+' offenen Parent-Tickets auf '+microTotal+
-   ' einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt.',
+   ' einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt. **'+completedCurrent+' abgeschlossen**, nur mit Nachweis.',
   '**Kanonischer Gesamtstand:** 888 Parent-Tickets, 19 erledigt, 869 offen. Hier sind **keine abgeschlossenen Eltern-Tickets** nochmals aufgeführt.',
   '',
   '| Priorität | Offene Parents | Mikro-Tasks | Nachschlagen | CSV |',
@@ -650,7 +666,7 @@ function generate(read){
   '',
   '- **ID-Schema:** KAB-XXXX bleibt das Feature-/Prüf-Ticket. KAB-XXXX/M01 bis Mnn sind die atomaren Schritte, ohne Parent-IDs zu ersetzen oder bei der 888er-Zählung mitzurechnen.',
   '- **Eine einzelne Handlung + überprüfbares Fertig-Kriterium**; 2–10 Minuten sind eine Planungs-Zielgröße für meine aktive Arbeit, keine Zusage. Wenn der Schritt real größer wird, noch vor Umsetzung weiter teilen.',
-  '- **Schrittstatus:** Die generierten Mikroschritte stehen zunächst alle auf offen. Bereits bestehende Funktionalität ist kein Abnahmenachweis; Test/Code/Commit separat prüfen.',
+  '- **Schrittstatus:** Offene/erledigte Schritte werden allein aus [ATOMIC/COMPLETED.csv](./ATOMIC/COMPLETED.csv) übernommen. Einträge nur mit Datum und Test-/Commitbeleg; direktes Ändern generierter Checkboxen wird beim Neuaufbau überschrieben.',
   '- **Externes:** Warten auf Bro, originale PDFs/XLSX, Hersteller oder Brandschutz-Fachentscheidung ist keine 5-Minuten-Arbeit. Solche Punkte bleiben blockiert, bis Daten vorliegen.',
   '- **Sicherheit:** Keine echten Durchmesser aus unvermessenen Bildern erfinden; DN, Innen-, Außen- und Lochdurchmesser getrennt halten. Demo verändert keine bestätigten Rohrmittelpunkte.',
   '- **Mikro-Aufwände nicht summieren, um Liefertermine zu versprechen.** Die alte grobe Parent-Schätzung wurde nicht proportional verteilt; Integration/Unsicherheit muss nach Durchführung real neu bewertet werden.',
@@ -665,7 +681,7 @@ function generate(read){
   ''
  ].join('\n');
  output['ATOMIC_TASKS.md']=index;
- return {output,summary,parentTotal,microTotal,seedTotal:42};
+ return {output,summary,parentTotal,microTotal,completedCurrent,seedTotal:42};
 }
 function main(){
  const root=__dirname,read=name=>fs.readFileSync(path.join(root,name),'utf8');
