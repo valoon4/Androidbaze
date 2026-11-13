@@ -1,6 +1,6 @@
 # Kabelsalat · alle offenen Tasks atomar zerlegt
 
-**Vollständig:** 869 von 869 offenen Parent-Tickets auf 13012 einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt.
+**Vollständig:** 869 von 869 offenen Parent-Tickets auf 13012 einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt. **0 abgeschlossen**, nur mit Nachweis.
 **Kanonischer Gesamtstand:** 888 Parent-Tickets, 19 erledigt, 869 offen. Hier sind **keine abgeschlossenen Eltern-Tickets** nochmals aufgeführt.
 
 | Priorität | Offene Parents | Mikro-Tasks | Nachschlagen | CSV |
@@ -18,7 +18,7 @@
 
 - **ID-Schema:** KAB-XXXX bleibt das Feature-/Prüf-Ticket. KAB-XXXX/M01 bis Mnn sind die atomaren Schritte, ohne Parent-IDs zu ersetzen oder bei der 888er-Zählung mitzurechnen.
 - **Eine einzelne Handlung + überprüfbares Fertig-Kriterium**; 2–10 Minuten sind eine Planungs-Zielgröße für meine aktive Arbeit, keine Zusage. Wenn der Schritt real größer wird, noch vor Umsetzung weiter teilen.
-- **Schrittstatus:** Die generierten Mikroschritte stehen zunächst alle auf offen. Bereits bestehende Funktionalität ist kein Abnahmenachweis; Test/Code/Commit separat prüfen.
+- **Schrittstatus:** Offene/erledigte Schritte werden allein aus [ATOMIC/COMPLETED.csv](./ATOMIC/COMPLETED.csv) übernommen. Einträge nur mit Datum und Test-/Commitbeleg; direktes Ändern generierter Checkboxen wird beim Neuaufbau überschrieben.
 - **Externes:** Warten auf Bro, originale PDFs/XLSX, Hersteller oder Brandschutz-Fachentscheidung ist keine 5-Minuten-Arbeit. Solche Punkte bleiben blockiert, bis Daten vorliegen.
 - **Sicherheit:** Keine echten Durchmesser aus unvermessenen Bildern erfinden; DN, Innen-, Außen- und Lochdurchmesser getrennt halten. Demo verändert keine bestätigten Rohrmittelpunkte.
 - **Mikro-Aufwände nicht summieren, um Liefertermine zu versprechen.** Die alte grobe Parent-Schätzung wurde nicht proportional verteilt; Integration/Unsicherheit muss nach Durchführung real neu bewertet werden.
