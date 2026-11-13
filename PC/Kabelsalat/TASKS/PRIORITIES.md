@@ -2,6 +2,8 @@
 
 **Entscheidung:** Priorität richtet sich ab jetzt nach Bros tatsächlicher praktischer Nutzung, vor allem den **jüngsten** Beanstandungen (Betonblock zu hell / Rohröffnungen wirken künstlich / Größen 60, 110, 116 und automatische Rohrmaß-Erkennung). Die alte KAB-ID ist eine **dauerhafte Identität**, **nicht** mehr die Abarbeitungsreihenfolge.
 
+**Vollständig atomar:** [Alle 869 offenen Parent-Tasks in 13.012 überprüfbare Mikro-Tasks zerlegt](./ATOMIC_TASKS.md) · [S0](./ATOMIC/S0.md) · [S1](./ATOMIC/S1.md) · [S2](./ATOMIC/S2.md) · [S3](./ATOMIC/S3.md) · [S4](./ATOMIC/S4.md) · [S5](./ATOMIC/S5.md) · [S6](./ATOMIC/S6.md). **Fertigkeitskriterium pro Schritt und 2–10 Minuten Zielaufwand**, keine Lieferzusage. Original-Pilot mit 42 Untertasks ist ohne ID-Verlust integriert.
+
 **Zusätzlich:** [KI-Zeitbedarf für alle aktuell 869 offenen Tasks](./TASK_ESTIMATES.csv) · [Aufwand nach Prioritätswelle und Annahmen](./TASK_ESTIMATES.md). Es handelt sich um **grobe aktive ChatGPT-Arbeitszeit pro Task**, keine Zusage zu Lieferung oder externen Prüffristen.
 
 **Vollständige globale Rangliste aller 888 Aufgaben:** [PRIORITY_ORDER.csv](./PRIORITY_ORDER.csv) (sortiert nach `Rang`, jeder Task genau einmal; sieben priorisierte Arbeitswellen S0–S6). **Live-Fortschritt + nächste offene Aufgaben:** `node TASKS/check-priorities.js --next=20` aus `PC/Kabelsalat/`. Die Checkboxen und Quellbeschreibungen bleiben in den acht einzelnen Backlogdateien kanonisch.
