@@ -52,3 +52,7 @@ Die neue Darstellung der zusammenhängenden Betonwand mit durchgängigen ausgesc
 | Offen | Bros visueller Vergleich, reale Hersteller-/Messwerte und Fachfreigabe. DN gilt nur als nomineller Zeichenwert, nicht als geprüftes Lochmaß. |
 
 **Quellenbegriffe:** Die beispielhaften Größen 60/110/116 wurden am 11.11.2026 in Bros Feedback *als Beispiele* genannt. `dn`, `dimensionSpec.innerMm`, `outerMm`, `openingMm` und `candidateMm` bleiben getrennt. Dieses Update verändert weder Rohr-IDs/Positionen noch Bestandsdaten. Es ist kein Beleg einer bereits durchgeführten neuen Browserprüfung.
+
+## Offener Bro-Review · Testversion 2.0.7-beta.1 · 14.11.2026
+
+**KAB-0878: blockiert auf Bros Sichtentscheid.** Prüffrage: „Ist der Beton dunkel und dezent genug, auch in der 3D-Tages-/Nachtansicht, oder muss die Farbe angepasst werden?“ **Status:** keine Antwort/Freigabe vorhanden. Prüfstelle: [visueller Chromium-Workflow](https://github.com/valoon4/Androidbaze/actions/workflows/kabelsalat-visual.yml); Testprojekt für Bro: [GitHub-Release](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest). Keine physikalischen Betonmaterial-/Aufmaßannahmen.
