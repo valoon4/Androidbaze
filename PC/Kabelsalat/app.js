@@ -211,6 +211,14 @@ function routeView(){
 function formatNetworkLength(mm){return mm===null?'–':(mm/1000).toLocaleString('de-DE',{maximumFractionDigits:1})+' m (Modell)';}
 function renderNetworkPath(){
  const net=project.network,ids=net.shafts.map(s=>s.id),start=$('netPlannerFrom'),end=$('netPlannerTo');
+ try{
+  const t=routePlanner.topology(net);
+  $('netTopologyStatus').textContent=t.shaftCount+' Schächte · '+t.linkCount+' Links · '+t.componentCount+
+   ' Netzkomponente(n)'+(t.isolated.length?' · isoliert: '+t.isolated.join(', '):'')+
+   (t.hasCycles?' · enthält mindestens einen Zyklus':'')+
+   (t.warnings.length?' · ⚠ '+t.warnings.join('; '):'')+
+   '. Physische Kabelverbindung nicht geprüft.';
+ }catch(e){$('netTopologyStatus').textContent='⚠ Ungültige Netzdaten: '+e.message;}
  const oldA=start.value,oldB=end.value,opts=net.shafts.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.id)+' · '+esc(s.name)+'</option>').join('');
  start.innerHTML=opts;end.innerHTML=opts;
  start.value=ids.includes(oldA)?oldA:project.activeShaftId;
@@ -913,6 +921,15 @@ function renderNetworkUI(){
   $('netTraceStatus').textContent=problems.length?'⚠ Noch nicht durchgehend:\n'+problems.join('\n'):
    '✓ Alle Kabel-IDs vorhanden und alle Schachtübergänge im Netz verbunden. Kein Nachweis der realen Kabelführung!';
   $('netTraceStatus').style.background=problems.length?'#fff1e7':'#edf8f1';
+  // Add explicit model-only length and missing-edge provenance for existing routes.
+  try{
+   const summary=routePlanner.compareRoute(net,route);
+   $('netTraceStatus').textContent+='\nModell-X/Z-Linklängen: '+formatNetworkLength(summary.modelDistanceMm)+
+    (summary.status==='incomplete'?' (unvollständiger Teilwert)':'')+
+    (summary.warnings.length?'\n⚠ '+summary.warnings.join('\n'):'')+
+    '\nKeine verifizierte bauliche oder durchgängige Kabeltrasse.';
+  }catch(e){$('netTraceStatus').textContent+='\n⚠ Netz-Wegprüfung: '+e.message;}
+
  }
  if(!net.shafts.some(s=>s.id===netSegmentShaftId))netSegmentShaftId=project.activeShaftId;
  $('netSegmentShaft').value=netSegmentShaftId;
