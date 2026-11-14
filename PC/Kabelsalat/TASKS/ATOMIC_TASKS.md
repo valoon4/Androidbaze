@@ -1,6 +1,6 @@
 # Kabelsalat · alle offenen Tasks atomar zerlegt
 
-**Vollständig:** 869 von 869 offenen Parent-Tickets auf 13012 einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt. **80 abgeschlossen**, nur mit Nachweis.
+**Vollständig:** 869 von 869 offenen Parent-Tickets auf 13012 einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt. **130 abgeschlossen**, nur mit Nachweis.
 **Kanonischer Gesamtstand:** 888 Parent-Tickets, 19 erledigt, 869 offen. Hier sind **keine abgeschlossenen Eltern-Tickets** nochmals aufgeführt.
 
 | Priorität | Offene Parents | Mikro-Tasks | Nachschlagen | CSV |
