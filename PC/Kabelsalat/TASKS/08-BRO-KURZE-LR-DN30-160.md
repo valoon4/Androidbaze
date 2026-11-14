@@ -28,3 +28,11 @@ Bro: „ja bruder sieht schon besser aus aber diese lr die da drin sind wieso si
 - **KAB-0887:** [Tests mit 12 Demo-Nennweiten, fehlender Quelle und zweiter Fixture](../tests/sprint-30-2026-11-14.test.js) ergänzen den bestehenden [DN-Vergleichstest](../tests/bro-dn-range.test.js). Die ausdrücklich fiktive Demo und die PDF-V2-Referenz bleiben getrennt.
 - **KAB-0886/0888:** Größenrelation DN 50 zu DN 110 und unveränderte 91 PDF-Referenzöffnungen sind als Unit-Assertions hinterlegt. Das ist **keine** Browser-Sichtabnahme.
 - **Noch offen:** Bros Prüfung der Optik, 2D-/3D-Sichtvergleich, physikalische Öffnungsmaße, ein möglicher Referenzvergleich anhand unabhängiger Originalunterlagen. Kein Eltern-Ticket hiermit automatisch abgeschlossen.
+
+## Testversion 2.0.7-beta.1 · 14.11.2026
+
+**KAB-0888 – größerer Browser-/3D-Arbeitsschritt:** [Echter Chromium-Test mit DN30/50/110/160, 2D/3D, Kabel-/LR-Ansicht, Profi-Editor und JSON-Wiederherstellung](../tests/browser-visual.js). Der Test schreibt separate **fiktive** Vergleichs-Screenshots in das GitHub-Actions-Artefakt `Kabelsalat-1.9.2-visuelle-Pruefung` und stellt danach die 91-LR-PDF-V2-Referenz wieder her. [Visual-Workflow](https://github.com/valoon4/Androidbaze/actions/workflows/kabelsalat-visual.yml).
+
+**Abnahmefrage für Bro (Issue [#72](https://github.com/valoon4/Androidbaze/issues/72)):** Sind die vermeintlich langen „LR“ in der **Basic-Schachtansicht** jetzt korrekt verschwunden, sobald lange **Kabelwege** in die separate Kabelansicht verschoben werden? Oder meinst du echte Rohrlängen **innerhalb der Betonwand**? Letztere sind ohne Originalmaße weiterhin nicht verändert.
+
+**Noch offen:** Fachliche/visuelle Freigabe von Bro, Hersteller-/Originalmaße und exakte PDF-Binärmaß-Erkennung. Der Nachweis einer realen CI-Browserausführung zählt erst bei einem erfolgreichen Workflow.
