@@ -196,7 +196,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   // Distinguish actual cable route stage from hollow LR-only stage.
   assert.match(await page.locator('#exploreSceneText').innerText(),/LR = runde Öffnungen/);
   await page.locator('#questCable').click();
-  assert.match(await page.locator('#exploreSceneText').innerText(),/Linien zeigen schematische Kabelwege|KABEL, nicht LR/);
+  assert.match(await page.locator('#exploreSceneText').innerText(),/Der kräftige farbige Weg gehört|Linien zeigen schematische Kabelwege|KABEL, nicht LR/);
   await page.screenshot({path:path.join(out,'synthetic-dn-cable-stage.png'),fullPage:true});
   await page.locator('#questShaft').click();
   // Expert mode must keep DN editing accessible without editing imported PDF sources.
