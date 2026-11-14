@@ -7,6 +7,15 @@ for(const file of ['schematic-positions.js','spacing-adjust.js','pipe-dimensions
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 const version=require('../package.json').version;
 assert.ok(html.includes('Kabelsalat'), 'UI must display Kabelsalat brand');
+// A previous release displayed v2.0.5 even while the package and actual assets were newer.
+// Stop every future GitHub Pages/EXE release if the user-visible header lies.
+assert.ok(html.includes('<meta name="kabelsalat-version" content="'+version+'">'),
+ 'HTML version meta must match package version');
+const visibleVersion=html.match(/<span id="visibleAppVersion"[^>]*>v([^<]+?) ·/);
+assert.ok(visibleVersion, 'User-visible version label must exist');
+assert.equal(visibleVersion[1],version,
+ 'Displayed version in the application header must match package.json; do not ship stale labels');
+assert.ok(!html.includes('v2.0.5 Beta'), 'Old hardcoded release label must not be published');
 assert.ok(html.includes('src="construction-v2.js?v='+version+'"'),
  'V2.0 geometry module must load before the 3D editor');
 assert.ok(html.includes('id="enableEditing"')&&html.includes('body:not(.explore-mode) #enableEditing'),
