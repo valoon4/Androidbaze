@@ -4,6 +4,8 @@ const $=id=>document.getElementById(id),STORAGE='eugi.schachtwand.3d.v1';
 const components=globalThis.KabelsalatComponents;
 if(!components)throw Error('Kabelsalat-Komponentenmodul fehlt');
 const networkModel=globalThis.KabelsalatNetwork;
+const routePlanner=globalThis.KabelsalatRoutePlanner;
+if(!routePlanner)throw Error('Kabelsalat-Netzwegfinder fehlt');
 if(!networkModel)throw Error('Kabelsalat-Netzmodul fehlt');
 const qualityModel=globalThis.KabelsalatQuality,reportModel=globalThis.KabelsalatReports;
 if(!qualityModel||!reportModel)throw Error('Kabelsalat-Prüf- oder Berichtmodul fehlt');
@@ -200,6 +202,41 @@ document.body.classList.toggle('explore-mode',exploreMode);
 document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
 
 const undo=[],redo=[];
+let networkPathPreview=null;
+function clearNetworkPath(){networkPathPreview=null;}
+function routeView(){
+ return networkPathPreview?.selected===-1?networkPathPreview?.primary:
+  networkPathPreview?.alternatives?.[networkPathPreview.selected]||null;
+}
+function formatNetworkLength(mm){return mm===null?'–':(mm/1000).toLocaleString('de-DE',{maximumFractionDigits:1})+' m (Modell)';}
+function renderNetworkPath(){
+ const net=project.network,ids=net.shafts.map(s=>s.id),start=$('netPlannerFrom'),end=$('netPlannerTo');
+ const oldA=start.value,oldB=end.value,opts=net.shafts.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.id)+' · '+esc(s.name)+'</option>').join('');
+ start.innerHTML=opts;end.innerHTML=opts;
+ start.value=ids.includes(oldA)?oldA:project.activeShaftId;
+ end.value=ids.includes(oldB)?oldB:ids.find(x=>x!==start.value)||start.value;
+ $('netPlannerFind').disabled=ids.length<2;
+ const plan=networkPathPreview,shown=routeView();
+ $('netPlannerExport').disabled=!shown||shown.status!=='reachable';
+ $('netPlannerShow').disabled=!shown||shown.status!=='reachable';
+ if(!plan){
+  $('netPlannerSummary').textContent='Schächte auswählen und Weg suchen. Nur vorhandene Netzlinks zählen.';
+  $('netPlannerList').innerHTML='';return;
+ }
+ if(plan.primary.status!=='reachable'){
+  $('netPlannerSummary').textContent='⚠ Kein gespeicherter Netzweg zwischen '+plan.primary.from+' und '+plan.primary.to+'. Keine Verbindung hinzuerfunden.';
+  $('netPlannerList').innerHTML='';return;
+ }
+ $('netPlannerSummary').textContent='Schematische '+(plan.mode==='hops'?'Übergangs-':'Luftlinien-')+
+ 'Suche · '+(shown?.hops??0)+' Links · '+formatNetworkLength(shown?.distanceMm??null)+
+ ' · '+plan.topology.componentCount+' Netzkomponente(n). Keine realen Trassen-/Kabellängen!';
+ const options=[plan.primary,...plan.alternatives];
+ $('netPlannerList').innerHTML=options.map((v,i)=>
+  '<button class="trace-item" type="button" data-network-alternative="'+(i-1)+'"'+
+  ' aria-pressed="'+String((i-1)===plan.selected)+'" style="display:block;width:100%;text-align:left;border:1px solid '+((i-1)===plan.selected?'#167c75':'#b6cbd0')+';margin:4px 0">'+
+  '<b>'+ (i===0?'1 · Kürzester Vorschlag':(i+1)+' · Alternative')+'</b> · '+esc(formatNetworkLength(v.distanceMm))+
+  '<div class="small">'+v.shaftIds.map(esc).join(' → ')+'</div></button>').join('');
+}
 let spacingPlan=null;
 function resetSpacingPreview(){spacingPlan=null;$('spacingApply').disabled=true;}
 function compareSpacing(plan){
@@ -226,7 +263,7 @@ function persist(){
  catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}
 }
 function change(fn,label='Planung geändert'){
- resetSpacingPreview();
+ clearNetworkPath();resetSpacingPreview();
  undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;
  fn();syncActiveShaft();
  if(project.network){
@@ -236,7 +273,7 @@ function change(fn,label='Planung geändert'){
  }
  renderAll();persist();
 }
-function undoRedo(back){resetSpacingPreview();const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
+function undoRedo(back){clearNetworkPath();resetSpacingPreview();const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;
  if(!plate())panelKey='OLA-floor';
  if(!project.supports.some(s=>s.id===supportId))supportId=project.supports[0]?.id||null;
@@ -888,6 +925,7 @@ function renderNetworkUI(){
  $('netPopSegment').disabled=!route||!route.steps.length;
  $('netMapSummary').textContent=net.shafts.length+' Schächte · '+net.links.length+
  ' Verbindungen · '+net.routes.length+' Netz-Kabelwege'+(route?' · '+route.name:'');
+ renderNetworkPath();
 }
 function networkProjection(){
  const r=networkCanvas.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height);
@@ -915,6 +953,18 @@ function drawNetwork(){
   const a=byID(link.from),b=byID(link.to);if(!a||!b)continue;
   const p=point(a),q=point(b);
   ctx.strokeStyle='#92a5af';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();
+ }
+ // Bright outline of a READ-ONLY suggested graph path, never implied ducts.
+ const candidate=routeView();
+ if(candidate?.status==='reachable'){
+  ctx.save();ctx.strokeStyle='#16a085';ctx.lineWidth=8;ctx.setLineDash([10,5]);
+  for(let i=1;i<candidate.shaftIds.length;i++){
+   const a=byID(candidate.shaftIds[i-1]),b=byID(candidate.shaftIds[i]);
+   if(!a||!b)continue;
+   const p=point(a),q=point(b);
+   ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();
+  }
+  ctx.restore();
  }
  const route=selectedRoute();
  if(route){
@@ -1748,6 +1798,26 @@ $('netTraceList').addEventListener('click',e=>{
 });
 $('netShowTrace').addEventListener('click',()=>{
  if(!selectedRoute())return;setNetworkOpen(true);
+});
+$('netPlannerFind').addEventListener('click',()=>{
+ try{
+  syncActiveShaft(); // snapshots reflect existing edits, never change network link topology
+  const from=$('netPlannerFrom').value,to=$('netPlannerTo').value,mode=$('netPlannerMode').value;
+  const paths=routePlanner.alternatives(project.network,from,to,{mode,max:3});
+  networkPathPreview={...paths,mode,topology:routePlanner.topology(project.network),selected:-1};
+  renderNetworkPath();setNetworkOpen(true);
+ }catch(e){clearNetworkPath();renderNetworkPath();$('netPlannerSummary').textContent='⚠ '+e.message;}
+});
+$('netPlannerList').addEventListener('click',e=>{
+ const button=e.target.closest('[data-network-alternative]');if(!button||!networkPathPreview)return;
+ const num=Number(button.dataset.networkAlternative);
+ if(num!==-1&&(!Number.isInteger(num)||num<0||num>=networkPathPreview.alternatives.length))return;
+ networkPathPreview.selected=num;renderNetworkPath();drawNetwork();
+});
+$('netPlannerShow').addEventListener('click',()=>{if(routeView()?.status==='reachable')setNetworkOpen(true);});
+$('netPlannerExport').addEventListener('click',()=>{
+ const result=routeView();if(!result||result.status!=='reachable')return;
+ download(filename()+'-netzweg-schematisch.csv',routePlanner.csv(result),'text/csv;charset=utf-8');
 });
 $('netExportCSV').addEventListener('click',()=>{
  syncActiveShaft();
