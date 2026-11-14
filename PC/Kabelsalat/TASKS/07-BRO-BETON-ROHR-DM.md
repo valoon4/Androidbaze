@@ -40,3 +40,15 @@ Die neue Darstellung der zusammenhängenden Betonwand mit durchgängigen ausgesc
 - **KAB-0881:** Lokale Erkennung von DN/DM/Ø aus klar beschriftetem TXT-Plantext mit Manueller Prüfung – **keine automatische PDF-Binärverarbeitung/OCR/KI**, deshalb nicht vollständig erledigt.
 - **KAB-0882:** Offline-Kreiserkennung aus Foto mit relativer Größe oder ausdrücklich kalibriertem Referenzkreis; **nur Kandidaten, kein trainiertes KI-Modell und keine sichere Rohrtypklassifikation**. Task bleibt offen.
 - **KAB-0884:** Automatisierte 60/110/116-mm-Regression und Browser-Screenshot eines **ausdrücklich synthetischen Beispiels** ergänzt. Endabnahme erfolgt erst nach abgeschlossenem echten Chromium-Browserlauf. [Sprintbericht](./SPRINT_2026-11-12_BRO_10.md).
+
+## KAB-0879 · kompakter Quellen- und Geometrievermerk (14.11.2026)
+
+| Punkt | Nachweis |
+|---|---|
+| Soll | Öffnungen mit DN 60, 110 und 116 **schematisch proportional** darstellen, ohne echte Innen-/Außen-/Lochmaße zu behaupten. |
+| Code | [concrete-wall.js](../concrete-wall.js) → `build`: Kreisradius `r` pro Öffnung, `THREE.Path.absarc` und `ExtrudeGeometry` mit echten Durchbrüchen. |
+| Test | [tests/concrete-wall.test.js](../tests/concrete-wall.test.js): synthetische Öffnungen 60/110/116 mm und gesondertes `dimensionSpec.openingMm` als Lochmaß-Override. |
+| Originalschutz | Derselbe Test prüft unveränderte Quellenmodelle (HTML: 48/78 Öffnungen; PDF V2: 91) nach Geometrieerzeugung. |
+| Offen | Bros visueller Vergleich, reale Hersteller-/Messwerte und Fachfreigabe. DN gilt nur als nomineller Zeichenwert, nicht als geprüftes Lochmaß. |
+
+**Quellenbegriffe:** Die beispielhaften Größen 60/110/116 wurden am 11.11.2026 in Bros Feedback *als Beispiele* genannt. `dn`, `dimensionSpec.innerMm`, `outerMm`, `openingMm` und `candidateMm` bleiben getrennt. Dieses Update verändert weder Rohr-IDs/Positionen noch Bestandsdaten. Es ist kein Beleg einer bereits durchgeführten neuen Browserprüfung.
