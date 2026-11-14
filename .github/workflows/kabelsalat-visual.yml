@@ -48,6 +48,10 @@ jobs:
         working-directory: PC/Kabelsalat
         shell: bash
         run: node tests/browser-network-giant.js
+      - name: Globale XYZ-Routensegmente im echten Chromium pruefen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-world-route.js
       - name: PDF-Schacht in echtem Browser öffnen, abbilden und prüfen
         working-directory: PC/Kabelsalat
         shell: bash
