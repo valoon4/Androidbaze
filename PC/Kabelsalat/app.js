@@ -1826,10 +1826,14 @@ $('netTraceList').addEventListener('click',e=>{
 $('netShowTrace').addEventListener('click',()=>{
  if(!selectedRoute())return;setNetworkOpen(true);
 });
+for(const id of ['netPlannerFrom','netPlannerTo','netPlannerMode']){
+ $(id).addEventListener('change',()=>{clearNetworkPath();renderNetworkPath();drawNetwork();});
+}
 $('netPlannerFind').addEventListener('click',()=>{
  try{
   // Pure read-only search; no snapshot synchronization or project persistence.
   const from=$('netPlannerFrom').value,to=$('netPlannerTo').value,mode=$('netPlannerMode').value;
+  if(from===to)throw Error('Start und Ziel müssen zwei verschiedene Schächte sein');
   const paths=routePlanner.alternatives(project.network,from,to,{mode,max:3});
   networkPathPreview={...paths,mode,topology:routePlanner.topology(project.network),selected:-1};
   renderNetworkPath();setNetworkOpen(true);
