@@ -1821,7 +1821,7 @@ $('spacingPreview').addEventListener('click',()=>{
  try{
   if(exploreMode)throw Error('Zuerst Profi-Modus aktivieren');
   const gap=$('spacingGap').value,edge=$('spacingEdge').value;
-  if(!/^\\d+$/.test(gap)||!/^\\d+$/.test(edge))throw Error('Nur ganze, nichtnegative mm-Werte eingeben');
+  if(!/^\d+$/.test(gap)||!/^\d+$/.test(edge))throw Error('Nur ganze, nichtnegative mm-Werte eingeben');
   spacingPlan=spacingAdjust.plan(project,wallId,{gapMm:Number(gap),edgeMm:Number(edge)});
   $('spacingApply').disabled=spacingPlan.moved===0;
   compareSpacing(spacingPlan);
