@@ -74,7 +74,10 @@
   const clean=waypoints.length<=12&&waypoints.every(limitPoint);
   if(!clean)issues.push('Lokale Wegpunkte ungültig (nur 3D-Modell-mm erlaubt)');
   const local=first&&last&&clean?[first,...waypoints.map(p=>p.slice()),last]:[];
-  const world=local.map(p=>[round(p[0]+shaft.x),round(p[1]),round(p[2]+shaft.z)]);
+  // Only add an explicitly provided, finite vertical shaft offset. Old
+  // X/Z-only shafts keep local Y as local model height with no global datum.
+  const yKnown=typeof shaft.y==='number'&&Number.isInteger(shaft.y)&&Math.abs(shaft.y)<=100000000;
+  const world=local.map(p=>[round(p[0]+shaft.x),round(p[1]+(yKnown?shaft.y:0)),round(p[2]+shaft.z)]);
   let length=0;
   for(let j=1;j<world.length;j++)length+=distance(world[j-1],world[j]);
   return {
@@ -84,7 +87,9 @@
    localEndpointA:cable.a?{wall:cable.a.wall,hole:cable.a.hole}:null,
    localEndpointB:cable.b?{wall:cable.b.wall,hole:cable.b.hole}:null,
    modelPolylineMm:world.length?round(length):null,
-   pointSource:'local-shaft-XYZ+schematic-shaft-XZ',
+   pointSource:yKnown?'local-shaft-XYZ+explicit-shaft-XYZ':'local-shaft-XYZ+schematic-shaft-XZ',
+   verticalShaftOffsetMm:yKnown?shaft.y:null,
+   globalElevationReferenceKnown:false,
    sourceVersion:snap.sourceInfo?.sourceVersion||null,
    verified:false
   };
@@ -121,7 +126,10 @@
     'Lokale XYZ-Polylinien sind schematische Modellwerte, keine gemessenen Kabelwege.',
     'Querungen zwischen Schächten bleiben Lücken ohne nachgewiesene Rohre und Anschlussbelege.',
     'Luftlinien und unbekannte Übergänge sind NICHT in der lokalen Modelllänge enthalten.'
-   ],origin:'stored-shaft-snapshots',verified:false};
+   ],origin:'stored-shaft-snapshots',
+   coordinateReference:typeof net.coordinateReference==='string'&&net.coordinateReference.trim()?
+    net.coordinateReference.trim():null,
+   coordinateReferenceVerified:false,verified:false};
  }
  function safeCell(x){
   return '"'+String(x??'').replace(/^[=+\-@]/,c=>"'"+c).replaceAll('"','""')+'"';
