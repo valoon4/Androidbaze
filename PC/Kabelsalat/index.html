@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="kabelsalat-version" content="2.0.8-beta.1">
+<meta name="kabelsalat-version" content="2.0.9-beta.1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -422,6 +422,17 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <div class="row" style="margin-top:9px"><button id="netImportPositions" class="btn soft full">Koordinaten-CSV prüfen</button>
 <input id="netPositionsFile" type="file" accept=".csv,text/csv,text/plain" hidden></div>
 <div class="small" style="margin-top:8px">CSV: shaft_id;x_mm;z_mm. Ein Import zeigt zuerst eine Vorschau und muss bestätigt werden.</div>
+<div class="dim-editor" id="netPlanner" role="group" aria-label="Schematischen Netzweg finden">
+ <h3>🗺️ Netz-Wegfinder</h3>
+ <p class="small">Nur gespeicherte Schacht-Links · X/Z-Luftlinie, <b>keine reale Kabeltrasse</b>. Die Suche verändert keinerlei Projekt-/Kabeldaten.</p>
+ <label class="field">Von Schacht<select id="netPlannerFrom" class="selector"></select></label>
+ <label class="field">Nach Schacht<select id="netPlannerTo" class="selector"></select></label>
+ <label class="field">Vergleich<select id="netPlannerMode" class="selector"><option value="distance">Kürzeste Modell-Luftlinie</option><option value="hops">Wenigste Schachtübergänge</option></select></label>
+ <div class="row"><button type="button" id="netPlannerFind" class="btn soft full">Weg suchen</button><button type="button" id="netPlannerExport" class="btn tiny" disabled>↓ CSV</button></div>
+ <div id="netPlannerSummary" class="hint" role="status" aria-live="polite">Schächte auswählen und Weg suchen.</div>
+ <div id="netPlannerList" style="margin-top:8px"></div>
+ <button id="netPlannerShow" type="button" class="btn primary full" disabled style="margin-top:7px">◎ Vorschau in Netzkarte</button>
+</div>
 </section>
 <section class="section"><div class="eyebrow">Baugruppe</div><h2>Schachtwände</h2>
 <div id="wallList"></div><div id="collisionInfo" class="hint"></div>
@@ -806,6 +817,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.8-beta.1"></script><script src="vendor/three.min.js?v=2.0.8-beta.1"></script><script src="editor2d.js?v=2.0.8-beta.1"></script><script src="components.js?v=2.0.8-beta.1"></script><script src="network.js?v=2.0.8-beta.1"></script><script src="quality.js?v=2.0.8-beta.1"></script><script src="reports.js?v=2.0.8-beta.1"></script><script src="reference-data.js?v=2.0.8-beta.1"></script><script src="examples.js?v=2.0.8-beta.1"></script><script src="pdf-geometry.js?v=2.0.8-beta.1"></script><script src="schematic-positions.js?v=2.0.8-beta.1"></script><script src="spacing-adjust.js?v=2.0.8-beta.1"></script><script src="pipe-dimensions.js?v=2.0.8-beta.1"></script><script src="photo-candidates.js?v=2.0.8-beta.1"></script><script src="concrete-wall.js?v=2.0.8-beta.1"></script><script src="construction-v2.js?v=2.0.8-beta.1"></script><script src="pdf-visual.js?v=2.0.8-beta.1"></script><script src="app.js?v=2.0.8-beta.1"></script>
+<script src="recovery.js?v=2.0.9-beta.1"></script><script src="vendor/three.min.js?v=2.0.9-beta.1"></script><script src="editor2d.js?v=2.0.9-beta.1"></script><script src="components.js?v=2.0.9-beta.1"></script><script src="network.js?v=2.0.9-beta.1"></script><script src="network-route-planner.js?v=2.0.9-beta.1"></script><script src="quality.js?v=2.0.9-beta.1"></script><script src="reports.js?v=2.0.9-beta.1"></script><script src="reference-data.js?v=2.0.9-beta.1"></script><script src="examples.js?v=2.0.9-beta.1"></script><script src="pdf-geometry.js?v=2.0.9-beta.1"></script><script src="schematic-positions.js?v=2.0.9-beta.1"></script><script src="spacing-adjust.js?v=2.0.9-beta.1"></script><script src="pipe-dimensions.js?v=2.0.9-beta.1"></script><script src="photo-candidates.js?v=2.0.9-beta.1"></script><script src="concrete-wall.js?v=2.0.9-beta.1"></script><script src="construction-v2.js?v=2.0.9-beta.1"></script><script src="pdf-visual.js?v=2.0.9-beta.1"></script><script src="app.js?v=2.0.9-beta.1"></script>
 </body>
 </html>
