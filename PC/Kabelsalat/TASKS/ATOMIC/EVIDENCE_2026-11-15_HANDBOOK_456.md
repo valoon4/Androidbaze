@@ -2,7 +2,7 @@
 
 **Stand:** 15.11.2026. **Typ:** dokumentationsbezogene, quellengebundene Teilaufgaben; **nicht** 456 neue App-Features und **nicht** 41 endgültig fachlich abgenommene Eltern-Tickets. Jedes Kapitel benennt konkret vorhandene Code-/Quellfelder, einen reproduzierbaren Soll-/Ist-Fall und Grenzen. Kein erdachtes Originalmaß, keine erfundene AVL0116-Freigabe.
 
-**Technische Umsetzung/QA:** [Workflow-Auditor](../../audit-workflow.js) (888 lückenlose Parent-IDs, 13.012 Micro-IDs, Beleg-URLs, Epic-/Wellenberichte), [Workflow-Negativtests](../../../tests/audit-workflow.test.js), [Recovery-JSON-Schutz](../../../tests/recovery.test.js), [41-Kapitel/7-Feedback-Linkaudit](../../../tests/handbook.test.js).
+**Technische Umsetzung/QA:** [Workflow-Auditor](../audit-workflow.js) (888 lückenlose Parent-IDs, 13.012 Micro-IDs, Beleg-URLs, Epic-/Wellenberichte), [Workflow-Negativtests](../../tests/audit-workflow.test.js), [Recovery-JSON-Schutz](../../tests/recovery.test.js), [41-Kapitel/7-Feedback-Linkaudit](../../tests/handbook.test.js).
 
 **Automatisch geprüfter Stand:** [npm test / Windows-Run, Commit ebf5deed](https://github.com/valoon4/Androidbaze/actions/runs/43655018466), [GitHub-Pages-Run](https://github.com/valoon4/Androidbaze/actions/runs/43655018399). Die Checks laufen bei einer späteren Tracking-Änderung erneut. Eine andere noch laufende Visual-/APK-Pipeline ist **keine** angenommene Fachabnahme.
 
