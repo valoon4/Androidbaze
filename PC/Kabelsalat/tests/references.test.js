@@ -12,6 +12,7 @@ globalThis.KabelsalatConcreteWall=require('../concrete-wall.js');
 globalThis.KabelsalatPipeDimensions=require('../pipe-dimensions.js');
 globalThis.KabelsalatPhotoCandidates=require('../photo-candidates.js');
 globalThis.KabelsalatSchematicPositions=require('../schematic-positions.js');
+globalThis.KabelsalatSpacingAdjust=require('../spacing-adjust.js');
 globalThis.KabelsalatConstructionV2=require('../construction-v2.js');
 const app=fs.readFileSync(path.join(__dirname,'../app.js'),'utf8');
 const before=app.split('let project;')[0].replace(/^\(\(\) => \{\s*/,'');
