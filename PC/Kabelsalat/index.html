@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="kabelsalat-version" content="2.0.9-beta.1">
+<meta name="kabelsalat-version" content="2.0.10-beta.1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -653,6 +653,11 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <button id="netBackEditor" class="btn primary">↩ Zurück zum 3D-Schacht</button>
 </div>
 <div class="net-canvas-wrap"><canvas id="networkCanvas" aria-label="Interaktive Schachtnetzkarte"></canvas></div>
+<div id="worldRouteElevation" hidden class="dim-editor" aria-label="Schematischer Höhenverlauf je Kabelsegment">
+ <strong>XYZ-Höhenprofil · nur lokale Kabelsegmente</strong>
+ <div class="small">Lücken zwischen Schächten bleiben offen; Y-Werte sind Modellhöhen, keine Vermessungsdaten.</div>
+ <canvas id="worldRouteHeightCanvas" style="width:100%;height:180px;display:block" aria-label="Unverbundene Segmenthöhen in Modellmillimetern"></canvas>
+</div>
 <div class="net-map-foot">
 <span id="netMapSummary">Schachtnetz</span><span class="small">Klicken: Schacht wählen · Doppelklick: öffnen · Ziehen: verschieben · Mausrad: zoom</span>
 </div>
@@ -734,6 +739,13 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <button id="netPopSegment" class="btn danger">Letztes entfernen</button></div>
 <div id="netTraceList" style="margin-top:10px"></div>
 <div id="netTraceStatus" class="hint">Mindestens zwei Kabelsegmente und einen verbundenen Schachtweg festlegen.</div>
+<div class="dim-editor" id="worldRoutePanel" role="group" aria-label="Globale XYZ-Modellroute">
+ <h3>🧭 Globaler XYZ-Segmentvergleich</h3>
+ <p class="small"><b>Nur schematische lokale Kabelpunkte.</b> Ein Übergang zwischen Schächten ist ohne nachgewiesenen Durchbruch unbekannt. Keine automatische physische Kabelverbindung.</p>
+ <div class="row"><button id="worldRouteAnalyze" type="button" class="btn soft full">XYZ-Segmente berechnen</button><button id="worldRouteCsv" type="button" class="btn tiny" disabled>↓ XYZ-CSV</button></div>
+ <div id="worldRouteStatus" class="hint" role="status" aria-live="polite">Kabelweg auswählen und Segmente prüfen.</div>
+ <div id="worldRouteList" class="small" style="max-height:235px;overflow:auto;margin-top:7px"></div>
+</div>
 </div>
 <button id="netShowTrace" class="btn primary full" style="margin-top:11px">Verlauf im Netz anzeigen</button>
 </section>
@@ -818,6 +830,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.9-beta.1"></script><script src="vendor/three.min.js?v=2.0.9-beta.1"></script><script src="editor2d.js?v=2.0.9-beta.1"></script><script src="components.js?v=2.0.9-beta.1"></script><script src="network.js?v=2.0.9-beta.1"></script><script src="network-route-planner.js?v=2.0.9-beta.1"></script><script src="quality.js?v=2.0.9-beta.1"></script><script src="reports.js?v=2.0.9-beta.1"></script><script src="reference-data.js?v=2.0.9-beta.1"></script><script src="examples.js?v=2.0.9-beta.1"></script><script src="pdf-geometry.js?v=2.0.9-beta.1"></script><script src="schematic-positions.js?v=2.0.9-beta.1"></script><script src="spacing-adjust.js?v=2.0.9-beta.1"></script><script src="pipe-dimensions.js?v=2.0.9-beta.1"></script><script src="photo-candidates.js?v=2.0.9-beta.1"></script><script src="concrete-wall.js?v=2.0.9-beta.1"></script><script src="construction-v2.js?v=2.0.9-beta.1"></script><script src="pdf-visual.js?v=2.0.9-beta.1"></script><script src="app.js?v=2.0.9-beta.1"></script>
+<script src="recovery.js?v=2.0.10-beta.1"></script><script src="vendor/three.min.js?v=2.0.10-beta.1"></script><script src="editor2d.js?v=2.0.10-beta.1"></script><script src="components.js?v=2.0.10-beta.1"></script><script src="network.js?v=2.0.10-beta.1"></script><script src="network-route-planner.js?v=2.0.10-beta.1"></script><script src="network-world-route.js?v=2.0.10-beta.1"></script><script src="quality.js?v=2.0.10-beta.1"></script><script src="reports.js?v=2.0.10-beta.1"></script><script src="reference-data.js?v=2.0.10-beta.1"></script><script src="examples.js?v=2.0.10-beta.1"></script><script src="pdf-geometry.js?v=2.0.10-beta.1"></script><script src="schematic-positions.js?v=2.0.10-beta.1"></script><script src="spacing-adjust.js?v=2.0.10-beta.1"></script><script src="pipe-dimensions.js?v=2.0.10-beta.1"></script><script src="photo-candidates.js?v=2.0.10-beta.1"></script><script src="concrete-wall.js?v=2.0.10-beta.1"></script><script src="construction-v2.js?v=2.0.10-beta.1"></script><script src="pdf-visual.js?v=2.0.10-beta.1"></script><script src="app.js?v=2.0.10-beta.1"></script>
 </body>
 </html>
