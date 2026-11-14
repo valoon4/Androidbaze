@@ -44,6 +44,10 @@ jobs:
         working-directory: PC/Kabelsalat
         shell: bash
         run: node tests/browser-network-path.js
+      - name: 30-Schacht-Netz und echte Kabelunterbrechung in Chromium pruefen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-network-giant.js
       - name: PDF-Schacht in echtem Browser öffnen, abbilden und prüfen
         working-directory: PC/Kabelsalat
         shell: bash
