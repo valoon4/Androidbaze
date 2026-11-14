@@ -1,6 +1,17 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.7-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.8-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.8-beta.1 · Drei große Funktionen: Rohrabstände sicher planen · 14.11.2026
+
+**NEU im Profi-Modus → Schachtwände → Rohrabstände · Vorschau:** Ein expliziter mm-Regler für lichte Rohr–Rohr-Abstände und Wandränder (0–1000 mm), inklusive deterministischer 2D-Vorschau und erst nach zusätzlicher Bestätigung tatsächlicher Übernahme.
+
+- **KAB-0051 · Rückgängig/Wiederholen:** Jede Übernahme ist ein einzelner Projekt-Undo-Schritt; der ursprüngliche Schacht lässt sich wiederherstellen.
+- **KAB-0052 · Kabel-ID-Sicherheit:** Der Regler verschiebt ausschließlich normierte `u/v`-Lochkoordinaten derselben Wand; Rohr-IDs, Kabelenden, Kabelrouten, Materialien/DN und andere Wände bleiben erhalten. Vor Änderungen wird ein Positions-Snapshot geprüft.
+- **KAB-0053 · Vorher/Nachher:** Lichte Rohr–Rohr-Weite und kleinster Wandrandabstand werden numerisch verglichen. Eine gestrichelte violette Ghost-Zeichnung markiert die geplante Geometrie im vorhandenen 2D-Wandplan, **ohne** das aktuelle 3D-Projekt vorab zu verändern. Erst `Übernehmen` aktualisiert beide Ansichten.
+- **Sicherheitsgrenzen:** Automatische Umpositionierung **nur** bei fiktiven oder selbst erstellten Schachtprojekten **ohne** `sourceInfo`. Die ursprünglichen PDF-/HTML-Referenzen sind geschützt und können nicht unbemerkt optimiert werden. Nicht lösbare Ziele, doppelte Rohr-IDs, veraltete Vorschauen und ungültige mm-Werte werden abgewiesen.
+- **Keine Fachfreigabe:** Die Optimierung ist rein geometrisch/schematisch und garantiert weder reale Rohrabstände noch Brandschutz-/VDE-Konformität. Schachtmaße und Herstellermaße müssen vor baulicher Verwendung geprüft werden.
+- **QA:** [Geometrie-Unit-Test](./tests/spacing-adjust.test.js) und [echter Chromium-Integrationstest](./tests/browser-spacing.js). Beides muss in GitHub Actions grün sein, bevor die Eltern-Tickets als abgeschlossen gelten.
 
 ## 2.0.7-beta.1 · DN-Vergleich in echtem Browser · 14.11.2026
 
