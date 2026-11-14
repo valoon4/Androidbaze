@@ -36,6 +36,10 @@ jobs:
           mkdir -p /tmp/kabel-visual
           npm --prefix /tmp/kabel-visual install --no-audit --no-fund --no-save playwright-core@1.56.1
           echo "PLAYWRIGHT_CORE=/tmp/kabel-visual/node_modules/playwright-core" >> "$GITHUB_ENV"
+      - name: Rohrabstand-Vorschau mit echtem Chromium testen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-spacing.js
       - name: PDF-Schacht in echtem Browser öffnen, abbilden und prüfen
         working-directory: PC/Kabelsalat
         shell: bash
