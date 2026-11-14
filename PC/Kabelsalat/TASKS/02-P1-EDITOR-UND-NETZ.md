@@ -291,3 +291,12 @@
 **Nachweise:** [Implementierung, 320 unabhängige Graph-Fälle, 201 negative Kabelkontinuitätsprüfungen und Chromium-QA](../NETWORK_ROUTE_PLANNER.md). [Bro-Review und Testanleitung](https://github.com/valoon4/Androidbaze/issues/73). Download der [v2.0.9-beta.1](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest).
 
 **Verbindlich:** Kein Eltern-KAB-Ticket gilt allein wegen eines grünen Unit-Tests als fachlich abgenommen. Weitere Originalpläne, Herstellermaße und Bros visuelle Prüfung sind nötig. Dieses Feature ist eine *read-only graphische Planungshilfe*, keine automatisch bestätigte Rohrtrasse.
+
+
+## KAB-0375 · Globale XYZ-Segmentmontage (technischer Teil) · 14.11.2026
+
+**Technischer Fortschritt in v2.0.10-beta.1:** Globale XYZ-Punktliste aus lokalem Kabelmodell + gespeicherter Schacht-X/Z-Lage, korrekt getrennt nach PDF-V2-/Legacy-Wandachsen, mit lokalem Polygonzug, unterbrochenen Schachtübergängen, Fehlerdiagnosen und read-only CSV-/Browserdarstellung. [Technische Spezifikation](../NETWORK_WORLD_XYZ.md) · [Unit-Regressionen](../tests/network-world-route.test.js) · [Chromium-Regressionen](../tests/browser-world-route.js).
+
+**Weiterhin OFFEN:** KAB-0375 im engen Sinne eines echten globalen XYZ-Kabelverlaufs ist **nicht abgeschlossen**, denn verifizierte Höheneinmessung, Schachtdrehwinkel, reales Ein-/Austrittsrohr und belegte interschachtliche Kabelführung fehlen. Kein Modellpunkt wird als Vermessungswert ausgegeben; Brücken zwischen lokalen Teilstücken werden bewusst **nicht** automatisch gezeichnet. Externe Fach-/Bro-Abnahme bleibt offen.
+
+**Betroffene Nachbartickets:** KAB-0361/0362/0363/0364 (lokale/globaler Kabel- und Anschlussreferenzen), KAB-0370 (Segmentfolge), KAB-0371 (nur Modelllänge, keine gemessene Leitungs-Solllänge), KAB-0376 (Provenienz-/Prüfstatus) und KAB-0377/0378 (Fehlerstelle / nie fiktive physische Kontinuität freigeben). Ein Bauteil-/Hersteller-Nachweis wird durch Softwaretests nicht ersetzt.
