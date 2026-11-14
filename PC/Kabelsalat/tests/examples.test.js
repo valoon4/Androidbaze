@@ -6,6 +6,7 @@ const quality=require('../quality.js');
 globalThis.KabelsalatComponents=components;
 globalThis.KabelsalatNetwork=network;
 globalThis.KabelsalatRoutePlanner=require('../network-route-planner.js');
+globalThis.KabelsalatWorldRoute=require('../network-world-route.js');
 globalThis.KabelsalatQuality=quality;
 globalThis.KabelsalatReports=require('../reports.js');
 globalThis.KabelsalatReferences=require('../reference-data.js').factory(components,network);
