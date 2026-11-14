@@ -39,7 +39,7 @@ jobs:
           $version = node -p "require('./package.json').version"
           $folder = "dist/Kabelsalat-Browser"
           New-Item -ItemType Directory -Path (Join-Path $folder 'vendor') -Force | Out-Null
-          Copy-Item -Path index.html,recovery.js,pdf-geometry.js,schematic-positions.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js,pdf-visual.js,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js -Destination $folder
+          Copy-Item -Path index.html,recovery.js,pdf-geometry.js,schematic-positions.js,spacing-adjust.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js,pdf-visual.js,app.js,editor2d.js,components.js,network.js,quality.js,reports.js,reference-data.js,examples.js -Destination $folder
           New-Item -ItemType Directory -Path (Join-Path $folder 'examples') -Force | Out-Null
           Copy-Item -Path examples/*.json -Destination (Join-Path $folder 'examples')
           Copy-Item -Path vendor/three.min.js,vendor/LICENSE.threejs -Destination (Join-Path $folder 'vendor')
