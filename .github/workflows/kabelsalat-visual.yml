@@ -52,6 +52,10 @@ jobs:
         working-directory: PC/Kabelsalat
         shell: bash
         run: node tests/browser-world-route.js
+      - name: Pitch-Vergleich SW1 bis SW4 mit echtem Chromium pruefen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-pitch-walls.js
       - name: PDF-Schacht in echtem Browser öffnen, abbilden und prüfen
         working-directory: PC/Kabelsalat
         shell: bash
