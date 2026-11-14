@@ -1,6 +1,16 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.10-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.11-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.11-beta.1 · 4 Pitch-Wandvergleiche (KAB-0203–0206) · 15.11.2026
+
+**NEU:** Auf der [Pitch-Startseite](./pitch.html) führt **„Vier Wände vergleichen“** zu [pitch-walls.html](./pitch-walls.html). Für SW1 (29), SW2 (13), SW3 (26) und SW4 (23) werden alle **91 ursprünglichen PDF-V2-Quellmarker** jeweils direkt neben der rein visuellen **62%-Demoansicht** gezeigt.
+
+- Jede Seite behält dieselben Rohr-IDs und Quelladressen. Es gibt keine zusätzlichen Rohre, geänderten Projektkoordinaten oder Kabelanschlüsse.
+- Die PDF-Marker sind **nicht vermessen**; alle Kreissymbole sind absichtlich gleich groß und keine DN-/Öffnungsmaßdarstellung.
+- Der Vergleich verweigert sich bei manipulierten/fehlenden Quellpositionen, unpassender PDF-Quelle oder doppelten IDs statt fehlende Daten zu erfinden.
+- Die gesicherten Pitch-Originaldateien **13_T_021** und **13_U_028** bleiben unangetastet, und die neue Vergleichsfunktion ist auch über das Offline-Browserpaket erreichbar.
+- **Nachweise:** [Quell-/Geometrie-Unit-Test](./tests/pitch-walls.test.js), [Chromium-Screenshots](./tests/browser-pitch-walls.js). Die abschließende fachliche Bildabnahme durch Bro wird unter KAB-0216 getrennt erfasst.
 
 ## 2.0.10-beta.1 · Globale XYZ-Kabelsegmente mit offenen Übergängen · 14.11.2026
 
