@@ -40,6 +40,10 @@ jobs:
         working-directory: PC/Kabelsalat
         shell: bash
         run: node tests/browser-spacing.js
+      - name: Schematischen Netzwegfinder im echten Chromium testen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-network-path.js
       - name: PDF-Schacht in echtem Browser öffnen, abbilden und prüfen
         working-directory: PC/Kabelsalat
         shell: bash
