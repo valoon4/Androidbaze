@@ -131,19 +131,19 @@
     report.segments.length>60||report.gaps.length>59)
    throw error('BAD_EXPORT','Ungültiger Routenbericht');
   const rows=[['Art','Segment','Schacht','Kabel','Schritt','X_mm','Y_mm','Z_mm',
-   'Status','Hinweis']];
+   'Status','Quellversion','Hinweis']];
   for(const seg of report.segments){
    if(!Array.isArray(seg.points)||seg.points.length>14)throw error('BAD_EXPORT','Zu viele Punkte');
    for(let i=0;i<seg.points.length;i++){
     const xyz=seg.points[i];if(!limitPoint(xyz))throw error('BAD_EXPORT','Ungültiger Exportpunkt');
     rows.push(['lokal',seg.index,seg.shaftId,seg.cableId,i+1,...xyz,
-     seg.status,'Schematische Modell-Koordinate; nicht vermessen']);
+     seg.status,seg.sourceVersion||'kein PDF-V2-Quellbeleg','Schematische Modell-Koordinate; nicht vermessen']);
    }
   }
   for(let i=0;i<report.gaps.length;i++){
    const gap=report.gaps[i];
    rows.push(['unbekannter Übergang',i+1,gap.from+' → '+gap.to,'','', '', '', '',
-    gap.status,'Keine geprüfte physische Verbindung; nicht interpolieren']);
+    gap.status,'','Keine geprüfte physische Verbindung; nicht interpolieren']);
   }
   return '\uFEFF'+rows.map(row=>row.map(safeCell).join(';')).join('\r\n')+'\r\n';
  }
