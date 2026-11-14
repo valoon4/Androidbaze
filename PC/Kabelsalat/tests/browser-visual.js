@@ -170,8 +170,50 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   for(const dn of [30,50,110,160])
    assert.ok(widths.includes(dn),'Bro synthetic LR demo must display DN '+dn);
   assert.equal(widths.length,94,'Synthetic demo must be independent of PDF 91-LR reference');
+  // KAB-0888: real Chromium scene verification and 2D/3D evidence.
+  const demo3D=await sample3D();
+  assert.ok(demo3D.visible&&demo3D.uniqueColors>15,
+   'DN comparison demo must render a real WebGL scene, not just JSON values');
+  const demoSnapshot=await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
+  assert.ok(demoSnapshot.name.startsWith('FIKTIVE DEMO'));
+  assert.equal(demoSnapshot.sourceInfo,undefined,'Synthetic demo must never inherit measured source info');
+  assert.deepEqual(demoSnapshot.walls.map(w=>w.holes.length),[24,28,24,18]);
+  const allDn=demoSnapshot.walls.flatMap(w=>w.holes.map(h=>h.dn));
+  assert.ok([30,50,110,160].every(dn=>allDn.includes(dn)));
+  assert.ok(allDn.indexOf(50)!==allDn.indexOf(110));
+  assert.equal(JSON.stringify(JSON.parse(JSON.stringify(demoSnapshot))),JSON.stringify(demoSnapshot),
+   'DN demo must survive a strict JSON round-trip');
   await page.screenshot({path:path.join(out,'synthetic-lr-dn30-50-110-160.png'),fullPage:true});
+  // Read-only Basic 2D view: one wall at a time, same ids and opening counts.
+  await page.locator('#explore2DToggle').click();
+  const twoD=await page.evaluate(()=>({
+   visible:document.body.classList.contains('explore-with-2d'),
+   draft:document.querySelector('#draft2d')?.getBoundingClientRect().width||0
+  }));
+  assert.ok(twoD.visible&&twoD.draft>100,'2D wall diagram should be visible beside DN 3D demo');
+  await page.screenshot({path:path.join(out,'synthetic-lr-dn-2d-3d.png'),fullPage:true});
+  await page.locator('#explore2DToggle').click();
+  // Distinguish actual cable route stage from hollow LR-only stage.
+  assert.match(await page.locator('#exploreSceneText').innerText(),/LR = runde Öffnungen/);
+  await page.locator('#questCable').click();
+  assert.match(await page.locator('#exploreSceneText').innerText(),/Linien zeigen schematische Kabelwege|KABEL, nicht LR/);
+  await page.screenshot({path:path.join(out,'synthetic-dn-cable-stage.png'),fullPage:true});
+  await page.locator('#questShaft').click();
+  // Expert mode must keep DN editing accessible without editing imported PDF sources.
+  await page.locator('#toggleExpert').click();
+  assert.ok(!(await page.locator('body').evaluate(e=>e.classList.contains('explore-mode'))));
+  assert.equal(await page.locator('#holeDn').getAttribute('step'),'1');
+  assert.equal(await page.locator('#holeDn').getAttribute('min'),'30');
+  assert.equal(await page.locator('#holeDn').getAttribute('max'),'160');
+  await page.screenshot({path:path.join(out,'synthetic-dn-profi-editor.png'),fullPage:true});
+  await page.locator('#toggleExpert').click();
   await page.evaluate(raw=>localStorage.setItem('eugi.schachtwand.3d.v1',raw),originalRaw);
+  await page.reload({waitUntil:'load'});
+  await page.waitForFunction(()=>document.body.classList.contains('app-ready'),{timeout:30000});
+  const restored=await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
+  assert.deepEqual(restored.walls.map(w=>w.holes.length),[29,13,26,23]);
+  assert.equal(restored.sourceInfo?.shaft,'13_U_028');
+  console.log('KAB-0888 BROWSER: synthetic DN 30/50/110/160 3D, 2D, cable-stage, expert edit and PDF source restoration verified.');
   console.log('KAB-0884 VISUAL: synthetic 60/110/116 mm bore screenshot captured; original source project restored.');
  }
  await browser.close();
