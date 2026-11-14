@@ -29,8 +29,13 @@ function normalizeNetwork(n,active){
    !Array.isArray(s.snapshot.cables)||!s.snapshot.dims)continue;
   const id=clean(s.id,'',100);
   if(!id||seen.has(id))continue;seen.add(id);
-  shafts.push({id,name:clean(s.name,'Schacht',80),x:finite(s.x),z:finite(s.z),
-   snapshot:snapshot(s.snapshot)});
+  const obj={id,name:clean(s.name,'Schacht',80),x:finite(s.x),z:finite(s.z),
+   snapshot:snapshot(s.snapshot)};
+  // Optional vertical model elevation. null/invalid means unverified/unknown;
+  // zero MUST NOT be inferred from an absent original source field.
+  if(Object.prototype.hasOwnProperty.call(s,'y'))
+   obj.y=typeof s.y==='number'&&Number.isInteger(s.y)&&Math.abs(s.y)<=100000000?s.y:null;
+  shafts.push(obj);
  }
  if(!shafts.length)return createNetwork(active);
  const ids=new Set(shafts.map(x=>x.id)),linked=new Set(),links=[];
@@ -51,7 +56,15 @@ function normalizeNetwork(n,active){
    group:['OLA','MS','Weitere'].includes(r.group)?r.group:'Weitere',
    steps});
  }
- return {version:1,shafts,links,routes};
+ const result={version:1,shafts,links,routes};
+ // A project-supplied CRS is descriptive metadata, not proof of a survey.
+ // An absent/invalid label is never filled in with invented EPSG values.
+ if(Object.prototype.hasOwnProperty.call(n,'coordinateReference')){
+  result.coordinateReference=typeof n.coordinateReference==='string'&&
+   n.coordinateReference.trim()&&n.coordinateReference.length<=120?
+   n.coordinateReference.trim():null;
+ }
+ return result;
 }
 function issues(net,route){
  const problems=[],steps=route?.steps||[];
