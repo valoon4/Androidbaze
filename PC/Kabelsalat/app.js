@@ -19,6 +19,8 @@ const photoCandidates=globalThis.KabelsalatPhotoCandidates;
 if(!photoCandidates)throw Error('Kabelsalat-Fotoerkennungsmodul fehlt');
 const concreteWall=globalThis.KabelsalatConcreteWall;
 if(!concreteWall)throw Error('Kabelsalat-Betonwandmodul fehlt');
+const spacingAdjust=globalThis.KabelsalatSpacingAdjust;
+if(!spacingAdjust)throw Error('Kabelsalat-Abstandsmodul fehlt');
 const constructionV2=globalThis.KabelsalatConstructionV2;
 if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
 const avlReference=()=>['13_T_021','13_U_028'].includes(project?.sourceInfo?.shaft);
@@ -198,6 +200,16 @@ document.body.classList.toggle('explore-mode',exploreMode);
 document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
 
 const undo=[],redo=[];
+let spacingPlan=null;
+function resetSpacingPreview(){spacingPlan=null;$('spacingApply').disabled=true;}
+function compareSpacing(plan){
+ const fmt=v=>v===null?'–':v.toFixed(1)+' mm';
+ $('spacingCompare').textContent=plan?
+ 'Vorher → Nachher · lichte Weite '+fmt(plan.before.minGapMm)+' → '+fmt(plan.after.minGapMm)+
+ ' · Wandrand '+fmt(plan.before.minEdgeMm)+' → '+fmt(plan.after.minEdgeMm)+
+ ' · '+plan.moved+'/'+plan.total+' verschoben (schematisch, keine Fachfreigabe)':
+ 'Erst Vorschau berechnen. Vorher/Nachher wird in 2D gestrichelt angezeigt.';
+}
 const wall=()=>project.walls.find(w=>w.id===wallId);
 const cable=()=>project.cables.find(c=>c.id===cableId);
 const hole=()=>wall()?.holes.find(h=>h.id===holeId);
@@ -214,6 +226,7 @@ function persist(){
  catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}
 }
 function change(fn,label='Planung geändert'){
+ resetSpacingPreview();
  undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;
  fn();syncActiveShaft();
  if(project.network){
@@ -223,7 +236,7 @@ function change(fn,label='Planung geändert'){
  }
  renderAll();persist();
 }
-function undoRedo(back){const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
+function undoRedo(back){resetSpacingPreview();const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;
  if(!plate())panelKey='OLA-floor';
  if(!project.supports.some(s=>s.id===supportId))supportId=project.supports[0]?.id||null;
@@ -260,6 +273,9 @@ function optionsHTML(selected){let html='<option value="">– Nicht zugeordnet �
  html+='</optgroup>';}return html;}
 function parseEndpoint(v){if(!v)return null;const i=v.indexOf('|');return i<0?null:{wall:v.slice(0,i),hole:v.slice(i+1)};}
 function renderUI(){
+ $('spacingPreview').disabled=exploreMode||!!project.sourceInfo;
+ $('spacingApply').disabled=!spacingPlan||spacingPlan.wallId!==wallId||exploreMode||!!project.sourceInfo;
+ compareSpacing(spacingPlan?.wallId===wallId?spacingPlan:null);
  const totalShafts=project.network.shafts.length;
  const totalCables=project.network.shafts.reduce((n,s)=>n+s.snapshot.cables.length,0);
  $('exampleInfo').textContent=totalShafts+' Schächte · '+totalCables+
@@ -1018,6 +1034,20 @@ function draw2D(){
  ctx.beginPath();ctx.arc(p.x,p.y,r+5,0,Math.PI*2);ctx.strokeStyle=cable().color;
  ctx.lineWidth=2.5;ctx.stroke();
  }
+ }
+ // KAB-0053: dashed ghost = proposed new centers, not yet the model or 3D.
+ if(spacingPlan&&spacingPlan.wallId===wallId){
+  ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='#a349c6';ctx.lineWidth=2;
+  for(const proposed of spacingPlan.changes){
+   const actual=w.holes.find(h=>h.id===proposed.id);
+   if(!actual)continue;
+   const from=geom2d.toPixels(m,proposed.from.u*span,proposed.from.v*height),
+    to=geom2d.toPixels(m,proposed.to.u*span,proposed.to.v*height),
+    radius=Math.max(2,pipeDimensions.apertureMm(actual)/2*m.scale);
+   ctx.beginPath();ctx.moveTo(from.x,from.y);ctx.lineTo(to.x,to.y);ctx.stroke();
+   ctx.beginPath();ctx.arc(to.x,to.y,radius,0,Math.PI*2);ctx.stroke();
+  }
+  ctx.restore();
  }
  for(const st of project.supports){
   if(!st.visible||st.wall!==wallId)continue;
@@ -1786,6 +1816,29 @@ $('generate').addEventListener('click',()=>{
  change(()=>{w.rows=rows;w.cols=cols;w.holes=grid(w);project.cables.forEach(c=>{if(c.a?.wall===w.id)c.a=null;if(c.b?.wall===w.id)c.b=null;});holeId=null;});
 });
 $('toggleWall').addEventListener('click',()=>change(()=>{wall().visible=!wall().visible;}));
+$('spacingPreview').addEventListener('click',()=>{
+ resetSpacingPreview();
+ try{
+  if(exploreMode)throw Error('Zuerst Profi-Modus aktivieren');
+  const gap=$('spacingGap').value,edge=$('spacingEdge').value;
+  if(!/^\\d+$/.test(gap)||!/^\\d+$/.test(edge))throw Error('Nur ganze, nichtnegative mm-Werte eingeben');
+  spacingPlan=spacingAdjust.plan(project,wallId,{gapMm:Number(gap),edgeMm:Number(edge)});
+  $('spacingApply').disabled=spacingPlan.moved===0;
+  compareSpacing(spacingPlan);
+  draw2D(); // dashed before/after ghost overlay; original 3D data unchanged
+ }catch(e){$('spacingCompare').textContent='Keine Änderung: '+e.message;}
+});
+$('spacingApply').addEventListener('click',()=>{
+ const pending=spacingPlan;
+ if(!pending||exploreMode||wallId!==pending.wallId)return;
+ try{
+  if(spacingAdjust.snapshot(project,wallId)!==pending.base)
+   throw Error('Plan wurde geändert: neue Vorschau berechnen');
+  if(!confirm(pending.moved+' Leerrohr-Positionen dieser fiktiven/eigenen Wand ändern? Mit Rückgängig reversibel.'))return;
+  change(()=>spacingAdjust.apply(project,pending),'Schematische Rohrabstände übernommen');
+  $('spacingCompare').textContent=pending.moved+' LR umpositioniert. Rückgängig stellt die ursprüngliche Belegung wieder her.';
+ }catch(e){resetSpacingPreview();$('spacingCompare').textContent='Nicht übernommen: '+e.message;}
+});
 $('modeButtons').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b){mode=b.dataset.mode;renderUI();}});
 $('deleteHole').addEventListener('click',()=>{const w=wall(),h=hole();if(!h)return;
  const n=project.cables.filter(c=>c.a?.hole===h.id||c.b?.hole===h.id).length;
