@@ -67,6 +67,8 @@ const html=fs.readFileSync(path.join(__dirname,'../pitch-walls.html'),'utf8');
 const start=fs.readFileSync(path.join(__dirname,'../pitch.html'),'utf8');
 const version=require('../package.json').version;
 assert.ok(start.includes('href="pitch-walls.html"'),'Pitch launch must link to comparison');
+assert.ok(start.includes('Pitch-Sicherheitsstart · v'+version),
+ 'Pitch start must display the same real version as the published app');
 assert.ok(html.includes('<meta name="kabelsalat-version" content="'+version+'">'));
 assert.ok(html.includes('src="pitch-wall-compare.js?v='+version+'"'));
 assert.ok(html.includes("KabelsalatPitchWalls.compareAll(source,window.KabelsalatSchematicPositions)"));
