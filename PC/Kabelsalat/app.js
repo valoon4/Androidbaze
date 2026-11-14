@@ -1052,7 +1052,7 @@ function drawNetwork(){
  }
  // Independent source-aware XYZ points of existing, explicitly selected cables.
  // NEVER join across inter-shaft gaps. Green denotes *local model geometry only*.
- if(worldRouteReport?.routeId===selectedRoute()?.id){
+ if(worldRouteReport&&worldRouteReport.routeId===selectedRoute()?.id){
   ctx.save();ctx.lineWidth=3;ctx.strokeStyle='#148b73';ctx.fillStyle='#148b73';
   for(const seg of worldRouteReport.segments){
    if(seg.points.length<2)continue;
