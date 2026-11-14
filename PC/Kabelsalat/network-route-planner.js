@@ -145,6 +145,51 @@
    status:warnings.length?'incomplete':'schematic',warnings,
    physicalClearanceVerified:false,source:'model-links-only'};
  }
+ function continuity(net,route){
+  const g=normalize(net),steps=route?.steps;
+  if(!Array.isArray(steps)||steps.length>60)throw Error('Netz-Kabelweg ohne gültige Segmente');
+  const errors=[],warnings=[],segments=[],transitions=[];
+  const known=new Map((net.shafts||[]).map(s=>[s.id,s]));
+  let previous=null;
+  for(let i=0;i<steps.length;i++){
+   const step=steps[i],shaft=known.get(step?.shaftId),cable=shaft?.snapshot?.cables?.find(c=>c.id===step?.cableId);
+   const endpoint=e=>{
+    if(!e)return 'unassigned';
+    const w=shaft?.snapshot?.walls?.find(w=>w.id===e.wall);
+    return w?.holes?.some(h=>h.id===e.hole)?'linked-local-hole':'missing-local-hole';
+   };
+   const a=endpoint(cable?.a),b=endpoint(cable?.b);
+   if(!shaft)errors.push('Schacht fehlt an Segment '+(i+1));
+   else if(!cable)errors.push('Lokales Kabel '+String(step?.cableId).slice(0,80)+' fehlt in '+shaft.id);
+   else{
+    if(a==='missing-local-hole'||b==='missing-local-hole')
+     errors.push('Lokales Rohr an Segment '+(i+1)+' existiert nicht mehr');
+    if(a==='unassigned'||b==='unassigned')
+     warnings.push('Segment '+(i+1)+' hat '+[a,b].filter(v=>v==='unassigned').length+
+      ' unzugeordnete lokale Kabelenden');
+    if(route.group&&route.group!==cable.group)
+     warnings.push('Segment '+(i+1)+' Systemkonflikt: '+route.group+' versus '+cable.group);
+   }
+   segments.push({order:i+1,shaftId:step?.shaftId||'',cableId:step?.cableId||'',
+    localA:a,localB:b,exists:!!cable,group:cable?.group||null,
+    sourceConfirmed:shaft?.snapshot?.sourceInfo?.geometryStatus==='surveyed'&&false});
+   if(previous!==null){
+    const link=g.links.find(l=>(l.from===previous?.shaftId&&l.to===step?.shaftId)||
+     (l.to===previous?.shaftId&&l.from===step?.shaftId));
+    if(!link)errors.push('Kein expliziter Link bei '+String(previous?.shaftId)+' → '+String(step?.shaftId));
+    transitions.push({from:previous?.shaftId||'',to:step?.shaftId||'',linkId:link?.id||null,
+     physicalConnectionConfirmed:false,requiresEvidence:true});
+   }
+   previous=step;
+  }
+  if(steps.length<2)errors.push('Weniger als zwei lokale Kabelsegmente');
+  // No authenticated transition/duct evidence exists in the current model:
+  // a saved graph link is NOT a physical cable-to-cable connection.
+  warnings.push('Kein geprüfter physischer Schachtübergang dokumentiert; Link ist nur Netz-Skizze');
+  return {routeId:route?.id||null,status:errors.length?'broken':'unverified',
+   segments,transitions,errors,warnings,physicalContinuityConfirmed:false,
+   needsManualReview:true,source:'model-only, no transition evidence'};
+ }
  function csv(result){
   if(!result||!Array.isArray(result.shaftIds)||!Array.isArray(result.linkIds)||
    result.shaftIds.length>31||result.linkIds.length>30)throw Error('Ungültige Exportdaten');
@@ -155,5 +200,5 @@
     'Schematische Netzlinie, keine reale Kabeltrasse']);
   return '\uFEFF'+rows.map(row=>row.map(cell).join(';')).join('\r\n')+'\r\n';
  }
- return {normalize,topology,find,alternatives,compareRoute,csv};
+ return {normalize,topology,find,alternatives,compareRoute,continuity,csv};
 });
