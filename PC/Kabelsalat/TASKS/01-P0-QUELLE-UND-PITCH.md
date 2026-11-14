@@ -288,3 +288,7 @@ KAB-0037/0038/0039 und KAB-0050 wurden mit eigenen Source-/View-/Roundtriptests 
 **KAB-0049 (12.11.2026):** Offline-Projektviewer und Druckbericht nennen Rohr- und Schachtkoordinaten nicht mehr einfach vermessene Millimeter. PDF-V2-Wandbreiten werden richtungsrichtig ausgewertet und die unveränderten sourceU/sourceV-Planpunkte als *schematisch* statt als gemessene XYZ-Positionen erläutert. Unit-Test: `tests/reports.test.js`.
 
 **Bro-Sprint 2 (12.11.2026):** KAB-0019–0023 und KAB-0044–0047 per PDF-Weltachsenaudit, Vektor↔3D-Inversion, modellbasiertem Rohr-Ø-/Randabstand und automatisiertem `tests/pdf-wall-clearance.test.js` abgeschlossen. `npm test` in GitHub Pages und Windows-Workflow bestanden. Die 2D-/3D-Kollisionsmarkierung KAB-0048 ist implementiert, bleibt jedoch **offen bis zur echten visuellen Prüfung**; diese ist getrennt dokumentiert in [WALL_COORDINATES_AND_CLEARANCE.md](../WALL_COORDINATES_AND_CLEARANCE.md). **Kein Vermessungs- oder Normnachweis.**
+
+## KAB-0048 · Quellenbeleg zur roten Kollisionsanzeige · 14.11.2026
+
+Die nachweisbare **Modell-/Schemageometrie** wird in [quality.js](../quality.js) → `auditWallOpenings` geprüft; [tests/pdf-wall-clearance.test.js](../tests/pdf-wall-clearance.test.js) enthält positive/negative Abstandsbeispiele und prüft unveränderte Referenz-IDs/Koordinaten. Zusätzliche statische Regressionen: [Sprint-50b](../tests/sprint-50b-2026-11-14.test.js). **Keine Fachfreigabe**, keine bestätigten echten Rohrrandabstände; reale Browser-/Sichtprüfung bleibt separat.
