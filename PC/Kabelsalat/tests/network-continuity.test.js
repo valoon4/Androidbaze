@@ -30,7 +30,7 @@ assert.ok(stable.segments.every(s=>s.exists&&s.localA==='linked-local-hole'&&s.l
 assert.ok(stable.transitions.every(t=>t.physicalConnectionConfirmed===false&&t.requiresEvidence===true));
 assert.equal(stable.physicalContinuityConfirmed,false);
 assert.equal(stable.needsManualReview,true);
-assert.match(stable.warnings.join(' '),/nicht|unverifiziert|keine/i);
+assert.match(stable.warnings.join(' '),/kein|nicht|unverifiziert/i);
 assert.ok(stable.segments.every(s=>s.sourceConfirmed===false),
  'Even a fake geometryStatus:surveyed is not a cable transition certificate');
 assert.equal(JSON.stringify(base),baseline);
