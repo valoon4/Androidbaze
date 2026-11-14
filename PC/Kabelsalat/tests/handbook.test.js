@@ -50,7 +50,7 @@ for(const id of fbIDs){
  assert.ok(fs.existsSync(file),'Missing feedback note '+id);
  const s=fs.readFileSync(file,'utf8');
  assert.ok(s.startsWith('# '+id+' · '));
- for(const key of (Number(id.slice(-4))<0801?
+ for(const key of (Number(id.slice(-4))<801?
   ['BRO_CHAT_CROSSWALK.md','issues/76','## Konkrete einzelne Frage','## Mutationsfreie Zwischenlösung','M01–M08','M09','M10']:
   ['BRO_CHAT_CROSSWALK.md','issues/77','## Eine konkrete Bro-Frage','## Alternative ohne Datenmutation','M01–M08','M09','M10']))
   assert.ok(s.includes(key),'Missing feedback source/blocker section '+id+' '+key);
