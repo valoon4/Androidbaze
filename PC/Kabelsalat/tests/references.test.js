@@ -3,6 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const components=require('../components.js'),network=require('../network.js'),quality=require('../quality.js');
 globalThis.KabelsalatComponents=components;globalThis.KabelsalatNetwork=network;
 globalThis.KabelsalatRoutePlanner=require('../network-route-planner.js');
+globalThis.KabelsalatWorldRoute=require('../network-world-route.js');
 globalThis.KabelsalatQuality=quality;globalThis.KabelsalatReports=require('../reports.js');
 const refs=require('../reference-data.js').factory(components,network);
 globalThis.KabelsalatReferences=refs;
