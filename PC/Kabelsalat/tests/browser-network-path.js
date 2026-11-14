@@ -43,6 +43,8 @@ const fs=require('node:fs'),path=require('node:path');
   if(await page.locator('body').evaluate(x=>x.classList.contains('explore-mode')))
    await page.locator('#toggleExpert').click();
   assert.equal(await page.locator('#netPlannerFind').isDisabled(),false);
+  assert.match(await page.locator('#netTopologyStatus').textContent(),/1 Netzkomponente/);
+  assert.match(await page.locator('#netTopologyStatus').textContent(),/Zyklus/);
   await page.locator('#netPlannerFrom').selectOption(info.ids[0]);
   await page.locator('#netPlannerTo').selectOption(info.ids[2]);
   const original=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
@@ -85,6 +87,8 @@ const fs=require('node:fs'),path=require('node:path');
   const disconnectedSource=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
   await page.locator('#netPlannerFind').click();
   assert.match(await page.locator('#netPlannerSummary').textContent(),/Kein gespeicherter Netzweg/);
+  assert.match(await page.locator('#netTopologyStatus').textContent(),/4 Netzkomponente/);
+  assert.match(await page.locator('#netTopologyStatus').textContent(),/isoliert/);
   assert.equal(await page.locator('#netPlannerExport').isDisabled(),true);
   assert.equal(await page.locator('#netPlannerShow').isDisabled(),true);
   assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),disconnectedSource);
