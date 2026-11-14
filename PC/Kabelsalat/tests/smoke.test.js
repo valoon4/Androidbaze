@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
-for(const file of ['schematic-positions.js','pipe-dimensions.js','photo-candidates.js'])
+for(const file of ['schematic-positions.js','spacing-adjust.js','pipe-dimensions.js','photo-candidates.js'])
  assert.ok(fs.existsSync(path.resolve(__dirname,'..',file)),'Missing offline recognition/geometry asset '+file);
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 const version=require('../package.json').version;
@@ -55,7 +55,7 @@ for(const id of ['holeInnerMm','holeOuterMm','holeOpeningMm','holeDimensionStatu
  assert.ok(html.includes('id="'+id+'"'),'Bro dimension/recognition UI missing '+id);
 const pages=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/kabelsalat-pages.yml'),'utf8');
 const release=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/kabelsalat.yml'),'utf8');
-assert.ok(pages.includes('pdf-geometry.js,schematic-positions.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
+assert.ok(pages.includes('pdf-geometry.js,schematic-positions.js,spacing-adjust.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
  'GitHub Pages must deploy concrete-wall.js, otherwise the UI cannot start');
 assert.ok(release.includes('pdf-geometry.js,schematic-positions.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
  'Offline ZIP must include the new concrete wall renderer');
