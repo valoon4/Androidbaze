@@ -12,7 +12,7 @@ function build(){
  html=html.replace(/<script src="([^"]+)"\s*><\/script>/g,(_tag,srcWithVersion)=>{
   const [src,query]=srcWithVersion.split('?');
   if(query!=='v='+pkg.version)throw Error('Ungültige Versionskennung: '+srcWithVersion);
-  if(!/^(?:recovery\.js|pdf-geometry\.js|schematic-positions\.js|pipe-dimensions\.js|photo-candidates\.js|concrete-wall\.js|construction-v2\.js|pdf-visual\.js|vendor\/three\.min\.js|editor2d\.js|components\.js|network\.js|quality\.js|reports\.js|reference-data\.js|examples\.js|app\.js)$/.test(src))
+  if(!/^(?:recovery\.js|pdf-geometry\.js|schematic-positions\.js|spacing-adjust\.js|pipe-dimensions\.js|photo-candidates\.js|concrete-wall\.js|construction-v2\.js|pdf-visual\.js|vendor\/three\.min\.js|editor2d\.js|components\.js|network\.js|quality\.js|reports\.js|reference-data\.js|examples\.js|app\.js)$/.test(src))
    throw Error('Unerlaubte externe Script-Abhängigkeit: '+src);
   const full=path.resolve(__dirname,src);
   if(!full.startsWith(__dirname+path.sep))throw Error('Pfad außerhalb des Projekts: '+src);
