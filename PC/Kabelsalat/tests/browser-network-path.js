@@ -73,6 +73,28 @@ const fs=require('node:fs'),path=require('node:path');
   await page.locator('#netPlannerFind').click();
   assert.match(await page.locator('#netPlannerSummary').textContent(),/Übergangs-Suche/);
   assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),original);
+  // Existing network link editing: reversible, and never changes shaft snapshots.
+  page.on('dialog',dialog=>dialog.accept());
+  const beforeLinkEdit=JSON.parse(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')));
+  const snapshots=JSON.stringify(beforeLinkEdit.network.shafts.map(x=>x.snapshot));
+  await page.locator('#netLinkSelect').selectOption('E2');
+  await page.locator('#netDeleteLink').click();
+  const removed=JSON.parse(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')));
+  assert.equal(removed.network.links.length,3);
+  assert.deepEqual(removed.network.links.map(l=>l.id).sort(),['E1','E3','E4']);
+  assert.equal(JSON.stringify(removed.network.shafts.map(x=>x.snapshot)),snapshots);
+  await page.locator('#undo').click();
+  const restoredLinks=JSON.parse(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')));
+  assert.deepEqual(restoredLinks.network.links.map(l=>l.id).sort(),['E1','E2','E3','E4']);
+  assert.equal(JSON.stringify(restoredLinks.network.shafts.map(x=>x.snapshot)),snapshots);
+  await page.locator('#redo').click();
+  const redoneLinks=JSON.parse(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')));
+  assert.deepEqual(redoneLinks.network.links.map(l=>l.id).sort(),['E1','E3','E4']);
+  await page.locator('#undo').click();
+  const json=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
+  const roundtrip=JSON.parse(JSON.stringify(JSON.parse(json)));
+  assert.deepEqual(roundtrip.network.links.map(l=>l.id).sort(),['E1','E2','E3','E4']);
+  assert.equal(JSON.stringify(roundtrip.network.shafts.map(x=>x.snapshot)),snapshots);
   // Deliberately disconnected. The application must NEVER bridge missing links.
   await page.evaluate(()=>{
    const p=JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1'));
