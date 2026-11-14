@@ -908,7 +908,7 @@ function renderWorldRouteStatus(){
  $('worldRouteList').innerHTML=report.segments.map(seg=>
   '<div class="trace-item"><b>'+seg.index+'. '+esc(seg.shaftId)+' / '+esc(seg.cableId)+'</b>'+
   ' · '+esc(seg.status)+' · '+(seg.modelPolylineMm===null?'Länge unbekannt':esc(formatNetworkLength(seg.modelPolylineMm)))+
-  '<div class="small">XYZ-Punkte: '+seg.points.length+' · '+esc(seg.issues.join('; ')||'Nur Modellgeometrie')+'</div></div>').join('')+
+  '<div class="small">XYZ-Punkte: '+seg.points.length+' · Quelle: '+esc(seg.sourceVersion||'kein PDF-V2-Quellbeleg')+' · '+esc(seg.issues.join('; ')||'Nur Modellgeometrie, ungeprüft')+'</div></div>').join('')+
   report.gaps.map((g,i)=>'<div class="trace-item" style="border-left:3px solid #bf2d4b"><b>⚠ Lücke '+(i+1)+
    ': '+esc(g.from)+' → '+esc(g.to)+'</b> · '+esc(g.linkId||'Kein Netzlink')+
    '<div class="small">Unbestätigter physischer Übergang; keine erfundene Verbindung. Abstand Endpunkte: '+
