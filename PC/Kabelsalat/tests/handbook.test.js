@@ -11,7 +11,7 @@ const ids=['0325','0327','0564','0630',...Array.from({length:18},(_,i)=>String(7
  '0804',...Array.from({length:18},(_,i)=>String(811+i).padStart(4,'0'))]
  .map(n=>'KAB-'+n);
 assert.equal(ids.length,41);
-const fbIDs=['0793','0794','0796','0797','0798','0799','0800'].map(n=>'KAB-'+n);
+const fbIDs=['0793','0794','0796','0797','0798','0799','0800','0801','0802','0803','0805','0806','0807','0808','0809','0810'].map(n=>'KAB-'+n);
 function checkLinks(markdown,file){
  const regex=/\]\(([^)]+)\)/g;
  let count=0,match;
@@ -50,7 +50,9 @@ for(const id of fbIDs){
  assert.ok(fs.existsSync(file),'Missing feedback note '+id);
  const s=fs.readFileSync(file,'utf8');
  assert.ok(s.startsWith('# '+id+' · '));
- for(const key of ['BRO_CHAT_CROSSWALK.md','issues/76','## Konkrete einzelne Frage','## Mutationsfreie Zwischenlösung','M01–M08','M09','M10'])
+ for(const key of (Number(id.slice(-4))<0801?
+  ['BRO_CHAT_CROSSWALK.md','issues/76','## Konkrete einzelne Frage','## Mutationsfreie Zwischenlösung','M01–M08','M09','M10']:
+  ['BRO_CHAT_CROSSWALK.md','issues/77','## Eine konkrete Bro-Frage','## Alternative ohne Datenmutation','M01–M08','M09','M10']))
   assert.ok(s.includes(key),'Missing feedback source/blocker section '+id+' '+key);
  assert.ok(s.length>1500);
  sources+=checkLinks(s,file);
@@ -69,4 +71,4 @@ for(const w of ['SW1','SW2','SW3','SW4'])
  assert.ok(screenshots.includes('pitch-'+w+'-pdf-vs-demo.png'));
 assert.ok(sources>=110,'Too few verified source references');
 console.log('HANDBOOK OK: '+ids.length+' precise technical docs, '+fbIDs.length+
- ' feedback blockers, '+sources+' real source links, 31 audited criteria, 4 image pairs');
+ ' feedback questions/blockers, '+sources+' real source links, 31 audited criteria, 4 image pairs');
