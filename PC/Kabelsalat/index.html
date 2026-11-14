@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="kabelsalat-version" content="2.0.7-beta.1">
+<meta name="kabelsalat-version" content="2.0.8-beta.1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -432,6 +432,14 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <label class="field">Standard-DN für neue LR (mm)<input id="wallDn" type="number" min="30" max="160" step="1"></label>
 </div>
 <div class="row" style="margin-top:11px"><button id="generate" class="btn soft full">Raster neu erstellen</button><button id="toggleWall" class="btn tiny">Sichtbar</button></div>
+<div class="dim-editor" role="group" aria-label="Rohrabstände als Vorschau optimieren">
+ <h3>Rohrabstände · Vorschau</h3>
+ <p class="small">Nur eigene/fiktive Schächte · schematische Modellwerte, keine Normprüfung. Original-PDF/HTML ist geschützt.</p>
+ <div class="row"><label class="field">Rohr–Rohr (mm)<input id="spacingGap" type="number" min="0" max="1000" step="1" value="30"></label>
+ <label class="field">Rand (mm)<input id="spacingEdge" type="number" min="0" max="1000" step="1" value="30"></label></div>
+ <div class="row"><button id="spacingPreview" class="btn soft full">Vorschau berechnen</button><button id="spacingApply" class="btn full" disabled>Übernehmen ↶</button></div>
+ <div id="spacingCompare" class="small" role="status" aria-live="polite">Erst Vorschau berechnen. Vorher/Nachher wird in 2D gestrichelt angezeigt.</div>
+</div>
 </div>
 </section>
 <section class="section"><div class="eyebrow">Werkzeuge</div>
@@ -798,6 +806,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.7-beta.1"></script><script src="vendor/three.min.js?v=2.0.7-beta.1"></script><script src="editor2d.js?v=2.0.7-beta.1"></script><script src="components.js?v=2.0.7-beta.1"></script><script src="network.js?v=2.0.7-beta.1"></script><script src="quality.js?v=2.0.7-beta.1"></script><script src="reports.js?v=2.0.7-beta.1"></script><script src="reference-data.js?v=2.0.7-beta.1"></script><script src="examples.js?v=2.0.7-beta.1"></script><script src="pdf-geometry.js?v=2.0.7-beta.1"></script><script src="schematic-positions.js?v=2.0.7-beta.1"></script><script src="pipe-dimensions.js?v=2.0.7-beta.1"></script><script src="photo-candidates.js?v=2.0.7-beta.1"></script><script src="concrete-wall.js?v=2.0.7-beta.1"></script><script src="construction-v2.js?v=2.0.7-beta.1"></script><script src="pdf-visual.js?v=2.0.7-beta.1"></script><script src="app.js?v=2.0.7-beta.1"></script>
+<script src="recovery.js?v=2.0.8-beta.1"></script><script src="vendor/three.min.js?v=2.0.8-beta.1"></script><script src="editor2d.js?v=2.0.8-beta.1"></script><script src="components.js?v=2.0.8-beta.1"></script><script src="network.js?v=2.0.8-beta.1"></script><script src="quality.js?v=2.0.8-beta.1"></script><script src="reports.js?v=2.0.8-beta.1"></script><script src="reference-data.js?v=2.0.8-beta.1"></script><script src="examples.js?v=2.0.8-beta.1"></script><script src="pdf-geometry.js?v=2.0.8-beta.1"></script><script src="schematic-positions.js?v=2.0.8-beta.1"></script><script src="spacing-adjust.js?v=2.0.8-beta.1"></script><script src="pipe-dimensions.js?v=2.0.8-beta.1"></script><script src="photo-candidates.js?v=2.0.8-beta.1"></script><script src="concrete-wall.js?v=2.0.8-beta.1"></script><script src="construction-v2.js?v=2.0.8-beta.1"></script><script src="pdf-visual.js?v=2.0.8-beta.1"></script><script src="app.js?v=2.0.8-beta.1"></script>
 </body>
 </html>
