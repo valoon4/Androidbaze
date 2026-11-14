@@ -74,6 +74,10 @@ assert.ok(html.includes('id="splitEnabled"'), '2D toggle missing');
 assert.ok(html.includes('src="editor2d.js?v='+version+'"'), '2D module not loaded');
 assert.ok(html.includes('src="components.js?v='+version+'"'), 'Components module not loaded');
 assert.ok(html.includes('src="network.js?v='+version+'"'), 'Network module not loaded');
+assert.ok(html.includes('src="network-route-planner.js?v='+version+'"'),'Route planner module not loaded');
+for(const id of ['netPlannerFrom','netPlannerTo','netPlannerMode','netPlannerFind','netPlannerShow','netPlannerExport','netPlannerSummary','netPlannerList'])
+ assert.ok(html.includes('id="'+id+'"'),'Netzwegfinder UI missing '+id);
+globalThis.KabelsalatRoutePlanner=require('../network-route-planner.js');
 assert.ok(html.includes('src="quality.js?v='+version+'"'), 'Quality module not loaded');
 assert.ok(html.includes('src="reports.js?v='+version+'"'), 'Report module not loaded');
 assert.ok(html.includes('src="examples.js?v='+version+'"'), 'Examples module not loaded');
