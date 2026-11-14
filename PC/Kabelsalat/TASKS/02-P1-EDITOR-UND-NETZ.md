@@ -278,3 +278,16 @@
 - [ ] **KAB-0431** – Projekt vor riskanter Migration automatisch als JSON sicherbar machen
 - [ ] **KAB-0432** – Zwei benannte Varianten geometrisch und semantisch diffen
 
+
+## Netz-Wegfinder: technischer Großsprint 14.11.2026
+
+| Aufgaben | Technischer Stand | Noch offen |
+|---|---|---|
+| **KAB-0352/0353** | Verbundene Komponenten und Zyklen auch bei getrennten Teilnetzen im Netz-Wegfinder erkennbar | Bro-Sichtprüfung |
+| **KAB-0355/0356** | X/Z-Luftlinien, 30-Schacht-Demograf und lange Links mit Echtbrowser-/Stress-Tests | Großen realen Plansatz gegenprüfen |
+| **KAB-0365–0367, 0374, 0377, 0378** | Fehlende Links/Kabel/Loch-IDs sowie OLA/MS-Konflikte werden sichtbar gewarnt; gezeichnete Verbindungen bleiben ausdrücklich *physisch ungeprüft* | Echte belegte Schachtübergänge und Kabelkontinuität |
+| **KAB-0375** | **Nicht erfüllt:** nur globale X/Z-Luftlinien; kein realer XYZ-Leitungsverlauf rekonstruiert | Originalhöhen, 3D-Route und Durchführungsbelege |
+
+**Nachweise:** [Implementierung, 320 unabhängige Graph-Fälle, 201 negative Kabelkontinuitätsprüfungen und Chromium-QA](../NETWORK_ROUTE_PLANNER.md). [Bro-Review und Testanleitung](https://github.com/valoon4/Androidbaze/issues/73). Download der [v2.0.9-beta.1](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest).
+
+**Verbindlich:** Kein Eltern-KAB-Ticket gilt allein wegen eines grünen Unit-Tests als fachlich abgenommen. Weitere Originalpläne, Herstellermaße und Bros visuelle Prüfung sind nötig. Dieses Feature ist eine *read-only graphische Planungshilfe*, keine automatisch bestätigte Rohrtrasse.
