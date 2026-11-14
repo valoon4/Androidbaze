@@ -919,11 +919,21 @@ function renderNetworkUI(){
    '<div class="small">Noch keine lokalen Kabelsegmente eingetragen.</div>';
   const problems=networkModel.issues(net,route);
   $('netTraceStatus').textContent=problems.length?'⚠ Noch nicht durchgehend:\n'+problems.join('\n'):
-   '✓ Alle Kabel-IDs vorhanden und alle Schachtübergänge im Netz verbunden. Kein Nachweis der realen Kabelführung!';
+   '✓ Kabel-IDs und vorhandene Linkfolge formal vorhanden. Echte Kabelkontinuität UNGEPRÜFT!';
   $('netTraceStatus').style.background=problems.length?'#fff1e7':'#edf8f1';
   // Add explicit model-only length and missing-edge provenance for existing routes.
   try{
    const summary=routePlanner.compareRoute(net,route);
+   const integrity=routePlanner.continuity(net,route);
+   if(integrity.errors.length){
+    $('netTraceStatus').textContent+='\n❌ Lokale Unterbrechung / fehlende Anschlüsse: '+integrity.errors.join('; ');
+    $('netTraceStatus').style.background='#fff1e7';
+   }else{
+    $('netTraceStatus').textContent+='\n⚠ Alle physikalischen Schachtübergänge bleiben unverifiziert.';
+   }
+   if(integrity.warnings.some(w=>w.includes('Systemkonflikt')||w.includes('unzugeordnete')))
+    $('netTraceStatus').textContent+='\n⚠ '+integrity.warnings.filter(w=>w.includes('Systemkonflikt')||w.includes('unzugeordnete')).join('; ');
+
    $('netTraceStatus').textContent+='\nModell-X/Z-Linklängen: '+formatNetworkLength(summary.modelDistanceMm)+
     (summary.status==='incomplete'?' (unvollständiger Teilwert)':'')+
     (summary.warnings.length?'\n⚠ '+summary.warnings.join('\n'):'')+
