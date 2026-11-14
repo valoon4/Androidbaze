@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="kabelsalat-version" content="2.0.11-beta.1">
+<meta name="description" content="Original-PDF-V2-Marker und rein schematische 62-Prozent-Präsentationsvorschau je Wand SW1 bis SW4.">
+<title>Kabelsalat · Vier Wände · Original und Demo im Vergleich</title>
+<style>
+:root{font-family:Inter,"Segoe UI",Arial,sans-serif;background:#eff5f6;color:#183544;font-size:14px}
+*{box-sizing:border-box}body{margin:0}a{color:#135e67}
+header{background:#123c4b;color:#fff;padding:24px max(20px,calc((100% - 1080px)/2))}
+header a{color:#ccf3e9}h1{font-size:clamp(24px,4vw,39px);margin:13px 0 9px}
+header p{max-width:800px;line-height:1.6;color:#d6e6eb}
+main{max-width:1120px;margin:auto;padding:20px}
+.notice{background:#fff9ed;border-left:4px solid #dba04e;padding:13px 16px;border-radius:8px;line-height:1.5;margin:0 0 20px}
+.summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 22px}
+.summary span{background:#d9edf0;border-radius:7px;padding:9px 12px;font-weight:700}
+.wall{background:#fff;border:1px solid #cbdfe3;border-radius:14px;padding:18px;margin:0 0 18px}
+.wall h2{margin:0 0 5px;font-size:21px}.wall p{margin:0 0 14px;color:#587381;font-size:12px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.panel{border:1px solid #c8dfe2;border-radius:10px;padding:9px;background:#fafefe}
+.panel h3{font-size:13px;margin:4px 4px 9px}.panel svg{display:block;width:100%;height:auto}
+.panel .caption{padding:7px 4px 4px;color:#4e737a;font-size:12px;line-height:1.45}
+.original{border-top:4px solid #587990}.demo{border-top:4px solid #199c89}
+.status{color:#26535c;padding:12px 0}.error{color:#a32032;font-weight:700}
+footer{padding:18px 0 32px;font-size:12px;color:#546c75}
+@media(max-width:680px){.pair{grid-template-columns:1fr}.wall{padding:12px}}
+@media print{body{background:#fff}.wall{break-inside:avoid}header{background:#123c4b!important;color:#fff!important;-webkit-print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<header>
+ <nav><a href="pitch.html">← Pitch-Start</a> · <a href="index.html">Haupteditor</a></nav>
+ <h1>Vier Wände. Original und Demo.</h1>
+ <p>13_U_028 · PDF V2 · SW1 bis SW4. Links stehen die Quellmarker, rechts die gleiche Rohr-ID-Menge in der optionalen 62%-Präsentationsvorschau. Zwei Ansichten derselben Ausgangsdaten – kein neuer Rohrplan.</p>
+</header>
+<main>
+ <div class="notice"><strong>Kein Aufmaß:</strong> Die linken Kreismittelpunkte sind PDF-V2-Quellmarker, nicht vermessene Öffnungsmitten. Die rechten Kreismittelpunkte sind eine ausschließlich visuelle 62%-Verdichtung. Kreisradien sind einheitliche Symbole und stellen <strong>keine DN-, Loch- oder Innen-/Außendurchmesser</strong> dar. Weder Quelle noch Projekt oder Kabel werden verändert.</div>
+ <div class="summary" aria-label="Wand- und Rohrzahlen"><span>SW1 · 29</span><span>SW2 · 13</span><span>SW3 · 26</span><span>SW4 · 23</span><span>Gesamt · 91 Quellmarker</span></div>
+ <div id="compareStatus" class="status" role="status" aria-live="polite">Vier Original-/Demo-Wandpaare werden geladen …</div>
+ <div id="wallComparisons"></div>
+ <footer>Pitch-Wandvergleich · v2.0.11-beta.1 · Ein Vergleich je Wand mit unveränderter Rohr-ID-Menge. Fachliche Sichtabnahme durch Bro bleibt offen.</footer>
+</main>
+<script src="components.js?v=2.0.11-beta.1"></script>
+<script src="network.js?v=2.0.11-beta.1"></script>
+<script src="reference-data.js?v=2.0.11-beta.1"></script>
+<script src="schematic-positions.js?v=2.0.11-beta.1"></script>
+<script src="pitch-wall-compare.js?v=2.0.11-beta.1"></script>
+<script>
+'use strict';
+(function(){
+ const status=document.getElementById('compareStatus'),target=document.getElementById('wallComparisons');
+ try{
+  const source=window.KabelsalatReferences.create('pdf-u028');
+  const walls=window.KabelsalatPitchWalls.compareAll(source,window.KabelsalatSchematicPositions);
+  let count=0;
+  for(const wall of walls){
+   count+=wall.count;
+   const section=document.createElement('section');
+   section.className='wall';section.id='wall-'+wall.wallId;
+   const h=document.createElement('h2');h.textContent=wall.wallId+' · '+wall.count+' Leerrohr-Quellmarker';section.appendChild(h);
+   const p=document.createElement('p');
+   p.textContent='Exakt dieselben '+wall.count+' Rohr-IDs auf beiden Seiten · PDF-Seiten und Quelladressen je Kreis per Tooltip';
+   section.appendChild(p);
+   const pair=document.createElement('div');pair.className='pair';
+   for(const [name,records,preview] of [
+    ['Original · PDF-V2-Marker',wall.source,false],
+    ['Demo · 62%-Vorschau',wall.demo,true]
+   ]){
+    const card=document.createElement('div');card.className='panel '+(preview?'demo':'original');
+    const title=document.createElement('h3');title.textContent=name;card.appendChild(title);
+    const image=document.createElement('div');
+    // SVG markup originates exclusively from the validated PDF fixture;
+    // module escapes all source-ID and label text.
+    image.innerHTML=window.KabelsalatPitchWalls.svg(records,{wallId:wall.wallId,preview});
+    card.appendChild(image);
+    const caption=document.createElement('div');caption.className='caption';
+    caption.textContent=preview?'Schematische Ansicht, Verdichtungsfaktor 0,62. Kein Eingriff in Originalkoordinaten.':
+     'Quellkoordinaten, nicht vermessen. Kreisradien sind bewusst einheitliche Markersymbole.';
+    card.appendChild(caption);pair.appendChild(card);
+   }
+   section.appendChild(pair);target.appendChild(section);
+  }
+  status.textContent='✓ Vier Wandpaare geladen · '+count+' eindeutige Quell-IDs pro Ansicht · Datenvergleich ohne Änderungen.';
+ }catch(e){
+  target.textContent='';
+  status.className='status error';
+  status.textContent='⚠ Originalvergleich nicht verfügbar: '+e.message+'. Keine Ersatz-/Demodaten erfunden.';
+ }
+})();
+</script>
+</body>
+</html>
