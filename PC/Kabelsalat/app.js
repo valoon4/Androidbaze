@@ -5,6 +5,8 @@ const components=globalThis.KabelsalatComponents;
 if(!components)throw Error('Kabelsalat-Komponentenmodul fehlt');
 const networkModel=globalThis.KabelsalatNetwork;
 const routePlanner=globalThis.KabelsalatRoutePlanner;
+const worldRoute=globalThis.KabelsalatWorldRoute;
+if(!worldRoute)throw Error('Kabelsalat-XYZ-Routenmodul fehlt');
 if(!routePlanner)throw Error('Kabelsalat-Netzwegfinder fehlt');
 if(!networkModel)throw Error('Kabelsalat-Netzmodul fehlt');
 const qualityModel=globalThis.KabelsalatQuality,reportModel=globalThis.KabelsalatReports;
@@ -203,6 +205,9 @@ document.body.classList.toggle('explore-with-2d',exploreMode&&exploreWith2D);
 
 const undo=[],redo=[];
 let networkPathPreview=null;
+let worldRouteReport=null;
+let worldRouteSelection=null;
+function clearWorldRoute(){worldRouteReport=null;worldRouteSelection=null;}
 function clearNetworkPath(){networkPathPreview=null;}
 function routeView(){
  return networkPathPreview?.selected===-1?networkPathPreview?.primary:
@@ -271,7 +276,7 @@ function persist(){
  catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}
 }
 function change(fn,label='Planung geändert'){
- clearNetworkPath();resetSpacingPreview();
+ clearWorldRoute();clearNetworkPath();resetSpacingPreview();
  undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;
  fn();syncActiveShaft();
  if(project.network){
@@ -281,7 +286,7 @@ function change(fn,label='Planung geändert'){
  }
  renderAll();persist();
 }
-function undoRedo(back){clearNetworkPath();resetSpacingPreview();const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
+function undoRedo(back){clearWorldRoute();clearNetworkPath();resetSpacingPreview();const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;
  if(!plate())panelKey='OLA-floor';
  if(!project.supports.some(s=>s.id===supportId))supportId=project.supports[0]?.id||null;
@@ -885,6 +890,57 @@ function switchShaft(id,selectedCable=null){
   viewMode='3D';zoom=1;mapZoom=Math.max(.35,mapZoom);
  });
 }
+function renderWorldRouteStatus(){
+ const report=worldRouteReport,selected=selectedRoute();
+ $('worldRouteAnalyze').disabled=!selected||!(selected.steps||[]).length;
+ $('worldRouteCsv').disabled=!report||report.routeId!==selected?.id;
+ $('worldRouteElevation').hidden=!report||report.routeId!==selected?.id;
+ if(!report||report.routeId!==selected?.id){
+  $('worldRouteStatus').textContent='Kabelweg auswählen und XYZ-Segmente berechnen. Keine echte Kabellänge.';
+  $('worldRouteList').innerHTML='';return;
+ }
+ const length=report.localModelPolylineTotalMm===null?'unbekannt':
+  formatNetworkLength(report.localModelPolylineTotalMm);
+ $('worldRouteStatus').textContent=report.segmentCount+' lokale Kabelsegmente · '+report.gaps.length+
+  ' unbestätigte Schachtübergänge · Summe lokaler Modell-Polylinien: '+length+
+  ' · Echte Kabellänge UNBEKANNT'+(report.issues.length?' · ⚠ '+report.issues.length+' Datenfehler':'');
+ $('worldRouteStatus').style.background=report.issues.length?'#fff1e7':'#edf8f1';
+ $('worldRouteList').innerHTML=report.segments.map(seg=>
+  '<div class="trace-item"><b>'+seg.index+'. '+esc(seg.shaftId)+' / '+esc(seg.cableId)+'</b>'+
+  ' · '+esc(seg.status)+' · '+(seg.modelPolylineMm===null?'Länge unbekannt':esc(formatNetworkLength(seg.modelPolylineMm)))+
+  '<div class="small">XYZ-Punkte: '+seg.points.length+' · '+esc(seg.issues.join('; ')||'Nur Modellgeometrie')+'</div></div>').join('')+
+  report.gaps.map((g,i)=>'<div class="trace-item" style="border-left:3px solid #bf2d4b"><b>⚠ Lücke '+(i+1)+
+   ': '+esc(g.from)+' → '+esc(g.to)+'</b> · '+esc(g.linkId||'Kein Netzlink')+
+   '<div class="small">Unbestätigter physischer Übergang; keine erfundene Verbindung. Abstand Endpunkte: '+
+   (g.airGapMm===null?'unbekannt':esc(formatNetworkLength(g.airGapMm))+' (nur Luftlinie)')+'</div></div>').join('');
+}
+function drawWorldRouteElevation(){
+ const root=$('worldRouteElevation'),canvas=$('worldRouteHeightCanvas');
+ if(root.hidden||!networkOpen||!worldRouteReport)return;
+ const segs=worldRouteReport.segments.filter(s=>s.points.length>=2);
+ const box=canvas.getBoundingClientRect(),w=Math.max(1,box.width),h=180;
+ if(w<25)return;
+ const ratio=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(w*ratio);canvas.height=h*ratio;
+ const ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#fafdfe';ctx.fillRect(0,0,w,h);
+ if(!segs.length)return;
+ const ys=segs.flatMap(s=>s.points.map(p=>p[1])),min=Math.min(...ys),max=Math.max(...ys);
+ const range=Math.max(100,max-min),low=min-range*.12,high=max+range*.12;
+ const margin=28,usable=w-margin*2,step=usable/segs.length;
+ ctx.strokeStyle='#c1d3d9';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(margin,14);
+ ctx.lineTo(margin,h-22);ctx.lineTo(w-margin,h-22);ctx.stroke();
+ ctx.font='11px Segoe UI,Arial';ctx.fillStyle='#526e78';ctx.fillText(Math.round(max)+' mm',margin+3,14);
+ ctx.fillText(Math.round(min)+' mm',margin+3,h-26);
+ segs.forEach((seg,i)=>{
+  const base=margin+i*step,gap=Math.min(14,step*.15),size=Math.max(1,step-gap*2);
+  ctx.beginPath();seg.points.forEach((pt,j)=>{
+   const x=base+gap+(j/(seg.points.length-1))*size,y=h-22-(pt[1]-low)/(high-low)*(h-37);
+   if(j===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });ctx.lineWidth=2.5;ctx.strokeStyle='#168479';ctx.stroke();
+  ctx.textAlign='center';ctx.font='10px Segoe UI,Arial';ctx.fillStyle='#355f66';
+  ctx.fillText(seg.shaftId.slice(0,8),base+step/2,h-6);
+ });
+}
 function renderNetworkUI(){
  const net=project.network,shaft=activeShaft();
  $('viewport').classList.toggle('network-open',networkOpen);
@@ -953,6 +1009,7 @@ function renderNetworkUI(){
  $('netMapSummary').textContent=net.shafts.length+' Schächte · '+net.links.length+
  ' Verbindungen · '+net.routes.length+' Netz-Kabelwege'+(route?' · '+route.name:'');
  renderNetworkPath();
+ renderWorldRouteStatus();
 }
 function networkProjection(){
  const r=networkCanvas.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height);
@@ -993,6 +1050,25 @@ function drawNetwork(){
   }
   ctx.restore();
  }
+ // Independent source-aware XYZ points of existing, explicitly selected cables.
+ // NEVER join across inter-shaft gaps. Green denotes *local model geometry only*.
+ if(worldRouteReport?.routeId===selectedRoute()?.id){
+  ctx.save();ctx.lineWidth=3;ctx.strokeStyle='#148b73';ctx.fillStyle='#148b73';
+  for(const seg of worldRouteReport.segments){
+   if(seg.points.length<2)continue;
+   ctx.beginPath();
+   seg.points.forEach((xyz,i)=>{
+    const p=point({x:xyz[0],z:xyz[2]});
+    if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);
+   });
+   ctx.stroke();
+   for(const xyz of [seg.points[0],seg.points.at(-1)]){
+    const p=point({x:xyz[0],z:xyz[2]});
+    ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fill();
+   }
+  }
+  ctx.restore();
+ }
  const route=selectedRoute();
  if(route){
   const colors={OLA:'#d75c60',MS:'#3298bb',Weitere:'#b98b34'};
@@ -1020,6 +1096,7 @@ function drawNetwork(){
  }
  ctx.fillStyle='#597580';ctx.font='11px Segoe UI,Arial';ctx.textAlign='left';
  ctx.fillText('Globale X/Z-Koordinaten (mm) · schematischer Lageplan, keine Vermessungsfreigabe',12,h-12);
+ drawWorldRouteElevation();
 }
 
 const draft=$('draftCanvas'),geom2d=window.Kabelsalat2D;
@@ -1788,7 +1865,7 @@ $('netDeleteLink').addEventListener('click',()=>{
  if(!confirm('Netzverbindung löschen? Kabelwege können dadurch unvollständig werden.'))return;
  change(()=>{project.network.links=project.network.links.filter(l=>l.id!==netLinkId);netLinkId=null;});
 });
-$('netRouteSelect').addEventListener('change',()=>{netRouteId=$('netRouteSelect').value||null;renderAll();});
+$('netRouteSelect').addEventListener('change',()=>{clearWorldRoute();netRouteId=$('netRouteSelect').value||null;renderAll();});
 $('netNewRoute').addEventListener('click',()=>{
  if(project.network.routes.length>=200){alert('Maximal 200 Netz-Kabelwege.');return;}
  const name=prompt('Neuer Kabelweg – Bezeichnung','Trasse '+(project.network.routes.length+1));
@@ -1822,6 +1899,24 @@ $('netTraceList').addEventListener('click',e=>{
  const node=e.target.closest('[data-trace-shaft]');if(!node)return;
  switchShaft(node.dataset.traceShaft,node.dataset.traceCable);
  setNetworkOpen(false);
+});
+$('worldRouteAnalyze').addEventListener('click',()=>{
+ const r=selectedRoute();
+ clearWorldRoute();
+ try{
+  if(!r||!r.steps?.length)throw Error('Kabelweg mit lokalen Segmenten auswählen');
+  // Project snapshots are not mutated; saved network geometry is read-only.
+  worldRouteReport=worldRoute.assemble(project.network,r);
+  worldRouteSelection=r.id;
+  renderWorldRouteStatus();drawNetwork();setNetworkOpen(true);
+ }catch(e){renderWorldRouteStatus();$('worldRouteStatus').textContent='⚠ '+e.message;}
+});
+$('worldRouteCsv').addEventListener('click',()=>{
+ if(!worldRouteReport||worldRouteReport.routeId!==selectedRoute()?.id)return;
+ try{
+  download(filename()+'-xyz-lokale-segmente-ungeprueft.csv',
+   worldRoute.csv(worldRouteReport),'text/csv;charset=utf-8');
+ }catch(e){$('worldRouteStatus').textContent='CSV-Export nicht möglich: '+e.message;}
 });
 $('netShowTrace').addEventListener('click',()=>{
  if(!selectedRoute())return;setNetworkOpen(true);
