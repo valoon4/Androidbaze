@@ -60,6 +60,17 @@ const fs=require('node:fs'),path=require('node:path');
   assert.equal(await page.locator('#netPlannerList [data-network-alternative="-1"]').getAttribute('aria-pressed'),'true');
   assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),original,
    'Search must not modify persisted shafts/cables/network');
+  // Switching target invalidates the old route without touching engineering data.
+  await page.locator('#netPlannerTo').selectOption(info.ids[1]);
+  assert.match(await page.locator('#netPlannerSummary').textContent(),/Schächte auswählen/);
+  assert.equal(await page.locator('#netPlannerExport').isDisabled(),true);
+  await page.locator('#netPlannerTo').selectOption(info.ids[0]);
+  await page.locator('#netPlannerFind').click();
+  assert.match(await page.locator('#netPlannerSummary').textContent(),/Start und Ziel müssen/);
+  assert.equal(await page.locator('#netPlannerShow').isDisabled(),true);
+  await page.locator('#netPlannerTo').selectOption(info.ids[2]);
+  await page.locator('#netPlannerFind').click();
+  assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),original);
   await page.screenshot({path:path.join(out,'network-path-shortest-3d-linked-shafts.png'),fullPage:true});
   await page.locator('#netPlannerList [data-network-alternative="0"]').click();
   assert.equal(await page.locator('#netPlannerList [data-network-alternative="0"]').getAttribute('aria-pressed'),'true');
