@@ -172,7 +172,7 @@
    }
    segments.push({order:i+1,shaftId:step?.shaftId||'',cableId:step?.cableId||'',
     localA:a,localB:b,exists:!!cable,group:cable?.group||null,
-    sourceConfirmed:shaft?.snapshot?.sourceInfo?.geometryStatus==='surveyed'&&false});
+    sourceConfirmed:false});
    if(previous!==null){
     const link=g.links.find(l=>(l.from===previous?.shaftId&&l.to===step?.shaftId)||
      (l.to===previous?.shaftId&&l.from===step?.shaftId));
