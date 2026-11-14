@@ -23,6 +23,7 @@ Im **Profi-Modus → Netzübersicht → Netz-Wegfinder** zwei gespeicherte Schä
 - `find(net,from,to,{mode,excludeLinks})` → deterministischer Dijkstra-Pfad, oder `status:unreachable`; nur explizit vorhandene Links.
 - `alternatives(net,from,to,{mode,max})` → Hauptweg und verschiedene Ein-Link-Sperrvarianten.
 - `compareRoute(net,route)` → Dokumentationsauswertung eines bereits gespeicherten Kabelwegs.
+- `continuity(net,route)` → Segment-, Rohr- und Systemzuordnung prüfen; **unverified** trotz vorhandener Links, **broken** bei fehlenden Endpunkten/Kabeln/Links. Keinerlei physische Durchgängigkeit wird automatisch bestätigt.
 - `csv(result)` → UTF-8/BOM/CRLF und Schutz gegen CSV-Formelinjektion.
 
 **Eingabegrenzen:** maximal 30 Schächte, 150 Links, eindeutige Links und IDs, sichere Modell-Ganzzahlen in ±100.000.000 mm. Die App selbst erzwingt diese Obergrenzen beim Einlesen. Ungültige oder widersprüchliche Eingaben schlagen sichtbar fehl; sie werden **nicht** heimlich korrigiert oder als baulich freigegeben behandelt.
@@ -33,10 +34,11 @@ Im **Profi-Modus → Netzübersicht → Netz-Wegfinder** zwei gespeicherte Schä
 |---|---|---|
 | Unit-/Grenzfälle | [network-route-planner.test.js](./tests/network-route-planner.test.js) | 4er-Zyklus, Disconnected Graph, Gleichstand, Alternativen, CSV, 30er-Netz, source-immutability |
 | Deterministische Graphmatrix | [network-route-fuzz.test.js](./tests/network-route-fuzz.test.js) | **320 synthetische Graphkonfigurationen**, unabhängiger Bellman-Ford-Orakelvergleich; Zahl ist **Testfälle**, keine künstliche KAB-Task-Zählung |
+| Physische Kontinuitätsgrenzen | [network-continuity.test.js](./tests/network-continuity.test.js) | **201 getrennte Quelle-/Kabel-/Rohrkonflikt- und Negativprüfungen**, keine erfundene Freigabe |
 | Echte Browseransicht | [browser-network-path.js](./tests/browser-network-path.js) | Karte, Suchmodus, Alternative, Export, getrennte Komponenten, Browser-Fehler und unverändertes Projekt |
 | Gesamte UI | [app.js](./app.js) / [index.html](./index.html) | Vorschauzustand ist **nicht** gespeichert; bei tatsächlicher Projektänderung verworfen |
 | Veröffentlichen | [Workflow: Browser](https://github.com/valoon4/Androidbaze/actions/workflows/kabelsalat-pages.yml), [Workflow: Windows](https://github.com/valoon4/Androidbaze/actions/workflows/kabelsalat.yml) | Webversion und Offline-Pakete enthalten dasselbe Wegfindermodul |
 
-**Offene Parent-Tickets:** KAB-0352 (getrennte Netzkomponenten), KAB-0353 (Zyklus), KAB-0355/0356 (skalierte und größere Netzkarten), KAB-0365 (Link ≠ physischer Durchbruch), KAB-0375 (echter globaler XYZ-Kabelverlauf). Insbesondere KAB-0375 wird **nicht** als erledigt markiert: Diese Version berechnet ausschließlich globale X/Z-Modellluftlinien. Weder Y-Höhe noch echte Kabelanschlussgeometrie oder ein gebundener geplanter Rohrverlauf wird ergänzt. Bros fachlicher Sichtvergleich und reale Quellmaße fehlen.
+**Offene Parent-Tickets:** KAB-0366/0367/0374/0376/0377/0378 sind durch die strengere Kontinuitätsprüfung technisch begonnen, jedoch ohne echte Übergangsbelege ausdrücklich **nicht fachlich abgenommen**. KAB-0352 (getrennte Netzkomponenten), KAB-0353 (Zyklus), KAB-0355/0356 (skalierte und größere Netzkarten), KAB-0365 (Link ≠ physischer Durchbruch), KAB-0375 (echter globaler XYZ-Kabelverlauf). Insbesondere KAB-0375 wird **nicht** als erledigt markiert: Diese Version berechnet ausschließlich globale X/Z-Modellluftlinien. Weder Y-Höhe noch echte Kabelanschlussgeometrie oder ein gebundener geplanter Rohrverlauf wird ergänzt. Bros fachlicher Sichtvergleich und reale Quellmaße fehlen.
 
 **Reviewfragen an Bro:** Lassen sich die schrittweise getrennten Netzkomponenten und die gestrichelte Alternativroute verständlich unterscheiden? Welche echten Schachtverbindungen sind belegt, und an welchen Stellen existieren nur Plan-Links? Ohne diese Nachweise wird keine Ausführungsfreigabe erteilt.
