@@ -78,6 +78,10 @@ assert.ok(html.includes('src="network-route-planner.js?v='+version+'"'),'Route p
 for(const id of ['netPlannerFrom','netPlannerTo','netPlannerMode','netPlannerFind','netPlannerShow','netPlannerExport','netPlannerSummary','netPlannerList'])
  assert.ok(html.includes('id="'+id+'"'),'Netzwegfinder UI missing '+id);
 globalThis.KabelsalatRoutePlanner=require('../network-route-planner.js');
+globalThis.KabelsalatWorldRoute=require('../network-world-route.js');
+assert.ok(html.includes('src="network-world-route.js?v='+version+'"'),'World XYZ route script missing');
+for(const id of ['worldRoutePanel','worldRouteAnalyze','worldRouteCsv','worldRouteStatus','worldRouteList','worldRouteHeightCanvas'])
+ assert.ok(html.includes('id="'+id+'"'),'XYZ route UI missing: '+id);
 assert.ok(html.includes('src="quality.js?v='+version+'"'), 'Quality module not loaded');
 assert.ok(html.includes('src="reports.js?v='+version+'"'), 'Report module not loaded');
 assert.ok(html.includes('src="examples.js?v='+version+'"'), 'Examples module not loaded');
