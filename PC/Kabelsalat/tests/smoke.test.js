@@ -57,7 +57,7 @@ const pages=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/k
 const release=fs.readFileSync(path.resolve(__dirname,'../../../.github/workflows/kabelsalat.yml'),'utf8');
 assert.ok(pages.includes('pdf-geometry.js,schematic-positions.js,spacing-adjust.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
  'GitHub Pages must deploy concrete-wall.js, otherwise the UI cannot start');
-assert.ok(release.includes('pdf-geometry.js,schematic-positions.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
+assert.ok(release.includes('pdf-geometry.js,schematic-positions.js,spacing-adjust.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js'),
  'Offline ZIP must include the new concrete wall renderer');
 assert.ok(app.includes('concreteWall.build(THREE')&&app.includes('colorWrite:false'),
  'Reference walls must have real empty apertures and invisible selection hit planes');
