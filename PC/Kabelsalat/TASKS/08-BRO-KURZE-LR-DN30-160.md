@@ -22,3 +22,9 @@
 Bro: „ja bruder sieht schon besser aus aber diese lr die da drin sind wieso sind die so lang“. **Ursache des sichtbaren Eindrucks:** In der 3D-Darstellung liefen lange farbige `TubeGeometry`-*Kabelwege* bereits in der Schachtübersicht; diese können wie längliche LR aussehen. Die **LR sind tatsächlich Kreisöffnungen in der Betonwand**. Der vorherige Fix 360→160 mm kürzte nur einen Endmarker bei einseitig bekannten Kabelanschlüssen, **nicht** diese durchgehenden farbigen Linien.
 
 **Neuer Code in v2.0.6-beta.1:** Basic-Schachtansicht zeigt nur Beton und Rohrdurchbrüche; Kabelwege erscheinen erst in der klar beschrifteten Kabelansicht. Das ist eine **nicht destruktive Ansichtskorrektur**, keine physische Rohr-Längenänderung und keine Rohrverschiebung. Der visuelle Schritt ist implementiert, aber **KAB-0885 bleibt bis Bros Sichtabnahme offen**. Referenzdaten, Wandstärken und Kabelrouten sind nicht verändert.
+
+## Synthetische Zusatzregression · 14.11.2026
+
+- **KAB-0887:** [Tests mit 12 Demo-Nennweiten, fehlender Quelle und zweiter Fixture](../tests/sprint-30-2026-11-14.test.js) ergänzen den bestehenden [DN-Vergleichstest](../tests/bro-dn-range.test.js). Die ausdrücklich fiktive Demo und die PDF-V2-Referenz bleiben getrennt.
+- **KAB-0886/0888:** Größenrelation DN 50 zu DN 110 und unveränderte 91 PDF-Referenzöffnungen sind als Unit-Assertions hinterlegt. Das ist **keine** Browser-Sichtabnahme.
+- **Noch offen:** Bros Prüfung der Optik, 2D-/3D-Sichtvergleich, physikalische Öffnungsmaße, ein möglicher Referenzvergleich anhand unabhängiger Originalunterlagen. Kein Eltern-Ticket hiermit automatisch abgeschlossen.
