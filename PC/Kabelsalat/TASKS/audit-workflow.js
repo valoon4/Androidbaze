@@ -6,7 +6,7 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const SOURCE=['01-P0-QUELLE-UND-PITCH.md','02-P1-EDITOR-UND-NETZ.md',
  '03-P2-DATEN-UND-PRUEFUNG.md','04-P3-QA-BETRIEB-UND-FEEDBACK.md',
- '05-BRO-CHAT-FEEDBACK-IMPORT.md','06-BRO-CHAT-SYSTEM-DESIGN.md',
+ '05-BRO-CHAT-AVL-UND-REPORTS.md','06-BRO-CHAT-PRUEFFALL-UND-ARTEFAKT-QA.md',
  '07-BRO-BETON-ROHR-DM.md','08-BRO-KURZE-LR-DN30-160.md'];
 const WAVE=['S0','S1','S2','S3','S4','S5','S6'];
 function csv(line,delimiter){
