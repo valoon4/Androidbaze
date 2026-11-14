@@ -274,7 +274,7 @@ function optionsHTML(selected){let html='<option value="">â€“ Nicht zugeordnet â
 function parseEndpoint(v){if(!v)return null;const i=v.indexOf('|');return i<0?null:{wall:v.slice(0,i),hole:v.slice(i+1)};}
 function renderUI(){
  $('spacingPreview').disabled=exploreMode||!!project.sourceInfo;
- $('spacingApply').disabled=!spacingPlan||spacingPlan.wallId!==wallId||exploreMode||!!project.sourceInfo;
+ $('spacingApply').disabled=!spacingPlan||spacingPlan.moved===0||spacingPlan.wallId!==wallId||exploreMode||!!project.sourceInfo;
  compareSpacing(spacingPlan?.wallId===wallId?spacingPlan:null);
  const totalShafts=project.network.shafts.length;
  const totalCables=project.network.shafts.reduce((n,s)=>n+s.snapshot.cables.length,0);
