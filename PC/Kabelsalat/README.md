@@ -1,6 +1,15 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.8-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.9-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.9-beta.1 · Netz-Wegfinder und 320 synthetische Testkonfigurationen · 14.11.2026
+
+**NEU im Profi-Modus → Netzübersicht → Netz-Wegfinder:** Kürzeste Luftlinien-Verbindung und kleinste Anzahl von Übergängen im **bereits verlinkten Schachtnetz** finden. Verbundene Komponenten, isolierte Schächte und Zyklen werden direkt angezeigt. Weitere mögliche Linien können per Klick verglichen und als CSV exportiert werden. Die Netzkarte hebt nur die **schematische** Auswahl hervor.
+
+- **Keine Phantom-Verbindung:** Fehlende Links melden `Kein gespeicherter Netzweg`. Eine Auswahl ändert weder Schachtpositionen noch gespeicherte Kabelreferenzen, Verlaufssnapshots oder physikalische Parameter.
+- **QA:** [320 reproduzierbare Netzgraphen](./tests/network-route-fuzz.test.js) mit unabhängiger Pfadberechnung, [Unit-/Fehlertests](./tests/network-route-planner.test.js) und [echter Chromium-Test](./tests/browser-network-path.js); Stand des jeweiligen GitHub-Workflows entscheidet über Freigabe.
+- **Unverzichtbare Einschränkung:** Das Ergebnis ist eine Verbindung in der **Topologie** und eine Luftlinie anhand *schematischer* X/Z-Koordinaten, ausdrücklich **keine** real nachgewiesene Rohr-, Kabel- oder Ausführungstrasse. Originalplansätze, Y-Höhen, Brandschutz und örtliche Aufmaße sind weiterhin offen.
+- **Anleitung und Grenzen:** [Netz-Wegfinder](./NETWORK_ROUTE_PLANNER.md).
 
 ## 2.0.8-beta.1 · Drei große Funktionen: Rohrabstände sicher planen · 14.11.2026
 
