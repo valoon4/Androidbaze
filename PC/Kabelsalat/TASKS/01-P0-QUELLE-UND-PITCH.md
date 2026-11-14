@@ -280,6 +280,9 @@
 - [ ] **KAB-0215** – Verlassen der Präsentation ohne Verlust des aktiven Projekts prüfen
 - [ ] **KAB-0216** – Bros letzte Abnahme mit Bildpaaren und offenen Einwänden dokumentieren
 
+**KAB-0203–0206 · Pitch-Vierwandvergleich v2.0.11-beta.1 (15.11.2026):** Für SW1/SW2/SW3/SW4 sind **vier getrennte Original-vs.-62%-Demo-Paare** technisch implementiert und im echten Chromium mit **29/13/26/23 eindeutigen PDF-V2-Quellmarker-IDs** geprüft. [Direkter Vergleich](https://valoon4.github.io/Androidbaze/pitch-walls.html) · [36 atomare Einzelnachweise](./ATOMIC/EVIDENCE_2026-11-15_PITCH_WALLS_4.md) · [Chromium-Screenshot-Run](https://github.com/valoon4/Androidbaze/actions/runs/43653336898). **Keine Freigabe behauptet:** Die vier Checkboxen bleiben bis zu [Bros Sichtabnahme #75](https://github.com/valoon4/Androidbaze/issues/75) offen; KAB-0216 dokumentiert die spätere finale Abnahme. Die gezeigten Kreise sind ausdrücklich **nicht vermessene Quellmarker**, keine bestätigten physischen Rohre oder DN-Maße.
+
+
 
 ## Quellpositions-Nachweise 12.11.2026
 
