@@ -1801,7 +1801,7 @@ $('netShowTrace').addEventListener('click',()=>{
 });
 $('netPlannerFind').addEventListener('click',()=>{
  try{
-  syncActiveShaft(); // snapshots reflect existing edits, never change network link topology
+  // Pure read-only search; no snapshot synchronization or project persistence.
   const from=$('netPlannerFrom').value,to=$('netPlannerTo').value,mode=$('netPlannerMode').value;
   const paths=routePlanner.alternatives(project.network,from,to,{mode,max:3});
   networkPathPreview={...paths,mode,topology:routePlanner.topology(project.network),selected:-1};
