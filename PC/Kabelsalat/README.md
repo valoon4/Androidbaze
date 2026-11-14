@@ -1,6 +1,17 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.9-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.10-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## 2.0.10-beta.1 · Globale XYZ-Kabelsegmente mit offenen Übergängen · 14.11.2026
+
+**NEU – schwere Aufgabe KAB-0375, technischer Teil:** Im **Profi-Modus → Netz-Kabelwege** lassen sich bestehende lokale Kabelsegmente aus bis zu 30 Schacht-Snapshots in globale **schematische XYZ-Modellkoordinaten** umrechnen. Die Netzkarte zeichnet ausschließlich vorhandene lokale Teilstücke, das Höhenprofil zeigt Modellhöhen getrennt nach Segment, der CSV-Export liefert vorhandene Punktkoordinaten.
+
+- **Sicherheitsfunktion:** Schachtübergänge werden ausdrücklich als **unbestätigte physische Lücken** gemeldet; es gibt keine automatisch durchgehende Kabeltrasse, keine erfundene Y-Höhe oder angesetzte Rohrlänge.
+- **PDF V2 und Legacy:** Zwei bereits vorhandene unterschiedliche Wandachsmodelle werden berücksichtigt, mit Unit-Tests gegen den bestehenden PDF-Geometrie-Code.
+- **Fehlerdiagnose:** Fehlende Kabel, Rohr-IDs, Anschlusszuordnungen, Routenpunkte oder Schachtlinks verursachen sichtbare Warnungen. Die echte Kabellänge bleibt **unbekannt**.
+- **Datenschutz:** Der Berechnungs- und Exportweg verändert keine gespeicherten Projektdaten; lokale Modelle und Original-PDF werden nicht überschrieben. Änderungen verwerfen alte Vorschauen.
+- **QA:** [Unit- und Negativtest](./tests/network-world-route.test.js), [Chromium-Browsertest](./tests/browser-world-route.js), [Konzept und offene Bro-Abnahme](./NETWORK_WORLD_XYZ.md).
+- **Noch offen:** KAB-0375 ist **nicht fachlich abgeschlossen**: Für echte globale 3D-Kabeltrassen fehlen Drehwinkel/realer Höhenbezug, Originalmaße und belegte Verbindung an Schachtgrenzen.
 
 ## 2.0.9-beta.1 · Netz-Wegfinder und 320 synthetische Testkonfigurationen · 14.11.2026
 
@@ -90,8 +101,8 @@ Der kanonische [Task-Tracker mit 888 nummerierten Aufgaben](./TASKS/README.md) e
 
 Die aktuellen Dateien werden automatisiert im GitHub-Release veröffentlicht, sobald der Windows-/Offline-Build für `v2.0.3-beta.1` erfolgreich endet. Die darunter genannten Versionen `1.9.3` sind **nur historische Beispiele**; die tatsächlich angebotenen Artefaktnamen im Release prüfen. Im GitHub-Release [kabelsalat-latest](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest) gibt es:
 
-- `Kabelsalat-2.0.9-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
-- `Kabelsalat-2.0.9-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
+- `Kabelsalat-2.0.10-beta.1-Browser-Offline.zip`: herunterladen, **vollständig entpacken**, `index.html` in einem aktuellen Chrome/Edge öffnen. Kein Node.js, keine Installation und keine Serververbindung nötig. Der Ordner `vendor/` muss neben `index.html` bleiben.
+- `Kabelsalat-2.0.10-beta.1-Windows.exe`: portable Windows 10/11-Anwendung mit Electron. Doppelklick; keine dauerhafte Installation erforderlich.
 
 *Hinweis zur Datenübernahme:* Vor dem Wechsel vom alten Schachtwand Planer die Projekte über **Projekt speichern** als JSON exportieren und anschließend in Kabelsalat über **Öffnen** laden. Das lokale Autosave kann durch die neue App-Identität anders gespeichert werden.
 
@@ -302,6 +313,6 @@ Eine zusätzliche öffentlich erreichbare GitHub-Pages-Webseite ist als Workflow
 
 ## Einzeldatei fürs direkte Öffnen in Chrome/Edge (ohne ZIP und Installation)
 
-Die Release-Datei `Kabelsalat-2.0.9-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
+Die Release-Datei `Kabelsalat-2.0.10-beta.1-Browser-Einzeldatei.html` enthält alle JavaScript-Bibliotheken und Beispiele in einer einzigen HTML-Datei. Datei herunterladen und **doppelklicken**: Sie läuft lokal im Browser ohne irgendeinen Installer. Die HTML-Datei kann per E-Mail/Chat an den Fachanwender weitergegeben werden. Der Code verwendet **SHA-256-basierte CSP-Script-Hashes**, damit keine unbegrenzte Inline-Script-Freigabe nötig ist. Reine Browser-Downloads und lokale Projekt-JSON-Dateien bleiben möglich.
 
 **Hinweis:** Ob `localStorage` für `file://` funktioniert, hängt von Browser- und IT-Sicherheitsrichtlinien ab. Eigene Projekte deshalb immer mit „Projekt speichern“ als JSON exportieren, um Datenverlust auszuschließen. Eine Firmenrichtlinie kann auch lokale HTML-Dateien blockieren; dann IT-Abstimmung oder eine freigegebene GitHub-Pages-/Intranet-Webseite verwenden. **Keine Sicherheitsbarrieren umgehen.**
