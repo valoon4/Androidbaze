@@ -274,7 +274,13 @@ let liveBrowser=null;
   assert.equal(await page.locator('#holeDn').getAttribute('max'),'160');
   // KAB-0886/M05 + KAB-0888/M05: a reversible local view/material control.
   const beforeMaterial=await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
+  const beforeCameraBounds=await page.locator('#scene').boundingBox();
+  await page.locator('#scene').screenshot({path:path.join(out,'bro-fixed-camera-before-material.png')});
   await page.locator('#opacity').evaluate(el=>{el.value='65';el.dispatchEvent(new Event('change',{bubbles:true}));});
+  const afterCameraBounds=await page.locator('#scene').boundingBox();
+  assert.equal(afterCameraBounds.width,beforeCameraBounds.width,'Fixed camera canvas width must stay equal');
+  assert.equal(afterCameraBounds.height,beforeCameraBounds.height,'Fixed camera canvas height must stay equal');
+  await page.locator('#scene').screenshot({path:path.join(out,'bro-fixed-camera-after-material.png')});
   const afterMaterial=await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
   assert.equal(afterMaterial.opacity,65,'Expert material opacity must be editable');
   assert.deepEqual(afterMaterial.walls,beforeMaterial.walls,'Opacity cannot shift synthetic bore geometry');
