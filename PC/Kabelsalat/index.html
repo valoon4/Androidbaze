@@ -835,21 +835,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <button id="csvExport" class="btn soft tiny" type="button">Aktuelle Daten als CSV</button>
 </div>
 <div id="csvStatus" class="small" role="status" aria-live="polite">Noch kein CSV-Import geplant.</div>
-<details id="batchShaftPanel" style="margin-top:14px">
-<summary><strong>400+ Schächte · Kabeldurchgänge als Liste</strong></summary>
-<p class="small">Unabhängige Massenanalyse von bis zu 5.000 Schächten und 40.000 Kabel-/Schachtzuordnungen. Keine Schachtpläne oder Kabelübergänge werden erfunden. Das Editorprojekt bleibt unverändert.</p>
-<label class="field">Schachtliste (CSV)<textarea id="batchShaftCsv" rows="4" maxlength="5000000" placeholder="shaft_id;shaft_name;location;source"></textarea></label>
-<label class="field">Kabeldurchgänge je Schacht (CSV)<textarea id="batchPassageCsv" rows="4" maxlength="5000000" placeholder="shaft_id;cable_id;sequence;source;status"></textarea></label>
-<label class="field">Kabel suchen<input id="batchCableSearch" maxlength="120" placeholder="z. B. K-01; leer = alle"></label>
-<div class="row" style="flex-wrap:wrap">
-<button id="batchTemplate" class="btn soft tiny" type="button">Beispiel laden</button>
-<button id="batchAnalyze" class="btn primary tiny" type="button">Liste prüfen</button>
-<button id="batchExportCsv" class="btn soft tiny" type="button" disabled>↓ CSV übergeben</button>
-<button id="batchExportTxt" class="btn soft tiny" type="button" disabled>↓ Textliste</button>
-</div>
-<div id="batchStatus" role="status" aria-live="polite" class="small">Noch keine Schachtliste geprüft.</div>
-<div id="batchResults" class="small" style="max-height:220px;overflow:auto;margin-top:8px"></div>
-</details>
 <h3 style="margin-top:15px">Projektausgabe</h3>
 <div class="row" style="flex-wrap:wrap">
 <button id="exportPdf" class="btn primary">↓ PDF-Bericht</button>
@@ -1027,6 +1012,6 @@ K01;Kabel 1;S003;3;Plan A S. 6;KANDIDAT</pre>
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.12-beta.1"></script><script src="vendor/three.min.js?v=2.0.12-beta.1"></script><script src="editor2d.js?v=2.0.12-beta.1"></script><script src="components.js?v=2.0.12-beta.1"></script><script src="network.js?v=2.0.12-beta.1"></script><script src="network-route-planner.js?v=2.0.12-beta.1"></script><script src="network-world-route.js?v=2.0.12-beta.1"></script><script src="quality.js?v=2.0.12-beta.1"></script><script src="reports.js?v=2.0.12-beta.1"></script><script src="reference-data.js?v=2.0.12-beta.1"></script><script src="examples.js?v=2.0.12-beta.1"></script><script src="pdf-geometry.js?v=2.0.12-beta.1"></script><script src="schematic-positions.js?v=2.0.12-beta.1"></script><script src="spacing-adjust.js?v=2.0.12-beta.1"></script><script src="hole-editor-ops.js?v=2.0.12-beta.1"></script><script src="cable-editor-ops.js?v=2.0.12-beta.1"></script><script src="pipe-dimensions.js?v=2.0.12-beta.1"></script><script src="photo-candidates.js?v=2.0.12-beta.1"></script><script src="concrete-wall.js?v=2.0.12-beta.1"></script><script src="construction-v2.js?v=2.0.12-beta.1"></script><script src="pdf-visual.js?v=2.0.12-beta.1"></script><script src="csv-data.js?v=2.0.12-beta.1"></script><script src="shaft-handover.js?v=2.0.12-beta.1"></script><script src="shaft-batch.js?v=2.0.12-beta.1"></script><script src="app.js?v=2.0.12-beta.1"></script>
+<script src="recovery.js?v=2.0.12-beta.1"></script><script src="vendor/three.min.js?v=2.0.12-beta.1"></script><script src="editor2d.js?v=2.0.12-beta.1"></script><script src="components.js?v=2.0.12-beta.1"></script><script src="network.js?v=2.0.12-beta.1"></script><script src="network-route-planner.js?v=2.0.12-beta.1"></script><script src="network-world-route.js?v=2.0.12-beta.1"></script><script src="quality.js?v=2.0.12-beta.1"></script><script src="reports.js?v=2.0.12-beta.1"></script><script src="reference-data.js?v=2.0.12-beta.1"></script><script src="examples.js?v=2.0.12-beta.1"></script><script src="pdf-geometry.js?v=2.0.12-beta.1"></script><script src="schematic-positions.js?v=2.0.12-beta.1"></script><script src="spacing-adjust.js?v=2.0.12-beta.1"></script><script src="hole-editor-ops.js?v=2.0.12-beta.1"></script><script src="cable-editor-ops.js?v=2.0.12-beta.1"></script><script src="pipe-dimensions.js?v=2.0.12-beta.1"></script><script src="photo-candidates.js?v=2.0.12-beta.1"></script><script src="concrete-wall.js?v=2.0.12-beta.1"></script><script src="construction-v2.js?v=2.0.12-beta.1"></script><script src="pdf-visual.js?v=2.0.12-beta.1"></script><script src="csv-data.js?v=2.0.12-beta.1"></script><script src="shaft-handover.js?v=2.0.12-beta.1"></script><script src="app.js?v=2.0.12-beta.1"></script>
 </body>
 </html>
