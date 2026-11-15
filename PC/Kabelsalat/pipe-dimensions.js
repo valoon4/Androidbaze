@@ -49,8 +49,9 @@
  }
  function apertureMm(h){
   const entry=forHole(h);
-  // Explicit drawing/verified bore radius; legacy DN is a schematic fallback.
-  return entry.openingMm??entry.nominalMm??70;
+  // Bare-hole legacy fallback is VIEW-ONLY. QA must flag missing openingMm
+  // and must never use a presumed conduit inner diameter for cable clearance.
+  return entry.openingMm??(openingType(h)==='bare-hole'?validMm(h?.dn):entry.nominalMm)??70;
  }
  function describe(h){
   const d=forHole(h),kind=openingType(h),qualified=d.status==='reviewed'?'fachlich dokumentiert':
