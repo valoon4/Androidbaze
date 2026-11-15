@@ -49,6 +49,15 @@ const fs=require('node:fs'),path=require('node:path');
   assert.equal(await page.locator('#spacingApply').isDisabled(),false);
   assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),before,
    'Preview must not persist anything');
+  // Editing either spacing input must discard a computed but not applied
+  // geometry proposal, with original cable IDs and positions untouched.
+  await page.locator('#spacingGap').fill('75');
+  assert.equal(await page.locator('#spacingApply').isDisabled(),true);
+  assert.match(await page.locator('#spacingCompare').textContent(),/Vorschau erneut berechnen/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),before);
+  await page.locator('#spacingGap').fill('60');
+  await page.locator('#spacingPreview').click();
+  assert.equal(await page.locator('#spacingApply').isDisabled(),false);
   await page.screenshot({path:path.join(out,'spacing-before-after-preview.png'),fullPage:true});
   await page.locator('#spacingApply').click();
   const after=JSON.parse(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')));
