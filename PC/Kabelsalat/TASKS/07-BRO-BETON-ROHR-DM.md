@@ -62,3 +62,18 @@ Die neue Darstellung der zusammenhängenden Betonwand mit durchgängigen ausgesc
 **KAB-0877 / KAB-0878:** [Erfolgreicher vollständiger Browser-3D-Lauf](https://github.com/valoon4/Androidbaze/actions/runs/43708404172) auf `b6dec368ab5f32721d374f814d348724307b494f` mit [15,8-MB-Screenshot-Artefakt](https://github.com/valoon4/Androidbaze/actions/runs/43708404172/artifacts/14159621745). Enthalten sind u. a. unveränderte PDF-Wandansichten, Basic-Schacht, Profi-Editor und synthetische Betonöffnungen 60/110/116. Echt ausgeführte WebGL-/Browserprüfungen und PDF-Originalwiederherstellung grün.
 
 **KAB-0877/M15 / KAB-0878/M05:** Screenshot/Test-Artefakt hier am Parent verlinkt. **Die eigene ästhetische Sichtabnahme durch Bro bleibt offen** (insbesondere KAB-0878/M09); ein CI-Screenshot ersetzt dessen Rückmeldung nicht.
+
+## Neues Bro-Feedback · 15.11.2026 · Nur Betonloch statt Leerrohr
+
+**Originalaussage, von Eugi übermittelt:** „die leerrohre können auch einfach nur ein loch in dieser schachtwand sein das müssen n icht unbedingt leerrorhre sein, die dimension muss passen“.
+
+| Fachpunkt | Entscheidung / technische Umsetzung |
+|---|---|
+| Bauart | Eine dargestellte Öffnung ist **nicht automatisch ein verlegtes Leerrohr**. Drei Zustände: Bauart unbekannt (Bestandsprojekte), reines Betonloch (`bare-hole`) oder vorhandenes Leerrohr (`conduit`). |
+| Maß | Bei `bare-hole` ist **Loch-Ø (`dimensionSpec.openingMm`)** der relevante Durchbruchdurchmesser. Er wird beim manuellen Umstellen von der Oberfläche abgefragt (20–600 mm); DN/Innen-/Außen-Ø eines nicht vorhandenen Rohrs sind dort keine technischen Rohrangaben. |
+| Ansicht | Der 3D-Betonblock hat bereits echte ausgeschnittene Durchbrüche; kein hervorstehendes künstliches Rohr. 2D beschriftet explizite reine Löcher „Loch Ø…“, statt „DN…“. |
+| Prüfung | Kabeldurchgang bei `bare-hole` gegen **Loch-Ø**, nicht gegen einen angenommenen Rohr-Innen-Ø; fehlender Loch-Ø führt zu einer **sichtbaren Prüf-Warnung**, nicht zu einer erfundenen bestätigten Größe. Alte DN-Werte bleiben höchstens schematischer **Anzeige-Fallback**. |
+| Datenbestand | Alte Projekte bleiben in `unknown` (kein impliziter Rohrnachweis); neue Bauart wird als optionales `openingType` im v5-JSON gespeichert. Quellwerte/IDs und Verbindungen bleiben unberührt. |
+| Grenzen | Bros Hinweis ist **eine Anforderung**, keine bestätigte Ist-Aufnahme für jeden Schacht und keine neue Hersteller-/Brandschutzfreigabe. Die visuelle Abnahme KAB-0877/0879 bleibt offen. |
+
+**Technischer Nachweis:** [Durchmesser-Funktionen](../pipe-dimensions.js), [2D/3D-Editor und Speicherung](../app.js), [Geometrieprüfung](../quality.js), [42 gezielte Regressionen](../tests/bare-hole-feedback.test.js); der neue Test ist in `npm test` eingehängt. **Nicht behauptet:** unabhängige aktuelle Chromium-/Windows-Vollabnahme oder gemessene Lochmaße.
