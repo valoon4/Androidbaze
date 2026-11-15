@@ -39,6 +39,30 @@ const path=require('node:path'),fs=require('node:fs');
    await page.locator('#toggleExpert').click();
   const read=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
   const baseline=await read();
+  // KAB-0235/0237/0248: click-to-add with explicit DN and a 25-mm grid.
+  await page.locator('#draftWallSelect').selectOption('SW4');
+  await page.locator('#draftNewDn').fill('75');
+  await page.locator('#draftSnapStep').selectOption('25');
+  await page.locator('#draftAdd').click();
+  const canvasPoint=async(wallId,xMm,yMm)=>page.evaluate(([wallId,xMm,yMm])=>{
+   const p=JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1'));
+   const canvas=document.querySelector('#draftCanvas'),rect=canvas.getBoundingClientRect();
+   const pdf=p.sourceInfo?.sourceVersion?.startsWith('PDF V2');
+   const on13=wallId==='SW1'||wallId==='SW3';
+   const span=(on13?pdf:!pdf)?p.dims.w:p.dims.d;
+   const m=window.Kabelsalat2D.metrics(span,p.dims.h,rect.width,rect.height);
+   const pos=window.Kabelsalat2D.toPixels(m,xMm,yMm);
+   return {x:rect.x+pos.x,y:rect.y+pos.y};
+  },[wallId,xMm,yMm]);
+  const addedAt=await canvasPoint('SW4',350,350);
+  await page.mouse.click(addedAt.x,addedAt.y);
+  const afterAdd=await read();
+  const added=afterAdd.walls[3].holes;
+  assert.equal(added.length,1,'2D pointer click must add one pipe on SW4');
+  assert.equal(added[0].dn,75);
+  assert.equal(Math.round(added[0].u*afterAdd.dims.w),350);
+  assert.equal(Math.round(added[0].v*afterAdd.dims.h),350);
+  assert.deepEqual(afterAdd.cables,baseline.cables);
   await page.locator('#draftWallSelect').selectOption('SW3');
   await page.locator('#groupStartX').fill('250');
   await page.locator('#groupStartY').fill('300');
@@ -50,7 +74,7 @@ const path=require('node:path'),fs=require('node:fs');
   await page.locator('#groupPreview').click();
   assert.match(await page.locator('#groupStatus').textContent(),/4 LR vorgeschlagen/);
   assert.equal(await page.locator('#groupApply').isDisabled(),false);
-  assert.deepEqual(await read(),baseline,'Preview must not mutate the shaft model');
+  assert.deepEqual(await read(),afterAdd,'Preview must not mutate the shaft model');
   await page.screenshot({path:path.join(out,'hole-editor-group-preview.png'),fullPage:true});
   await page.locator('#groupApply').click();
   const afterGroup=await read(),newHoles=afterGroup.walls.find(w=>w.id==='SW3').holes;
@@ -85,6 +109,28 @@ const path=require('node:path'),fs=require('node:fs');
   // The final copy cannot inherit a human measurement certification.
   const theCopy=copyWall.find(h=>h.id.includes('-copy-'));
   assert.equal(theCopy.dimensionSpec.status,'unverified');
+  // KAB-0242/0243: real pointer drag, once with 25-mm grid and once at 1 mm.
+  const dragFirst=async(toX,toY)=>{
+   const p=await read(),h=p.walls[2].holes.find(h=>h.id===newHoles[0].id);
+   const from=await canvasPoint('SW3',h.u*p.dims.d,h.v*p.dims.h);
+   const to=await canvasPoint('SW3',toX,toY);
+   await page.mouse.move(from.x,from.y);
+   await page.mouse.down();
+   await page.mouse.move(to.x,to.y,{steps:1});
+   await page.mouse.up();
+  };
+  await dragFirst(800,900);
+  let afterSnap=await read(),moved=afterSnap.walls[2].holes.find(h=>h.id===newHoles[0].id);
+  assert.equal(Math.round(moved.u*afterSnap.dims.d),800);
+  assert.equal(Math.round(moved.v*afterSnap.dims.h),900);
+  await page.locator('#draftSnapStep').selectOption('1');
+  await dragFirst(777,877);
+  const afterFine=await read();
+  moved=afterFine.walls[2].holes.find(h=>h.id===newHoles[0].id);
+  assert.equal(Math.round(moved.u*afterFine.dims.d),777);
+  assert.equal(Math.round(moved.v*afterFine.dims.h),877);
+  assert.deepEqual(afterFine.cables,baseline.cables);
+  await page.screenshot({path:path.join(out,'hole-editor-snap-on-off.png'),fullPage:true});
   // Transfer a connected bore on SW1 to free SW4, explicitly accepted dialogs.
   await page.locator('#draftWallSelect').selectOption('SW1');
   const coords=await page.evaluate(()=>{
