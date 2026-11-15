@@ -495,10 +495,16 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
  <p class="small">Quelle und Trasse nur, wenn sie dokumentiert sind. DN ist keine bestätigte Lochgröße.</p>
  </div>
  <div id="holeEditor" style="display:none">
-<hr><h3 id="holeTitle">Ausgewähltes Leerrohr</h3>
+<hr><h3 id="holeTitle">Ausgewählte Wandöffnung</h3>
+<label class="field">Bauart der Wandöffnung<select id="holeOpeningType" class="selector">
+<option value="unknown">Unbekannt / nur im Plan dargestellt</option>
+<option value="bare-hole">Nur rundes Loch in Beton (ohne Leerrohr)</option>
+<option value="conduit">Eingebautes Leerrohr vorhanden</option>
+</select></label>
+<p class="small">Ein Loch ist nicht automatisch ein Leerrohr. Bei „Nur Loch“ ist der Lochdurchmesser in mm separat erforderlich; DN ist dann keine Rohr-Nennweite.</p>
 <div class="row"><label class="field">Position (mm)<input type="number" id="holeU" min="0" max="12000" step="1"></label>
 <label class="field">Höhe (mm)<input type="number" id="holeV" min="0" max="8000" step="1"></label></div>
-<label class="field">DN des LR (30–160, schematisch)<input type="number" id="holeDn" min="30" max="160" step="1" list="holeDnSuggestions"></label>
+<label class="field">DN des Leerrohrs (nur mit Rohr, schematisch)<input type="number" id="holeDn" min="30" max="160" step="1" list="holeDnSuggestions"></label>
 <datalist id="holeDnSuggestions"><option value="30"></option><option value="40"></option><option value="50"></option><option value="60"></option><option value="63"></option><option value="75"></option><option value="90"></option><option value="110"></option><option value="116"></option><option value="125"></option><option value="140"></option><option value="160"></option></datalist>
 <div id="holeEditStatus" class="small" role="status" aria-live="polite">Alle Maße sind schematisch, keine bautechnische Freigabe.</div>
 <p class="small">DN 50 wird im 2D-/3D-Demomodell proportional kleiner als DN 110 dargestellt. Die echte Betonöffnung kann einen anderen Ø haben; Original-Referenzdaten bleiben unverändert.</p>
@@ -512,7 +518,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
  <label class="field">Maßquelle / Planreferenz<input id="holeDimensionSource" maxlength="240" placeholder="Dokument + Seite oder Aufmaß"></label>
  <label class="field">Prüfstatus<select id="holeDimensionStatus"><option value="unverified">Unbestätigt</option><option value="candidate">Kandidat</option><option value="reviewed">Mit Quelle geprüft</option></select></label>
  <label class="field">Prüfperson (nur bei geprüft)<input id="holeDimensionReviewer" maxlength="240" placeholder="noch keine fachliche Abnahme"></label>
- <button id="saveHoleDimensions" class="btn soft full" type="button">Rohrmaße getrennt speichern</button>
+ <button id="saveHoleDimensions" class="btn soft full" type="button">Öffnungstyp und Maße speichern</button>
  <p class="small">DN ist nicht automatisch der reale Innen-, Außen- oder Lochdurchmesser. Quelle, Prüfer und physisches Maß werden für „geprüft“ verlangt.</p>
 </div>
 <div class="dim-editor" role="group" aria-label="Vorschläge aus beschriftetem PDF-Plantext">
