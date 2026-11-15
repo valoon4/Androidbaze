@@ -1253,16 +1253,23 @@ function draw2D(){
 function copySelectedHole(){
  const w=wall(),selected=hole();if(!selected)return;
  if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
- const span=wallSpanMm(w.id),height=project.dims.h,x=selected.u*span;
- const dx=x+100+(selected.dn||70)/2<=span?100:-100;
- const clone={id:uid(w.id+'-copy'),...geom2d.copyOffset(selected,span,height,dx,0)};
- if(selected.dimensionSpec){
-  const old=pipeDimensions.forHole(selected);
-  clone.dimensionSpec=pipeDimensions.normalize({...old,source:'',reviewer:'',
-   status:'unverified',method:'manual',candidateMm:null,
-   note:'Geometrische Kopie; Maß- und Quellbestätigung nicht mitkopiert'},clone.dn);
+ const span=wallSpanMm(w.id),height=project.dims.h,step=Number($('draftSnapStep').value)||1;
+ const candidates=[[150,0],[-150,0],[0,150],[0,-150],[250,0],[-250,0]];
+ let target=null;
+ for(const [dx,dy] of candidates){
+  const xMm=holeEditorOps.snapMm(selected.u*span+dx,step),
+   yMm=holeEditorOps.snapMm(selected.v*height+dy,step);
+  const check=holeEditorOps.candidate(project,w.id,{xMm,yMm,dn:selected.dn,
+   openingMm:selected.dimensionSpec?.openingMm});
+  if(check.ok&&!check.warnings.length){target=check;break;}
  }
- change(()=>{w.holes.push(clone);holeId=clone.id;});
+ if(!target){alert('Kein freier Kopierplatz ohne Wand-/Rohrkollision gefunden.');return;}
+ if(project.sourceInfo&&!confirm('Aus importierter Quelle eine manuelle Rohrkopie erstellen?'))return;
+ const clone={id:holeEditorOps.uniqueId(project,w.id,'copy'),row:0,col:0,
+  u:target.u,v:target.v,dn:selected.dn};
+ if(selected.dimensionSpec)
+  clone.dimensionSpec=pipeDimensions.normalize(holeEditorOps.copySpec(selected),clone.dn);
+ change(()=>{w.holes.push(clone);holeId=clone.id;},'Leerrohr sicher kopiert');
 }
 function draftPoint(e){
  const rect=draft.getBoundingClientRect();
