@@ -142,6 +142,11 @@ function physicalOpening(h){
  return Number.isFinite(val)&&val>=20&&val<=600?val:Number(h?.dn)||70;
 }
 function effectiveInner(h){
+ // For a bare wall hole, never infer a fictitious pipe's inner DN.
+ if(h?.openingType==='bare-hole'){
+  const opening=h?.dimensionSpec?.openingMm;
+  return Number.isFinite(opening)&&opening>=20&&opening<=600?opening:null;
+ }
  const val=h?.dimensionSpec?.innerMm;
  return Number.isFinite(val)&&val>=20&&val<=600?val:Number(h?.dn)||70;
 }
@@ -235,6 +240,9 @@ function evaluate(net,settings){
     (pdf?p.dims.w:p.dims.d):(pdf?p.dims.d:p.dims.w);
    for(let i=0;i<wall.holes.length;i++){
     const a=wall.holes[i],r=physicalOpening(a)/2,ax=a.u*span,ay=a.v*p.dims.h;
+    if(a.openingType==='bare-hole'&&effectiveInner(a)===null)
+     add('warning','BARE_HOLE_SIZE_UNKNOWN',shaft.id,a.id,
+      wall.id+' / '+a.id+': Wandloch ohne dokumentierten Lochdurchmesser – schematischer Kreis, keine Maßprüfung');
     const edge=Math.min(ax-r,span-ax-r,ay-r,p.dims.h-ay-r);
     if(edge<0)add('error','OUTSIDE_WALL',shaft.id,a.id,
      wall.id+' / '+a.id+': Rohröffnung überschreitet Wandrand um '+Math.round(-edge)+' mm');
@@ -263,11 +271,16 @@ function evaluate(net,settings){
     const end=cable[key],wall=p.walls.find(x=>x.id===end?.wall),
       hole=wall?.holes.find(x=>x.id===end?.hole);
     if(!hole){add('warning','MISSING_END',shaft.id,cable.id,cable.name+': Anschluss '+key.toUpperCase()+' fehlt');continue;}
-    if(Number(cable.diameter)>effectiveInner(hole))
+    const available=effectiveInner(hole);
+    if(hole.openingType==='bare-hole'&&available===null)
+     add('warning','BARE_HOLE_CABLE_UNCHECKABLE',shaft.id,cable.id,
+      cable.name+': Kabeldurchgang ohne verifiziertes Öffnungsmaß ('+key.toUpperCase()+')');
+    else if(Number(cable.diameter)>available)
      add('error','CABLE_TOO_WIDE',shaft.id,cable.id,
       cable.name+': Kabel-Ø '+cable.diameter+' mm größer als '+
-      (hole.dimensionSpec?.innerMm?'dokumentierter Rohr-Innen-Ø ':'schematischer Leerrohr-DN ')+
-      effectiveInner(hole)+' mm ('+key.toUpperCase()+')');
+      (hole.openingType==='bare-hole'?'dokumentierter Loch-Ø ':
+       hole.dimensionSpec?.innerMm?'dokumentierter Rohr-Innen-Ø ':'schematischer Leerrohr-DN ')+
+      available+' mm ('+key.toUpperCase()+')');
    }
    if(cfg.minBendRadiusMm!==null){
     const points=[];
