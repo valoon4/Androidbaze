@@ -14,9 +14,29 @@ function threshold(v){
  const n=Number(v);
  return Number.isFinite(n)&&n>=0&&n<=100000?Math.round(n*10)/10:null;
 }
+function normalizedRules(value,kind){
+ const result={};
+ if(!value||typeof value!=='object'||Array.isArray(value))return result;
+ for(const [key,raw] of Object.entries(value).slice(0,80)){
+  const valid=kind==='wall'?/^SW[1-4]$/.test(key):
+   /^\d+$/.test(key)&&Number(key)>=30&&Number(key)<=160&&Number.isInteger(Number(key));
+  const mm=threshold(raw);
+  if(valid&&mm!==null)result[key]=mm;
+ }
+ return result;
+}
 function normalizeSettings(s){
- return {minPipeGapMm:threshold(s?.minPipeGapMm),
- minEdgeMm:threshold(s?.minEdgeMm),minBendRadiusMm:threshold(s?.minBendRadiusMm)};
+ const settings={minPipeGapMm:threshold(s?.minPipeGapMm),
+  minEdgeMm:threshold(s?.minEdgeMm),minBendRadiusMm:threshold(s?.minBendRadiusMm)};
+ const walls=normalizedRules(s?.wallGapMm,'wall'),pipes=normalizedRules(s?.dnGapMm,'dn');
+ if(Object.keys(walls).length)settings.wallGapMm=walls;
+ if(Object.keys(pipes).length)settings.dnGapMm=pipes;
+ return settings;
+}
+function dimensionStatus(p){
+ if(p?.sourceInfo)return 'schematic';
+ if(p?.dims?.confirmed===true||p?.dims?.status==='confirmed')return 'confirmed';
+ return 'unconfirmed';
 }
 function normalizeReviews(items,shafts){
  const ids=new Set(shafts.map(x=>x.id)),keys=new Set();
@@ -154,12 +174,21 @@ function auditWallOpenings(project,projector=null){
  return result;
 }
 function evaluate(net,settings){
- const cfg=normalizeSettings(settings),issues=[];
+ const cfg=normalizeSettings(settings),issues=[],seen=new Set();
+ const dataStatus={confirmed:0,schematic:0,unconfirmed:0};
  function add(severity,code,shaftId,ref,detail){
+  const key=[code,shaftId,ref,detail].join('|');
+  if(seen.has(key))return;
+  seen.add(key);
   if(issues.length<800)issues.push({severity,code,shaftId,ref,detail});
  }
  for(const shaft of net.shafts||[]){
   const p=shaft.snapshot;
+  dataStatus[dimensionStatus(p)]++;
+  if(!p.dims||!p.walls){
+   add('error','MISSING_GEOMETRY',shaft.id,shaft.id,'Schachtmaße oder Wände nicht vorhanden');
+   continue;
+  }
   if(p.sourceInfo){
    add('info','SCHEMATIC_REFERENCE',shaft.id,shaft.id,
     'HTML-Referenz '+p.sourceInfo.shaft+': Abmessungen, nominale Rohr-DN und Kabelführung sind nicht bestätigt');
@@ -169,6 +198,9 @@ function evaluate(net,settings){
    }
   }
   for(const wall of p.walls||[]){
+   if(!Number.isFinite(Number(wall.thickness))||Number(wall.thickness)<=0)
+    add('info','WALL_THICKNESS_MISSING',shaft.id,wall.id,
+     wall.id+': Wandstärke fehlt oder ist nicht positiv; technische Prüfung offen');
    const pdf=p.sourceInfo?.sourceVersion?.startsWith('PDF V2');
    const span=wall.id==='SW1'||wall.id==='SW3'?
     (pdf?p.dims.w:p.dims.d):(pdf?p.dims.d:p.dims.w);
@@ -185,9 +217,15 @@ function evaluate(net,settings){
      const gap=Math.hypot(ax-b.u*span,ay-b.v*p.dims.h)-r-br;
      if(gap<0)add('error','PIPE_OVERLAP',shaft.id,a.id,
       wall.id+': '+a.id+' und '+b.id+' überschneiden sich geometrisch ('+Math.round(-gap)+' mm)');
-     else if(cfg.minPipeGapMm!==null&&gap<cfg.minPipeGapMm)
-      add('warning','PIPE_CLEARANCE',shaft.id,a.id,
-       wall.id+': '+a.id+' und '+b.id+' Abstand '+Math.round(gap)+' mm unter Projektwert '+cfg.minPipeGapMm+' mm');
+     else {
+      const criteria=[cfg.minPipeGapMm,cfg.wallGapMm?.[wall.id],
+       cfg.dnGapMm?.[String(a.dn)],cfg.dnGapMm?.[String(b.dn)]]
+       .filter(x=>x!==null&&x!==undefined);
+      const required=criteria.length?Math.max(...criteria):null;
+      if(required!==null&&gap<required)
+       add('warning','PIPE_CLEARANCE',shaft.id,a.id,
+        wall.id+': '+a.id+' und '+b.id+' Abstand '+Math.round(gap)+' mm unter Projekt-/Wand-/DN-Wert '+required+' mm');
+     }
     }
    }
   }
@@ -239,11 +277,12 @@ function evaluate(net,settings){
    }
   }
  }
- return {config:cfg,issues,counts:{error:issues.filter(x=>x.severity==='error').length,
+ issues.sort((a,b)=>({error:0,warning:1,info:2}[a.severity]-{error:0,warning:1,info:2}[b.severity]));
+ return {config:cfg,dataStatus,issues,counts:{error:issues.filter(x=>x.severity==='error').length,
  warning:issues.filter(x=>x.severity==='warning').length,
  info:issues.filter(x=>x.severity==='info').length},
  advisory:'Nur Daten- und Geometriehinweise. Keine DIN-/VDE-/Brandschutz- oder Abnahmeprüfung.'};
 }
 return {STATES,normalizeSettings,normalizeReviews,normalizeAudit,searchNetwork,mmPosition,
-circumradius,evaluate,auditWallOpenings};
+circumradius,evaluate,auditWallOpenings,dimensionStatus,normalizedRules};
 });
