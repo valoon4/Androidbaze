@@ -1904,6 +1904,12 @@ for(const [id,kind] of [['handoverExportCable','cables'],
  });
 }
 
+$('handoverAiBrief').addEventListener('click',()=>{
+ try{
+  download('Kabelsalat-400-Schacht-KI-Auftrag.txt',handoverModel.aiBrief(),
+   'text/plain;charset=utf-8');
+ }catch(err){$('handoverStatus').textContent='KI-Vorlage nicht erzeugt: '+err.message;}
+});
 /* KAB-0505..0522: conservative, rollback-safe CSV import. */
 let csvPlan=null;
 function resetCsvPreview(){
