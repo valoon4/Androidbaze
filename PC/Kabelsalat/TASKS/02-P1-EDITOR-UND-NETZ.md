@@ -167,47 +167,47 @@
 
 **Quelle:** N01, N06, P1-Netz. **Definition of Done:** Schächte und Links bleiben eindeutig, auch nach Löschen und Wiederherstellen.
 
-- [ ] **KAB-0343** – Neuen Schacht aus leerer Vorlage ins Netz einfügen
+- [x] **KAB-0343** – Neuen Schacht aus leerer Vorlage ins Netz einfügen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 - [ ] **KAB-0344** – Schacht mit bestehender Rohrbelegung ins Netz importieren
-- [ ] **KAB-0345** – Schacht in Netzkarte verschieben ohne Innengeometrie zu verändern
-- [ ] **KAB-0346** – Zwei Schächte mit explizitem Link verbinden
+- [x] **KAB-0345** – Schacht in Netzkarte verschieben ohne Innengeometrie zu verändern · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0346** – Zwei Schächte mit explizitem Link verbinden · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 - [ ] **KAB-0347** – Linkrichtung gegen beidseitige Nutzung unterscheiden
-- [ ] **KAB-0348** – Link mit stabiler ID und Status speichern
-- [ ] **KAB-0349** – Linkentfernung auf betroffene Kabelrouten prüfen
+- [x] **KAB-0348** – Link mit stabiler ID und Status speichern · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0349** – Linkentfernung auf betroffene Kabelrouten prüfen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 - [ ] **KAB-0350** – Doppelte Links zwischen denselben Schächten differenzieren
-- [ ] **KAB-0351** – Selbstverbindung eines Schachts gezielt verhindern
-- [ ] **KAB-0352** – Mehrere getrennte Netzkomponenten anzeigen
-- [ ] **KAB-0353** – Netzzyklus mit vier Schächten korrekt darstellen
-- [ ] **KAB-0354** – Schachtbezeichnung in Netzkarte ohne Überlappung kürzen
-- [ ] **KAB-0355** – Netzlink bei großen Entfernungen maßstabsbewusst zeichnen
+- [x] **KAB-0351** – Selbstverbindung eines Schachts gezielt verhindern · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0352** – Mehrere getrennte Netzkomponenten anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0353** – Netzzyklus mit vier Schächten korrekt darstellen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0354** – Schachtbezeichnung in Netzkarte ohne Überlappung kürzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0355** – Netzlink bei großen Entfernungen maßstabsbewusst zeichnen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 - [ ] **KAB-0356** – Netzübersicht bei 30 Schächten interaktiv halten
 - [ ] **KAB-0357** – Netzliste über derzeitige 30-Schächte-Grenze skalieren
-- [ ] **KAB-0358** – Ausgangs- und Zielschacht pro Link klar darstellen
-- [ ] **KAB-0359** – Link-Verbindung als physisch ungeprüft markieren können
-- [ ] **KAB-0360** – Netz mit fünf Schächten und unterschiedlichen Wandzahlen testen
+- [x] **KAB-0358** – Ausgangs- und Zielschacht pro Link klar darstellen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0359** – Link-Verbindung als physisch ungeprüft markieren können · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0360** – Netz mit fünf Schächten und unterschiedlichen Wandzahlen testen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 
 ## P1-09 · Durchgängige Kabelkontinuität (KAB-0361–KAB-0378)
 
 **Quelle:** N06, N07, D02. **Definition of Done:** Segmentfolge ist explizit und prüfbar; nicht bestätigte Übergänge bleiben offen.
 
-- [ ] **KAB-0361** – Globales Kabelobjekt mit mehreren lokalen Segmenten einführen
-- [ ] **KAB-0362** – Lokale Kabel-ID stabil auf globales Kabel zurückführen
-- [ ] **KAB-0363** – Kabelreihenfolge über drei Schächte speichern
-- [ ] **KAB-0364** – Eintrittsrohr und Austrittsrohr je Durchgangsschacht zuordnen
-- [ ] **KAB-0365** – Physische Verbindung an Schachtgrenze von bloßer Netzlink-Linie unterscheiden
-- [ ] **KAB-0366** – Fehlende Anschlussbrücke im Schacht als Unterbrechung melden
-- [ ] **KAB-0367** – Unbestätigten Schachtübergang als offenen Endpunkt anzeigen
+- [x] **KAB-0361** – Globales Kabelobjekt mit mehreren lokalen Segmenten einführen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0362** – Lokale Kabel-ID stabil auf globales Kabel zurückführen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0363** – Kabelreihenfolge über drei Schächte speichern · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0364** – Eintrittsrohr und Austrittsrohr je Durchgangsschacht zuordnen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0365** – Physische Verbindung an Schachtgrenze von bloßer Netzlink-Linie unterscheiden · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0366** – Fehlende Anschlussbrücke im Schacht als Unterbrechung melden · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0367** – Unbestätigten Schachtübergang als offenen Endpunkt anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 - [ ] **KAB-0368** – Kabelverzweigung mit mehreren legitimen Zielen abbilden
-- [ ] **KAB-0369** – Ringförmigen Kabelverlauf ohne Endlosnavigation darstellen
-- [ ] **KAB-0370** – Segmentwechsel über zwei aufeinanderfolgende Schächte validieren
+- [x] **KAB-0369** – Ringförmigen Kabelverlauf ohne Endlosnavigation darstellen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0370** – Segmentwechsel über zwei aufeinanderfolgende Schächte validieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 - [ ] **KAB-0371** – Angegebene Leitungslänge mit Segmentlängen abgleichen
 - [ ] **KAB-0372** – Kabelkontinuität bei Umnummerierung eines Rohres bewahren
-- [ ] **KAB-0373** – Kabelkontinuität bei gelöschtem Segment gezielt invalidieren
-- [ ] **KAB-0374** – Segmentübergreifende Systemzuordnung prüfen
-- [ ] **KAB-0375** – Routenverlauf in globalen XYZ-Koordinaten zusammensetzen
-- [ ] **KAB-0376** – Kabelverlauf nach Quelle und Prüfstatus segmentweise darstellen
-- [ ] **KAB-0377** – Gesamtverlauf mit einer gezielten Fehlerstelle testen
-- [ ] **KAB-0378** – Ende-zu-Ende-Kontinuität niemals ohne belegten Übergang bestätigen
+- [x] **KAB-0373** – Kabelkontinuität bei gelöschtem Segment gezielt invalidieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0374** – Segmentübergreifende Systemzuordnung prüfen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0375** – Routenverlauf in globalen XYZ-Koordinaten zusammensetzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0376** – Kabelverlauf nach Quelle und Prüfstatus segmentweise darstellen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0377** – Gesamtverlauf mit einer gezielten Fehlerstelle testen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
+- [x] **KAB-0378** – Ende-zu-Ende-Kontinuität niemals ohne belegten Übergang bestätigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/cc87614d522a21fc93ee85bcd2cea77314e7c21f/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE2.md
 
 ## P1-10 · Netznavigation und Auswahlzustand (KAB-0379–KAB-0396)
 
