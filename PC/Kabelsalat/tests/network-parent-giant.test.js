@@ -10,7 +10,7 @@ const snapshot=i=>{
  const walls=[
   {id:'SW1',thickness:100,holes:[hole('A',.3,.4)]},
   {id:'SW3',thickness:100,holes:[hole('B',.7,.6)]}];
- if(i%3!==0)walls.push({id:'SW2',thickness:90,holes:[hole('C',.5,.5)]});
+ if(i%3!==0||i===3)walls.push({id:'SW2',thickness:90,holes:[hole('C',.5,.5)]});
  if(i===3)walls.push({id:'SW4',thickness:90,holes:[hole('D',.5,.5)]});
  return {name:'FIKTIVER Schacht '+i,dims:copy(dims),walls,
   cables:[{id:'C'+i,name:'Segment '+i,group:i===2?'MS':'OLA',
