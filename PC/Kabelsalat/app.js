@@ -174,6 +174,10 @@ function validProject(o){
  schematicPositions.transformProjectShunt(result.network);
  result.network.quality=qualityModel.normalizeSettings(o.network?.quality);
  result.network.reviews=qualityModel.normalizeReviews(o.network?.reviews,result.network.shafts);
+ if(o.network?.reviewHistory)result.network.reviewHistory=
+  qualityModel.normalizeReviewHistory(o.network.reviewHistory);
+ if(o.network?.reviewSettings)result.network.reviewSettings={
+  requireComment:o.network.reviewSettings.requireComment===true};
  result.network.audit=qualityModel.normalizeAudit(o.network?.audit);
  if(o.network?.sources)result.network.sources=qualityModel.normalizeSources(o.network.sources);
  result.activeShaftId=result.network.shafts.some(x=>x.id===o.activeShaftId)?
@@ -304,11 +308,24 @@ function persist(){
 function change(fn,label='Planung geändert'){
  clearWorldRoute();clearNetworkPath();resetSpacingPreview();resetGroupPreview();
  undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;
+ const before=JSON.parse(undo[undo.length-1]);
  fn();syncActiveShaft();
  if(project.network){
- const entry={at:new Date().toISOString(),shaftId:project.activeShaftId,
- action:String(label).slice(0,120),description:project.name};
- project.network.audit=qualityModel.normalizeAudit([...(project.network.audit||[]),entry]);
+  const now=new Date().toISOString(),
+   numeric=qualityModel.numericChanges(before,project);
+  project.network.reviews=qualityModel.normalizeReviews(
+   qualityModel.invalidateReviews(before,project,project.network.reviews),
+   project.network.shafts);
+  const transitions=qualityModel.reviewTransitions(before.network?.reviews||[],
+   project.network.reviews||[],now);
+  if(transitions.length||project.network.reviewHistory)
+   project.network.reviewHistory=qualityModel.normalizeReviewHistory([
+    ...(project.network.reviewHistory||[]),...transitions]);
+  const entry={at:now,shaftId:project.activeShaftId,
+   action:String(label).slice(0,120),description:project.name,
+   origin:/^(?:CSV|Import|Projektdatei)/i.test(String(label))?'import':'manual',
+   ...(numeric.length?{numeric}:{})};
+  project.network.audit=qualityModel.normalizeAudit([...(project.network.audit||[]),entry]);
  }
  renderAll();persist();
 }
