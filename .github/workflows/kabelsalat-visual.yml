@@ -79,6 +79,10 @@ jobs:
         working-directory: PC/Kabelsalat
         shell: bash
         run: node tests/browser-pitch-walls.js
+      - name: 400-Schacht-PDF-Plananalyse und manuelle Kandidatenwahl in Chromium pruefen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-plan-route.js
       - name: Screenshots für fachlichen PDF-Vergleich bereitstellen
         if: always()
         uses: actions/upload-artifact@v4
