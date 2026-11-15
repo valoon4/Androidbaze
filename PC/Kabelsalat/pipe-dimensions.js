@@ -114,9 +114,29 @@
   }
   return results;
  }
+ // Read-only safety report for extracted PDF-text pages. Scans without a
+ // text layer are explicitly routed to manual/OCR review, never guessed.
+ function inspectPlanPages(pages,options){
+  if(!Array.isArray(pages))return {status:'invalid-source',candidates:[],errors:[
+   {page:null,code:'invalid-pages',message:'PDF-Seitenliste fehlt oder ist ungültig'}]};
+  const problems=[];
+  for(let i=0;i<pages.length;i++){
+   const p=pages[i];
+   if(!p||typeof p.text!=='string')problems.push({page:p?.pageNumber??i+1,
+    code:'missing-text-layer',message:'Kein lesbarer PDF-Textlayer; manuelle Prüfung oder OCR erforderlich'});
+  }
+  if(problems.length)return {status:'manual-review',candidates:[],errors:problems};
+  try{
+   const candidates=parsePlanPages(pages,options);
+   return {status:candidates.length?'candidates':'no-labels',candidates,errors:[]};
+  }catch(e){
+   return {status:'invalid-source',candidates:[],errors:[
+    {page:null,code:'invalid-pdf-text',message:String(e.message).slice(0,240)}]};
+  }
+ }
  function planCandidateTable(pages,options){
   return parsePlanPages(pages,options).sort((a,b)=>
    (a.pipeId||'~').localeCompare(b.pipeId||'~')||a.page-b.page||a.line-b.line);
  }
- return {RANGE,normalize,forHole,apertureMm,describe,parsePlanText,parsePlanPages,planCandidateTable};
+ return {RANGE,normalize,forHole,apertureMm,describe,parsePlanText,parsePlanPages,planCandidateTable,inspectPlanPages};
 });
