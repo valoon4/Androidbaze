@@ -486,6 +486,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
  <button id="parsePlanDimensions" class="btn soft full" type="button">DN/DM-Kandidaten erkennen</button>
  <p class="small" id="planDimensionStatus" role="status">Noch kein Text analysiert.</p>
  <label class="field">Erkannte Kandidaten<select id="planDimensionCandidates" class="selector"></select></label>
+ <div style="overflow:auto;max-height:240px"><table style="width:100%;font-size:12px"><thead><tr><th>Rohr-ID</th><th>DN/Ø</th><th>Quelle · Seite · Zeile</th><th>Prüfung</th></tr></thead><tbody id="planDimensionCandidateRows"></tbody></table></div>
  <button id="applyPlanDimension" class="btn tiny full" type="button">Kandidat dieser Öffnung zuordnen (unbestätigt)</button>
 </div>
 <div class="dim-editor" role="group" aria-label="Bildbasierte Öffnungsgrößen-Vorschläge">
