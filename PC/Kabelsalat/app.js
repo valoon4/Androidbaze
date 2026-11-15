@@ -827,8 +827,19 @@ function wallCoords(wid,p){
   (wid==='SW2'||wid==='SW4')?p.x/s.w+.5:p.z/s.d+.5;
  return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};
 }
-function newOpening(wid,point){const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point),id=uid(wid+'-free');
- change(()=>{w.holes.push({id,row:0,col:0,dn:w.dn,...coords});wallId=wid;holeId=id;});}
+function newOpening(wid,point){
+ const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point);
+ if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
+ const dn=clamp(Number($('draftNewDn').value)||w.dn,30,160);
+ const status=holeEditorOps.candidate(project,wid,{
+  xMm:Math.round(coords.u*wallSpanMm(wid)),yMm:Math.round(coords.v*project.dims.h),dn});
+ if(!status.ok){alert('Leerrohr nicht platziert: '+status.errors.join('; '));return;}
+ if(project.sourceInfo&&!confirm('Originalschacht manuell erweitern? Referenzmaße bleiben ungeprüft.'))return;
+ if(status.warnings.length&&!confirm('Überlappung: '+status.warnings.join('; ')+'\nTrotzdem hinzufügen?'))return;
+ const id=holeEditorOps.uniqueId(project,wid);
+ change(()=>{w.holes.push({id,row:0,col:0,dn,u:status.u,v:status.v});
+  wallId=wid;holeId=id;},'Leerrohr frei platziert');
+}
 
 
 
