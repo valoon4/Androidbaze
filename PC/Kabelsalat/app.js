@@ -1662,7 +1662,7 @@ $('applyQuality').addEventListener('click',()=>{
  const fields=[...Object.values(raw),$('qualityWallGap').value,$('qualityDnGap').value];
  const dnText=$('qualityRuleDn').value,dn=Number(dnText);
  const invalid=fields.some(v=>v!==''&&(!Number.isFinite(Number(v))||Number(v)<0||Number(v)>100000))||
-  !/^\\d+$/.test(dnText)||!Number.isInteger(dn)||dn<30||dn>160;
+  !/^\d+$/.test(dnText)||!Number.isInteger(dn)||dn<30||dn>160;
  if(invalid){alert('Prüfparameter: Wandwerte 0–100.000 mm und DN 30–160 eingeben.');return;}
  const old=project.network.quality||{};
  const wallGapMm={...old.wallGapMm},dnGapMm={...old.dnGapMm};
