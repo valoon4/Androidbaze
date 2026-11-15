@@ -14,6 +14,20 @@
 | P0 · Bros neuer Nachtrag: LR-Vorschau kürzer, DN30–160 proportional | 4 | KAB-0885–KAB-0888 | [08-BRO-KURZE-LR-DN30-160.md](./08-BRO-KURZE-LR-DN30-160.md) |
 | **Gesamt aktuell (12.11.2026)** | **888** | **KAB-0001–KAB-0888** | |
 
+## Aktueller Fortschritt · 15.11.2026
+
+| Ebene | Erledigt | Offen | Gesamt |
+|---|---:|---:|---:|
+| **Alle Parent-Tickets** | **23** | **865** | **888** |
+| **Alle Mikro-Tasks** | **1.058** | **11.954** | **13.012** |
+| **Bros jüngste 10 Parent-Tickets** | **4** | **6** | **10** |
+| **Bros 200 Mikro-Tasks** | **199** | **1** | **200** |
+
+**Technisch abgeschlossene Bro-Parents:** KAB-0884, 0886, 0887, 0888 · [Nachweise](./BRO_PARENT_TECH_ABNAHME_2026-11-15.md) · [erfolgreiche Chromium-Vollprüfung](https://github.com/valoon4/Androidbaze/actions/runs/43709846491).
+
+**Letzte offene Bro-Mikro-ID:** KAB-0878/M09 · echte Antwort zur Betonoptik erfassen und zuordnen. Kein Ersatz durch erfundene Freigabe. Weitere offene Bro-Parents: 0877/0878/0879/0881/0882/0885 (visuelle Bro-Abnahme bzw. PDF-/Foto-/Typ-Erkennung). Die datierten älteren Sprintabschnitte weiter unten sind historische Zwischenstände.
+
+
 ## Initialer Status am 10.11.2026
 
 - **Neu angelegte Tasks:** 828.
