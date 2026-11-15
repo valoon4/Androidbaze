@@ -9,9 +9,9 @@
 **Definition of Done:** DN30 ist sichtbar kleiner als DN50, DN50 sichtbar kleiner als DN110 und DN160 am größten; echte PDF-/HTML-Schachtkoordinaten, Kabelendpunkte und Quellen bleiben identisch; das gemischte Größenbeispiel ist klar **fiktiv**; keine DIN-, VDE- oder Ausführungsaussage.
 
 - [ ] **KAB-0885** – Freie Kabel-Endmarkierungen an nur einseitig bekannten Leerrohren in der 3D-Vorschau von 360 auf 160 mm verkürzen und ihre Stärke an kleine Rohröffnungen anpassen; echte Rohr-/Wandlängen nicht ohne Aufmaß ändern und Optik von Bro abnehmen lassen
-- [ ] **KAB-0886** – Benutzereditierbare LR-Nennweiten DN 30 bis DN 160 in 1-mm-Schritten bereitstellen und Lochkreise in 2D/3D proportional rendern, ohne vorhandene Alt- oder Quellwerte stillschweigend zu begrenzen
-- [ ] **KAB-0887** – Separaten ausdrücklich fiktiven Testschacht mit gemischten DN 30, 40, 50, 60, 63, 75, 90, 110, 116, 125, 140 und 160 für Bros visuellen Größenvergleich bereitstellen, ohne Original-Schächte zu ändern
-- [ ] **KAB-0888** – Automatisierte Vergleichs- und Browseransicht für DN 30/50/110/160, verkürzte nur schematische Endmarkierungen, JSON-Roundtrip und 91-Rohr-PDF-Quellintegrität anlegen
+- [x] **KAB-0886** – Benutzereditierbare LR-Nennweiten DN 30 bis DN 160 in 1-mm-Schritten bereitstellen und Lochkreise in 2D/3D proportional rendern, ohne vorhandene Alt- oder Quellwerte stillschweigend zu begrenzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/dfa210c8b7eb05fd0596f6b982675add231ec5e1/PC/Kabelsalat/TASKS/BRO_PARENT_TECH_ABNAHME_2026-11-15.md
+- [x] **KAB-0887** – Separaten ausdrücklich fiktiven Testschacht mit gemischten DN 30, 40, 50, 60, 63, 75, 90, 110, 116, 125, 140 und 160 für Bros visuellen Größenvergleich bereitstellen, ohne Original-Schächte zu ändern · Nachweis: https://github.com/valoon4/Androidbaze/blob/dfa210c8b7eb05fd0596f6b982675add231ec5e1/PC/Kabelsalat/TASKS/BRO_PARENT_TECH_ABNAHME_2026-11-15.md
+- [x] **KAB-0888** – Automatisierte Vergleichs- und Browseransicht für DN 30/50/110/160, verkürzte nur schematische Endmarkierungen, JSON-Roundtrip und 91-Rohr-PDF-Quellintegrität anlegen · Nachweis: https://github.com/valoon4/Androidbaze/blob/dfa210c8b7eb05fd0596f6b982675add231ec5e1/PC/Kabelsalat/TASKS/BRO_PARENT_TECH_ABNAHME_2026-11-15.md
 
 **Verweise:** Bestehende KAB-0877 (Beton mit ausgeschnittenen Löchern), KAB-0878 (dunkle Betonoptik), KAB-0879 (Größen proportional), KAB-0880 (getrennte Innen-/Außen-/Lochmaße), KAB-0883 (Maßangaben mit Quellenstatus). Diese Tasks werden nicht erneut angelegt.
 
