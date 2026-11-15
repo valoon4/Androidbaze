@@ -1910,6 +1910,119 @@ $('handoverAiBrief').addEventListener('click',()=>{
    'text/plain;charset=utf-8');
  }catch(err){$('handoverStatus').textContent='KI-Vorlage nicht erzeugt: '+err.message;}
 });
+/* Bro 400 · conservative PDF/text cable route review; never edits 3D project. */
+const planRouteModel=globalThis.KabelsalatPlanRoutes;
+let planRouteReview=null,planRouteSelected=new Set();
+function resetPlanRouteReview(){
+ planRouteReview=null;planRouteSelected=new Set();
+ $('planRouteApply').disabled=true;$('planRouteExportIssues').disabled=true;
+ $('planRouteResults').replaceChildren();$('planRouteIssues').replaceChildren();
+ $('planRouteStatus').textContent='Eingaben geändert – Plandateien erneut prüfen.';
+}
+for(const id of ['planRoutePaste','handoverShaftCsv','handoverPassCsv'])
+ $(id).addEventListener('input',resetPlanRouteReview);
+$('planRouteFiles').addEventListener('change',resetPlanRouteReview);
+function renderPlanRouteReview(){
+ const result=planRouteReview;
+ if(!result)return;
+ const container=$('planRouteResults');container.replaceChildren();
+ const heading=document.createElement('p');
+ heading.textContent='Kabelwege zur Einzelprüfung: '+result.candidates.length+
+  ' Kandidaten. Nichts wird ohne Auswahl übernommen.';
+ container.appendChild(heading);
+ for(const candidate of result.candidates.slice(0,500)){
+  const label=document.createElement('label');
+  label.style.display='block';label.style.margin='8px 0';
+  const cb=document.createElement('input');
+  cb.type='checkbox';cb.checked=planRouteSelected.has(candidate.key);
+  cb.setAttribute('aria-label','Kandidat '+candidate.cableId+' auswählen');
+  cb.addEventListener('change',()=>{
+   if(cb.checked)planRouteSelected.add(candidate.key);
+   else planRouteSelected.delete(candidate.key);
+   $('planRouteApply').disabled=!planRouteSelected.size;
+  });
+  const description=document.createElement('span');
+  description.textContent=' '+candidate.cableId+' · '+
+   candidate.shaftIds.join(' > ')+' · '+candidate.source+
+   (candidate.conflict?' · ⚠ Widersprüchliche Alternativen – nur eine auswählen':'')+
+   ' · KANDIDAT (ungeprüft)';
+  label.appendChild(cb);label.appendChild(description);
+  container.appendChild(label);
+ }
+ if(result.candidates.length>500){
+  const info=document.createElement('p');
+  info.textContent='Nur erste 500 Treffer angezeigt; weitere Treffer benötigen einen gezielteren Plansatz.';
+  container.appendChild(info);
+ }
+ const review=$('planRouteIssues');review.replaceChildren();
+ const title=document.createElement('p');
+ title.textContent='Offene Stellen: '+result.issues.length+
+  ' (einschließlich nicht lesbarer PDF-Seiten)';
+ review.appendChild(title);
+ for(const issue of result.issues.slice(0,35)){
+  const line=document.createElement('p');
+  line.textContent='⚠ '+issue.source+' · '+issue.reason+
+   (issue.snippet?' · '+issue.snippet:'');
+  review.appendChild(line);
+ }
+ $('planRouteStatus').textContent=result.candidates.length+' Kandidaten aus '+
+  result.summary.examinedLines+' Plantextzeilen · '+
+  result.summary.routesWithConflicts+' Kabel mit Alternativrouten · '+
+  result.issues.length+' Prüffälle · keine physische Freigabe.';
+ $('planRouteExportIssues').disabled=!result.issues.length;
+ $('planRouteApply').disabled=!planRouteSelected.size;
+}
+$('planRouteAnalyze').addEventListener('click',async()=>{
+ resetPlanRouteReview();
+ const button=$('planRouteAnalyze');button.disabled=true;
+ $('planRouteStatus').textContent='Plandateien werden lokal gelesen und abgeglichen …';
+ try{
+  if(!planRouteModel||!handoverModel)throw Error('Plan-Analyse-Modul fehlt');
+  const shaftCsv=$('handoverShaftCsv').value;
+  const passCsv=$('handoverPassCsv').value;
+  const shafts=handoverModel.readCsv(shaftCsv,handoverModel.shaftHeaders,500);
+  const files=Array.from($('planRouteFiles').files||[]);
+  if(files.length>12)throw Error('Bitte maximal 12 Plan-Dateien je Durchgang');
+  const docs=[],issues=[];
+  for(const file of files){
+   const parsed=await planRouteModel.readFile(file);
+   docs.push(...parsed.pages);
+   for(const warning of parsed.warnings)issues.push({
+    source:file.name,reason:warning,snippet:''});
+  }
+  const paste=$('planRoutePaste').value.trim();
+  if(paste)docs.push({name:'Eingefügter Plantext',page:null,text:paste});
+  if(!docs.length)throw Error('Keine lesbaren Plantexte – PDF mit Textebene oder TXT wählen');
+  const result=planRouteModel.extract(shafts,docs);
+  result.issues.unshift(...issues);
+  planRouteReview={...result,shaftCsv,passCsv};
+  renderPlanRouteReview();
+ }catch(error){
+  $('planRouteStatus').textContent='Plananalyse nicht möglich: '+error.message;
+ }finally{button.disabled=false;}
+});
+$('planRouteApply').addEventListener('click',()=>{
+ if(!planRouteReview)return;
+ try{
+  if($('handoverShaftCsv').value!==planRouteReview.shaftCsv||
+   $('handoverPassCsv').value!==planRouteReview.passCsv)
+   throw Error('Schacht-/Kabel-Eingabe hat sich geändert – erneut analysieren');
+  const chosen=planRouteReview.candidates.filter(x=>planRouteSelected.has(x.key));
+  const result=planRouteModel.compile(handoverModel,
+   planRouteReview.shaftCsv,planRouteReview.passCsv,chosen);
+  $('handoverPassCsv').value=result.csv;
+  invalidateHandover();resetPlanRouteReview();
+  $('planRouteStatus').textContent=result.added+
+   ' geprüfte Kandidatenzeilen als KANDIDAT in die Kabel-Liste übernommen. '+
+   'Oben „Liste auswerten“ für die drei Übergabe-Exporte wählen.';
+ }catch(error){$('planRouteStatus').textContent='Keine Übernahme: '+error.message;}
+});
+$('planRouteExportIssues').addEventListener('click',()=>{
+ if(!planRouteReview)return;
+ download('Kabelsalat-Plananalyse-Prueffaelle.csv',
+  planRouteModel.issuesCsv(handoverModel,planRouteReview.issues),
+  'text/csv;charset=utf-8');
+});
 /* KAB-0505..0522: conservative, rollback-safe CSV import. */
 let csvPlan=null;
 function resetCsvPreview(){
