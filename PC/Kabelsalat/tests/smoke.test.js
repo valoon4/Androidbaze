@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
-for(const file of ['schematic-positions.js','spacing-adjust.js','pipe-dimensions.js','photo-candidates.js'])
+for(const file of ['schematic-positions.js','spacing-adjust.js','hole-editor-ops.js','pipe-dimensions.js','photo-candidates.js'])
  assert.ok(fs.existsSync(path.resolve(__dirname,'..',file)),'Missing offline recognition/geometry asset '+file);
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 const version=require('../package.json').version;
@@ -235,6 +235,7 @@ globalThis.KabelsalatPipeDimensions=require('../pipe-dimensions.js');
 globalThis.KabelsalatPhotoCandidates=require('../photo-candidates.js');
 globalThis.KabelsalatSchematicPositions=require('../schematic-positions.js');
 globalThis.KabelsalatSpacingAdjust=require('../spacing-adjust.js');
+globalThis.KabelsalatHoleEditorOps=require('../hole-editor-ops.js');
 globalThis.KabelsalatConstructionV2=require('../construction-v2.js');
 globalThis.KabelsalatNetwork=require('../network.js');
 globalThis.KabelsalatQuality=require('../quality.js');
