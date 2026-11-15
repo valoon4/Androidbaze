@@ -8,11 +8,11 @@
  if(typeof module==='object'&&module.exports)module.exports=api;
  if(root)root.KabelsalatPhotoCandidates=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
- function detect(pixels,width,height,{threshold=null,minDiameter=10,maxCandidates=80}={}){
+ function detect(pixels,width,height,{threshold=null,minDiameter=10,maxCandidates=80,source=null}={}){
   if(!pixels||!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||
     width<8||height<8||width*height>4000000||pixels.length<width*height*4)
    throw Error('Ungültiges Bild: maximal 4 Megapixel Analysefläche');
-  const n=width*height,bright=new Uint8Array(n);let mean=0;
+  if(source!==null&&(typeof source!=='string'||source.length>256||/[\r\n\0]/.test(source)))\n   throw Error('Bildquelle muss eine kurze, einzeilige Kennung sein');\n  const n=width*height,bright=new Uint8Array(n);let mean=0;
   for(let i=0;i<n;i++){
    const k=i*4,alpha=pixels[k+3]/255;
    const l=Math.round((pixels[k]*.2126+pixels[k+1]*.7152+pixels[k+2]*.0722)*alpha+255*(1-alpha));
@@ -38,7 +38,7 @@
    if(diameter<minDiameter||ratio<.70||fill<.27||fill>1.25||
      diameter>Math.min(width,height)*.92||count<30)continue;
    candidate.push({x:Math.round(sx/count*10)/10,y:Math.round(sy/count*10)/10,
-    diameterPx:Math.round((w+h)/2*10)/10,
+    diameterPx:Math.round((w+h)/2*10)/10, diameterUnit:'px', imageSource:source,
     relativeSize:'unbestimmt',quality:Math.round(Math.max(0,1-Math.abs(fill-.78))*ratio*100)/100,
     status:'candidate',method:'image-contour-unverified'});
   }
