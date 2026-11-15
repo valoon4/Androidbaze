@@ -2121,7 +2121,7 @@ function showPhotoCandidates(){
  }
  $('photoAnalysisStatus').textContent=photoAnalysis?
   photoAnalysis.candidates.length+' Öffnungs-Kandidaten (heuristisch, keine KI/OCR) · '+
-  'Ohne Referenz nur relative Größe. Perspektivenfehler möglich.':'Noch kein Bild untersucht.';
+  'Bild: '+photoAnalysis.filename+' · Ohne Referenz nur relative Größe. Perspektivenfehler möglich.':'Noch kein Bild untersucht.';
 }
 $('photoDimensionFile').addEventListener('change',async()=>{
  const epoch=++photoImportEpoch;
