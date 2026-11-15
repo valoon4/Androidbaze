@@ -380,6 +380,14 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <section class="section" id="globalSearchPanel">
 <div class="eyebrow">Gesamtes Schachtnetz</div><h3>Kabel-, Rohr- und Schachtsuche</h3>
 <input id="globalSearch" class="txt" placeholder="Kabelname, ID, Leerrohr …" aria-label="Globale Netzsuche">
+<div class="row" role="group" aria-label="Suche nach Kabelgruppe und Anschlussstatus">
+<label class="field">Kabelgruppe<select id="globalFilterGroup" class="selector"><option value="all">Alle</option><option value="OLA">OLA</option><option value="MS">MS</option><option value="Weitere">Weitere</option></select></label>
+<label class="field">Anschlüsse<select id="globalFilterUnresolved" class="selector"><option value="all">Alle</option><option value="open">Offene Enden</option></select></label>
+</div>
+<div class="row" role="group" aria-label="Suche nach Review und Quelldokument">
+<label class="field">Review<select id="globalFilterReview" class="selector"><option value="all">Alle</option><option>Entwurf</option><option>Zur Prüfung</option><option>Vor Ort abgeglichen</option></select></label>
+<label class="field">Quellversion/Datum<input id="globalFilterSource" class="txt" maxlength="60" placeholder="z. B. PDF V2"></label>
+</div>
 <div id="globalResults" class="small" style="max-height:240px;overflow:auto;margin-top:8px">Hier netzweit suchen.</div>
 </section>
 <section class="section"><div class="eyebrow">Projektkonfiguration</div>
