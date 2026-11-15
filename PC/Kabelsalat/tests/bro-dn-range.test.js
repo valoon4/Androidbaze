@@ -51,8 +51,9 @@ assert.ok(app.includes('knownHole?openingRadius(knownHole)*.48:.009'),
  'End marker radius must adapt to small LR openings');
 assert.ok(html.includes('id="wallDn" type="number" min="30" max="160" step="1"'));
 assert.ok(html.includes('id="holeDn" min="30" max="160" step="1"'));
-assert.ok(app.includes("h.dn=clamp(Number($('holeDn').value)||h.dn,30,160)"),
- 'Edited DN must support 30–160 in 1 mm increments');
+assert.ok(app.includes("if(!Number.isSafeInteger(dn)||dn<30||dn>160)")&&
+ app.includes("h.dn=dn;")&&html.includes('list="holeDnSuggestions"'),
+ 'Edited DN must validate 30–160 in 1 mm increments, never silently clamp');
 assert.ok(app.includes("['wallDn','dn',30,160]"),'New LR default must support DN 30–160');
 // Preserve existing source data: the separate PDF reference remains 91 openings and still uses original DN values.
 console.log('OK: Short 160mm visual cable-end markers, DN30–160 synthetic LR mix, DN50 < DN110 and PDF source unchanged');
