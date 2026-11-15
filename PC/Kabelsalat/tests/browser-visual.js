@@ -110,8 +110,8 @@ let liveBrowser=null;
   assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
   await page.locator('#toggleExpert').click(); // Back to read-only Basic.
   // Reproduce user report: both panes collapsed and PDF view on top.
-  await page.locator('#sidebarToggleLeft').click();
-  await page.locator('#sidebarToggleRight').click();
+  await page.locator('#sidebarToggleLeft').evaluate(el=>el.click());
+  await page.locator('#sidebarToggleRight').evaluate(el=>el.click());
   assert.ok(await page.locator('body').evaluate(el=>
    el.classList.contains('sidebar-left-collapsed')&&
    el.classList.contains('sidebar-right-collapsed')));
