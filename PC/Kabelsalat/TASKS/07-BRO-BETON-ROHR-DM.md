@@ -56,3 +56,9 @@ Die neue Darstellung der zusammenhängenden Betonwand mit durchgängigen ausgesc
 ## Offener Bro-Review · Testversion 2.0.7-beta.1 · 14.11.2026
 
 **KAB-0878: blockiert auf Bros Sichtentscheid.** Prüffrage: „Ist der Beton dunkel und dezent genug, auch in der 3D-Tages-/Nachtansicht, oder muss die Farbe angepasst werden?“ **Status:** keine Antwort/Freigabe vorhanden. Prüfstelle: [visueller Chromium-Workflow](https://github.com/valoon4/Androidbaze/actions/workflows/kabelsalat-visual.yml); Testprojekt für Bro: [GitHub-Release](https://github.com/valoon4/Androidbaze/releases/tag/kabelsalat-latest). Keine physikalischen Betonmaterial-/Aufmaßannahmen.
+
+## Chromium-Sichtnachweise · 15.11.2026
+
+**KAB-0877 / KAB-0878:** [Erfolgreicher vollständiger Browser-3D-Lauf](https://github.com/valoon4/Androidbaze/actions/runs/43708404172) auf `b6dec368ab5f32721d374f814d348724307b494f` mit [15,8-MB-Screenshot-Artefakt](https://github.com/valoon4/Androidbaze/actions/runs/43708404172/artifacts/14159621745). Enthalten sind u. a. unveränderte PDF-Wandansichten, Basic-Schacht, Profi-Editor und synthetische Betonöffnungen 60/110/116. Echt ausgeführte WebGL-/Browserprüfungen und PDF-Originalwiederherstellung grün.
+
+**KAB-0877/M15 / KAB-0878/M05:** Screenshot/Test-Artefakt hier am Parent verlinkt. **Die eigene ästhetische Sichtabnahme durch Bro bleibt offen** (insbesondere KAB-0878/M09); ein CI-Screenshot ersetzt dessen Rückmeldung nicht.
