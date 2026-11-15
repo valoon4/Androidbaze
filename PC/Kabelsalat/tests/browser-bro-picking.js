@@ -44,6 +44,8 @@ const assert=require('node:assert/strict'),path=require('node:path');
     const yy=(1-projected.y)*rect.height/2+rect.top;
     if(Math.abs(projected.x)<.8&&Math.abs(projected.y)<.8&&projected.z>0&&projected.z<1)
      hits.push({x,y:yy,id:h.id,dn:h.dn,wall:w.id,
+      uMm:Math.round(h.u*(w.id==='SW1'||w.id==='SW3'?model.dims.d:model.dims.w)),
+      vMm:Math.round(h.v*model.dims.h),
       distance:pos.distanceTo(camera.position)});
    }
    return hits.map(h=>({...h,nearest:Math.min(...hits.filter(q=>q.id!==h.id)
@@ -57,9 +59,12 @@ const assert=require('node:assert/strict'),path=require('node:path');
    const picked=await page.evaluate(()=>({
     title:document.querySelector('#holeTitle')?.textContent||'',
     diameter:Number(document.querySelector('#holeDn')?.value),
+    uMm:Number(document.querySelector('#holeU')?.value),
+    vMm:Number(document.querySelector('#holeV')?.value),
     editorVisible:document.querySelector('#holeEditor')?.style.display==='block'}));
    details.push({candidate:c.id,picked:picked.title,nearest:c.nearest});
-   if(picked.editorVisible&&picked.title.includes(c.id)&&picked.diameter===c.dn){chosen=c;break;}
+   if(picked.editorVisible&&picked.title.includes(c.wall)&&picked.diameter===c.dn&&
+    picked.uMm===c.uMm&&picked.vMm===c.vMm){chosen=c;break;}
   }
   assert.ok(chosen,'3D raycast pointer must pick a synthetic nominal LR: '+JSON.stringify(details));
   assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),before,
