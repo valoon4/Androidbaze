@@ -1900,23 +1900,38 @@ $('sourceAttachObject').addEventListener('click',()=>{
   $('sourceRegistryStatus').textContent='Objektverweis gespeichert; keine Vermessungsfreigabe.';
  }catch(e){$('sourceRegistryStatus').textContent='Nicht gespeichert: '+e.message;}
 });
+for(const id of ['reviewFilterShaft','reviewDateFrom','reviewDateTo'])
+ $(id).addEventListener('change',renderQualityUI);
+$('reviewRequireComment').addEventListener('change',()=>{
+ const wanted=$('reviewRequireComment').checked;
+ change(()=>{project.network.reviewSettings={requireComment:wanted};},
+  'Review-Kommentarpflicht '+(wanted?'aktiviert':'deaktiviert'));
+});
 $('saveReview').addEventListener('click',()=>{
- const entityType=reviewKey==='shaft'?'shaft':'cable',entityId=entityType==='shaft'?
- project.activeShaftId:reviewKey.slice(6);
+ const separator=reviewKey.indexOf(':'),entityType=separator<0?'shaft':reviewKey.slice(0,separator),
+  entityId=separator<0?project.activeShaftId:reviewKey.slice(separator+1);
  const status=$('reviewStatus').value,source=$('reviewSource').value.trim().slice(0,250),
- by=$('reviewBy').value.trim().slice(0,80),note=$('reviewNote').value.trim().slice(0,500);
- if(status==='Vor Ort abgeglichen'&&!source){
-  alert('Für „Vor Ort abgeglichen“ bitte mindestens die Quelle / den Beleg dokumentieren.');return;
+  by=$('reviewBy').value.trim().slice(0,80),note=$('reviewNote').value.trim().slice(0,500);
+ if(status==='Vor Ort abgeglichen'&&(!source||!by)){
+  alert('„Vor Ort abgeglichen“ braucht einen Quellenbeleg und eine prüfende Person.');return;
  }
- if(entityType==='cable'&&!project.cables.some(c=>c.id===entityId))return;
+ if(!qualityModel.reviewObject({id:project.activeShaftId,
+  snapshot:networkModel.snapshot(project)},entityType,entityId)){
+  alert('Prüfobjekt existiert nicht mehr. Bitte Auswahl prüfen.');return;
+ }
+ const old=(project.network.reviews||[]).find(x=>x.shaftId===project.activeShaftId&&
+  x.entityType===entityType&&x.entityId===entityId);
+ if(project.network.reviewSettings?.requireComment&&status!==(old?.status||'Entwurf')&&!note){
+  alert('Für diesen Statuswechsel ist ein Kommentar vorgeschrieben.');return;
+ }
  change(()=>{
   const entries=project.network.reviews||[];
   const value={shaftId:project.activeShaftId,entityType,entityId,status,source,
    checkedBy:by,note,checkedAt:new Date().toISOString()};
   project.network.reviews=qualityModel.normalizeReviews([
-   value,...entries.filter(x=>!(x.shaftId===value.shaftId&&x.entityType===value.entityType&&x.entityId===value.entityId))
-  ],project.network.shafts);
- },'Manueller Prüfvermerk gespeichert');
+   value,...entries.filter(x=>!(x.shaftId===value.shaftId&&x.entityType===value.entityType&&
+    x.entityId===value.entityId))],project.network.shafts);
+ },'Manueller Prüfvermerk '+entityType+' / '+entityId+' gespeichert');
 });
 function renderReport(){syncActiveShaft();return reportModel.reportHTML(project,qualityModel.evaluate(project.network,project.network.quality));}
 $('exportReportHtml').addEventListener('click',()=>{
