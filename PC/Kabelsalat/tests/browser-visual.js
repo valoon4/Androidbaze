@@ -107,7 +107,7 @@ let liveBrowser=null;
   await page.screenshot({path:path.join(out,'synthetic-photo-candidates-undo.png'),fullPage:true});
   // KAB-0881/M42: real Chromium positive/negative textlayer-candidate UI.
   const originalBeforePlan=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
-  await page.locator('#planDimensionText').evaluate(el=>{el.value='SW1_T1_LR01 DN 30\\nSW2_T2_LR02 DN 160';});
+  await page.locator('#planDimensionText').evaluate(el=>{el.value='SW1_T1_LR01 DN 30\nSW2_T2_LR02 DN 160';});
   await page.locator('#parsePlanDimensions').evaluate(el=>el.click());
   assert.equal(await page.locator('#planDimensionCandidateRows tr').count(),2);
   assert.match(await page.locator('#planDimensionStatus').innerText(),/2 Maßkandidaten/);
