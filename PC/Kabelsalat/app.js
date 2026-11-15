@@ -2099,6 +2099,7 @@ $('parsePlanDimensions').addEventListener('click',()=>{
 $('applyPlanDimension').addEventListener('click',()=>{
  const h=hole(),c=planCandidates[Number($('planDimensionCandidates').value)];
  if(!h||!c)return;
+ if(c.conflict&&!confirm('Widersprüchliche Maßangaben zu dieser Rohr-ID. Diesen unbestätigten Kandidaten trotzdem manuell übernehmen?'))return;
  if(c.pipeId&&c.pipeId!==h.id){
   alert('Kandidat gehört zu '+c.pipeId+', ausgewählt ist '+h.id+'. Keine automatische Zuordnung.');return;
  }
