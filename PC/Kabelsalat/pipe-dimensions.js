@@ -10,6 +10,9 @@
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
  const RANGE=[20,600],STATUSES=['unverified','candidate','reviewed'];
  const clean=x=>typeof x==='string'?x.slice(0,240):'';
+ const validWallMm=x=>x===null||x===undefined||x===''?null:
+  Number.isFinite(Number(x))&&Number(x)>=.1&&Number(x)<=200?
+   Math.round(Number(x)*100)/100:null;
  const validMm=x=>Number.isFinite(Number(x))&&x!==null&&x!==''&&Number(x)>=RANGE[0]&&Number(x)<=RANGE[1]?
   Math.round(Number(x)*100)/100:null;
  function normalize(input,legacyDn){
@@ -17,6 +20,7 @@
   const diameter={
    nominalMm:validMm(raw.nominalMm)??validMm(legacyDn),
    innerMm:validMm(raw.innerMm),outerMm:validMm(raw.outerMm),
+   wallThicknessMm:validWallMm(raw.wallThicknessMm),
    openingMm:validMm(raw.openingMm),candidateMm:validMm(raw.candidateMm),
    unit:'mm',method:['manual','pdf-label','photo-calibrated','unknown'].includes(raw.method)?raw.method:'unknown',
    source:clean(raw.source),status:STATUSES.includes(raw.status)?raw.status:'unverified',
@@ -45,6 +49,7 @@
   if(d.nominalMm!==null)parts.push('DN '+d.nominalMm+' (Nennangabe)');
   if(d.innerMm!==null)parts.push('Innen-Ø '+d.innerMm+' mm');
   if(d.outerMm!==null)parts.push('Außen-Ø '+d.outerMm+' mm');
+  if(d.wallThicknessMm!==null)parts.push('Rohrwand '+d.wallThicknessMm+' mm');
   if(d.openingMm!==null)parts.push('Öffnung-Ø '+d.openingMm+' mm');
   if(d.candidateMm!==null)parts.push('Erkannt: Ø '+d.candidateMm+' mm');
   return (parts.join(' · ')||'Durchmesser unbekannt')+' · '+qualified+
