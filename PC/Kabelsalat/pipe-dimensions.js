@@ -59,7 +59,8 @@
    const line=lines[row].slice(0,800);
    const pipe=/\b(SW[1-4])\s*[/_\- ]*T(?:RASSE)?\s*0?(\d+)\s*[/_\- ]*LR\s*0?(\d+)\b/i.exec(line);
    const simple=/\b(SW[1-4])[_/\- ]*(?:LR|LEERROHR)\s*0?(\d+)\b/i.exec(line);
-   const pipeId=pipe?pipe[1].toUpperCase()+'_T'+Number(pipe[2])+'_LR'+String(+pipe[3]).padStart(2,'0'):null;
+   const pipeCount=(line.match(/\bSW[1-4]\s*[/_\- ]*T(?:RASSE)?\s*0?\d+\s*[/_\- ]*LR\s*0?\d+\b/gi)||[]).length;
+   const pipeId=pipe&&pipeCount===1?pipe[1].toUpperCase()+'_T'+Number(pipe[2])+'_LR'+String(+pipe[3]).padStart(2,'0'):null;
    const tokenRx=/(?:\bDN\b|\bDM\b|Ø|\bDURCHMESSER\b)\s*(?:[:=]\s*)?(\d{2,3}(?:[.,]\d)?)\s*(?:mm\b)?/giu;
    let found;
    while((found=tokenRx.exec(line))&&matches.length<600){
@@ -69,7 +70,7 @@
      wall:pipe?pipe[1].toUpperCase():simple?simple[1].toUpperCase():null,
      loosePipeId:!pipeId&&simple?simple[1].toUpperCase()+'_LR'+String(+simple[2]).padStart(2,'0'):null,
      label:found[0].slice(0,65),candidateMm:mm,status:'candidate',
-     confidence:null,reason:pipeId?'Textbeleg; exakte Rohr-ID prüfen':'Rohr-ID manuell zuordnen'});
+     confidence:null,reason:pipeId?'Textbeleg; exakte Rohr-ID prüfen':pipeCount>1?'Mehrere Rohr-IDs auf einer Zeile; Zuordnung offen':'Rohr-ID manuell zuordnen'});
    }
   }
   return matches;
@@ -78,6 +79,7 @@
  // No binary PDF parsing, OCR or spatial attribution is claimed here.
  function parsePlanPages(pages,{source='PDF-Textlayer (ungeprüft)',documentVersion=null,maxPages=32,maxChars=100000}={}){
   if(!Array.isArray(pages))throw Error('PDF-Seiten müssen eine Liste sein');
+  source=clean(source);
   if(documentVersion!==null&&(typeof documentVersion!=='string'||documentVersion.length>120))
    throw Error('Ungültige PDF-Dokumentversion');
   if(!Number.isSafeInteger(maxPages)||maxPages<1||maxPages>100||
