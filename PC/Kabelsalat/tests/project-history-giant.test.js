@@ -25,6 +25,10 @@ const app=fs.readFileSync(path.join(__dirname,'../app.js'),'utf8');
 const before=app.split('let project;')[0].replace(/^\(\(\) => \{\s*/,'');
 const {validProject}=new Function(before+'\nreturn {validProject};')();
 const station=validProject(globalThis.KabelsalatSamples.create('station'));
+// The running application synchronizes the active snapshot before autosave/Undo.
+const active=station.network.shafts.find(x=>x.id===station.activeShaftId);
+assert.ok(active);
+active.snapshot=network.snapshot(station);
 assert.equal(station.version,5);
 assert.equal(station.network.shafts.length,4);
 assert.deepEqual(validProject(JSON.parse(JSON.stringify(station))),station,
