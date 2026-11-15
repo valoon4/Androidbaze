@@ -30,7 +30,6 @@ if(!holeEditorOps)throw Error('Kabelsalat-Leerrohr-Editormodul fehlt');
 const cableEditorOps=globalThis.KabelsalatCableEditorOps;
 if(!cableEditorOps)throw Error('Kabelsalat-Kabel-Editormodul fehlt');
 const csvModel=globalThis.KabelsalatCsv;
-const shaftBatch=globalThis.KabelsalatShaftBatch;
 const handoverModel=globalThis.KabelsalatHandover;
 const constructionV2=globalThis.KabelsalatConstructionV2;
 if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
@@ -1960,63 +1959,6 @@ $('csvExport').addEventListener('click',()=>{
   download(filename()+'-'+kind+'.csv',content,'text/csv;charset=utf-8');
   $('csvStatus').textContent=kind+' als UTF-8 CSV mit BOM exportiert, keine Fachfreigabe.';
  }catch(e){$('csvStatus').textContent='CSV-Export nicht möglich: '+e.message;}
-});
-/* Bro, 15.11: 400+ shaft list; read-only and independent from 30-shaft editor. */
-let batchInventory=null,batchResult=null;
-function clearBatch(){
- batchInventory=null;batchResult=null;
- $('batchExportCsv').disabled=true;$('batchExportTxt').disabled=true;
- $('batchResults').textContent='';
-}
-for(const id of ['batchShaftCsv','batchPassageCsv'])
- $(id).addEventListener('input',()=>{
-  clearBatch();$('batchStatus').textContent='CSV geändert – Liste erneut prüfen.';
- });
-$('batchTemplate').addEventListener('click',()=>{
- const sample=shaftBatch.template();
- $('batchShaftCsv').value=sample.shafts;$('batchPassageCsv').value=sample.passages;
- $('batchCableSearch').value='';clearBatch();
- $('batchStatus').textContent='Fiktive Beispieldaten geladen, keine echten Schächte.';
-});
-function showBatchResults(){
- if(!batchInventory?.ok)return;
- try{
-  batchResult=shaftBatch.analyze(batchInventory,{query:$('batchCableSearch').value});
-  const summary=batchResult.cableCount+' Kabel · '+batchResult.matchedShafts+
-   ' relevante von '+batchResult.allShafts+' Schächten';
-  $('batchStatus').textContent=summary+
-   ' · nur importierte Zuordnungen. Kabelkontinuität bleibt ungeprüft.';
-  $('batchResults').innerHTML=batchResult.routes.slice(0,80).map(route=>
-   '<div style="margin:6px 0"><b>'+esc(route.cableId)+'</b> · '+
-   esc(route.status)+'<div>'+esc(route.shafts.map(v=>
-    (v.sequence??'?')+'. '+v.shaftId).join(' → '))+'</div>'+
-   '<div>'+esc(route.warnings.join(' · '))+'</div></div>').join('')||
-    '<div>Keine passenden Kabel in den importierten Daten.</div>';
-  $('batchExportCsv').disabled=!batchResult.routes.length;
-  $('batchExportTxt').disabled=!batchResult.routes.length;
- }catch(e){clearBatch();$('batchStatus').textContent='Suche abgelehnt: '+e.message;}
-}
-$('batchAnalyze').addEventListener('click',()=>{
- clearBatch();
- try{
-  if(!shaftBatch)throw Error('Batch-Modul nicht geladen');
-  const data=shaftBatch.inventory($('batchShaftCsv').value,$('batchPassageCsv').value);
-  if(!data.ok){
-   $('batchStatus').textContent=data.errors.length+' CSV-Fehler. Keine Liste erstellt. '+
-    data.errors.slice(0,6).map(e=>e.message).join(' | ');
-   return;
-  }
-  batchInventory=data;showBatchResults();
- }catch(e){$('batchStatus').textContent='CSV-Analyse fehlgeschlagen: '+e.message;}
-});
-$('batchCableSearch').addEventListener('input',showBatchResults);
-$('batchExportCsv').addEventListener('click',()=>{
- if(batchResult?.routes.length)download('kabelsalat-kabeldurchgaenge.csv',
-  shaftBatch.csv(batchResult),'text/csv;charset=utf-8');
-});
-$('batchExportTxt').addEventListener('click',()=>{
- if(batchResult?.routes.length)download('kabelsalat-schachtliste.txt',
-  shaftBatch.txt(batchResult),'text/plain;charset=utf-8');
 });
 $('sourceAddDocument').addEventListener('click',()=>{
  try{
