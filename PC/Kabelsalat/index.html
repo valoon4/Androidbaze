@@ -463,7 +463,9 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <hr><h3 id="holeTitle">Ausgewähltes Leerrohr</h3>
 <div class="row"><label class="field">Position (mm)<input type="number" id="holeU" min="0" max="12000" step="1"></label>
 <label class="field">Höhe (mm)<input type="number" id="holeV" min="0" max="8000" step="1"></label></div>
-<label class="field">DN des LR (30–160, schematisch)<input type="number" id="holeDn" min="30" max="160" step="1"></label>
+<label class="field">DN des LR (30–160, schematisch)<input type="number" id="holeDn" min="30" max="160" step="1" list="holeDnSuggestions"></label>
+<datalist id="holeDnSuggestions"><option value="30"></option><option value="40"></option><option value="50"></option><option value="60"></option><option value="63"></option><option value="75"></option><option value="90"></option><option value="110"></option><option value="116"></option><option value="125"></option><option value="140"></option><option value="160"></option></datalist>
+<div id="holeEditStatus" class="small" role="status" aria-live="polite">Alle Maße sind schematisch, keine bautechnische Freigabe.</div>
 <p class="small">DN 50 wird im 2D-/3D-Demomodell proportional kleiner als DN 110 dargestellt. Die echte Betonöffnung kann einen anderen Ø haben; Original-Referenzdaten bleiben unverändert.</p>
 <div class="dim-editor" role="group" aria-label="Rohr- und Öffnungsmaße">
  <h3>Rohrmaße getrennt erfassen</h3>
@@ -471,6 +473,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
  <div class="row"><label class="field">Innen-Ø (mm)<input id="holeInnerMm" type="number" min="20" max="600" step="0.1" placeholder="unbekannt"></label>
  <label class="field">Außen-Ø (mm)<input id="holeOuterMm" type="number" min="20" max="600" step="0.1" placeholder="unbekannt"></label></div>
  <label class="field">Loch-Ø im Beton (mm) <input id="holeOpeningMm" type="number" min="20" max="600" step="0.1" placeholder="nur DN als Demo"></label>
+<label class="field">Rohr-Wandstärke (mm, optional)<input id="holeWallMm" type="number" min="0.1" max="200" step="0.1" placeholder="nicht bekannt"></label>
  <label class="field">Maßquelle / Planreferenz<input id="holeDimensionSource" maxlength="240" placeholder="Dokument + Seite oder Aufmaß"></label>
  <label class="field">Prüfstatus<select id="holeDimensionStatus"><option value="unverified">Unbestätigt</option><option value="candidate">Kandidat</option><option value="reviewed">Mit Quelle geprüft</option></select></label>
  <label class="field">Prüfperson (nur bei geprüft)<input id="holeDimensionReviewer" maxlength="240" placeholder="noch keine fachliche Abnahme"></label>
@@ -648,6 +651,25 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <div class="draft-canvas-wrap"><canvas id="draftCanvas" aria-label="2D-Schachtwand"></canvas></div>
 <div id="draftCoords" class="draft-metrics">Wähle ein Leerrohr.</div>
 <div class="row"><button id="draftCopy" class="btn soft full">＋ Rohr kopieren</button><button id="draftAdd" class="btn full">＋ Rohr platzieren</button></div>
+<div class="row"><label class="field">Fangraster (mm)<select id="draftSnapStep"><option value="1">Aus · 1 mm</option><option value="10">10 mm</option><option value="25">25 mm</option><option value="50">50 mm</option></select></label>
+<label class="field">Neue DN (mm)<input id="draftNewDn" type="number" min="30" max="160" step="1" value="50" list="holeDnSuggestions"></label></div>
+<div class="dim-editor" role="group" aria-label="Leerrohr-Gruppen und Wandwechsel">
+<h3>Leerrohr-Gruppe · schematisch</h3>
+<div class="row"><label class="field">Start X (mm)<input id="groupStartX" type="number" min="0" step="1" value="200"></label>
+<label class="field">Start Y (mm)<input id="groupStartY" type="number" min="0" step="1" value="200"></label></div>
+<div class="row"><label class="field">Reihen<input id="groupRows" type="number" min="1" max="15" value="2"></label>
+<label class="field">Spalten<input id="groupCols" type="number" min="1" max="15" value="2"></label></div>
+<div class="row"><label class="field">X-Abstand (mm)<input id="groupDx" type="number" min="1" max="5000" value="180"></label>
+<label class="field">Y-Abstand (mm)<input id="groupDy" type="number" min="1" max="5000" value="180"></label></div>
+<label class="field">DN-Folge (z. B. 50,110,75,160)<input id="groupDns" type="text" maxlength="120" value="50,110" placeholder="50,110"></label>
+<div class="row"><button id="groupPreview" class="btn soft full" type="button">Gruppe prüfen</button>
+<button id="groupApply" class="btn full" type="button" disabled>Gruppe einfügen</button></div>
+<p id="groupStatus" role="status" class="small">Nur eigene/fiktive Schächte; keine Originalquellen automatisch verändern.</p>
+<h3>Ausgewähltes Rohr · Wandwechsel</h3>
+<div class="row"><select id="holeTransferWall" class="selector" aria-label="Zielwand"><option value="SW1">SW1</option><option value="SW2">SW2</option><option value="SW3">SW3</option><option value="SW4">SW4</option></select>
+<button id="holeTransfer" class="btn soft full" type="button">Rohr an Zielwand verschieben</button></div>
+<p id="transferStatus" class="small" role="status">Kabelanschlüsse und Überlappungen werden vorab geprüft.</p>
+</div>
 <div class="small">2D und 3D verwenden dieselben Objekt-IDs und Abmessungen.</div></section>
 <section id="networkPane" aria-label="Schachtnetz als Vogelperspektive">
 <div class="net-map-heading">
@@ -832,6 +854,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.11-beta.1"></script><script src="vendor/three.min.js?v=2.0.11-beta.1"></script><script src="editor2d.js?v=2.0.11-beta.1"></script><script src="components.js?v=2.0.11-beta.1"></script><script src="network.js?v=2.0.11-beta.1"></script><script src="network-route-planner.js?v=2.0.11-beta.1"></script><script src="network-world-route.js?v=2.0.11-beta.1"></script><script src="quality.js?v=2.0.11-beta.1"></script><script src="reports.js?v=2.0.11-beta.1"></script><script src="reference-data.js?v=2.0.11-beta.1"></script><script src="examples.js?v=2.0.11-beta.1"></script><script src="pdf-geometry.js?v=2.0.11-beta.1"></script><script src="schematic-positions.js?v=2.0.11-beta.1"></script><script src="spacing-adjust.js?v=2.0.11-beta.1"></script><script src="pipe-dimensions.js?v=2.0.11-beta.1"></script><script src="photo-candidates.js?v=2.0.11-beta.1"></script><script src="concrete-wall.js?v=2.0.11-beta.1"></script><script src="construction-v2.js?v=2.0.11-beta.1"></script><script src="pdf-visual.js?v=2.0.11-beta.1"></script><script src="app.js?v=2.0.11-beta.1"></script>
+<script src="recovery.js?v=2.0.11-beta.1"></script><script src="vendor/three.min.js?v=2.0.11-beta.1"></script><script src="editor2d.js?v=2.0.11-beta.1"></script><script src="components.js?v=2.0.11-beta.1"></script><script src="network.js?v=2.0.11-beta.1"></script><script src="network-route-planner.js?v=2.0.11-beta.1"></script><script src="network-world-route.js?v=2.0.11-beta.1"></script><script src="quality.js?v=2.0.11-beta.1"></script><script src="reports.js?v=2.0.11-beta.1"></script><script src="reference-data.js?v=2.0.11-beta.1"></script><script src="examples.js?v=2.0.11-beta.1"></script><script src="pdf-geometry.js?v=2.0.11-beta.1"></script><script src="schematic-positions.js?v=2.0.11-beta.1"></script><script src="spacing-adjust.js?v=2.0.11-beta.1"></script><script src="hole-editor-ops.js?v=2.0.11-beta.1"></script><script src="pipe-dimensions.js?v=2.0.11-beta.1"></script><script src="photo-candidates.js?v=2.0.11-beta.1"></script><script src="concrete-wall.js?v=2.0.11-beta.1"></script><script src="construction-v2.js?v=2.0.11-beta.1"></script><script src="pdf-visual.js?v=2.0.11-beta.1"></script><script src="app.js?v=2.0.11-beta.1"></script>
 </body>
 </html>
