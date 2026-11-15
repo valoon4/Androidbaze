@@ -15,7 +15,13 @@
  const key=v=>clean(v).toLocaleUpperCase('de-DE');
  const validId=s=>typeof s==='string'&&s.length>0&&s.length<=120&&!/[\r\n<>]/.test(s);
  const safeText=(s,n=180)=>clean(s).slice(0,n);
- const encode=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
+ const encode=s=>{
+  const raw=String(s??'');
+  // Spreadsheet CSV injection: never let untrusted source titles/cable names
+  // become Excel formulas (=, +, -, @), even when the cell is quoted.
+  const safe=/^[\u0000-\u0020]*[=+\-@]/.test(raw)?"'"+raw:raw;
+  return '"'+safe.replace(/"/g,'""')+'"';
+ };
  function rowsCsv(rows,fields){
   return '\uFEFF'+fields.join(';')+'\r\n'+rows.map(row=>
    fields.map(f=>encode(row[f]??'')).join(';')).join('\r\n')+(rows.length?'\r\n':'');
@@ -167,6 +173,31 @@
     'Keine Kabelzuordnung eingetragen; keine Aussage über Belegung'})),
    ['schacht_id','schachtname','kabelanzahl','kabel_ids','hinweis']);
  }
+ function aiBrief(){
+  return [
+   'Kabelsalat – Auftrag zur 400-Schacht-Kabelweg-Auswertung',
+   '',
+   'Lies die separat angehängte Schachtliste und die relevanten Pläne/Begehungsdaten.',
+   'Ordne Kabel nur dann einem Schacht zu, wenn eine konkrete Quelle die Zuordnung trägt.',
+   'Gib eine CSV mit exakt diesen Spalten zurück:',
+   passHeaders.join(';'),
+   '',
+   'Eine Zeile je Kabel/Schacht. reihenfolge ist 1,2,3... in dokumentierter Laufrichtung.',
+   'Status: PLAN = ausdrücklich im Plan, KANDIDAT = plausible unbestätigte Textzuordnung,',
+   'VOR_ORT = nur mit entsprechendem eingereichten Vor-Ort-Beleg, nicht vom KI-Modell erfunden.',
+   'quelle = Dokumentkennung plus Seite/Abschnitt. Ohne Beleg keine Zuordnung erzeugen.',
+   'Mehrdeutige oder fehlende Schachtfolgen nicht ergänzen: Liste offener Fragen ausgeben.',
+   'Nicht aus geografischer Nähe, Schacht-Namen, Luftlinie oder grafischen Kreuzungen',
+   'automatisch eine physische Durchleitung ableiten. Keine Vermessungs-/Fachfreigabe behaupten.',
+   'Bei nur vorhandenen Schacht-IDs und fehlenden Kabelverläufen alle Kabelzuordnungen offen lassen.',
+   '',
+   'Erwartete Schachtlisten-Spalten:',
+   shaftHeaders.join(';'),
+   '',
+   'Die erzeugten Kabelzuordnungen anschließend in der Kabelsalat-400-Schacht-Auswertung',
+   'einlesen; die drei Übergabe-CSV-Dateien dienen dem Abstimmungs-/Prüfprozess.'
+  ].join('\n');
+ }
  function fromProject(project){
   const shafts=(project?.network?.shafts||[]),routes=(project?.network?.routes||[]);
   const shaftCsv=rowsCsv(shafts.map(s=>({schacht_id:s.id,schachtname:s.name})),shaftHeaders);
@@ -181,5 +212,5 @@
   return {shaftCsv,passageCsv:rowsCsv(passes,passHeaders)};
  }
  return {MAX_SHAFTS,MAX_PASSAGES,shaftHeaders,passHeaders,readCsv,rowsCsv,analyze,
-  exportHandover,exportByShaft,exportOpen,fromProject};
+  exportHandover,exportByShaft,exportOpen,fromProject,aiBrief};
 });
