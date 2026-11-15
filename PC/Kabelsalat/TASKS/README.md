@@ -18,12 +18,16 @@
 
 | Ebene | Erledigt | Offen | Gesamt |
 |---|---:|---:|---:|
-| **Alle Parent-Tickets** | **100** | **788** | **888** |
+| **Alle Parent-Tickets** | **200** | **688** | **888** |
 | **Alle Mikro-Tasks** | **1.331** | **11.681** | **13.012** |
 | **Bros jüngste 10 Parent-Tickets** | **4** | **6** | **10** |
 | **Bros 200 Mikro-Tasks** | **199** | **1** | **200** |
 
-**100er-Parent-Meilenstein:** 58 zusätzliche technische/QA-/Handbuch-Abnahmen · [58 Einzelnachweise](./EVIDENCE_2026-11-15_PARENT_100_REVIEW.md). Für die 13.012 Mikro-Tasks zählen weiterhin nur Einzelbelege; aktueller CI-Status nicht unabhängig bestätigt.\n\n**Technisch abgeschlossene Bro-Parents:** KAB-0884, 0886, 0887, 0888 · [Nachweise](./BRO_PARENT_TECH_ABNAHME_2026-11-15.md) · [erfolgreiche Chromium-Vollprüfung](https://github.com/valoon4/Androidbaze/actions/runs/43709846491).
+**100er-Parent-Meilenstein:** 58 zusätzliche technische/QA-/Handbuch-Abnahmen · [58 Einzelnachweise](./EVIDENCE_2026-11-15_PARENT_100_REVIEW.md). Für die 13.012 Mikro-Tasks zählen weiterhin nur Einzelbelege; aktueller CI-Status nicht unabhängig bestätigt.
+
+**200er-Parent-Meilenstein:** +100 weitere technisch geprüfte Parent-Tickets · [47 × 2D/Suche/Qualität](./EVIDENCE_2026-11-15_NEXT_100_WAVE1.md) · [28 × Netz/Kabelkontinuität](./EVIDENCE_2026-11-15_NEXT_100_WAVE2.md) · [25 × Projekt-/PDF-Regression](./EVIDENCE_2026-11-15_NEXT_100_WAVE3.md). Volle aktuelle Browser-/Windows-CI bleibt gesondert zu prüfen; der Mikro-Ledger ist unverändert. 
+
+**Technisch abgeschlossene Bro-Parents:** KAB-0884, 0886, 0887, 0888 · [Nachweise](./BRO_PARENT_TECH_ABNAHME_2026-11-15.md) · [erfolgreiche Chromium-Vollprüfung](https://github.com/valoon4/Androidbaze/actions/runs/43709846491).
 
 **Zusätzlich abgeschlossen:** KAB-0051–0053 · [schematische Rohrabstände mit Undo/Redo, geschützten Kabelverbindungen und Chromium-Vorher/Nachher](https://github.com/valoon4/Androidbaze/blob/b84213fb6c208e113bb28bcc26a5f60754ecb169/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_SPACING_GIANT_28.md).
 
