@@ -1,15 +1,12 @@
-"""AniFocus v0.1 — cozy, low-maintenance Pomodoro for Master/Research/Exploring."""
+"""AniFocus v0.1.1 — cozy, low-maintenance Pomodoro for Master/Research/Exploring."""
 from __future__ import annotations
 
 import math
-import queue
-import threading
-import webbrowser
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
 from core import AREAS, FocusTimer, clock_label, load_state, save_state
-from github_progress import SUPPORTED, SOURCE_PAGE, fetch_progress
+from github_progress import SUPPORTED, get_progress
 
 W, H = 1120, 720
 BG = "#f6e9e5"
@@ -23,7 +20,7 @@ PASTELS = ("#f8c9d5", "#cbdcf0", "#dce8b6", "#f8ddb2",
 class AniFocus:
     def __init__(self, root: tk.Tk):
         self.root = root
-        root.title("AniFocus v0.1")
+        root.title("AniFocus v0.1.1")
         root.geometry(f"{W}x{H}")
         root.resizable(False, False)
         root.configure(bg=BG)
@@ -34,12 +31,7 @@ class AniFocus:
         self.counter = 0
         self.time_item = None
         self.pages = {area: 0 for area in AREAS}
-        self.github_cache = {}
-        self.github_loading = set()
-        self.github_errors = {}
-        self.github_results = queue.Queue()
         self.render()
-        self.maybe_refresh_github()
         root.after(160, self.heartbeat)
 
     def rounded(self, x1, y1, x2, y2, radius=18, fill="#ffffff", outline="", width=1, tags=()):
@@ -121,13 +113,11 @@ class AniFocus:
         self.state["area"]=area
         self.persist()
         self.render()
-        self.maybe_refresh_github()
 
     def choose_module(self,module):
         self.state["selected"][self.state["area"]]=module
         self.persist()
         self.render()
-        self.maybe_refresh_github()
 
     def add_module(self):
         area=self.state["area"]
@@ -148,7 +138,6 @@ class AniFocus:
         self.persist()
         self.pages[area]=(len(self.state["modules"][area])-1)//7
         self.render()
-        self.maybe_refresh_github()
 
     def module_menu(self,event,module):
         area=self.state["area"]
@@ -230,34 +219,12 @@ class AniFocus:
         self.render()
 
 
-    def maybe_refresh_github(self, force=False):
-        """Automatic first read on selecting OST/Playlists/Seasonvids; manual refresh."""
-        name = self.state["selected"].get("Research") if self.state["area"] == "Research" else None
-        if name not in SUPPORTED or name in self.github_loading:
-            return
-        if name in self.github_cache and not force:
-            return
-        self.github_loading.add(name)
-        self.github_errors.pop(name, None)
-        worker = threading.Thread(target=self._github_worker, args=(name,), daemon=True)
-        worker.start()
-        self.render()
-
-    def _github_worker(self, name):
-        try:
-            result = fetch_progress(name)
-            self.github_results.put((name, result, None))
-        except Exception:
-            self.github_results.put((name, None, "GitHub-Stand derzeit nicht abrufbar."))
-
     def github_detail(self):
         name = self.state["selected"].get("Research")
-        record = self.github_cache.get(name)
+        record = get_progress(name)
         if record:
-            messagebox.showinfo(f"{name} · GitHub", record["details"], parent=self.root)
-
-    def github_source(self):
-        webbrowser.open(SOURCE_PAGE)
+            messagebox.showinfo(f"{name} · Stand 15.11.2026",
+                                record["details"], parent=self.root)
 
     def page(self, delta):
         area = self.state["area"]
@@ -266,21 +233,6 @@ class AniFocus:
         self.render()
 
     def heartbeat(self):
-        changed = False
-        while True:
-            try:
-                name, record, error = self.github_results.get_nowait()
-            except queue.Empty:
-                break
-            self.github_loading.discard(name)
-            if record:
-                self.github_cache[name] = record
-                self.github_errors.pop(name, None)
-            else:
-                self.github_errors[name] = error
-            changed = True
-        if changed:
-            self.render()
         finished=self.timer.tick()
         if self.time_item is not None:
             self.canvas.itemconfigure(self.time_item,text=clock_label(self.timer.seconds_left()))
@@ -388,29 +340,18 @@ class AniFocus:
         self.button(799,485,905,531,"↺ Reset",self.reset_timer,bg="#f8eee6",size=14)
         self.button(913,485,991,531,"Dauer",self.edit_minutes,bg="#fff2e8",size=13)
 
-        # Research: GitHub source shown read-only, not treated as an invented percentage.
+        # Built-in, dated Research snapshots: no network access.
         if area=="Research" and active in SUPPORTED:
             self.rounded(591,546,1005,604,13,fill="#fff2eb",outline="#f0ded6")
-            record=self.github_cache.get(active)
-            error=self.github_errors.get(active)
-            if active in self.github_loading and not record:
-                lines=["Lese aktuellen GitHub-Stand …"]
-            elif record:
-                lines=record["lines"]
-            else:
-                lines=[error or "GitHub-Stand noch nicht geladen."]
-            self.label(611,560,(record["heading"] if record else "GitHub · "+active),
-                       12,INK,True,anchor="w")
-            for i,line in enumerate(lines[:2]):
-                display=line if len(line)<=57 else line[:54]+"…"
+            record=get_progress(active)
+            self.label(611,560,record["heading"],12,INK,True,anchor="w")
+            for i,line in enumerate(record["lines"]):
+                display=line if len(line)<=38 else line[:35]+"…"
                 self.label(611,577+i*16,display,10,MUTED,anchor="w")
-            self.button(928,550,994,572,"↻",lambda:self.maybe_refresh_github(True),
-                        size=13,bg="#fff9f5")
-            if record:
-                self.button(928,577,994,600,"Info",self.github_detail,
-                            size=11,bg="#fff9f5")
+            self.button(929,575,995,600,"Info",self.github_detail,
+                        size=11,bg="#fff9f5")
         else:
-            self.label(796,571,"🍅  Einmal starten. Einfach fokussieren.",12,MUTED)
+            self.label(796,571,"Einfach starten und fokussieren.",12,MUTED)
         # Per-area manual progress is independent of sourced Research status.
         self.rounded(94,650,1032,678,14,fill="#f5e5e1")
         self.label(112,664,f"{area} · Eigener Fortschritt",12,INK,True,anchor="w")
@@ -420,7 +361,7 @@ class AniFocus:
             self.rounded(431,657,431+423*value/100,670,6,fill="#e5a3b7")
         self.label(873,664,"–" if value is None else f"{value} %",12,INK,True,anchor="w")
         self.button(950,651,1023,676,"Setzen",self.edit_progress,bg="#fff3eb",size=11)
-        self.label(1015,698,"v0.1",10,MUTED)
+        self.label(1015,698,"v0.1.1",10,MUTED)
 
 def main():
     root=tk.Tk()

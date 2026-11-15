@@ -1,35 +1,41 @@
-# AniFocus v0.1 🍅🐱
+# AniFocus v0.1.1 🍅🐱
 
-Cozy, bewusst **pflegearmer** Pomodoro-Timer für Windows. Helles Notizbuchdesign, Katze und große rote Tomate. Keine To-do-Listen, Streaks oder täglichen Pflicht-Eingaben.
+Cozy, komplett offlinefähiger Windows-Pomodoro mit roter Tomate und Katze – kein Task-Management, keine Streaks.
 
-## Windows-Download
+## Portable Windows EXE
 
-**[AniFocus.exe v0.1](https://github.com/valoon4/Androidbaze/releases/download/anifocus-v0.1/AniFocus.exe)**
+[AniFocus.exe v0.1.1](https://github.com/valoon4/Androidbaze/releases/download/anifocus-v0.1.1/AniFocus.exe) (nach erfolgreichem GitHub-Actions-Build).
 
-Der GitHub-Actions-Build erstellt eine portable EXE (kein Installer nötig). Link nach erfolgreichem Release verfügbar.
+## Bereiche
 
-## Bedienung
+- **Master:** RP1, ITM1, LEAD1, DF1
+- **Research:** OST, Playlists, Seasonvids, LA, Syncupdates
+- **Exploring:** Anime & Cartoon Serie, Anime & Cartoon Film, Liveaction Serie, Liveaction Film, Gaming, Manga, Comic
 
-- **Master:** RP1, ITM1, LEAD1, DF1.
-- **Research:** OST, Playlists, Seasonvids, LA, Syncupdates.
-- **Exploring:** Anime & Cartoon Serie, Anime & Cartoon Film, Liveaction Serie, Liveaction Film, Gaming, Manga, Comic.
-- **Pomodoro:** 25 Minuten ab Werk. Start, Pause, Reset und frei wählbare Dauer (1–180 Minuten).
-- **Bereiche anpassen:** Neue Unterbereiche einmalig anlegen; Rechtsklick zum Umbenennen oder Entfernen. Maximal 16 je Kategorie (Seitenwechsel bei über 7).
-- **Fortschritt:** Einmalig eigener Prozentwert pro Hauptbereich optional. Leer bedeutet **unbekannt**, nicht 0 %.
-- **GitHub Research-Stand:** Wähle bei Research **OST, Playlists oder Seasonvids**. AniFocus liest beim ersten Öffnen die öffentliche kanonische Datei `valoon4/Storytimez/research/RESEARCH_STATUS.md` (nur Lesen, kein GitHub-Login). Refresh per ↻. **Keine erfundenen Gesamtprozente:** OST zeigt P2-/P3-Restzahlen; Playlists die zuletzt dokumentierten offenen Fünfer-Builds; Seasonvids die expliziten Load/Add/Cut-Teilstände. Ein Klick auf **Info** zeigt die Details sowie den Quellpfad.
-- **Offline:** Timer und lokale Einstellungen funktionieren vollständig offline; wenn GitHub nicht erreichbar ist, erscheint eine sachliche Meldung statt fiktiver Werte.
-- Einstellungen unter `%APPDATA%\\AniFocus\\state.json`. Deine Daten aus **v0.0** werden beim ersten Start erhalten und um die Standardlisten von Research und Exploring ergänzt.
+Der Timer startet bei 25 Minuten, lässt sich auf 1–180 Minuten einstellen und bietet Start, Pause, Reset. Bereiche können einmalig bearbeitet werden (Rechtsklick). Der optionale manuelle Gesamtfortschritt pro Hauptbereich bleibt davon unabhängig.
 
-**Quellen:** [Research-Status (öffentlich)](https://github.com/valoon4/Storytimez/blob/main/research/RESEARCH_STATUS.md). Anzeige ist eine Leseansicht des GitHub-Status, keine eigenständige Recherche und keine automatische Erledigung von Zielen.
+## Fest integrierte Research-Stände (GitHub-Snapshot 15.11.2026)
 
-## Lokal starten & testen
+Die EXE benötigt **keine Internetverbindung**. Die drei Forschungsstände sind in `github_progress.py` fest eincodiert:
 
-Python 3.12 (mit Tkinter), keine externen Runtime-Abhängigkeiten:
+| Bereich | Bestätigter Stand aus Storytimez |
+|---|---|
+| OST | Dec 6 fertig; P2 392 und P3 4.092 offen |
+| Playlists | Dec 0–6 teilweise gebaut; offene Fünfer-Builds 1986, 2000–01, 2003–06, 2011 Q3/Q4, 2026 Q1–Q4 |
+| Seasonvids | 2006 Q4 18/75 bis Cut; 2016 Q4 Load 69/79 und Add 3/79; 2026 Q4 52/79 bis Cut |
 
-```powershell
+**Info** zeigt weitere bestätigte Einzelstände. Es werden **keine Gesamtprozente abgeleitet**. Der Stand ist bewusst datiert und ändert sich erst mit einem neuen EXE-Build.
+
+Kanonische Quelle: [Storytimez Research Status](https://github.com/valoon4/Storytimez/blob/main/research/RESEARCH_STATUS.md). Sie wird *bei der Entwicklung* geprüft, nicht beim Benutzen der EXE abgerufen.
+
+Alle lokalen Einstellungen aus v0.0/v0.1 bleiben erhalten unter `%APPDATA%\\AniFocus\\state.json`.
+
+## Entwicklung
+
+```bash
 cd PC/AniFocus
-python app.py
 python -m unittest discover -s tests -v
+python app.py
 ```
 
-Die [.github/workflows/anifocus-exe.yml](../../.github/workflows/anifocus-exe.yml) erstellt die Windows-EXE mit PyInstaller und veröffentlicht die erfolgreiche v0.1 unter dem Prerelease `anifocus-v0.1`. Andere Androidbaze-Apps werden nicht geändert.
+Die GitHub Action `.github/workflows/anifocus-exe.yml` erstellt eine portable Windows-EXE mit PyInstaller.

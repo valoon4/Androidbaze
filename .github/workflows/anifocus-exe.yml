@@ -1,4 +1,4 @@
-name: AniFocus v0.1 Windows EXE
+name: AniFocus v0.1.1 Windows EXE
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: anifocus-v0.1-release
+  group: anifocus-v0.1.1-release
   cancel-in-progress: false
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
       - name: Upload Windows build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AniFocus-v0.1-Windows
+          name: AniFocus-v0.1.1-Windows
           path: PC/AniFocus/dist/AniFocus.exe
           if-no-files-found: error
       - name: Publish prerelease EXE
@@ -49,10 +49,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          TAG="anifocus-v0.1"
+          TAG="anifocus-v0.1.1"
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" \
-              --target "$GITHUB_SHA" --title "AniFocus v0.1 – Windows" \
+              --target "$GITHUB_SHA" --title "AniFocus v0.1.1 – Windows" \
               --notes "Cozy Pomodoro für Master, Research und Exploring. Portable EXE ohne tägliche Aufgabenpflege." \
               --prerelease
           fi
