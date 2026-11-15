@@ -1149,6 +1149,10 @@ function drawNetwork(){
 const draft=$('draftCanvas'),geom2d=window.Kabelsalat2D;
 if(!geom2d)throw Error('Kabelsalat-2D-Modul fehlt');
 let draftMetrics=null,draftDrag=null;
+let draftCamera={zoom:1,panX:0,panY:0};
+let draftSelectedIds=new Set(),draftMarquee=null,draftPan=null,draftGroupDrag=null;
+function reset2DSelection(){draftSelectedIds.clear();draftMarquee=null;draftGroupDrag=null;}
+function selected2DHoles(){return wall().holes.filter(h=>draftSelectedIds.has(h.id));}
 function projectedCablePoints(c,m){
  const a=endpoint(c.a),b=endpoint(c.b);
  if(!a||!b)return [];
@@ -1176,7 +1180,8 @@ function draw2D(){
  const ctx=draft.getContext('2d');
  ctx.setTransform(dpr,0,0,dpr,0,0);
  ctx.clearRect(0,0,cw,ch);ctx.fillStyle='#fafdfe';ctx.fillRect(0,0,cw,ch);
- const w=wall(),span=wallSpanMm(wallId),height=project.dims.h,m=geom2d.metrics(span,height,cw,ch);
+ const w=wall(),span=wallSpanMm(wallId),height=project.dims.h,
+  m=geom2d.viewMetrics(span,height,cw,ch,draftCamera);
  draftMetrics=m;$('draftWallSelect').value=wallId;
  const p1=geom2d.toPixels(m,0,0),p2=geom2d.toPixels(m,span,height);
  ctx.save();ctx.strokeStyle='#e8f0f2';ctx.lineWidth=1;
@@ -1199,7 +1204,8 @@ function draw2D(){
  }
  for(const h of w.holes){
  const shown=visualHole(h),p=geom2d.toPixels(m,shown.u*span,shown.v*height);
- const r=Math.max(2,pipeDimensions.apertureMm(h)/2*m.scale),selected=h.id===holeId;
+ const r=Math.max(2,pipeDimensions.apertureMm(h)/2*m.scale),
+  selected=h.id===holeId||draftSelectedIds.has(h.id);
  ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);
  ctx.fillStyle=selected?'#b7e9d7':'#e5eff2';ctx.fill();
  ctx.lineWidth=selected?3:1.5;ctx.strokeStyle=selected?'#18745e':'#708b97';ctx.stroke();
@@ -1221,7 +1227,7 @@ function draw2D(){
   }
   ctx.font='bold 9px Segoe UI,Arial';ctx.textAlign='center';ctx.fillStyle='#1b3142';
   ctx.fillText(String(Number(h.id.split('_LR')[1])),p.x,p.y+3);
-  if(cw>=295){
+  if(cw>=295&&r>=7){ // Hide colliding DN labels at tiny zoom levels.
    ctx.font='8px Segoe UI,Arial';ctx.textAlign='center';ctx.fillStyle='#55707d';
    ctx.fillText('DN '+h.dn,p.x,p.y+r+11);
   }
@@ -1235,6 +1241,23 @@ function draw2D(){
  ctx.beginPath();ctx.arc(p.x,p.y,r+5,0,Math.PI*2);ctx.strokeStyle=cable().color;
  ctx.lineWidth=2.5;ctx.stroke();
  }
+ }
+ // Group-move ghost and marquee are UI-only until a single confirmed Undo checkpoint.
+ if(draftGroupDrag?.plan){
+  ctx.save();ctx.strokeStyle='#6f47bd';ctx.lineWidth=2;ctx.setLineDash([5,4]);
+  for(const c of draftGroupDrag.plan.changes){
+   const h=w.holes.find(h=>h.id===c.id);if(!h)continue;
+   const p=geom2d.toPixels(m,c.u*span,c.v*height);
+   ctx.beginPath();ctx.arc(p.x,p.y,Math.max(4,pipeDimensions.apertureMm(h)/2*m.scale),0,Math.PI*2);
+   ctx.stroke();
+  }
+  ctx.restore();
+ }
+ if(draftMarquee){
+  const a=draftMarquee,b=draftMarquee.last||a;
+  ctx.save();ctx.fillStyle='rgba(51,116,166,.10)';ctx.strokeStyle='#2878aa';
+  ctx.setLineDash([5,4]);ctx.fillRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(b.x-a.x),Math.abs(b.y-a.y));
+  ctx.strokeRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(b.x-a.x),Math.abs(b.y-a.y));ctx.restore();
  }
  // KAB-0053: dashed ghost = proposed new centers, not yet the model or 3D.
  if(spacingPlan&&spacingPlan.wallId===wallId){
@@ -1271,6 +1294,17 @@ function draw2D(){
  }
  ctx.restore();
  const clear=geom2d.clearance(w.holes,span,height),sel=hole();
+ const selected=selected2DHoles();
+ let selectionInfo='';
+ if(selected.length>=2){
+  const m2=geom2d.measure(selected,selected[0].id,selected[1].id,span,height);
+  selectionInfo=' · '+selected.length+' ausgewählt · Mitte '+Math.round(m2.centerMm)+
+   ' mm · Lichtmaß '+Math.round(m2.clearMm)+' mm';
+ }else if(selected.length===1){
+  const edges=geom2d.edgeDistances(selected[0],span,height);
+  selectionInfo=' · Rand L/R/U/O '+[edges.leftMm,edges.rightMm,edges.bottomMm,edges.topMm]
+   .map(Math.round).join('/')+' mm';
+ }
  const pos=sel?geom2d.holeMillimetres(sel,span,height):null;
  $('draftCoords').textContent=sel?
  (project.sourceInfo?.sourceVersion?.startsWith('PDF V2')?
@@ -1278,6 +1312,8 @@ function draw2D(){
   w.id+' · '+Math.round(pos.x)+' mm horizontal · '+Math.round(pos.y)+' mm Höhe · '+pipeDimensions.describe(sel)):
  w.id+' · '+w.holes.length+' Rohre · Mindest-Randabstand: '+(clear.minEdge===null?'–':clear.minEdge+' mm')+
  ' · kleinster Rohrabstand: '+(clear.minPairGap===null?'–':clear.minPairGap+' mm');
+ $('draftViewHint').textContent='Zoom '+Math.round(draftCamera.zoom*100)+' % · Mausrad: Zoom · Alt+Ziehen: Pan · Shift+Ziehen: Auswahl';
+ if(selectionInfo)$('draftCoords').textContent+=selectionInfo;
  $('draftCoords').style.background=clear.overlaps||clear.minEdge!==null&&clear.minEdge<0?'#fff1e7':'#edf7f3';
 }
 
@@ -1308,10 +1344,32 @@ function draftPoint(e){
  return {x:e.clientX-rect.left,y:e.clientY-rect.top};
 }
 draft.addEventListener('pointerdown',e=>{
- if(e.button!==0||!draftMetrics)return;
- const p=draftPoint(e),selected=geom2d.hitHole(wall().holes.map(visualHole),draftMetrics,p.x,p.y);
+ if(!draftMetrics)return;
+ const p=draftPoint(e);
+ if(e.button===1||(e.button===0&&e.altKey)){
+  draftPan={x:p.x,y:p.y};draft.setPointerCapture(e.pointerId);e.preventDefault();return;
+ }
+ if(e.button!==0)return;
+ const selected=geom2d.hitHole(wall().holes.map(visualHole),draftMetrics,p.x,p.y);
+ if(e.shiftKey){
+  if(selected){
+   if(draftSelectedIds.has(selected.id))draftSelectedIds.delete(selected.id);
+   else draftSelectedIds.add(selected.id);
+   holeId=selected.id;draw2D();
+  }else{
+   draftMarquee={x:p.x,y:p.y,last:p,previous:new Set(draftSelectedIds)};
+   draft.setPointerCapture(e.pointerId);draw2D();
+  }
+  e.preventDefault();return;
+ }
  if(selected){
- holeId=selected.id;renderAll();
+ if(!draftSelectedIds.has(selected.id)){draftSelectedIds.clear();draftSelectedIds.add(selected.id);}
+ holeId=selected.id;
+ if(!exploreMode&&!project.sourceInfo&&draftSelectedIds.size>1){
+  draftGroupDrag={start:p,plan:null,ids:[...draftSelectedIds]};
+  draft.setPointerCapture(e.pointerId);draw2D();e.preventDefault();return;
+ }
+ renderAll();
  if(exploreMode){e.preventDefault();return;}
  if(project.sourceInfo){
   $('draftCoords').textContent='Originalreferenz: 2D-Drag deaktiviert. Position nur über bestätigte numerische Bearbeitung.';
@@ -1320,6 +1378,7 @@ draft.addEventListener('pointerdown',e=>{
  draftDrag={holeId:selected.id,wallId,changed:false,x:p.x,y:p.y};
  draft.setPointerCapture(e.pointerId);e.preventDefault();return;
  }
+ if(draftSelectedIds.size)draftSelectedIds.clear();
  const chosenSupport=project.supports.find(st=>{
  if(st.wall!==wallId||!st.visible)return false;
  const x=st.wall==='SW1'||st.wall==='SW3'?st.z+project.dims.d/2:st.x+project.dims.w/2;
@@ -1359,8 +1418,28 @@ draft.addEventListener('pointerdown',e=>{
  e.preventDefault();
 });
 draft.addEventListener('pointermove',e=>{
- if(exploreMode||!draftDrag||!draftMetrics)return;
+ if(!draftMetrics)return;
  const p=draftPoint(e);
+ if(draftPan){
+  draftCamera=geom2d.panCamera(draftCamera,p.x-draftPan.x,p.y-draftPan.y);
+  draftPan={x:p.x,y:p.y};draw2D();e.preventDefault();return;
+ }
+ if(draftMarquee){draftMarquee.last=p;draw2D();e.preventDefault();return;}
+ if(draftGroupDrag){
+  const dx=p.x-draftGroupDrag.start.x,dy=p.y-draftGroupDrag.start.y;
+  const step=Number($('draftSnapStep').value)||1;
+  const dxMm=Math.round(dx/draftMetrics.scale/step)*step,
+   dyMm=-Math.round(dy/draftMetrics.scale/step)*step;
+  try{
+   draftGroupDrag.plan=(dxMm||dyMm)?
+    geom2d.planGroupMove(project,wallId,draftGroupDrag.ids,dxMm,dyMm):null;
+   $('draftCoords').textContent=draftGroupDrag.plan?
+    'Rohrgruppe: '+draftGroupDrag.ids.length+' Rohre, Δ '+dxMm+'/'+dyMm+' mm · loslassen zum Übernehmen':
+    'Mehrfachauswahl: '+draftGroupDrag.ids.length+' Rohre';
+  }catch(err){draftGroupDrag.plan=null;$('draftCoords').textContent='⚠ '+err.message;}
+  draw2D();e.preventDefault();return;
+ }
+ if(exploreMode||!draftDrag)return;
  if(!draftDrag.changed&&Math.hypot(p.x-draftDrag.x,p.y-draftDrag.y)<1)return;
  const w=project.walls.find(x=>x.id===draftDrag.wallId),h=w?.holes.find(x=>x.id===draftDrag.holeId);
  if(!h)return;
@@ -1379,10 +1458,38 @@ draft.addEventListener('pointermove',e=>{
  resetGroupPreview();
  rebuild();e.preventDefault();
 });
-function finishDraftDrag(){if(draftDrag?.changed){renderAll();persist();}draftDrag=null;}
+function finishDraftDrag(){
+ if(draftMarquee){
+  const a=draftMarquee,b=draftMarquee.last||a;
+  const hits=geom2d.rectSelection(wall().holes.map(visualHole),draftMetrics,a.x,a.y,b.x,b.y);
+  draftSelectedIds=new Set([...draftMarquee.previous,...hits]);
+  if(hits.length)holeId=hits[0];
+  draftMarquee=null;draw2D();
+ }
+ if(draftGroupDrag){
+  const plan=draftGroupDrag.plan;draftGroupDrag=null;
+  if(plan){
+   try{change(()=>{geom2d.applyGroupMove(project,plan);},
+    '2D-Rohrgruppe gemeinsam verschoben');}
+   catch(err){$('draftCoords').textContent='Nicht übernommen: '+err.message;}
+  }else draw2D();
+ }
+ if(draftDrag?.changed){renderAll();persist();}
+ draftDrag=null;draftPan=null;
+}
+draft.addEventListener('wheel',e=>{
+ if(!draftMetrics)return;
+ e.preventDefault();
+ const p=draftPoint(e),box=draft.getBoundingClientRect();
+ draftCamera=geom2d.zoomAt(wallSpanMm(wallId),project.dims.h,box.width,box.height,
+  draftCamera,p.x,p.y,draftCamera.zoom*(e.deltaY>0?.88:1.14));
+ draw2D();
+},{passive:false});
+draft.addEventListener('contextmenu',e=>e.preventDefault());
+$('draftResetView').addEventListener('click',()=>{draftCamera={zoom:1,panX:0,panY:0};draw2D();});
 draft.addEventListener('pointerup',finishDraftDrag);
 draft.addEventListener('pointercancel',finishDraftDrag);
-$('draftWallSelect').addEventListener('change',e=>{wallId=e.target.value;holeId=null;if(viewMode.startsWith('SW'))viewMode='3D';renderAll();});
+$('draftWallSelect').addEventListener('change',e=>{wallId=e.target.value;holeId=null;reset2DSelection();draftCamera={zoom:1,panX:0,panY:0};if(viewMode.startsWith('SW'))viewMode='3D';renderAll();});
 $('draftCopy').addEventListener('click',copySelectedHole);
 $('copyHole').addEventListener('click',copySelectedHole);
 $('draftAdd').addEventListener('click',()=>{mode='add';renderUI();});
