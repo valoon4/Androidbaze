@@ -114,12 +114,23 @@ assert.equal(seedReport.summary.shafts,2);
 assert.equal(seedReport.summary.cables,1);
 assert.equal(seedReport.summary.physicallyVerified,0);
 assert.ok(seedReport.handover[0].quelle.includes('schematische Route'));
+const malicious=handover.analyze(
+ 'schacht_id;schachtname\nS1;=HYPERLINK(\\\"evil\\\")\n',
+ header+'K1;@cmd;S1;1;=cmd;PLAN\n');
+assert.equal(malicious.ok,true);
+const safeHandover=handover.exportHandover(malicious);
+const safeShaft=handover.exportByShaft(malicious);
+assert.ok(safeHandover.includes("'@cmd"));
+assert.ok(safeHandover.includes("'=cmd"));
+assert.ok(safeShaft.includes("'=HYPERLINK"));
+assert.ok(handover.aiBrief().includes('Ohne Beleg keine Zuordnung erzeugen'));
+assert.ok(handover.aiBrief().includes('KANDIDAT'));
 const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
 const app=fs.readFileSync(path.join(__dirname,'../app.js'),'utf8');
 const pkg=JSON.parse(fs.readFileSync(path.join(__dirname,'../package.json'),'utf8'));
 for(const id of ['handoverShaftFile','handoverShaftCsv','handoverPassFile',
  'handoverPassCsv','handoverUseProject','handoverAnalyze','handoverFilter',
- 'handoverExportCable','handoverExportShaft','handoverExportOpen'])
+ 'handoverExportCable','handoverExportShaft','handoverExportOpen','handoverAiBrief'])
  assert.ok(html.includes('id="'+id+'"'),'Missing 400-shaft field: '+id);
 assert.ok(html.includes('shaft-handover.js?v='));
 assert.ok(app.includes('handoverModel.analyze('));
