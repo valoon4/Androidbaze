@@ -885,12 +885,19 @@ function renderQualityUI(){
  const selectedWall=$('qualityRuleWall').value,selectedDn=$('qualityRuleDn').value;
  $('qualityWallGap').value=cfg.wallGapMm?.[selectedWall]??'';
  $('qualityDnGap').value=cfg.dnGapMm?.[String(selectedDn)]??'';
- const query=$('globalSearch').value.trim();
- const hits=qualityModel.searchNetwork(net,query,90);
- $('globalResults').innerHTML=query?
-  (hits.map((x,i)=>'<div class="search-hit" data-result="'+i+'"><b>'+esc(x.kind==='shaft'?'Schacht':x.kind==='cable'?'Kabel':'Leerrohr')+'</b> · '+
-  esc(x.label)+'</div>').join('')||'<div class="small">Keine Treffer im Netz.</div>'):
-  '<div class="small">Schacht, Kabel oder Leerrohr im gesamten Projekt finden.</div>';
+ const query=$('globalSearch').value.trim(),filters={
+  group:$('globalFilterGroup').value,
+  unresolved:$('globalFilterUnresolved').value==='open',
+  review:$('globalFilterReview').value==='all'?'':$('globalFilterReview').value,
+  sourceVersion:$('globalFilterSource').value.trim()
+ };
+ const active=!!(query||filters.group!=='all'||filters.unresolved||filters.review||filters.sourceVersion);
+ const hits=qualityModel.searchNetwork(net,query,90,filters);
+ $('globalResults').innerHTML=active?
+  (hits.map((x,i)=>'<div class="search-hit" data-result="'+i+'"><b>'+
+   esc(x.kind==='shaft'?'Schacht':x.kind==='wall'?'Schachtwand':x.kind==='cable'?'Kabel':'Leerrohr')+'</b> · '+
+   esc(x.label)+'</div>').join('')||'<div class="small">Keine Treffer im Netz.</div>'):
+  '<div class="small">Schacht, Wand, Kabel oder Leerrohr im gesamten Projekt finden.</div>';
  $('globalResults').dataset.results=JSON.stringify(hits);
  lastQualityResult=qualityModel.evaluate(net,cfg);
  const counts=lastQualityResult.counts;
@@ -1679,11 +1686,14 @@ canvas.addEventListener('contextmenu',e=>e.preventDefault());
 function showGlobalResult(hit){
  if(!hit)return;
  switchShaft(hit.shaftId,hit.kind==='cable'?hit.cableId:null);
+ if(hit.kind==='wall'){wallId=hit.wallId;holeId=null;viewMode='3D';}
  if(hit.kind==='hole'){wallId=hit.wallId;holeId=hit.holeId;viewMode='3D';}
- if(hit.kind==='cable'){cableId=hit.cableId;filter='all';}
+ if(hit.kind==='cable'){cableId=hit.cableId;filter='all';viewMode='3D';}
  networkOpen=false;renderAll();requestAnimationFrame(resize);
 }
 $('globalSearch').addEventListener('input',renderQualityUI);
+for(const id of ['globalFilterGroup','globalFilterUnresolved','globalFilterReview','globalFilterSource'])
+ $(id).addEventListener(id==='globalFilterSource'?'input':'change',renderQualityUI);
 $('globalResults').addEventListener('click',e=>{
  const el=e.target.closest('[data-result]');if(!el)return;
  const hits=JSON.parse($('globalResults').dataset.results||'[]');
