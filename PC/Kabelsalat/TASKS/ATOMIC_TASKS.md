@@ -1,7 +1,7 @@
 # Kabelsalat · alle offenen Tasks atomar zerlegt
 
-**Vollständig:** 869 von 869 offenen Parent-Tickets auf 13012 einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt. **1058 abgeschlossen**, nur mit Nachweis.
-**Kanonischer Gesamtstand:** 888 Parent-Tickets, 19 erledigt, 869 offen. Hier sind **keine abgeschlossenen Eltern-Tickets** nochmals aufgeführt.
+**Vollständig:** 869 von 869 am 13.11.2026 offenen Parent-Tickets auf 13012 einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt. **1058 abgeschlossen**, nur mit Nachweis.
+**Atomisierungsbasis:** 888 Parent-Tickets; am 13.11.2026 waren 19 erledigt und 869 offen. **Aktuell:** 23 erledigt, 865 offen. Auch inzwischen abgeschlossene Parent-Tickets bleiben mit ihren Mikro-IDs hier archiviert.
 
 | Priorität | Offene Parents | Mikro-Tasks | Nachschlagen | CSV |
 |---|---:|---:|---|---|
@@ -25,6 +25,6 @@
 
 ## Aktualisieren / Prüfen
 
-Aus PC/Kabelsalat: node TASKS/generate-atomic.js --write (regenerieren); node TASKS/generate-atomic.js --check (Vollständigkeit, Einzigartigkeit, keine erledigten Parent-IDs, Maximaldauer und Git-Abgleich).
+Aus PC/Kabelsalat: node TASKS/generate-atomic.js --write (regenerieren); node TASKS/generate-atomic.js --check (Vollständigkeit, Einzigartigkeit, stabile historische Atomisierung, Maximaldauer und Git-Abgleich).
 
 Vorheriger 42-Schritte-Pilot unverändert archiviert: [Originalpilot](./ATOMIC/PILOT_ORIGINAL.md). Seine IDs sind in S0 enthalten; KAB-0881 und KAB-0882 wurden um die vollständigen PDF-/Foto-Teilpfade ergänzt.
