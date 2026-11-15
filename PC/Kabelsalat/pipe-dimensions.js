@@ -74,5 +74,44 @@
   }
   return matches;
  }
- return {RANGE,normalize,forHole,apertureMm,describe,parsePlanText};
+ // KAB-0881: bounded interface for already-extracted PDF text-layer pages.
+ // No binary PDF parsing, OCR or spatial attribution is claimed here.
+ function parsePlanPages(pages,{source='PDF-Textlayer (ungeprüft)',maxPages=32,maxChars=100000}={}){
+  if(!Array.isArray(pages))throw Error('PDF-Seiten müssen eine Liste sein');
+  if(!Number.isSafeInteger(maxPages)||maxPages<1||maxPages>100||
+     !Number.isSafeInteger(maxChars)||maxChars<1||maxChars>1000000)
+   throw Error('Ungültiges PDF-Verarbeitungsbudget');
+  if(pages.length>maxPages)throw Error('PDF-Seitenlimit überschritten');
+  let budget=0;const results=[];
+  pages.forEach((page,i)=>{
+   if(!page||typeof page.text!=='string')throw Error('PDF-Seite ohne gültigen Textlayer');
+   const number=page.pageNumber===undefined?i+1:page.pageNumber;
+   if(!Number.isSafeInteger(number)||number<1||number>100000)
+    throw Error('Ungültige PDF-Seitennummer');
+   const rotation=page.rotation===undefined?0:page.rotation;
+   if(![0,90,180,270].includes(rotation))throw Error('Ungültige PDF-Seitenrotation');
+   budget+=page.text.length;
+   if(budget>maxChars)throw Error('PDF-Textbudget überschritten');
+   const matches=parsePlanText(page.text,{source});
+   results.push(...matches.map(m=>({...m,page:number,rotation,source,
+    provenance:{source,page:number,line:m.line,rotation},
+    status:'candidate',reviewed:false})));
+  });
+  // Identical pipe IDs with conflicting labels across the supplied pages stay
+  // unresolved; no automatic overwrite of real pipes or project JSON.
+  const byId=new Map();
+  for(const row of results)if(row.pipeId){
+   const group=byId.get(row.pipeId)||[];group.push(row);byId.set(row.pipeId,group);
+  }
+  for(const group of byId.values()){
+   const ambiguous=new Set(group.map(r=>r.candidateMm)).size>1;
+   if(ambiguous)for(const row of group){row.conflict=true;row.reason='Widersprüchliche DN-Beschriftungen; manuell prüfen';}
+  }
+  return results;
+ }
+ function planCandidateTable(pages,options){
+  return parsePlanPages(pages,options).sort((a,b)=>
+   (a.pipeId||'~').localeCompare(b.pipeId||'~')||a.page-b.page||a.line-b.line);
+ }
+ return {RANGE,normalize,forHole,apertureMm,describe,parsePlanText,parsePlanPages,planCandidateTable};
 });
