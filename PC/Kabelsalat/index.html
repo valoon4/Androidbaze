@@ -888,6 +888,43 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </div>
 <button id="netShowTrace" class="btn primary full" style="margin-top:11px">Verlauf im Netz anzeigen</button>
 </section>
+<section class="section" id="handoverTools">
+<div class="eyebrow">Bros 400-Schacht-Liste</div>
+<h2>Kabelverlauf → Schachtliste</h2>
+<p class="small">Unabhängige Sammelauswertung für bis zu 500 Schächte. Die 3D-Projektgrenze (30 Schächte) bleibt unverändert. Nur ausdrücklich zugeordnete Kabel zählen; ohne Quellenbeleg keine erfundene Route.</p>
+<details id="handoverInstructions">
+<summary>CSV-Vorlage ansehen</summary>
+<p class="small"><b>1. Schachtliste:</b> Jede Zeile mit Schacht-ID und Name.</p>
+<pre class="small" style="white-space:pre-wrap">schacht_id;schachtname
+S001;Schacht Nord
+S002;Schacht Mitte
+S003;Schacht Süd</pre>
+<p class="small"><b>2. Kabel-Zuordnung:</b> Je Kabel und durchlaufenem Schacht eine Zeile in richtiger Reihenfolge, mit Quelle. Status: PLAN, KANDIDAT, VOR_ORT.</p>
+<pre class="small" style="white-space:pre-wrap">kabel_id;kabelname;schacht_id;reihenfolge;quelle;status
+K01;Kabel 1;S001;1;Plan A S. 4;PLAN
+K01;Kabel 1;S002;2;Plan A S. 5;PLAN
+K01;Kabel 1;S003;3;Plan A S. 6;KANDIDAT</pre>
+<p class="small">„VOR_ORT“ bedeutet nur: so in der Eingabe bezeichnet – die App kontrolliert keine echte Messung. Wenn nur 400 Schachtnamen vorliegen, bleiben Kabelwege ungeklärt.</p>
+</details>
+<label class="field">Schachtliste CSV<input id="handoverShaftFile" type="file" accept=".csv,text/csv"></label>
+<label class="field">Schächte (CSV-Text)<textarea id="handoverShaftCsv" rows="4" maxlength="3500000" placeholder="schacht_id;schachtname"></textarea></label>
+<label class="field">Kabel-Zuordnungen CSV<input id="handoverPassFile" type="file" accept=".csv,text/csv"></label>
+<label class="field">Verläufe / belegte Schachtzuordnungen<textarea id="handoverPassCsv" rows="5" maxlength="3500000" placeholder="kabel_id;kabelname;schacht_id;reihenfolge;quelle;status"></textarea></label>
+<div class="row">
+<button class="btn soft tiny" type="button" id="handoverUseProject">Projekt-Netz als Vorlage</button>
+<button class="btn primary tiny" type="button" id="handoverAnalyze">Liste auswerten</button>
+</div>
+<label class="field">Suche nach Schacht/Kabel<input id="handoverFilter" maxlength="120" placeholder="z. B. K01 oder S003"></label>
+<div id="handoverStatus" class="small" role="status" aria-live="polite">Noch keine Schachtliste ausgewertet.</div>
+<div id="handoverResults" class="small" style="max-height:220px;overflow:auto"></div>
+<div id="handoverUnresolved" class="small" style="max-height:140px;overflow:auto"></div>
+<div class="row">
+<button id="handoverExportCable" class="btn soft tiny" type="button" disabled>↓ Kabel → Schächte</button>
+<button id="handoverExportShaft" class="btn soft tiny" type="button" disabled>↓ Schacht → Kabel</button>
+<button id="handoverExportOpen" class="btn soft tiny" type="button" disabled>↓ Offene Fragen</button>
+</div>
+<p class="small">Übergabelisten sind CSV für Excel/andere Beteiligte. Nur Eingabebelege; keine automatische physische Durchgangsfreigabe. Importdaten bleiben bis zum Export nur in dieser Ansicht.</p>
+</section>
 <section class="section"><div class="eyebrow">Zwei getrennte Einhausungen</div>
 <div class="hint" style="margin-bottom:12px">OLA: Variante A mit gestapelten Platten; MS: Variante B mit Stützelementen. 3D-Konzept über die AVL0116-Schaltfläche aktivieren. Maße, Durchführungen und Brandschutzfreigabe bleiben offen.</div>
 <label><input type="checkbox" id="olaVisible" checked> OLA · Einhausung</label>
@@ -975,6 +1012,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.12-beta.1"></script><script src="vendor/three.min.js?v=2.0.12-beta.1"></script><script src="editor2d.js?v=2.0.12-beta.1"></script><script src="components.js?v=2.0.12-beta.1"></script><script src="network.js?v=2.0.12-beta.1"></script><script src="network-route-planner.js?v=2.0.12-beta.1"></script><script src="network-world-route.js?v=2.0.12-beta.1"></script><script src="quality.js?v=2.0.12-beta.1"></script><script src="reports.js?v=2.0.12-beta.1"></script><script src="reference-data.js?v=2.0.12-beta.1"></script><script src="examples.js?v=2.0.12-beta.1"></script><script src="pdf-geometry.js?v=2.0.12-beta.1"></script><script src="schematic-positions.js?v=2.0.12-beta.1"></script><script src="spacing-adjust.js?v=2.0.12-beta.1"></script><script src="hole-editor-ops.js?v=2.0.12-beta.1"></script><script src="cable-editor-ops.js?v=2.0.12-beta.1"></script><script src="pipe-dimensions.js?v=2.0.12-beta.1"></script><script src="photo-candidates.js?v=2.0.12-beta.1"></script><script src="concrete-wall.js?v=2.0.12-beta.1"></script><script src="construction-v2.js?v=2.0.12-beta.1"></script><script src="pdf-visual.js?v=2.0.12-beta.1"></script><script src="csv-data.js?v=2.0.12-beta.1"></script><script src="app.js?v=2.0.12-beta.1"></script>
+<script src="recovery.js?v=2.0.12-beta.1"></script><script src="vendor/three.min.js?v=2.0.12-beta.1"></script><script src="editor2d.js?v=2.0.12-beta.1"></script><script src="components.js?v=2.0.12-beta.1"></script><script src="network.js?v=2.0.12-beta.1"></script><script src="network-route-planner.js?v=2.0.12-beta.1"></script><script src="network-world-route.js?v=2.0.12-beta.1"></script><script src="quality.js?v=2.0.12-beta.1"></script><script src="reports.js?v=2.0.12-beta.1"></script><script src="reference-data.js?v=2.0.12-beta.1"></script><script src="examples.js?v=2.0.12-beta.1"></script><script src="pdf-geometry.js?v=2.0.12-beta.1"></script><script src="schematic-positions.js?v=2.0.12-beta.1"></script><script src="spacing-adjust.js?v=2.0.12-beta.1"></script><script src="hole-editor-ops.js?v=2.0.12-beta.1"></script><script src="cable-editor-ops.js?v=2.0.12-beta.1"></script><script src="pipe-dimensions.js?v=2.0.12-beta.1"></script><script src="photo-candidates.js?v=2.0.12-beta.1"></script><script src="concrete-wall.js?v=2.0.12-beta.1"></script><script src="construction-v2.js?v=2.0.12-beta.1"></script><script src="pdf-visual.js?v=2.0.12-beta.1"></script><script src="csv-data.js?v=2.0.12-beta.1"></script><script src="shaft-handover.js?v=2.0.12-beta.1"></script><script src="app.js?v=2.0.12-beta.1"></script>
 </body>
 </html>
