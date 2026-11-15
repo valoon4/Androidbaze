@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
-for(const file of ['schematic-positions.js','spacing-adjust.js','hole-editor-ops.js','pipe-dimensions.js','photo-candidates.js'])
+for(const file of ['schematic-positions.js','spacing-adjust.js','hole-editor-ops.js','cable-editor-ops.js','pipe-dimensions.js','photo-candidates.js'])
  assert.ok(fs.existsSync(path.resolve(__dirname,'..',file)),'Missing offline recognition/geometry asset '+file);
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 const version=require('../package.json').version;
@@ -37,7 +37,7 @@ assert.ok(app.includes('function returnToShaft()')&&
  'Home action must close the overlay and display 3D without altering engineering project data');
 assert.ok(app.includes('pdfView()?pdfGeometry.span(id,project.dims)'),
  'PDF 2D wall span must follow the same orientation as 3D world coordinates');
-for(const asset of ['recovery.js','app.js','vendor/three.min.js'])
+for(const asset of ['recovery.js','app.js','cable-editor-ops.js','vendor/three.min.js'])
  assert.ok(html.includes('src="'+asset+'?v='+version+'"'),'Cache-busted script missing: '+asset);
 for(const id of ['startupRecovery','reloadFresh','resetDisplay','recoveryReason'])
  assert.ok(html.includes('id="'+id+'"'),'Recovery interface missing: '+id);
