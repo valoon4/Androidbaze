@@ -69,6 +69,21 @@ const sized=build(mixed);
 assert.equal(sized.mesh.geometry.shape.holes.length,3);
 assert.deepEqual(sized.mesh.geometry.shape.holes.map(p=>Math.round(p.arc[2]*2000)),diameters,
  'Opening geometry must show 60/110/116 as distinct circles');
+// KAB-0884/M05-M06: independent second valid geometric sample and a
+// genuinely missing source case. No source value is auto-certified.
+const secondSource=[30,50,110,160].map((dn,i)=>({id:'SYN-'+dn,
+ u:-.6+i*.4,y:.7,r:dims.apertureMm({dn})/2000}));
+const secondFrozen=JSON.stringify(secondSource),second=build(secondSource);
+assert.equal(second.accepted.length,4,'Second synthetic DN sample must have 4 real holes');
+assert.deepEqual(second.mesh.geometry.shape.holes.map(h=>Math.round(h.arc[2]*2000)),
+ [30,50,110,160],'Rendered DN 30 < 50 < 110 < 160');
+assert.equal(JSON.stringify(secondSource),secondFrozen,'Additional sample cannot mutate any source');
+assert.equal(dims.forHole({dn:50,dimensionSpec:{openingMm:90,status:'reviewed'}}).status,
+ 'unverified','Missing source/reviewer cannot be marked as verified');
+const invalidBore=build([{id:'MISSING',u:0,y:.5,r:0}]);
+assert.equal(invalidBore.accepted.length,0);
+assert.deepEqual(invalidBore.excluded.map(x=>x.reason),['outside'],
+ 'Missing bore geometry may not invent a radius');
 const withBore=dims.apertureMm({dn:60,dimensionSpec:{openingMm:116}});
 assert.equal(withBore,116,'Real bore replaces illustrative nominal DN when explicitly supplied');
 assert.throws(()=>concrete.build(THREE,{width:0,height:2,depth:.12,openings:[]}));
