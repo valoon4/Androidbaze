@@ -236,6 +236,7 @@ globalThis.KabelsalatPhotoCandidates=require('../photo-candidates.js');
 globalThis.KabelsalatSchematicPositions=require('../schematic-positions.js');
 globalThis.KabelsalatSpacingAdjust=require('../spacing-adjust.js');
 globalThis.KabelsalatHoleEditorOps=require('../hole-editor-ops.js');
+globalThis.KabelsalatCableEditorOps=require('../cable-editor-ops.js');
 globalThis.KabelsalatConstructionV2=require('../construction-v2.js');
 globalThis.KabelsalatNetwork=require('../network.js');
 globalThis.KabelsalatQuality=require('../quality.js');
@@ -261,6 +262,18 @@ assert.ok(app.includes("viewMode==='Bodenplatten'"), 'Require separate base view
 assert.ok(html.includes('data-view="SW4"'), 'Require fourth wall view');
 const roundtrip=validProject(JSON.parse(JSON.stringify(initial)));
 assert.equal(roundtrip.walls.length,4);
+const typed=JSON.parse(JSON.stringify(initial));
+typed.cableTypes=[{id:'type-1',name:'Test',category:'Datentechnik',diameter:18}];
+typed.cables[0].typeId='type-1';
+typed.cables[0].technicalCategory='Datentechnik';
+typed.cables[0].reviewStatus='Zur Prüfung';
+typed.cables[0].unresolvedB={wall:'SW4',hole:'Alte-ID',reason:'Leerrohr entfernt'};
+const afterType=validProject(typed);
+assert.equal(afterType.cableTypes[0].name,'Test');
+assert.equal(afterType.cables[0].typeId,'type-1');
+assert.equal(afterType.cables[0].unresolvedB.hole,'Alte-ID');
+assert.equal(afterType.network.shafts[0].snapshot.cableTypes[0].id,'type-1');
+
 assert.deepEqual(roundtrip.network.quality,{minPipeGapMm:null,minEdgeMm:null,minBendRadiusMm:null});
 assert.ok(Array.isArray(roundtrip.network.reviews));
 assert.ok(Array.isArray(roundtrip.network.audit));
