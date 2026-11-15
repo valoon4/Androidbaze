@@ -68,9 +68,9 @@
 - [ ] **KAB-0048** – Kollisionen bei engerer Vorschau sichtbar kennzeichnen
 - [x] **KAB-0049** – Schematische Rohrpositionen nicht als vermessene Millimeter exportieren · Nachweis: https://github.com/valoon4/Androidbaze/commit/c24a6f3818ae0665a1e5c7aff0b03344e02212eb
 - [x] **KAB-0050** – PDF-Originaldarstellung bei Parameteränderung unangetastet lassen · Nachweis: https://github.com/valoon4/Androidbaze/commit/79a3c69b6e145c1836ac8032cea2075d4c486f7f
-- [ ] **KAB-0051** – Rohrabstand-Regler mit Undo/Redo koppeln
-- [ ] **KAB-0052** – Rohrabstand-Regler ohne Veränderung von Kabelanschluss-IDs umsetzen
-- [ ] **KAB-0053** – Geometrie-Vergleich vor und nach Abstandsanpassung anbieten
+- [x] **KAB-0051** – Rohrabstand-Regler mit Undo/Redo koppeln · Nachweis: https://github.com/valoon4/Androidbaze/blob/b84213fb6c208e113bb28bcc26a5f60754ecb169/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_SPACING_GIANT_28.md
+- [x] **KAB-0052** – Rohrabstand-Regler ohne Veränderung von Kabelanschluss-IDs umsetzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/b84213fb6c208e113bb28bcc26a5f60754ecb169/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_SPACING_GIANT_28.md
+- [x] **KAB-0053** – Geometrie-Vergleich vor und nach Abstandsanpassung anbieten · Nachweis: https://github.com/valoon4/Androidbaze/blob/b84213fb6c208e113bb28bcc26a5f60754ecb169/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_SPACING_GIANT_28.md
 - [ ] **KAB-0054** – Schachtwandbelegung nach 2.0.1 mit Bro anhand Screenshot abnehmen
 
 ## P0-04 · Kabelbelegung der Leerrohre (KAB-0055–KAB-0072)
