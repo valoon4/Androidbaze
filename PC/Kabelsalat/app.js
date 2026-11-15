@@ -30,6 +30,7 @@ if(!holeEditorOps)throw Error('Kabelsalat-Leerrohr-Editormodul fehlt');
 const cableEditorOps=globalThis.KabelsalatCableEditorOps;
 if(!cableEditorOps)throw Error('Kabelsalat-Kabel-Editormodul fehlt');
 const csvModel=globalThis.KabelsalatCsv;
+const handoverModel=globalThis.KabelsalatHandover;
 const constructionV2=globalThis.KabelsalatConstructionV2;
 if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
 const avlReference=()=>['13_T_021','13_U_028'].includes(project?.sourceInfo?.shaft);
@@ -1809,6 +1810,100 @@ $('qualityList').addEventListener('click',e=>{
  }
 });
 $('reviewTarget').addEventListener('change',()=>{reviewKey=$('reviewTarget').value;renderQualityUI();});
+/* Bro's 400-shaft handover workspace – separate from bounded 3D network. */
+let handoverResult=null;
+const handoverExportIds=['handoverExportCable','handoverExportShaft','handoverExportOpen'];
+function invalidateHandover(){
+ handoverResult=null;for(const id of handoverExportIds)$(id).disabled=true;
+ $('handoverResults').textContent='';$('handoverUnresolved').textContent='';
+ $('handoverStatus').textContent='Eingabe geändert – Liste erneut auswerten.';
+}
+for(const id of ['handoverShaftCsv','handoverPassCsv'])
+ $(id).addEventListener('input',invalidateHandover);
+for(const [fileId,textId] of [['handoverShaftFile','handoverShaftCsv'],
+ ['handoverPassFile','handoverPassCsv']]){
+ $(fileId).addEventListener('change',async()=>{
+  invalidateHandover();const file=$(fileId).files?.[0];if(!file)return;
+  if(file.size>3500000){
+   $('handoverStatus').textContent='CSV über 3,5 MB: Import abgelehnt.';return;
+  }
+  try{$(textId).value=await file.text();
+   $('handoverStatus').textContent='CSV '+file.name+' eingelesen – bitte auswerten.';}
+  catch(err){$('handoverStatus').textContent='Datei nicht lesbar: '+err.message;}
+ });
+}
+$('handoverUseProject').addEventListener('click',()=>{
+ try{
+  syncActiveShaft();
+  const seed=handoverModel.fromProject(project);
+  $('handoverShaftCsv').value=seed.shaftCsv;
+  $('handoverPassCsv').value=seed.passageCsv;
+  invalidateHandover();
+  $('handoverStatus').textContent='Schematische Projektrouten als Vorlage übernommen ('+
+   project.network.shafts.length+' Schächte). Keine neuen Verläufe erfunden.';
+ }catch(err){$('handoverStatus').textContent=err.message;}
+});
+function renderHandover(){
+ const data=handoverResult;if(!data?.ok)return;
+ const term=$('handoverFilter').value.trim().toLocaleUpperCase('de-DE');
+ const rows=term?data.handover.filter(h=>
+  [h.kabel_id,h.kabelname,h.schacht_id,h.schachtname,h.schachtfolge].some(v=>
+   String(v).toLocaleUpperCase('de-DE').includes(term))):data.handover;
+ const shaftHits=term?data.shafts.filter(h=>
+  [h.id,h.name,...h.cables.map(x=>x.id)].some(v=>
+   String(v).toLocaleUpperCase('de-DE').includes(term))):data.shafts;
+ $('handoverStatus').textContent=data.summary.shafts+' Schächte · '+
+  data.summary.cables+' Kabel · '+data.summary.associations+
+  ' Zuordnungen · '+data.summary.withoutEvidence+
+  ' Schächte ohne Kabelbeleg · physisch bestätigt: 0. '+
+  (data.warnings.length?data.warnings.length+' Prüfhinweise.':'');
+ $('handoverResults').innerHTML=
+  '<strong>Kabel → Schächte ('+rows.length+' Treffer)</strong>'+
+  (rows.slice(0,120).map(x=>
+   '<div class="search-hit"><b>'+esc(x.kabel_id)+'</b> · '+esc(x.kabelname)+
+   ' · '+esc(x.schacht_id)+' / '+esc(x.schachtname)+
+   ' · '+esc(x.rolle)+' · '+esc(x.quelle)+'</div>').join('')||
+   '<div>Keine belegten Kabelzuordnungen vorhanden.</div>')+
+  (rows.length>120?'<div>Weitere '+(rows.length-120)+' Einträge in der CSV-Übergabeliste.</div>':'')+
+  '<div><b>Schacht-Treffer:</b> '+shaftHits.length+
+  (shaftHits.length?'; ohne Kabelzuordnung: '+shaftHits.filter(s=>!s.cables.length).length:'')+'</div>';
+ $('handoverUnresolved').innerHTML=
+  '<strong>Offene Fragen ('+data.open.length+')</strong>'+
+  data.open.slice(0,20).map(x=>
+   '<div>⚠ '+esc(x.schacht_id||'Kabelverlauf')+' · '+esc(x.frage)+'</div>').join('')+
+  (data.open.length>20?'<div>Weitere Fragen in der offenen CSV-Liste.</div>':'');
+}
+$('handoverFilter').addEventListener('input',renderHandover);
+$('handoverAnalyze').addEventListener('click',()=>{
+ try{
+  if(!handoverModel)throw Error('400-Schacht-Modul ist nicht geladen');
+  const result=handoverModel.analyze($('handoverShaftCsv').value,
+   $('handoverPassCsv').value,{filter:$('handoverFilter').value});
+  if(!result.ok){
+   invalidateHandover();
+   $('handoverStatus').textContent=result.errors.length+
+    ' Fehler – keine Übergabeliste erzeugt:\n'+result.errors.slice(0,8).join('\n');
+   return;
+  }
+  handoverResult=result;
+  for(const id of handoverExportIds)$(id).disabled=false;
+  renderHandover();
+ }catch(err){invalidateHandover();
+  $('handoverStatus').textContent='Schachtliste ungültig: '+err.message;}
+});
+for(const [id,kind] of [['handoverExportCable','cables'],
+ ['handoverExportShaft','shafts'],['handoverExportOpen','open']]){
+ $(id).addEventListener('click',()=>{
+  if(!handoverResult?.ok)return;
+  try{
+   const content=kind==='cables'?handoverModel.exportHandover(handoverResult):
+    kind==='shafts'?handoverModel.exportByShaft(handoverResult):
+    handoverModel.exportOpen(handoverResult);
+   download('Kabelsalat-400-Schacht-'+kind+'.csv',content,'text/csv;charset=utf-8');
+  }catch(err){$('handoverStatus').textContent='Übergabe fehlgeschlagen: '+err.message;}
+ });
+}
+
 /* KAB-0505..0522: conservative, rollback-safe CSV import. */
 let csvPlan=null;
 function resetCsvPreview(){
