@@ -89,6 +89,16 @@ assert.deepEqual(transferProject.cables[0].a,{wall:'SW3',hole:'A'});
 assert.equal(transferProject.cables[0].id,'C1');
 assert.throws(()=>ops.applyTransfer(transferProject,transfer,{approveConnected:true}),/veraltet/);
 assert.throws(()=>ops.planTransfer(pdf,'SW1','A','SW3'),/Referenzquelle/);
+const conflictingIds=project();
+conflictingIds.walls[2].holes.push({id:'A',u:.8,v:.8,dn:75});
+const conflictingBefore=JSON.stringify(conflictingIds);
+assert.throws(()=>ops.planTransfer(conflictingIds,'SW1','A','SW3'),/Rohr-ID existiert/);
+assert.equal(JSON.stringify(conflictingIds),conflictingBefore,'ID conflict must not mutate either wall');
+assert.match(app,/wallCoords\(w\.id,p,false\)/,
+ '3D dragging must inspect unclamped wall positions');
+assert.ok(app.includes('3D-Verschieben blockiert:')&&app.includes('resetGroupPreview();'),
+ '3D drag must show geometry collision errors and invalidate stale batch proposals');
+
 const invalidWall=project();invalidWall.walls[2].holes.push({id:'BLOCK',u:.2,v:.5,dn:160});
 const blocked=ops.planTransfer(invalidWall,'SW1','A','SW3');
 assert.ok(blocked.warnings.some(s=>s.includes('BLOCK')));
