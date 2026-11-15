@@ -27,6 +27,8 @@
 
 **Bro-Feedback 15.11 · 400 Schächte / Kabel-Übergabelisten:** [Eingabeformate, KI-Auswerteauftrag und drei CSV-Exporte](./BRO_400_SCHACHT_KABEL_LISTE_2026-11-15.md) · [89 gezielte Regressionen](../tests/shaft-handover.test.js). Große Übergabeauswertung getrennt vom 30-Schacht-3D-Netz; wirkliche 400 Bestands-IDs und Kabelpläne müssen noch angeliefert werden. Dieses neue Feedback ist **keine automatisch abgenommene historische Parent-ID**.
 
+**Neu v2.0.14-beta.1 · Plananalyse:** Digital-PDF-Text-/TXT-Kabelrouten mit Schacht-ID-Abgleich und manueller Kandidatenfreigabe implementiert (synthetische Tests); zu den vorhandenen 400-Schacht-CSV-Exporten ergänzt. [Umsetzung, Grenzen, Prüfpunkte](./BRO_400_SCHACHT_KABEL_LISTE_2026-11-15.md). **Kein neuer oder abgeschlossener historischer Parent-Ticketstatus behauptet.**
+
 **200er-Parent-Meilenstein:** +100 weitere technisch geprüfte Parent-Tickets · [47 × 2D/Suche/Qualität](./EVIDENCE_2026-11-15_NEXT_100_WAVE1.md) · [28 × Netz/Kabelkontinuität](./EVIDENCE_2026-11-15_NEXT_100_WAVE2.md) · [25 × Projekt-/PDF-Regression](./EVIDENCE_2026-11-15_NEXT_100_WAVE3.md). Volle aktuelle Browser-/Windows-CI bleibt gesondert zu prüfen; der Mikro-Ledger ist unverändert. 
 
 **Technisch abgeschlossene Bro-Parents:** KAB-0884, 0886, 0887, 0888 · [Nachweise](./BRO_PARENT_TECH_ABNAHME_2026-11-15.md) · [erfolgreiche Chromium-Vollprüfung](https://github.com/valoon4/Androidbaze/actions/runs/43709846491).
