@@ -1248,6 +1248,41 @@ function draw2D(){
  ctx.lineWidth=2.5;ctx.stroke();
  }
  }
+ // KAB-0275..0277: real 2D dimension strokes, model millimetres (not a survey).
+ const marked=selected2DHoles();
+ if(marked.length>=2){
+  const aa=visualHole(marked[0]),bb=visualHole(marked[1]);
+  const a=geom2d.toPixels(m,aa.u*span,aa.v*height),
+   b=geom2d.toPixels(m,bb.u*span,bb.v*height);
+  const dimension=geom2d.measure(marked,marked[0].id,marked[1].id,span,height);
+  const d=Math.hypot(b.x-a.x,b.y-a.y)||1,ux=(b.x-a.x)/d,uy=(b.y-a.y)/d;
+  const ra=pipeDimensions.apertureMm(marked[0])/2*m.scale,
+   rb=pipeDimensions.apertureMm(marked[1])/2*m.scale;
+  ctx.save();ctx.lineWidth=1.8;ctx.strokeStyle='#245eae';ctx.fillStyle='#174a87';
+  ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  if(d>ra+rb+16){
+   ctx.strokeStyle='#bd7822';ctx.lineWidth=3;ctx.beginPath();
+   ctx.moveTo(a.x+ux*ra,a.y+uy*ra);ctx.lineTo(b.x-ux*rb,b.y-uy*rb);ctx.stroke();
+  }
+  ctx.font='bold 10px Segoe UI,Arial';ctx.textAlign='center';
+  ctx.fillText('M '+Math.round(dimension.centerMm)+' mm', (a.x+b.x)/2,(a.y+b.y)/2-14);
+  ctx.fillStyle='#a86621';
+  ctx.fillText('L '+Math.round(dimension.clearMm)+' mm',(a.x+b.x)/2,(a.y+b.y)/2+15);
+  ctx.restore();
+ }else if(marked.length===1){
+  const h=visualHole(marked[0]),p=geom2d.toPixels(m,h.u*span,h.v*height),
+   edge=geom2d.edgeDistances(marked[0],span,height);
+  const marks=[['L',p.x-pipeDimensions.apertureMm(marked[0])/2*m.scale,p.y,p1.x,p.y,edge.leftMm],
+   ['R',p.x+pipeDimensions.apertureMm(marked[0])/2*m.scale,p.y,p2.x,p.y,edge.rightMm],
+   ['U',p.x,p.y+pipeDimensions.apertureMm(marked[0])/2*m.scale,p.x,p1.y,edge.bottomMm],
+   ['O',p.x,p.y-pipeDimensions.apertureMm(marked[0])/2*m.scale,p.x,p2.y,edge.topMm]];
+  ctx.save();ctx.strokeStyle='#367e74';ctx.fillStyle='#25645a';ctx.font='10px Segoe UI,Arial';
+  for(const [tag,x1,y1,x2,y2,mm] of marks){
+   ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+   ctx.fillText(tag+' '+Math.round(mm),Math.max(15,Math.min(cw-62,(x1+x2)/2)),Math.max(14,Math.min(ch-12,(y1+y2)/2)));
+  }
+  ctx.restore();
+ }
  // Group-move ghost and marquee are UI-only until a single confirmed Undo checkpoint.
  if(draftGroupDrag?.plan){
   ctx.save();ctx.strokeStyle='#6f47bd';ctx.lineWidth=2;ctx.setLineDash([5,4]);
