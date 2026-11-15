@@ -2094,7 +2094,7 @@ $('applyPlanDimension').addEventListener('click',()=>{
  change(()=>{h.dimensionSpec=next;},'Unbestätigten PDF-Rohrmaßkandidaten übernommen');
 });
 // Deterministic local pixel-circle proposals. Absolute mm only after calibration.
-let photoAnalysis=null;
+let photoAnalysis=null,photoUncalibrated=null,photoImportEpoch=0;
 function showPhotoCandidates(){
  const s=$('photoCandidates');s.replaceChildren();
  for(const c of photoAnalysis?.candidates||[]){
@@ -2108,12 +2108,16 @@ function showPhotoCandidates(){
   'Ohne Referenz nur relative Größe. Perspektivenfehler möglich.':'Noch kein Bild untersucht.';
 }
 $('photoDimensionFile').addEventListener('change',async()=>{
- const file=$('photoDimensionFile').files[0];if(!file)return;
+ const epoch=++photoImportEpoch;
+ const file=$('photoDimensionFile').files[0];
+ photoAnalysis=null;photoUncalibrated=null;showPhotoCandidates();
+ if(!file)return;
  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>10000000){
   alert('Bitte ein Bild bis 10 MB verwenden.');return;
  }
  try{
   const bitmap=await createImageBitmap(file);
+  if(epoch!==photoImportEpoch){bitmap.close();return;}
   const canvas=$('photoDimensionPreview'),scale=Math.min(1,900/Math.max(bitmap.width,bitmap.height));
   canvas.width=Math.max(16,Math.round(bitmap.width*scale));
   canvas.height=Math.max(16,Math.round(bitmap.height*scale));
@@ -2122,6 +2126,7 @@ $('photoDimensionFile').addEventListener('change',async()=>{
   const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
   photoAnalysis=photoCandidates.detect(pixels.data,canvas.width,canvas.height,{source:file.name.slice(0,200)});
   photoAnalysis.filename=file.name.slice(0,200);
+  photoUncalibrated=photoAnalysis.candidates.map(candidate=>({...candidate}));
   ctx.strokeStyle='#ecba43';ctx.lineWidth=2;ctx.font='bold 14px sans-serif';
   for(const c of photoAnalysis.candidates){
    ctx.beginPath();ctx.arc(c.x,c.y,c.diameterPx/2,0,2*Math.PI);ctx.stroke();
@@ -2129,7 +2134,8 @@ $('photoDimensionFile').addEventListener('change',async()=>{
   }
   showPhotoCandidates();
  }catch(err){
-  photoAnalysis=null;showPhotoCandidates();
+  if(epoch!==photoImportEpoch)return;
+  photoAnalysis=null;photoUncalibrated=null;showPhotoCandidates();
   $('photoAnalysisStatus').textContent='Bild kann nicht analysiert werden: '+err.message;
  }
 });
@@ -2140,6 +2146,11 @@ $('photoCalibrate').addEventListener('click',()=>{
    Number($('photoCandidates').value),Number($('photoReferenceMm').value));
   showPhotoCandidates();
  }catch(e){alert(e.message);}
+});
+$('photoResetCalibration').addEventListener('click',()=>{
+ if(!photoAnalysis||!photoUncalibrated)return;
+ photoAnalysis.candidates=photoUncalibrated.map(candidate=>({...candidate}));
+ showPhotoCandidates();
 });
 $('applyPhotoDimension').addEventListener('click',()=>{
  const h=hole(),c=photoAnalysis?.candidates[Number($('photoCandidates').value)];
