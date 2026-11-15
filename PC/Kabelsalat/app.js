@@ -2489,10 +2489,14 @@ $('saveHoleDimensions').addEventListener('click',()=>{
  const spec=pipeDimensions.normalize(raw,h.dn);
  if(raw.status==='reviewed'&&spec.status!=='reviewed')
   alert('Prüfstatus nicht übernommen: Quelle, Prüfer und mindestens ein explizites physisches Maß erforderlich.');
+ const kindChanged=openingType!==pipeDimensions.openingType(h);
  change(()=>{
-  h.dimensionSpec={...spec,status:'unverified',reviewer:'',reviewedAt:''};
+  h.dimensionSpec={...spec,
+   status:kindChanged?'unverified':spec.status,
+   reviewer:kindChanged?'':spec.reviewer,
+   reviewedAt:kindChanged?'':spec.reviewedAt};
   if(openingType==='unknown')delete h.openingType;else h.openingType=openingType;
- },'Wandöffnung: Bauart und Durchmesser aktualisiert (Freigabe erneut prüfen)');
+ },'Wandöffnung: Bauart / Maße geändert; veränderte Bauart neu prüfen');
 });
 // Text recognized from labelled plan pages is ONLY a candidate. It cannot silently replace nominal DN.
 let planCandidates=[];
