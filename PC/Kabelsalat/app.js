@@ -2070,13 +2070,28 @@ $('planTextFile').addEventListener('change',async()=>{
  $('planDimensionSource').value=file.name;
 });
 $('parsePlanDimensions').addEventListener('click',()=>{
- planCandidates=pipeDimensions.parsePlanText($('planDimensionText').value,
-  {source:$('planDimensionSource').value.trim()||'Manuell eingefügter Plantext'});
- const s=$('planDimensionCandidates');s.replaceChildren();
+ const source=$('planDimensionSource').value.trim()||'Manuell eingefügter Plantext';
+ try{
+  // A pasted TXT/Textlayer is not binary PDF parsing. Keep location/source
+  // explicit; never auto-select a source pipe or overwrite original geometry.
+  planCandidates=pipeDimensions.planCandidateTable([{text:$('planDimensionText').value}],
+   {source});
+ }catch(err){
+  planCandidates=[];
+  $('planDimensionStatus').textContent='Plantext nicht verarbeitet: '+err.message;
+ }
+ const s=$('planDimensionCandidates'),body=$('planDimensionCandidateRows');
+ s.replaceChildren();body.replaceChildren();
  planCandidates.forEach((c,i)=>{
   const o=document.createElement('option');o.value=String(i);
-  o.textContent='Zeile '+c.line+' · '+(c.pipeId||'Rohr ungeklärt')+' · '+c.label+' · Kandidat';
+  o.textContent='Seite '+c.page+', Zeile '+c.line+' · '+(c.pipeId||'Rohr ungeklärt')+' · '+c.label+' · Kandidat';
   s.append(o);
+  const tr=document.createElement('tr');
+  for(const value of [c.pipeId||'Manuell zuordnen',String(c.candidateMm)+' mm',
+   c.source+' · '+c.page+' · '+c.line,c.conflict?'Konflikt':'Unbestätigt']){
+   const cell=document.createElement('td');cell.textContent=value;tr.append(cell);
+  }
+  body.append(tr);
  });
  $('planDimensionStatus').textContent=planCandidates.length+
   ' Maßkandidaten aus Beschriftung; PDF-Binärtexte oder Bildtexte werden hier nicht automatisch extrahiert.';
@@ -2089,7 +2104,7 @@ $('applyPlanDimension').addEventListener('click',()=>{
  }
  if(!c.pipeId&&!confirm('Die Rohr-ID ist im Text unklar. Kandidat dieser Öffnung zuweisen (ohne Bestätigung)?'))return;
  const next=pipeDimensions.normalize({...pipeDimensions.forHole(h),candidateMm:c.candidateMm,
-  method:'pdf-label',source:c.source+' / Zeile '+c.line,status:'candidate',
+  method:'pdf-label',source:c.source+' / Seite '+c.page+' / Zeile '+c.line,status:'candidate',
   note:'Aus Planbeschriftung erkannt, manuell nachprüfen'},h.dn);
  change(()=>{h.dimensionSpec=next;},'Unbestätigten PDF-Rohrmaßkandidaten übernommen');
 });
