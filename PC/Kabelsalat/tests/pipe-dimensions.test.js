@@ -33,9 +33,9 @@ assert.deepEqual(serialized,manual,'Dimension model survives JSON serialization'
 // KAB-0881: extracted page text is untrusted, bounded, versioned by page and
 // never silently merged into the source project.
 const planPages=[
- {pageNumber:3,rotation:90,text:'SW1/T1/LR05 DN 30\\nSW2_T2_LR07 DN 110'},
- {pageNumber:5,rotation:0,text:'SW1/T1/LR05 DN 160\\nSW3_T2_LR01 Ø 75'},
- {pageNumber:6,text:'SW4/T2/LR01 DN 50\\nSW4/T2/LR02 DN 50'}
+ {pageNumber:3,rotation:90,text:'SW1/T1/LR05 DN 30\nSW2_T2_LR07 DN 110'},
+ {pageNumber:5,rotation:0,text:'SW1/T1/LR05 DN 160\nSW3_T2_LR01 Ø 75'},
+ {pageNumber:6,text:'SW4/T2/LR01 DN 50\nSW4/T2/LR02 DN 50'}
 ];
 const pagesBefore=JSON.stringify(planPages),multiple=pipe.parsePlanPages(planPages,{source:'fixture-plan.pdf',documentVersion:'v2'});
 assert.deepEqual(multiple.map(x=>x.page),[3,3,5,5,6,6]);
