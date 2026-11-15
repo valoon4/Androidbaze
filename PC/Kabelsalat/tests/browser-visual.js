@@ -95,7 +95,9 @@ let liveBrowser=null;
   await photoInput.setInputFiles({name:'newer-synthetic.png',mimeType:'image/png',buffer:fakePng});
   await page.waitForFunction(()=>document.querySelector('#photoAnalysisStatus').textContent.includes('newer-synthetic.png'));
   assert.equal(await page.locator('#photoCandidates option').count(),2);
-  await page.locator('#photoReferenceMm').fill('110');
+  // The photo editor is under the collapsed Expert sidebar at this stage.
+  // Test its bound DOM value without requiring hidden controls to be visible.
+  await page.locator('#photoReferenceMm').evaluate(el=>{el.value='110';el.dispatchEvent(new Event('input',{bubbles:true}));});
   await page.locator('#photoCalibrate').evaluate(el=>el.click());
   assert.match(await page.locator('#photoCandidates').innerText(),/ca\. 110 mm/);
   await page.locator('#photoResetCalibration').evaluate(el=>el.click());
