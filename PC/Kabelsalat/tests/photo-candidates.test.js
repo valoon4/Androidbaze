@@ -23,6 +23,21 @@ assert.ok(calibrated[1].candidateMm<110);
 assert.ok(calibrated.every(x=>x.status==='candidate'&&x.method==='photo-calibrated'));
 const sourcedCalibration=photo.calibrate(sourced.candidates,0,110);
 assert.ok(sourcedCalibration.every(x=>x.imageSource==='synthetic-bro-fixture.png'&&x.diameterUnit==='px'));
+const fs=require('node:fs'),path=require('node:path');
+const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
+const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
+assert.ok(html.includes('id="photoResetCalibration"'),'Calibration reset control must be visible');
+assert.match(app,/photoUncalibrated=photoAnalysis\.candidates\.map/,
+ 'Keep a separate uncalibrated candidate snapshot');
+assert.match(app,/photoAnalysis\.candidates=photoUncalibrated\.map/,
+ 'Reset must restore the original pixel candidates, not alter the model');
+assert.match(app,/epoch!==photoImportEpoch/,
+ 'Old asynchronous image decoding must not overwrite a newer image');
+const originalCandidates=sourced.candidates.map(candidate=>({...candidate}));
+const afterCalibration=photo.calibrate(originalCandidates,0,110);
+assert.ok(afterCalibration.some(candidate=>Number.isFinite(candidate.candidateMm)));
+assert.ok(originalCandidates.every(candidate=>!Object.hasOwn(candidate,'candidateMm')),
+ 'Undo source remains uncalibrated despite subsequent calibration');
 assert.throws(()=>photo.calibrate(result.candidates,0,0));
 assert.throws(()=>photo.detect(img,10000,10000));
 const blank=new Uint8ClampedArray(w*h*4);
