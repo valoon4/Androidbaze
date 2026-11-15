@@ -1158,6 +1158,11 @@ function drawNetwork(){
  }
  ctx.fillStyle='#597580';ctx.font='11px Segoe UI,Arial';ctx.textAlign='left';
  ctx.fillText('Globale X/Z-Koordinaten (mm) · schematischer Lageplan, keine Vermessungsfreigabe',12,h-12);
+ if(mapDrag?.mode==='shaft'&&mapDrag.preview){
+  const ghost=point(mapDrag.preview);
+  ctx.save();ctx.beginPath();ctx.arc(ghost.x,ghost.y,19,0,Math.PI*2);
+  ctx.setLineDash([6,3]);ctx.lineWidth=3;ctx.strokeStyle='#784ab4';ctx.stroke();ctx.restore();
+ }
  drawWorldRouteElevation();
 }
 
@@ -2321,17 +2326,39 @@ function networkHit(p){
 networkCanvas.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;
  networkCanvas.setPointerCapture(e.pointerId);
- const p=networkPos(e);mapDrag={...p,lastX:p.x,lastY:p.y,moved:false};
+ const p=networkPos(e),hit=e.shiftKey?networkHit(p):null;
+ if(hit)mapDrag={mode:'shaft',id:hit.id,x:p.x,y:p.y,moved:false,
+  scale:networkProjection().scale,start:{x:hit.x,z:hit.z},preview:null};
+ else mapDrag={mode:'pan',...p,lastX:p.x,lastY:p.y,moved:false};
 });
 networkCanvas.addEventListener('pointermove',e=>{
  if(!mapDrag)return;const p=networkPos(e);
  if(Math.hypot(p.x-mapDrag.x,p.y-mapDrag.y)>4)mapDrag.moved=true;
+ if(mapDrag.mode==='shaft'){
+  if(mapDrag.moved){
+   mapDrag.preview={x:Math.round(mapDrag.start.x+(p.x-mapDrag.x)/mapDrag.scale),
+    z:Math.round(mapDrag.start.z+(p.y-mapDrag.y)/mapDrag.scale)};
+   drawNetwork();
+  }
+  return;
+ }
  if(mapDrag.moved){
   mapOffsetX+=p.x-mapDrag.lastX;mapOffsetY+=p.y-mapDrag.lastY;drawNetwork();
  }
  mapDrag.lastX=p.x;mapDrag.lastY=p.y;
 });
 networkCanvas.addEventListener('pointerup',e=>{
+ if(mapDrag?.mode==='shaft'){
+  const moved=mapDrag.moved,preview=mapDrag.preview,id=mapDrag.id;
+  mapDrag=null;
+  if(moved&&preview&&Number.isSafeInteger(preview.x)&&Number.isSafeInteger(preview.z)&&
+   Math.abs(preview.x)<=1e8&&Math.abs(preview.z)<=1e8){
+   change(()=>{const shaft=project.network.shafts.find(s=>s.id===id);
+    if(shaft){shaft.x=preview.x;shaft.z=preview.z;}},
+    'Schacht in Netzkarte X/Z verschoben, Innengeometrie unverändert');
+  }else if(!moved)switchShaft(id);
+  drawNetwork();return;
+ }
  if(mapDrag&&!mapDrag.moved){const node=networkHit(networkPos(e));if(node)switchShaft(node.id);}
  mapDrag=null;
 });
