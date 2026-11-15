@@ -25,7 +25,7 @@
 
 **Definition of Done:** Wiederholbare automatisierte Tests und Screenshots einschließlich fehlender Quellmaße und großer/kleiner Öffnungen.
 
-- [ ] **KAB-0884** – Automatisierte Render- und Datenregression für Betonblock mit gemischten Öffnungen (60/110/116 als Testdaten), korrekte DN-/DM-Trennung, Schatten/Helligkeit und geschützte Originalrohrpositionen aufbauen
+- [x] **KAB-0884** – Automatisierte Render- und Datenregression für Betonblock mit gemischten Öffnungen (60/110/116 als Testdaten), korrekte DN-/DM-Trennung, Schatten/Helligkeit und geschützte Originalrohrpositionen aufbauen · Nachweis: https://github.com/valoon4/Androidbaze/blob/dfa210c8b7eb05fd0596f6b982675add231ec5e1/PC/Kabelsalat/TASKS/BRO_PARENT_TECH_ABNAHME_2026-11-15.md
 
 **Verwandt, nicht dupliziert:** KAB-0037–0054 (unveränderte Originalkoordinaten), KAB-0235–0252 (Rohrmodell), KAB-0523–0558 (Plan-/Bilderkennung), KAB-0829–0840 (fachliche Bauartlogik). Die hier neuen Tasks sind die expliziten Abnahmekriterien aus dem **jüngsten** Feedback.
 
