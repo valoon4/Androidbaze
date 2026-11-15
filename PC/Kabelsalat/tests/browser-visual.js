@@ -206,7 +206,7 @@ let liveBrowser=null;
    'DN comparison demo must render a real WebGL scene, not just JSON values');
   const demoSnapshot=await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
   assert.ok(demoSnapshot.name.startsWith('FIKTIVE DEMO'));
-  assert.equal(demoSnapshot.sourceInfo,undefined,'Synthetic demo must never inherit measured source info');
+  assert.ok(demoSnapshot.sourceInfo==null,'Synthetic demo must never inherit measured source info');
   assert.deepEqual(demoSnapshot.walls.map(w=>w.holes.length),[24,28,24,18]);
   const allDn=demoSnapshot.walls.flatMap(w=>w.holes.map(h=>h.dn));
   assert.ok([30,50,110,160].every(dn=>allDn.includes(dn)));
