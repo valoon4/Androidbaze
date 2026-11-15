@@ -1,43 +1,35 @@
-# AniFocus v0.0 🍅🐱
+# AniFocus v0.1 🍅🐱
 
-Cozy, bewusst **pflegearmer** Pomodoro-Timer für Windows. Designrichtung: helle Pastell-Notizbuchoberfläche mit Katze, Kirschblüten und **großer roter Tomate**.
+Cozy, bewusst **pflegearmer** Pomodoro-Timer für Windows. Helles Notizbuchdesign, Katze und große rote Tomate. Keine To-do-Listen, Streaks oder täglichen Pflicht-Eingaben.
 
-## Download
+## Windows-Download
 
-**[AniFocus.exe herunterladen](https://github.com/valoon4/Androidbaze/releases/download/anifocus-v0.0/AniFocus.exe)**
+**[AniFocus.exe v0.1](https://github.com/valoon4/Androidbaze/releases/download/anifocus-v0.1/AniFocus.exe)**
 
-Der Link wird nach erfolgreichem Windows-Build über GitHub Actions verfügbar. Portable Einzeldatei; keine Installation, kein Konto, keine Netzverbindung.
+Der GitHub-Actions-Build erstellt eine portable EXE (kein Installer nötig). Link nach erfolgreichem Release verfügbar.
 
-## Funktionen v0.0
+## Bedienung
 
-- Drei Hauptbereiche: **Master, Research, Exploring**.
-- Master direkt mit **RP1, ITM1, LEAD1, DF1** vorbelegt.
-- Research und Exploring **absichtlich leer**, bis du deine eigenen Unterbereiche einmalig anlegst.
-- Großer roter Tomaten-Pomodoro: **25 Minuten** als Standard; **Start / Pause / Reset / Dauer** (1–180 Minuten).
-- Timer basiert auf einer monotonen Uhr und läuft nach Minimieren korrekt weiter. Er stoppt beim Beenden der App.
-- Unterbereiche: anklicken zum Auswählen, per **Rechtsklick umbenennen/entfernen**, einmalig anlegen (maximal 8 je Hauptbereich).
-- Optionaler **Gesamtfortschritt je Hauptbereich** (0–100 %), nur auf bewusste Eingabe; bis dahin **keine Prozentzahl**.
-- Die Einstellungen werden lokal und automatisch gespeichert unter `%APPDATA%\\AniFocus\\state.json`.
+- **Master:** RP1, ITM1, LEAD1, DF1.
+- **Research:** OST, Playlists, Seasonvids, LA, Syncupdates.
+- **Exploring:** Anime & Cartoon Serie, Anime & Cartoon Film, Liveaction Serie, Liveaction Film, Gaming, Manga, Comic.
+- **Pomodoro:** 25 Minuten ab Werk. Start, Pause, Reset und frei wählbare Dauer (1–180 Minuten).
+- **Bereiche anpassen:** Neue Unterbereiche einmalig anlegen; Rechtsklick zum Umbenennen oder Entfernen. Maximal 16 je Kategorie (Seitenwechsel bei über 7).
+- **Fortschritt:** Einmalig eigener Prozentwert pro Hauptbereich optional. Leer bedeutet **unbekannt**, nicht 0 %.
+- **GitHub Research-Stand:** Wähle bei Research **OST, Playlists oder Seasonvids**. AniFocus liest beim ersten Öffnen die öffentliche kanonische Datei `valoon4/Storytimez/research/RESEARCH_STATUS.md` (nur Lesen, kein GitHub-Login). Refresh per ↻. **Keine erfundenen Gesamtprozente:** OST zeigt P2-/P3-Restzahlen; Playlists die zuletzt dokumentierten offenen Fünfer-Builds; Seasonvids die expliziten Load/Add/Cut-Teilstände. Ein Klick auf **Info** zeigt die Details sowie den Quellpfad.
+- **Offline:** Timer und lokale Einstellungen funktionieren vollständig offline; wenn GitHub nicht erreichbar ist, erscheint eine sachliche Meldung statt fiktiver Werte.
+- Einstellungen unter `%APPDATA%\\AniFocus\\state.json`. Deine Daten aus **v0.0** werden beim ersten Start erhalten und um die Standardlisten von Research und Exploring ergänzt.
 
-**Bewusst nicht vorhanden:** Aufgabenlisten, Tagesziele, Notizen, Streaks, erfundene Werte, verpflichtende Eingaben oder GitHub-Sync. Gesamtfortschritt und Pomodorozeit sind voneinander unabhängig.
+**Quellen:** [Research-Status (öffentlich)](https://github.com/valoon4/Storytimez/blob/main/research/RESEARCH_STATUS.md). Anzeige ist eine Leseansicht des GitHub-Status, keine eigenständige Recherche und keine automatische Erledigung von Zielen.
 
-## Lokal starten
+## Lokal starten & testen
 
-Python 3.12 mit Tkinter:
+Python 3.12 (mit Tkinter), keine externen Runtime-Abhängigkeiten:
 
-```bash
+```powershell
 cd PC/AniFocus
 python app.py
-```
-
-Tests:
-
-```bash
 python -m unittest discover -s tests -v
 ```
 
-## Windows-EXE
-
-Der Workflow [anifocus-exe.yml](../../.github/workflows/anifocus-exe.yml) testet auf `windows-latest`, erstellt die portable `AniFocus.exe` mit PyInstaller und aktualisiert bei erfolgreichem `main`-Build das prerelease `anifocus-v0.0`. Android-Projekte und andere PC-Apps bleiben unberührt.
-
-**Version 0.0:** Erster funktionaler Desktop-Prototyp. Visuelle Details können noch vom Konzeptbild abweichen.
+Die [.github/workflows/anifocus-exe.yml](../../.github/workflows/anifocus-exe.yml) erstellt die Windows-EXE mit PyInstaller und veröffentlicht die erfolgreiche v0.1 unter dem Prerelease `anifocus-v0.1`. Andere Androidbaze-Apps werden nicht geändert.

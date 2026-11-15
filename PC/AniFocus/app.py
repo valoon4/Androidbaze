@@ -1,16 +1,20 @@
-"""AniFocus v0.0 — cozy offline Pomodoro for Master, Research and Exploring."""
+"""AniFocus v0.1 — cozy, low-maintenance Pomodoro for Master/Research/Exploring."""
 from __future__ import annotations
 
 import math
+import queue
+import threading
+import webbrowser
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
 from core import AREAS, FocusTimer, clock_label, load_state, save_state
+from github_progress import SUPPORTED, SOURCE_PAGE, fetch_progress
 
-W, H = 1000, 690
-BG = "#f4e8e4"
-INK = "#594641"
-MUTED = "#977f79"
+W, H = 1120, 720
+BG = "#f6e9e5"
+INK = "#523b3d"
+MUTED = "#927a78"
 PINK = "#f3c3ce"
 PASTELS = ("#f8c9d5", "#cbdcf0", "#dce8b6", "#f8ddb2",
            "#ded2ef", "#d2e9e3", "#f6d2bb", "#e9d7d5")
@@ -19,7 +23,7 @@ PASTELS = ("#f8c9d5", "#cbdcf0", "#dce8b6", "#f8ddb2",
 class AniFocus:
     def __init__(self, root: tk.Tk):
         self.root = root
-        root.title("AniFocus v0.0")
+        root.title("AniFocus v0.1")
         root.geometry(f"{W}x{H}")
         root.resizable(False, False)
         root.configure(bg=BG)
@@ -29,7 +33,13 @@ class AniFocus:
         self.canvas.pack()
         self.counter = 0
         self.time_item = None
+        self.pages = {area: 0 for area in AREAS}
+        self.github_cache = {}
+        self.github_loading = set()
+        self.github_errors = {}
+        self.github_results = queue.Queue()
         self.render()
+        self.maybe_refresh_github()
         root.after(160, self.heartbeat)
 
     def rounded(self, x1, y1, x2, y2, radius=18, fill="#ffffff", outline="", width=1, tags=()):
@@ -111,16 +121,18 @@ class AniFocus:
         self.state["area"]=area
         self.persist()
         self.render()
+        self.maybe_refresh_github()
 
     def choose_module(self,module):
         self.state["selected"][self.state["area"]]=module
         self.persist()
         self.render()
+        self.maybe_refresh_github()
 
     def add_module(self):
         area=self.state["area"]
-        if len(self.state["modules"][area])>=8:
-            messagebox.showinfo("AniFocus","Maximal 8 Unterbereiche pro Kategorie.",parent=self.root)
+        if len(self.state["modules"][area])>=16:
+            messagebox.showinfo("AniFocus","Maximal 16 Unterbereiche pro Kategorie.",parent=self.root)
             return
         name=simpledialog.askstring("Unterbereich hinzufügen",f"Name für {area} (einmalig anlegen):",parent=self.root)
         if name is None:
@@ -134,7 +146,9 @@ class AniFocus:
         self.state["modules"][area].append(name)
         self.state["selected"][area]=name
         self.persist()
+        self.pages[area]=(len(self.state["modules"][area])-1)//7
         self.render()
+        self.maybe_refresh_github()
 
     def module_menu(self,event,module):
         area=self.state["area"]
@@ -215,7 +229,58 @@ class AniFocus:
         self.timer.reset()
         self.render()
 
+
+    def maybe_refresh_github(self, force=False):
+        """Automatic first read on selecting OST/Playlists/Seasonvids; manual refresh."""
+        name = self.state["selected"].get("Research") if self.state["area"] == "Research" else None
+        if name not in SUPPORTED or name in self.github_loading:
+            return
+        if name in self.github_cache and not force:
+            return
+        self.github_loading.add(name)
+        self.github_errors.pop(name, None)
+        worker = threading.Thread(target=self._github_worker, args=(name,), daemon=True)
+        worker.start()
+        self.render()
+
+    def _github_worker(self, name):
+        try:
+            result = fetch_progress(name)
+            self.github_results.put((name, result, None))
+        except Exception:
+            self.github_results.put((name, None, "GitHub-Stand derzeit nicht abrufbar."))
+
+    def github_detail(self):
+        name = self.state["selected"].get("Research")
+        record = self.github_cache.get(name)
+        if record:
+            messagebox.showinfo(f"{name} · GitHub", record["details"], parent=self.root)
+
+    def github_source(self):
+        webbrowser.open(SOURCE_PAGE)
+
+    def page(self, delta):
+        area = self.state["area"]
+        max_page = max(0, (len(self.state["modules"][area]) - 1) // 7)
+        self.pages[area] = max(0, min(max_page, self.pages[area] + delta))
+        self.render()
+
     def heartbeat(self):
+        changed = False
+        while True:
+            try:
+                name, record, error = self.github_results.get_nowait()
+            except queue.Empty:
+                break
+            self.github_loading.discard(name)
+            if record:
+                self.github_cache[name] = record
+                self.github_errors.pop(name, None)
+            else:
+                self.github_errors[name] = error
+            changed = True
+        if changed:
+            self.render()
         finished=self.timer.tick()
         if self.time_item is not None:
             self.canvas.itemconfigure(self.time_item,text=clock_label(self.timer.seconds_left()))
@@ -225,81 +290,137 @@ class AniFocus:
             messagebox.showinfo("AniFocus","Fokuszeit beendet! 🍅",parent=self.root)
         self.root.after(160,self.heartbeat)
 
-    def render(self):
-        c=self.canvas
-        c.delete("all")
-        self.counter=0
-        c.create_rectangle(0,0,W,H,fill=BG,outline="")
-        # Notebook paper, spiral binding and faint ruled lines.
-        self.rounded(32,24,970,661,28,fill="#e2c6bb")
-        self.rounded(25,16,961,650,28,fill="#fff9f0",outline="#e4c7bc",width=2)
-        for y in range(172,612,35):
-            c.create_line(64,y,936,y,fill="#f7eae5",width=1)
-        c.create_line(79,166,79,614,fill="#f4d7d2",width=2)
-        for y in range(76,619,51):
-            c.create_oval(19,y-7,40,y+7,fill=BG,outline="#b69a91",width=2)
-            c.create_arc(13,y-13,47,y+13,start=80,extent=205,style="arc",outline="#a48d81",width=3)
-        for x,y in ((911,55),(928,78),(893,94)):
-            self.blossom(x,y,12)
-        self.paw(270,62,.76)
-        self.label(105,57,"AniFocus",30,bold=True,anchor="w")
-        self.label(108,90,"Fokus ohne To-dos",13,color=MUTED,anchor="w")
-        for i,area in enumerate(AREAS):
-            x=335+i*195
-            selected=area==self.state["area"]
-            self.button(x,47,x+181,101,area,lambda a=area:self.change_area(a),
-                        bg="#f7c7d2" if selected else "#fff4eb",size=17,selected=selected)
 
+    def render(self):
+        c = self.canvas
+        c.delete("all")
+        self.counter = 0
+
+        # Cream paper, notebook binding and gentle card shadows.
+        c.create_rectangle(0,0,W,H,fill=BG,outline="")
+        self.rounded(42,30,1092,706,30,fill="#dfc4be")
+        self.rounded(32,20,1080,695,29,fill="#e9d3cb")
+        self.rounded(23,12,1071,684,29,fill="#fffaf3",outline="#dec2b9",width=2)
+
+        for y in range(170,655,34):
+            c.create_line(73,y,1038,y,fill="#f6ece8",width=1)
+        c.create_line(76,174,76,660,fill="#f1d8d5",width=2)
+        for y in range(80,658,54):
+            c.create_oval(17,y-9,42,y+9,fill=BG,outline="#b69a91",width=2)
+            c.create_arc(11,y-15,50,y+15,start=83,extent=207,
+                         style="arc",outline="#ad9286",width=3)
+
+        # Corner flowers and notebook brand.
+        for x,y in ((1040,69),(1020,91),(1060,102)):
+            self.blossom(x,y,10)
+        self.label(99,51,"AniFocus",31,INK,True,"w")
+        self.label(101,83,"Dein cozy Fokusplatz",12,MUTED,anchor="w")
+        self.paw(286,55,.6,color="#e2b0ae")
+        for i,area in enumerate(AREAS):
+            x=395+i*203
+            current=area==self.state["area"]
+            self.button(x,39,x+190,99,area,
+                        lambda name=area:self.change_area(name),
+                        bg="#f8c9d5" if current else "#fff4ea",
+                        selected=current,size=17)
+        c.create_line(97,126,1018,126,fill="#e9d4cd",width=2)
+
+        # Left: category list. Everything is optional; no task checkbox.
+        self.rounded(96,161,542,619,24,fill="#ead7ce")
+        self.rounded(92,155,537,611,24,fill="#fffdf9",outline="#efdad2")
         area=self.state["area"]
         names=self.state["modules"][area]
         active=self.state["selected"][area]
-        self.label(106,200,area,29,bold=True,anchor="w")
-        self.paw(400,196,.65)
-        self.label(107,230,"Unterbereich wählen",13,MUTED,anchor="w")
-        # 2 columns of light, tactile notebook labels, maximum eight per area.
-        for i,name in enumerate(names):
-            x=100+(i%2)*178
-            y=258+(i//2)*65
+        self.label(120,187,area,27,INK,True,"w")
+        self.label(120,220,"Fokusbereich auswählen",12,MUTED,anchor="w")
+        self.paw(489,200,.52)
+        c.create_line(122,238,504,238,fill="#f1e4dd",width=1)
+        page = min(self.pages[area], max(0, (len(names)-1)//7))
+        self.pages[area] = page
+        visible = names[page*7:(page+1)*7]
+        if not visible:
+            self.label(126,300,"Noch keine Unterbereiche",15,MUTED,anchor="w")
+        for i,name in enumerate(visible):
+            x,y=120,248+i*45
+            idx=page*7+i
             self.counter+=1
             tag=f"module{self.counter}"
-            selected=(active==name)
-            bg="#efb8ca" if selected else PASTELS[i%len(PASTELS)]
-            self.rounded(x,y,x+161,y+54,13,fill=bg,
-                         outline="#ce8099" if selected else "#e3c8c0",
-                         width=3 if selected else 1,tags=(tag,))
-            self.label(x+14,y+27,"▸" if selected else "•",14,"#8f6f65",anchor="w",tags=(tag,))
-            display=name if len(name)<=16 else name[:15]+"…"
-            self.label(x+35,y+27,display,15,INK,True,anchor="w",tags=(tag,))
+            current=name==active
+            self.rounded(x+3,y+3,509,y+41,12,fill="#efe4df",tags=(tag,))
+            self.rounded(x,y,506,y+38,12,
+                         fill="#f8d0d9" if current else PASTELS[idx%len(PASTELS)],
+                         outline="#d890a6" if current else "#e6d2c8",
+                         width=2 if current else 1,tags=(tag,))
+            if current:
+                self.rounded(x+7,y+7,x+13,y+31,3,fill="#bd758f",tags=(tag,))
+            self.label(x+28,y+19,"▸" if current else "•",15,
+                       "#a0767b",current,anchor="w",tags=(tag,))
+            display = name if len(name)<=31 else name[:30]+"…"
+            self.label(x+59,y+19,display,14,INK,current,anchor="w",tags=(tag,))
             c.tag_bind(tag,"<Button-1>",lambda _e,n=name:self.choose_module(n))
             c.tag_bind(tag,"<Button-3>",lambda e,n=name:self.module_menu(e,n))
             c.tag_bind(tag,"<Enter>",lambda _e:c.configure(cursor="hand2"))
             c.tag_bind(tag,"<Leave>",lambda _e:c.configure(cursor=""))
-        if not names:
-            self.label(108,306,"Keine Unterbereiche angelegt.",15,MUTED,anchor="w")
-            self.label(108,334,"Der Timer funktioniert trotzdem.",13,MUTED,anchor="w")
 
-        self.button(103,543,410,588,"+ Unterbereich anlegen",self.add_module,
-                    bg="#fff5ea",size=14)
-        self.label(255,606,"Rechtsklick auf einen Bereich: bearbeiten",10,MUTED)
+        self.button(120,573,374,605,"+ Unterbereich",self.add_module,
+                    bg="#fff3ea",size=13)
+        if len(names)>7:
+            self.button(386,573,432,605,"‹",lambda:self.page(-1),size=17)
+            self.button(461,573,507,605,"›",lambda:self.page(1),size=17)
+            self.label(447,590,f"{page+1}/{(len(names)+6)//7}",9,MUTED)
+        else:
+            self.label(487,590,"⋯",18,MUTED)
+        self.label(317,634,"Rechtsklick: umbenennen / entfernen",10,MUTED)
 
-        self.cat(838,181)
-        self.tomato(706,349)
-        self.time_item=self.label(706,346,clock_label(self.timer.seconds_left()),42,"#fff8ed",True)
-        context=active or area
-        self.label(705,435,context,15,"#fff4e6",True)
-        self.button(580,477,744,530,"Pause" if self.timer.running else "▶  Start",
-                    self.toggle_timer,bg="#f3b5c1",size=17,selected=True)
-        self.button(755,477,846,530,"↺ Reset",self.reset_timer,bg="#f9e7db",size=14)
-        self.button(851,477,929,530,"Dauer",self.edit_minutes,bg="#fff1e7",size=13)
+        # Right: one large tomato, no clutter or task management.
+        self.rounded(568,161,1034,619,24,fill="#ead7ce")
+        self.rounded(565,155,1030,610,24,fill="#fffdf9",outline="#efdad2")
+        self.label(598,187,"Pomodoro",21,INK,True,"w")
+        self.label(600,216,"Nur du und deine Fokuszeit",12,MUTED,anchor="w")
+        self.cat(963,198)
+        self.tomato(795,354)
+        self.time_item=self.label(795,350,clock_label(self.timer.seconds_left()),
+                                  42,"#fffaf4",True)
+        self.label(795,429,active or area,13,"#fff7ee",True)
 
-        self.label(510,566,f"{area} · Gesamtfortschritt",14,INK,True,anchor="w")
+        self.button(611,485,789,531,"Ⅱ  Pause" if self.timer.running else "▶  Start",
+                    self.toggle_timer,bg="#f6bccb",size=16,selected=True)
+        self.button(799,485,905,531,"↺ Reset",self.reset_timer,bg="#f8eee6",size=14)
+        self.button(913,485,991,531,"Dauer",self.edit_minutes,bg="#fff2e8",size=13)
+
+        # Research: GitHub source shown read-only, not treated as an invented percentage.
+        if area=="Research" and active in SUPPORTED:
+            self.rounded(591,546,1005,604,13,fill="#fff2eb",outline="#f0ded6")
+            record=self.github_cache.get(active)
+            error=self.github_errors.get(active)
+            if active in self.github_loading and not record:
+                lines=["Lese aktuellen GitHub-Stand …"]
+            elif record:
+                lines=record["lines"]
+            else:
+                lines=[error or "GitHub-Stand noch nicht geladen."]
+            self.label(611,560,(record["heading"] if record else "GitHub · "+active),
+                       12,INK,True,anchor="w")
+            for i,line in enumerate(lines[:2]):
+                display=line if len(line)<=57 else line[:54]+"…"
+                self.label(611,577+i*16,display,10,MUTED,anchor="w")
+            self.button(928,550,994,572,"↻",lambda:self.maybe_refresh_github(True),
+                        size=13,bg="#fff9f5")
+            if record:
+                self.button(928,577,994,600,"Info",self.github_detail,
+                            size=11,bg="#fff9f5")
+        else:
+            self.label(796,571,"🍅  Einmal starten. Einfach fokussieren.",12,MUTED)
+        # Per-area manual progress is independent of sourced Research status.
+        self.rounded(94,650,1032,678,14,fill="#f5e5e1")
+        self.label(112,664,f"{area} · Eigener Fortschritt",12,INK,True,anchor="w")
         value=self.state["progress"][area]
-        self.rounded(510,592,788,611,9,fill="#f2e2df",outline="#e9d3cd")
+        self.rounded(430,656,856,671,7,fill="#ead5d2")
         if value is not None and value>0:
-            self.rounded(512,594,512+274*value/100,609,7,fill="#e9a5b6")
-        self.label(800,601,"—" if value is None else f"{value} %",14,INK,True,anchor="w")
-        self.button(864,579,932,622,"Setzen",self.edit_progress,bg="#fbe9e4",size=12)
-        self.label(901,643,"v0.0",11,MUTED)
+            self.rounded(431,657,431+423*value/100,670,6,fill="#e5a3b7")
+        self.label(873,664,"–" if value is None else f"{value} %",12,INK,True,anchor="w")
+        self.button(950,651,1023,676,"Setzen",self.edit_progress,bg="#fff3eb",size=11)
+        self.label(1015,698,"v0.1",10,MUTED)
 
 def main():
     root=tk.Tk()

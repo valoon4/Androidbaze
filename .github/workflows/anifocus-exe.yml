@@ -1,4 +1,4 @@
-name: AniFocus v0.0 Windows EXE
+name: AniFocus v0.1 Windows EXE
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: anifocus-v0.0-release
+  group: anifocus-v0.1-release
   cancel-in-progress: false
 
 jobs:
@@ -27,9 +27,11 @@ jobs:
         with:
           python-version: '3.12'
       - name: Syntax check
-        run: python -m py_compile core.py app.py
+        run: python -m py_compile core.py app.py github_progress.py
       - name: Unit tests
         run: python -m unittest discover -s tests -v
+      - name: GUI startup smoke test
+        run: python -c "import tkinter as tk; from app import AniFocus; r=tk.Tk(); a=AniFocus(r); a.change_area('Exploring'); assert len(a.state['modules']['Exploring'])==7; a.change_area('Master'); r.update_idletasks(); r.destroy()"
       - name: Install PyInstaller
         run: python -m pip install pyinstaller==6.16.0
       - name: Build single-file Windows EXE
@@ -37,7 +39,7 @@ jobs:
       - name: Upload Windows build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AniFocus-v0.0-Windows
+          name: AniFocus-v0.1-Windows
           path: PC/AniFocus/dist/AniFocus.exe
           if-no-files-found: error
       - name: Publish prerelease EXE
@@ -47,10 +49,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          TAG="anifocus-v0.0"
+          TAG="anifocus-v0.1"
           if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$GITHUB_REPOSITORY" \
-              --target "$GITHUB_SHA" --title "AniFocus v0.0 – Windows" \
+              --target "$GITHUB_SHA" --title "AniFocus v0.1 – Windows" \
               --notes "Cozy Pomodoro für Master, Research und Exploring. Portable EXE ohne tägliche Aufgabenpflege." \
               --prerelease
           fi

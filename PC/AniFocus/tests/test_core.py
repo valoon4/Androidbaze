@@ -13,14 +13,16 @@ class StateTests(unittest.TestCase):
     def test_defaults_have_no_fake_progress_or_tasks(self):
         state=fresh_state()
         self.assertEqual(state["modules"]["Master"],["RP1","ITM1","LEAD1","DF1"])
-        self.assertEqual(state["modules"]["Research"],[])
-        self.assertEqual(state["modules"]["Exploring"],[])
+        self.assertEqual(state["modules"]["Research"],["OST","Playlists","Seasonvids","LA","Syncupdates"])
+        self.assertEqual(state["modules"]["Exploring"],["Anime & Cartoon Serie","Anime & Cartoon Film",
+                         "Liveaction Serie","Liveaction Film","Gaming","Manga","Comic"])
         self.assertTrue(all(state["progress"][area] is None for area in AREAS))
         self.assertNotIn("tasks",state)
         self.assertNotIn("streaks",state)
 
     def test_bad_input_is_sanitized(self):
         state=normalize_state({
+            "schema": 2,
             "minutes":999,"area":"NotReal",
             "modules":{"Master":["RP1","RP1"," ITM1 ","",42],
                        "Research":["Live Action","live action"]},
@@ -47,6 +49,33 @@ class StateTests(unittest.TestCase):
             self.assertEqual(load_state(path),state)
             path.write_text("{not-json",encoding="utf-8")
             self.assertEqual(load_state(path),fresh_state())
+
+    def test_v00_migration_preserves_custom_and_adds_research_exploring(self):
+        old={
+            "schema":1,"minutes":40,"area":"Exploring",
+            "modules":{
+                "Master":["RP1","Custom"],
+                "Research":["Music Custom"],
+                "Exploring":[],
+            },
+            "selected":{"Master":"Custom","Research":"Music Custom"},
+            "progress":{"Master":1},
+        }
+        upgraded=normalize_state(old)
+        self.assertEqual(upgraded["schema"],2)
+        self.assertEqual(upgraded["minutes"],40)
+        self.assertEqual(upgraded["progress"]["Master"],1)
+        self.assertEqual(upgraded["selected"]["Master"],"Custom")
+        self.assertEqual(upgraded["selected"]["Research"],"Music Custom")
+        self.assertIn("OST",upgraded["modules"]["Research"])
+        self.assertIn("Music Custom",upgraded["modules"]["Research"])
+        self.assertEqual(len(upgraded["modules"]["Exploring"]),7)
+
+    def test_v01_user_can_remove_default_without_reappearing(self):
+        state=fresh_state()
+        state["modules"]["Exploring"]=[]
+        again=normalize_state(state)
+        self.assertEqual(again["modules"]["Exploring"],[])
 
 
 class TimerTests(unittest.TestCase):

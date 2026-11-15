@@ -1,4 +1,4 @@
-"""Persistence and clock logic for AniFocus v0.0 (no GUI dependencies)."""
+"""Persistence and clock logic for AniFocus v0.1 (no GUI dependencies)."""
 from __future__ import annotations
 
 import json
@@ -10,14 +10,17 @@ from pathlib import Path
 AREAS = ("Master", "Research", "Exploring")
 DEFAULT_MODULES = {
     "Master": ["RP1", "ITM1", "LEAD1", "DF1"],
-    "Research": [],
-    "Exploring": [],
+    "Research": ["OST", "Playlists", "Seasonvids", "LA", "Syncupdates"],
+    "Exploring": [
+        "Anime & Cartoon Serie", "Anime & Cartoon Film",
+        "Liveaction Serie", "Liveaction Film", "Gaming", "Manga", "Comic",
+    ],
 }
 
 
 def fresh_state() -> dict:
     return {
-        "schema": 1,
+        "schema": 2,
         "minutes": 25,
         "area": "Master",
         "modules": {area: names.copy() for area, names in DEFAULT_MODULES.items()},
@@ -50,9 +53,16 @@ def normalize_state(data: object) -> dict:
                     name = " ".join(entry.strip().split())[:32]
                     if name and name.casefold() not in (s.casefold() for s in clean):
                         clean.append(name)
-                if len(clean) == 8:
+                if len(clean) == 16:
                     break
-            state["modules"][area] = clean
+            # v0.0 stored empty Research/Exploring lists. Add the new v0.1
+            # defaults once, without overwriting or duplicating custom items.
+            if data.get("schema", 1) == 1 and area in ("Research", "Exploring"):
+                original = clean
+                clean = DEFAULT_MODULES[area].copy()
+                clean.extend(n for n in original if n.casefold() not in
+                             (v.casefold() for v in clean))
+            state["modules"][area] = clean[:16]
 
     selected = data.get("selected")
     for area in AREAS:
