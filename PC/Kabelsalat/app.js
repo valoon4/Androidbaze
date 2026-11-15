@@ -109,6 +109,7 @@ function validProject(o){
  u:clamp(+schematicPositions.migrate(h,o.sourceInfo?.sourceVersion?.startsWith('PDF V2')).u,0,1),
  v:clamp(+schematicPositions.migrate(h,o.sourceInfo?.sourceVersion?.startsWith('PDF V2')).v,0,1),
  dn:clamp(Number(h.dn)||dn,20,300),
+ ...(h.openingType==='bare-hole'||h.openingType==='conduit'?{openingType:h.openingType}:{}),
  ...(h.dimensionSpec?{dimensionSpec:pipeDimensions.normalize(h.dimensionSpec,h.dn)}:{}),
  sourceAddress:cleanReferenceText(h.sourceAddress,140),
  sourcePage:Number.isFinite(h.sourcePage)?h.sourcePage:null,
@@ -364,7 +365,10 @@ function renderUI(){
  const pipeRows=cableEditorOps.pipeRows(project,$('pipeSort').value);
  $('pipeList').innerHTML=pipeRows.slice(0,150).map(p=>
   '<button type="button" class="btn soft tiny" data-pipe-wall="'+esc(p.wall)+'" data-pipe-id="'+esc(p.hole)+'" style="margin:2px">'+
-  esc(p.wall)+' · '+esc(p.label)+' · DN'+p.dn+(p.trasse?' · '+esc(p.trasse):'')+'</button>').join('')+
+  esc(p.wall)+' · '+esc(p.label)+' · '+
+  (pipeDimensions.openingType(project.walls.find(w=>w.id===p.wall)?.holes.find(h=>h.id===p.hole))==='bare-hole'?
+   'Loch Ø'+pipeDimensions.apertureMm(project.walls.find(w=>w.id===p.wall)?.holes.find(h=>h.id===p.hole)):
+   'DN'+p.dn)+(p.trasse?' · '+esc(p.trasse):'')+'</button>').join('')+
   (pipeRows.length>150?'<div class="small">Erste 150 von '+pipeRows.length+' Öffnungen</div>':'');
  $('viewport').classList.toggle('with-2d',project.splitEnabled!==false);$('splitEnabled').checked=project.splitEnabled!==false;
  $('opacity').value=project.opacity;$('opacityText').textContent=project.opacity+' %';$('showBox').checked=project.showBox;$('showLabels').checked=project.showLabels;
@@ -378,7 +382,12 @@ function renderUI(){
  $('holeU').value=Math.round(h.u*wallSpanMm(wallId));
  $('holeV').value=Math.round(h.v*project.dims.h);
  $('holeDn').value=h.dn;
- $('holeEditStatus').textContent='Position, DN und Öffnung sind schematische Modellwerte.';
+ $('holeOpeningType').value=pipeDimensions.openingType(h);
+ $('holeDn').disabled=pipeDimensions.openingType(h)==='bare-hole';
+ $('holeInnerMm').disabled=pipeDimensions.openingType(h)==='bare-hole';
+ $('holeOuterMm').disabled=pipeDimensions.openingType(h)==='bare-hole';
+ $('holeWallMm').disabled=pipeDimensions.openingType(h)==='bare-hole';
+ $('holeEditStatus').textContent='Bauart und Maße sind ohne Quelle unbestätigte Modellwerte.';
  const dims=pipeDimensions.forHole(h);
  $('holeDimensionSummary').textContent=pipeDimensions.describe(h);
  for(const [id,val] of [['holeInnerMm',dims.innerMm],['holeOuterMm',dims.outerMm],
@@ -572,7 +581,8 @@ function drawOpening(w,h){
   }
  }else{
   const ring=new THREE.Mesh(new THREE.TorusGeometry(r,exploreMode?.006:.004,6,32),
-   new THREE.MeshBasicMaterial({color:exploreMode?'#426f7c':'#cad6d9'}));
+   new THREE.MeshBasicMaterial({color:pipeDimensions.openingType(h)==='bare-hole'?
+    '#707b7d':exploreMode?'#426f7c':'#cad6d9'}));
   ring.position.z=.004;group.add(ring);
  }
  if(selected){
@@ -1251,7 +1261,8 @@ function draw2D(){
   ctx.fillText(String(Number(h.id.split('_LR')[1])),p.x,p.y+3);
   if(cw>=295&&r>=7){ // Hide colliding DN labels at tiny zoom levels.
    ctx.font='8px Segoe UI,Arial';ctx.textAlign='center';ctx.fillStyle='#55707d';
-   ctx.fillText('DN '+h.dn,p.x,p.y+r+11);
+   ctx.fillText(pipeDimensions.openingType(h)==='bare-hole'?
+    'Loch Ø'+Math.round(pipeDimensions.apertureMm(h)):'DN '+h.dn,p.x,p.y+r+11);
   }
   if(occupants.length){
    ctx.font='bold 9px Segoe UI,Arial';ctx.textAlign='left';ctx.fillStyle='#9a5718';
@@ -2449,20 +2460,39 @@ $('applyHole').addEventListener('click',()=>{
  }catch(err){$('holeEditStatus').textContent='Nicht übernommen: '+err.message;}
 });
 // Separate physical pipe dimensions from legacy schematic DN (KAB-0880/0883).
+$('holeOpeningType').addEventListener('change',()=>{
+ const bare=$('holeOpeningType').value==='bare-hole';
+ for(const id of ['holeDn','holeInnerMm','holeOuterMm','holeWallMm'])$(id).disabled=bare;
+ $('holeEditStatus').textContent=bare?
+  'Nur Loch: Ø des Durchbruchs in mm angeben, keine Rohr-Nennweite oder Rohrhülse behaupten.':
+  'Öffnung oder Leerrohr: Maße mit Quelle prüfen.';
+});
 $('saveHoleDimensions').addEventListener('click',()=>{
  const h=hole();if(!h)return;
- const prev=pipeDimensions.forHole(h);
+ const prev=pipeDimensions.forHole(h),openingType=$('holeOpeningType').value;
+ if(!['unknown','bare-hole','conduit'].includes(openingType))return;
+ const openingText=$('holeOpeningMm').value.trim(),openingValue=Number(openingText);
+ if(openingType==='bare-hole'&&(openingText===''||!Number.isFinite(openingValue)||
+  openingValue<20||openingValue>600)){
+  $('holeEditStatus').textContent='Nur Loch: Loch-Ø von 20–600 mm explizit eingeben.';
+  return;
+ }
  const source=$('holeDimensionSource').value.trim().slice(0,240);
- const raw={...prev,nominalMm:h.dn,
-  innerMm:$('holeInnerMm').value,outerMm:$('holeOuterMm').value,
-  openingMm:$('holeOpeningMm').value,wallThicknessMm:$('holeWallMm').value,source,
+ const raw={...prev,nominalMm:openingType==='bare-hole'?null:h.dn,
+  innerMm:openingType==='bare-hole'?null:$('holeInnerMm').value,
+  outerMm:openingType==='bare-hole'?null:$('holeOuterMm').value,
+  openingMm:$('holeOpeningMm').value,
+  wallThicknessMm:openingType==='bare-hole'?null:$('holeWallMm').value,source,
   reviewer:$('holeDimensionReviewer').value.trim().slice(0,240),
   method:'manual',status:$('holeDimensionStatus').value,
   note:'Nutzerangabe: noch nicht automatisch vermessen'};
  const spec=pipeDimensions.normalize(raw,h.dn);
  if(raw.status==='reviewed'&&spec.status!=='reviewed')
   alert('Prüfstatus nicht übernommen: Quelle, Prüfer und mindestens ein explizites physisches Maß erforderlich.');
- change(()=>{h.dimensionSpec=spec;},'Rohrmaße und Herkunft aktualisiert');
+ change(()=>{
+  h.dimensionSpec={...spec,status:'unverified',reviewer:'',reviewedAt:''};
+  if(openingType==='unknown')delete h.openingType;else h.openingType=openingType;
+ },'Wandöffnung: Bauart und Durchmesser aktualisiert (Freigabe erneut prüfen)');
 });
 // Text recognized from labelled plan pages is ONLY a candidate. It cannot silently replace nominal DN.
 let planCandidates=[];
