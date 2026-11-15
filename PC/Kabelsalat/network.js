@@ -89,6 +89,38 @@ function issues(net,route){
  }
  return problems;
 }
+/* Pixel-only label placement: shorten long shaft names and avoid overlapping labels.
+ * It does not alter or truncate the persisted shaft name. */
+function placeLabels(nodes,width,height){
+ const occupied=[];
+ return nodes.map(n=>{
+  const raw=String(n.name||n.id||'Schacht');
+  const label=raw.length>22?raw.slice(0,21)+'…':raw;
+  const w=Math.min(158,Math.max(40,label.length*7+10)),h=16;
+  const candidates=[-34,-56,-78,-100,45,67,89,-122,111,133];
+  const dx=[0,35,-35,70,-70,105,-105];
+  let best=null;
+  for(const deltaY of candidates){
+   for(const deltaX of dx){
+    const x=Math.max(w/2+3,Math.min(width-w/2-3,Number(n.x)+deltaX));
+    const y=Math.max(h+3,Math.min(height-8,Number(n.y)+deltaY));
+    const rect={left:x-w/2,right:x+w/2,top:y-h,bottom:y+2};
+    if(occupied.every(q=>rect.right+3<=q.left||rect.left>=q.right+3||
+      rect.bottom+2<=q.top||rect.top>=q.bottom+2)){
+     best={x,y,rect};break;
+    }
+   }
+   if(best)break;
+  }
+  if(!best){
+   const x=Math.max(w/2+3,Math.min(width-w/2-3,Number(n.x))),
+    y=Math.max(h+3,Math.min(height-8,Number(n.y)-34));
+   best={x,y,rect:{left:x-w/2,right:x+w/2,top:y-h,bottom:y+2}};
+  }
+  occupied.push(best.rect);
+  return {id:n.id,label,x:best.x,y:best.y};
+ });
+}
 function routeDetails(net,route){
  return (route?.steps||[]).map((s,i)=>{
  const shaft=net.shafts.find(x=>x.id===s.shaftId);
@@ -146,5 +178,5 @@ function applyPositions(net,rows){
  return result;
 }
 return {snapshot,createNetwork,normalizeNetwork,issues,routeDetails,shaftCables,
- inventoryCSV,parsePositionsCSV,applyPositions};
+ inventoryCSV,parsePositionsCSV,applyPositions,placeLabels};
 });
