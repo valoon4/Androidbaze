@@ -6,7 +6,7 @@ const mod=require('../TASKS/audit-workflow.js');
 const files=mod.disk();
 const before=JSON.stringify(files),valid=mod.audit(files);
 assert.equal(valid.totals.parents,888);
-assert.ok(valid.totals.closed>=100,'100-parent milestone must not regress');
+assert.ok(valid.totals.closed>=200,'200-parent milestone must not regress');
 assert.equal(valid.totals.open,888-valid.totals.closed);
 assert.equal(valid.totals.micros,13012);
 assert.equal(valid.totals.completed,files['ATOMIC/COMPLETED.csv'].trim().split(/\r?\n/).length-1);
@@ -53,6 +53,32 @@ for(const id of hundred){
   'Immutable evidence URL missing: '+id);
  assert.match(row,new RegExp('blob/[0-9a-f]{40}/'),'Evidence must pin a commit: '+id);
 }
+// Second giant: 47 + 28 + 25 = 100 NEW parents with three independent proof docs.
+const waves=[
+ {commit:'7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae',
+  parents:[...Array.from({length:18},(_,i)=>397+i),
+   ...Array.from({length:18},(_,i)=>433+i),
+   271,272,273,275,276,277,278,279,280,281,287]},
+ {commit:'cc87614d522a21fc93ee85bcd2cea77314e7c21f',
+  parents:[343,345,346,348,349,351,352,353,354,355,358,359,360,
+   361,362,363,364,365,366,367,369,370,373,374,375,376,377,378]},
+ {commit:'982f6d6a89fb0747d1580e45549d5d34ccfd229e',
+  parents:[415,419,420,421,422,425,426,427,428,429,432,
+   ...Array.from({length:14},(_,i)=>653+i)]}
+];
+assert.deepEqual(waves.map(w=>w.parents.length),[47,28,25]);
+assert.equal(new Set(waves.flatMap(w=>w.parents)).size,100);
+for(const w of waves)for(const n of w.parents){
+ const id='KAB-'+String(n).padStart(4,'0');
+ const filename=n>=649?'04-P3-QA-BETRIEB-UND-FEEDBACK.md':
+  n>=433?'03-P2-DATEN-UND-PRUEFUNG.md':'02-P1-EDITOR-UND-NETZ.md';
+ const row=files[filename].split('\n').find(l=>l.startsWith('- [x] **'+id+'** – '));
+ assert.ok(row,'Missing accepted parent: '+id);
+ assert.ok(row.includes('Nachweis: https://github.com/valoon4/Androidbaze/blob/'+w.commit+
+  '/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE'),
+  'Wrong immutable acceptance proof: '+id);
+}
+
 for(const wave of mod.WAVE)assert.ok(md.includes('| '+wave+' |'));
 const copy=()=>({...files});
 function mutate(key,fn,pattern){
