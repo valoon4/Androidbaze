@@ -42,8 +42,13 @@ function normalizeNetwork(n,active){
  for(const link of Array.isArray(n.links)?n.links.slice(0,150):[]){
   if(!link||!ids.has(link.from)||!ids.has(link.to)||link.from===link.to)continue;
   const key=[link.from,link.to].sort().join('\u0000');if(linked.has(key))continue;linked.add(key);
-  links.push({id:clean(link.id,'link-'+links.length,100),from:link.from,to:link.to,
-   note:clean(link.note,'Verbindung',80)});
+  const item={id:clean(link.id,'link-'+links.length,100),from:link.from,to:link.to,
+   note:clean(link.note,'Verbindung',80)};
+  // A graph link is never sufficient evidence for a physical cable or duct.
+  // Preserve explicit review states only when stored; old JSON stays byte-compatible.
+  if(['unverified','needs-evidence'].includes(link.physicalStatus))
+   item.physicalStatus=link.physicalStatus;
+  links.push(item);
  }
  const routes=[],routeIDs=new Set();
  for(const r of Array.isArray(n.routes)?n.routes.slice(0,200):[]){
