@@ -35,11 +35,42 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site/vendor _site/examples _site/pitch
-          cp PC/Kabelsalat/{index.html,pitch.html,pitch-walls.html,pitch-wall-compare.js,recovery.js,pdf-geometry.js,schematic-positions.js,spacing-adjust.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js,pdf-visual.js,app.js,editor2d.js,components.js,network.js,network-route-planner.js,network-world-route.js,quality.js,reports.js,reference-data.js,examples.js,hole-editor-ops.js,cable-editor-ops.js} _site/
+          cp PC/Kabelsalat/{index.html,pitch.html,pitch-walls.html,pitch-wall-compare.js,recovery.js,pdf-geometry.js,schematic-positions.js,spacing-adjust.js,pipe-dimensions.js,photo-candidates.js,concrete-wall.js,construction-v2.js,pdf-visual.js,app.js,csv-data.js,shaft-handover.js,editor2d.js,components.js,network.js,network-route-planner.js,network-world-route.js,quality.js,reports.js,reference-data.js,examples.js,hole-editor-ops.js,cable-editor-ops.js} _site/
           cp PC/Kabelsalat/pitch/{13_T_021.html,13_T_021_GERADE.html,13_T_021_KONSTRUKTION.html,13_U_028.html} _site/pitch/
           cp PC/Kabelsalat/vendor/{three.min.js,LICENSE.threejs} _site/vendor/
           cp PC/Kabelsalat/examples/*.json _site/examples/
           touch _site/.nojekyll
+      - name: Alle Browser-Skripte einschließlich Pitch und 400-Schacht-Modul prüfen
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const pages = [
+            'index.html', 'pitch.html', 'pitch-walls.html',
+            'pitch/13_T_021.html', 'pitch/13_T_021_GERADE.html',
+            'pitch/13_T_021_KONSTRUKTION.html', 'pitch/13_U_028.html'
+          ];
+          const siteRoot = path.resolve('_site');
+          const missing = [];
+          let checked = 0;
+          for (const page of pages) {
+            const html = fs.readFileSync(path.join(siteRoot, page), 'utf8');
+            for (const match of html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)) {
+              const relative = match[1].split(/[?#]/, 1)[0];
+              if (/^(https?:|\/\/|data:)/i.test(relative)) continue;
+              const file = path.resolve(siteRoot, path.dirname(page), relative);
+              checked++;
+              if (!file.startsWith(siteRoot + path.sep) || !fs.existsSync(file))
+                missing.push(page + ' -> ' + match[1]);
+            }
+          }
+          if (missing.length) {
+            console.error('Fehlende Dateien in GitHub Pages:\n' + missing.join('\n'));
+            process.exit(1);
+          }
+          console.log('OK: ' + pages.length + ' HTML-Seiten und ' + checked + ' lokale Skriptverweise');
+          NODE
       - name: GitHub Pages konfigurieren
         uses: actions/configure-pages@v5
       - name: Webseite hochladen
