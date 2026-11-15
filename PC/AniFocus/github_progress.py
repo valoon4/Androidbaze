@@ -14,7 +14,7 @@ SUPPORTED = frozenset(("OST", "Playlists", "Seasonvids"))
 
 
 def _section(text: str, start: str, end: str) -> str:
-    match = re.search(start + r"(.*?)" + end, text, re.IGNORECASE | re.DOTALL | re.MULTILINE)
+    match = re.search(start + r"(.*?)" + r"(?:" + end + r")", text, re.IGNORECASE | re.DOTALL | re.MULTILINE)
     return match.group(1) if match else ""
 
 
