@@ -14,7 +14,7 @@ assert.ok(csp.includes("'sha256-"),'Inline scripts must be individually hash-aut
 const fs=require('node:fs'),path=require('node:path');
 const hashes=[...csp.matchAll(/'sha256-([a-zA-Z0-9+/=]+)'/g)].map(x=>x[1]);
 const sources=['recovery.js','pdf-geometry.js','schematic-positions.js','spacing-adjust.js','hole-editor-ops.js','cable-editor-ops.js','pipe-dimensions.js','photo-candidates.js','concrete-wall.js','construction-v2.js','pdf-visual.js','vendor/three.min.js','editor2d.js','components.js','network.js','network-route-planner.js','network-world-route.js',
- 'quality.js','reports.js','csv-data.js','reference-data.js','examples.js','app.js'];
+ 'quality.js','reports.js','csv-data.js','shaft-handover.js','reference-data.js','examples.js','app.js'];
 assert.equal(hashes.length,sources.length,'CSP must authorize all scripts exactly');
 for(const src of sources){
  const code=fs.readFileSync(path.join(__dirname,'..',src),'utf8').replace(/<\/script/gi,'<\\/script');
@@ -23,4 +23,4 @@ for(const src of sources){
  assert.ok(result.includes('<script>'+code+'</script>'),'Complete script embedded: '+src);
 }
 assert.ok(result.includes('HTML-Referenz'));
-console.log('OK: standalone HTML includes 23 scripts, source examples and strict CSP hashes');
+console.log('OK: standalone HTML includes 24 scripts, source examples and strict CSP hashes');
