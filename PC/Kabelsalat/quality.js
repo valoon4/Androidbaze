@@ -58,6 +58,152 @@ function normalizeAudit(events){
  .map(x=>({at:saneText(x.at,45),shaftId:saneText(x.shaftId,100),
  action:saneText(x.action,120),description:saneText(x.description,300)}));
 }
+
+/* Provenance ledger: source links are evidence CANDIDATES unless explicitly reviewed.
+ * Optional on v5 network JSON; legacy projects remain byte-compatible. */
+const SOURCE_KINDS=['pdf','drawing','photo','survey','text','manual'];
+const SOURCE_OBJECTS=['shaft','wall','hole','cable','end-a','end-b','panel','support','dimension','plan-marker'];
+const SOURCE_BASIS=['graphic','label','derived','survey','manual'];
+function sourceDate(value){
+ return typeof value==='string'&&/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}))?$/.test(value)?
+  value:'';
+}
+function documentEntry(raw){
+ if(!raw||typeof raw!=='object')throw Error('Quellbeleg ungültig');
+ const id=saneText(raw.id,100),title=saneText(raw.title,180),version=saneText(raw.version,100);
+ if(!id||!title||!version)throw Error('Quelle braucht ID, Dokumenttitel und Version');
+ return {id,title,version,kind:SOURCE_KINDS.includes(raw.kind)?raw.kind:'manual',
+  file:saneText(raw.file,240),date:sourceDate(raw.date),
+  capturedAt:sourceDate(raw.capturedAt),pages:(Array.isArray(raw.pages)?raw.pages:[])
+   .filter(p=>Number.isSafeInteger(p)&&p>=1&&p<=100000).slice(0,200)};
+}
+function sourceRef(raw){
+ if(!raw||typeof raw!=='object')throw Error('Quellverweis fehlt');
+ const documentId=saneText(raw.documentId,100);
+ if(!documentId)throw Error('Quell-ID fehlt');
+ const page=Number.isSafeInteger(raw.page)&&raw.page>=1&&raw.page<=100000?raw.page:null;
+ return {documentId,page,region:saneText(raw.region,120),
+  basis:SOURCE_BASIS.includes(raw.basis)?raw.basis:'graphic',
+  evidence:saneText(raw.evidence,360),
+  measuredValue:Number.isFinite(raw.measuredValue)?raw.measuredValue:null,
+  unit:['mm','m','DN','text'].includes(raw.unit)?raw.unit:null,
+  capturedAt:sourceDate(raw.capturedAt),
+  checkedAt:sourceDate(raw.checkedAt),
+  checkedBy:saneText(raw.checkedBy,80),
+  verified:raw.verified===true&&raw.basis==='survey'&&
+   !!saneText(raw.evidence)&&!!saneText(raw.checkedBy)&&!!sourceDate(raw.checkedAt)};
+}
+function sourceEntry(raw){
+ if(!raw||typeof raw!=='object')throw Error('Quellobjekt fehlt');
+ const shaftId=saneText(raw.shaftId,100),objectId=saneText(raw.objectId,120),
+  field=saneText(raw.field,100),entity=raw.entity;
+ if(!shaftId||!objectId||!field||!SOURCE_OBJECTS.includes(entity))
+  throw Error('Quellobjekt/Schacht/Feld ungültig');
+ const ref=sourceRef(raw.ref);
+ return {shaftId,entity,objectId,field,ref,
+  status:ref.verified?'survey-reviewed':'unverified'};
+}
+function sourceKey(e){return [e.shaftId,e.entity,e.objectId,e.field].join('|');}
+function normalizeSources(input){
+ const documents=[],documentIds=new Set(),entries=[],entryKeys=new Set();
+ for(const d of (Array.isArray(input?.documents)?input.documents:[]).slice(0,500)){
+  try{const doc=documentEntry(d);if(documentIds.has(doc.id))continue;
+   documentIds.add(doc.id);documents.push(doc);}catch(_){}
+ }
+ for(const e of (Array.isArray(input?.entries)?input.entries:[]).slice(0,3000)){
+  try{const entry=sourceEntry(e),key=sourceKey(entry);
+   if(!documentIds.has(entry.ref.documentId)||entryKeys.has(key))continue;
+   entryKeys.add(key);entries.push(entry);}catch(_){}
+ }
+ const conflicts=[],conflictIds=new Set();
+ for(const raw of (Array.isArray(input?.conflicts)?input.conflicts:[]).slice(0,500)){
+  try{
+   const id=saneText(raw.id,100),left=sourceRef(raw.left),right=sourceRef(raw.right);
+   if(!id||conflictIds.has(id)||!documentIds.has(left.documentId)||
+    !documentIds.has(right.documentId))continue;
+   conflictIds.add(id);
+   const decision=saneText(raw.decision,360),decidedBy=saneText(raw.decidedBy,80),
+    decidedAt=sourceDate(raw.decidedAt),resolved=!!(decision&&decidedBy&&decidedAt);
+   conflicts.push({id,objectId:saneText(raw.objectId,120),
+    field:saneText(raw.field,100),left,right,
+    status:resolved?'resolved':'open',decision:resolved?decision:'',
+    decidedBy:resolved?decidedBy:'',decidedAt:resolved?decidedAt:''});
+  }catch(_){}
+ }
+ const markers=[];
+ for(const raw of (Array.isArray(input?.markers)?input.markers:[]).slice(0,600)){
+  if(!raw||!saneText(raw.id,120))continue;
+  markers.push({id:saneText(raw.id,120),documentId:saneText(raw.documentId,100),
+   page:Number.isSafeInteger(raw.page)&&raw.page>=1?raw.page:null,
+   wallId:saneText(raw.wallId,20),label:saneText(raw.label,160),
+   status:['unmatched','candidate','matched'].includes(raw.status)?raw.status:'unmatched',
+   matchedObjectId:saneText(raw.matchedObjectId,120)});
+ }
+ return {documents,entries,conflicts,markers};
+}
+function addSourceDocument(registry,data){
+ const next=normalizeSources(registry),doc=documentEntry(data);
+ if(next.documents.some(d=>d.id===doc.id))throw Error('Doppelte Quell-ID');
+ next.documents.push(doc);return next;
+}
+function attachSource(registry,entry,{replace=false}={}){
+ const next=normalizeSources(registry),record=sourceEntry(entry),key=sourceKey(record);
+ if(!next.documents.some(d=>d.id===record.ref.documentId))
+  throw Error('Quelldokument nicht im Register');
+ const idx=next.entries.findIndex(e=>sourceKey(e)===key);
+ if(idx>=0&&!replace)throw Error('Quellfeld bereits belegt; Änderung explizit vergleichen');
+ if(idx>=0)next.entries.splice(idx,1);
+ next.entries.push(record);return next;
+}
+function sourceSearch(registry,query){
+ const doc=normalizeSources(registry).documents,q=saneText(query,100).toLocaleLowerCase('de-DE');
+ if(!q)return doc;
+ return doc.filter(d=>[d.id,d.title,d.version,d.file,d.kind,d.pages.join(',')].
+  some(v=>String(v).toLocaleLowerCase('de-DE').includes(q)));
+}
+function sourceConflict(registry,conflict){
+ const next=normalizeSources(registry),id=saneText(conflict?.id,100);
+ if(!id||next.conflicts.some(x=>x.id===id))throw Error('Ungültige oder doppelte Konflikt-ID');
+ const left=sourceRef(conflict.left),right=sourceRef(conflict.right);
+ if(!next.documents.some(d=>d.id===left.documentId)||!next.documents.some(d=>d.id===right.documentId))
+  throw Error('Beide Widerspruchsquellen erforderlich');
+ next.conflicts.push({id,objectId:saneText(conflict.objectId,120),
+  field:saneText(conflict.field,100),left,right,status:'open',
+  decision:'',decidedBy:'',decidedAt:''});
+ return next;
+}
+function decideSourceConflict(registry,id,{decision,decidedBy,decidedAt}){
+ const next=normalizeSources(registry),c=next.conflicts.find(x=>x.id===id);
+ if(!c)throw Error('Quellwiderspruch fehlt');
+ if(!saneText(decision,360)||!saneText(decidedBy,80)||!sourceDate(decidedAt))
+  throw Error('Entscheidung braucht Begründung, Person und Zeit');
+ c.decision=saneText(decision,360);c.decidedBy=saneText(decidedBy,80);
+ c.decidedAt=sourceDate(decidedAt);c.status='resolved';return next;
+}
+function sourceCoverage(net){
+ const registry=normalizeSources(net?.sources),lost=[],known=new Set();
+ for(const s of net?.shafts||[]){
+  known.add(s.id+'|shaft|'+s.id);
+  for(const w of s.snapshot?.walls||[]){
+   known.add(s.id+'|wall|'+w.id);
+   for(const h of w.holes||[])known.add(s.id+'|hole|'+h.id);
+  }
+  for(const c of s.snapshot?.cables||[]){
+   known.add(s.id+'|cable|'+c.id);
+   known.add(s.id+'|end-a|'+c.id);known.add(s.id+'|end-b|'+c.id);
+  }
+  for(const system of ['OLA','MS'])for(const p of s.snapshot?.enclosures?.[system]?.panels||[])
+   known.add(s.id+'|panel|'+p.id);
+  for(const st of s.snapshot?.supports||[])known.add(s.id+'|support|'+st.id);
+ }
+ for(const ref of registry.entries){
+  const key=ref.shaftId+'|'+ref.entity+'|'+ref.objectId;
+  if(!known.has(key)&&ref.entity!=='dimension'&&ref.entity!=='plan-marker')lost.push(ref);
+ }
+ return {registry,lost,unverified:registry.entries.filter(e=>e.status!=='survey-reviewed').length,
+  conflictsOpen:registry.conflicts.filter(c=>c.status!=='resolved').length};
+}
+
 function searchNetwork(net,query,limit=120,filters={}){
  const fold=v=>String(v??'').toLocaleLowerCase('de-DE')
   .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
@@ -326,5 +472,7 @@ function evaluate(net,settings){
  advisory:'Nur Daten- und Geometriehinweise. Keine DIN-/VDE-/Brandschutz- oder Abnahmeprüfung.'};
 }
 return {STATES,normalizeSettings,normalizeReviews,normalizeAudit,searchNetwork,mmPosition,
-circumradius,evaluate,auditWallOpenings,dimensionStatus,normalizedRules};
+circumradius,evaluate,auditWallOpenings,dimensionStatus,normalizedRules,
+ normalizeSources,documentEntry,sourceRef,sourceEntry,addSourceDocument,attachSource,
+ sourceSearch,sourceConflict,decideSourceConflict,sourceCoverage};
 });
