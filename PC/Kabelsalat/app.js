@@ -1985,14 +1985,19 @@ $('planRouteAnalyze').addEventListener('click',async()=>{
   if(files.length>12)throw Error('Bitte maximal 12 Plan-Dateien je Durchgang');
   const docs=[],issues=[];
   for(const file of files){
-   const parsed=await planRouteModel.readFile(file);
-   docs.push(...parsed.pages);
-   for(const warning of parsed.warnings)issues.push({
-    source:file.name,reason:warning,snippet:''});
+   try{
+    const parsed=await planRouteModel.readFile(file);
+    docs.push(...parsed.pages);
+    for(const warning of parsed.warnings)issues.push({
+     source:file.name,reason:warning,snippet:''});
+   }catch(error){
+    issues.push({source:file.name,reason:'Datei nicht lesbar: '+error.message,snippet:''});
+   }
   }
   const paste=$('planRoutePaste').value.trim();
   if(paste)docs.push({name:'Eingefügter Plantext',page:null,text:paste});
-  if(!docs.length)throw Error('Keine lesbaren Plantexte – PDF mit Textebene oder TXT wählen');
+  if(!docs.length)throw Error('Keine lesbaren Plantexte. '+
+   issues.slice(0,3).map(x=>x.source+': '+x.reason).join(' · '));
   const result=planRouteModel.extract(shafts,docs);
   result.issues.unshift(...issues);
   planRouteReview={...result,shaftCsv,passCsv};
