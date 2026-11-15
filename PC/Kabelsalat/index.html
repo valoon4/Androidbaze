@@ -765,6 +765,18 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <label class="field">Notiz<textarea id="reviewNote" rows="3" maxlength="500" class="txt" style="height:auto;padding:8px"></textarea></label>
 <button id="saveReview" class="btn soft full" style="margin-top:10px">Vermerk speichern</button>
 <div class="small" style="margin-top:9px">Manuell eingetragene Statuswerte gelten nicht automatisch als geprüfte Freigabe.</div>
+<details id="reviewAdvanced" style="margin-top:11px">
+<summary>Prüffragen, Historie & Regeln</summary>
+<label class="field" style="margin-top:8px"><input type="checkbox" id="reviewRequireComment"> Kommentar bei jedem Statuswechsel verlangen</label>
+<div id="reviewQuestions" class="small" style="margin-top:8px">Keine Review-Fragen.</div>
+<div class="row">
+<label class="field">Schachtfilter<select id="reviewFilterShaft" class="selector"><option value="">Alle</option></select></label>
+<label class="field">Ab Datum<input type="date" id="reviewDateFrom"></label>
+<label class="field">Bis Datum<input type="date" id="reviewDateTo"></label>
+</div>
+<div id="reviewHistoryList" class="small" style="max-height:160px;overflow:auto">Keine Einträge.</div>
+<p class="small">Lokale Prüfvermerke sind unsigniert und manipulierbar; keine serverseitige Freigabe.</p>
+</details>
 <h3 style="margin-top:16px">Quellenregister & Maßbelege</h3>
 <p class="small">PDF, Foto, Zeichnung oder Aufmaß. Quellangabe ist kein automatischer Vermessungsnachweis.</p>
 <div class="row">
