@@ -115,7 +115,7 @@ assert.equal(seedReport.summary.cables,1);
 assert.equal(seedReport.summary.physicallyVerified,0);
 assert.ok(seedReport.handover[0].quelle.includes('schematische Route'));
 const malicious=handover.analyze(
- 'schacht_id;schachtname\nS1;=HYPERLINK(\\\"evil\\\")\n',
+ 'schacht_id;schachtname\nS1;=HYPERLINK(1)\n',
  header+'K1;@cmd;S1;1;=cmd;PLAN\n');
 assert.equal(malicious.ok,true);
 const safeHandover=handover.exportHandover(malicious);
