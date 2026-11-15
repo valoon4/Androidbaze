@@ -13,10 +13,16 @@ assert.equal(result.candidates[1].relativeSize,'mittel');
 assert.ok(result.candidates.every(x=>!Object.hasOwn(x,'candidateMm')),
  'No absolute mm may be inferred without calibrated reference');
 assert.deepEqual(img,input,'Image processing must never change original input pixels');
+const sourced=photo.detect(img,w,h,{source:'synthetic-bro-fixture.png'});
+assert.ok(sourced.candidates.every(c=>c.imageSource==='synthetic-bro-fixture.png'&&c.diameterUnit==='px'));
+assert.deepEqual(photo.detect(img,w,h).candidates.map(c=>c.imageSource),[null,null]);
+assert.throws(()=>photo.detect(img,w,h,{source:'bad\\nsource'}),/Bildquelle/);
 const calibrated=photo.calibrate(result.candidates,0,110);
 assert.equal(calibrated[0].candidateMm,110);
 assert.ok(calibrated[1].candidateMm<110);
 assert.ok(calibrated.every(x=>x.status==='candidate'&&x.method==='photo-calibrated'));
+const sourcedCalibration=photo.calibrate(sourced.candidates,0,110);
+assert.ok(sourcedCalibration.every(x=>x.imageSource==='synthetic-bro-fixture.png'&&x.diameterUnit==='px'));
 assert.throws(()=>photo.calibrate(result.candidates,0,0));
 assert.throws(()=>photo.detect(img,10000,10000));
 const blank=new Uint8ClampedArray(w*h*4);
