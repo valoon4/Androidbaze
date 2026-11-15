@@ -1281,6 +1281,10 @@ draft.addEventListener('pointerdown',e=>{
  if(selected){
  holeId=selected.id;renderAll();
  if(exploreMode){e.preventDefault();return;}
+ if(project.sourceInfo){
+  $('draftCoords').textContent='Originalreferenz: 2D-Drag deaktiviert. Position nur über bestätigte numerische Bearbeitung.';
+  e.preventDefault();return;
+ }
  draftDrag={holeId:selected.id,wallId,changed:false,x:p.x,y:p.y};
  draft.setPointerCapture(e.pointerId);e.preventDefault();return;
  }
@@ -1347,6 +1351,64 @@ $('draftWallSelect').addEventListener('change',e=>{wallId=e.target.value;holeId=
 $('draftCopy').addEventListener('click',copySelectedHole);
 $('copyHole').addEventListener('click',copySelectedHole);
 $('draftAdd').addEventListener('click',()=>{mode='add';renderUI();});
+
+const groupInputs=['groupStartX','groupStartY','groupRows','groupCols',
+ 'groupDx','groupDy','groupDns'];
+for(const id of groupInputs)$(id).addEventListener('input',()=>{
+ resetGroupPreview();
+ $('groupStatus').textContent='Eingaben geändert: Gruppe erneut prüfen.';
+});
+$('groupPreview').addEventListener('click',()=>{
+ resetGroupPreview();
+ try{
+  const dnsText=$('groupDns').value.trim();
+  if(!/^\d+(?:[\s,;]+\d+)*$/.test(dnsText))
+   throw Error('DN-Folge nur mit Zahlen 30–160, durch Kommas getrennt');
+  const dns=dnsText.split(/[\s,;]+/).map(Number);
+  const numbers=id=>{const text=$(id).value;
+   if(!/^\d+$/.test(text))throw Error(id+': ganzzahlige Millimeter erforderlich');
+   return Number(text);
+  };
+  const grid=Number($('draftSnapStep').value)||1;
+  groupPlan=holeEditorOps.planGroup(project,wallId,{
+   xMm:holeEditorOps.snapMm(numbers('groupStartX'),grid),
+   yMm:holeEditorOps.snapMm(numbers('groupStartY'),grid),
+   rows:numbers('groupRows'),cols:numbers('groupCols'),
+   dxMm:numbers('groupDx'),dyMm:numbers('groupDy'),dns});
+  $('groupApply').disabled=false;
+  $('groupStatus').textContent=groupPlan.count+' LR vorgeschlagen · DN '+dns.join(', ')+
+   ' · '+groupPlan.warnings.length+' Überlappungswarnungen. Nur Modellvorschau.';
+ }catch(err){$('groupStatus').textContent='Nicht möglich: '+err.message;}
+});
+$('groupApply').addEventListener('click',()=>{
+ const plan=groupPlan;if(!plan||plan.wallId!==wallId)return;
+ try{
+  if(plan.warnings.length&&!confirm('Rohrgruppen-Konflikte: '+plan.warnings.join('; ')+
+   '\nGruppe trotzdem hinzufügen?'))return;
+  if(!confirm(plan.count+' schematische Leerrohre an '+wallId+' einfügen? Rückgängig möglich.'))return;
+  change(()=>{holeEditorOps.applyGroup(project,plan);holeId=plan.holes[0].id;},
+   'Leerrohr-Gruppe (fiktiv) eingefügt');
+  $('groupStatus').textContent=plan.count+' LR eingefügt; Rückgängig stellt Ausgangszustand wieder her.';
+ }catch(err){resetGroupPreview();$('groupStatus').textContent='Nicht übernommen: '+err.message;}
+});
+$('holeTransfer').addEventListener('click',()=>{
+ const selected=hole();
+ if(!selected){$('transferStatus').textContent='Zuerst ein Leerrohr auswählen.';return;}
+ try{
+  const to=$('holeTransferWall').value;
+  const preview=holeEditorOps.planTransfer(project,wallId,selected.id,to);
+  if(preview.connected.length&&!confirm('Kabelanschlüsse '+preview.connected.join(', ')+
+   ' hängen an dieser Öffnung. Wandwechsel ändert die Anschlusswand, nicht die Kabel-ID oder Route. Manuell prüfen und fortfahren?'))return;
+  const overlap=preview.warnings.filter(v=>v.startsWith('Überlappung'));
+  if(overlap.length&&!confirm(overlap.join('; ')+'\nÜberlappung dennoch übernehmen?'))return;
+  if(!confirm('Rohr '+selected.id+' von '+wallId+' nach '+to+' versetzen? Rückgängig möglich.'))return;
+  change(()=>{holeEditorOps.applyTransfer(project,preview,{
+   approveConnected:true,approveOverlaps:overlap.length>0});
+   wallId=to;holeId=selected.id;},'Leerrohr mit Anschlussprüfung an andere Wand versetzt');
+  $('transferStatus').textContent='Wandwechsel übernommen. Kabel-/Routenanschlüsse fachlich nachprüfen.';
+ }catch(err){$('transferStatus').textContent='Nicht übernommen: '+err.message;}
+});
+
 $('splitEnabled').addEventListener('change',()=>{
  change(()=>{project.splitEnabled=$('splitEnabled').checked;});
  requestAnimationFrame(resize);
