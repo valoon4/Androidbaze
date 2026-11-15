@@ -105,6 +105,19 @@ let liveBrowser=null;
   assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),beforePhoto,
    'Two image uploads and photo calibration undo must never mutate the shaft project');
   await page.screenshot({path:path.join(out,'synthetic-photo-candidates-undo.png'),fullPage:true});
+  // KAB-0881/M42: real Chromium positive/negative textlayer-candidate UI.
+  const originalBeforePlan=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
+  await page.locator('#planDimensionText').evaluate(el=>{el.value='SW1_T1_LR01 DN 30\\nSW2_T2_LR02 DN 160';});
+  await page.locator('#parsePlanDimensions').evaluate(el=>el.click());
+  assert.equal(await page.locator('#planDimensionCandidateRows tr').count(),2);
+  assert.match(await page.locator('#planDimensionStatus').innerText(),/2 Maßkandidaten/);
+  await page.locator('#planDimensionText').evaluate(el=>{el.value='Scan ohne lesbare DN-Beschriftung';});
+  await page.locator('#parsePlanDimensions').evaluate(el=>el.click());
+  assert.equal(await page.locator('#planDimensionCandidateRows tr').count(),0);
+  assert.match(await page.locator('#planDimensionStatus').innerText(),/0 Maßkandidaten/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),originalBeforePlan,
+   'Scanning unconfirmed text proposals may not mutate original project');
+  await page.screenshot({path:path.join(out,'bro-plan-label-positive-negative.png'),fullPage:true});
   await page.locator('#runQuality').click();
   await page.locator('#qualityBackToShaft').click();
   assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
@@ -221,6 +234,24 @@ let liveBrowser=null;
    draft:document.querySelector('#draft2d')?.getBoundingClientRect().width||0
   }));
   assert.ok(twoD.visible&&twoD.draft>100,'2D wall diagram should be visible beside DN 3D demo');
+  // KAB-0885/M07: perform an actual 2D-hole pick against the same
+  // synthetic model displayed in the 3D canvas (IDs, DN, U/V retained).
+  const hit2D=await page.evaluate(()=>{
+   const model=JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1'));
+   const wid=document.querySelector('#draftWallSelect').value;
+   const wall=model.walls.find(w=>w.id===wid),h=wall.holes[0];
+   const span=(wid==='SW1'||wid==='SW3'?model.dims.d:model.dims.w);
+   const canvas=document.querySelector('#draft2d'),rect=canvas.getBoundingClientRect();
+   const m=window.Kabelsalat2D.metrics(span,model.dims.h,rect.width,rect.height);
+   const p=window.Kabelsalat2D.toPixels(m,h.u*span,h.v*model.dims.h);
+   return {clientX:rect.left+p.x,clientY:rect.top+p.y,dn:h.dn,
+    u:Math.round(h.u*span),v:Math.round(h.v*model.dims.h),id:h.id};
+  });
+  await page.mouse.click(hit2D.clientX,hit2D.clientY);
+  assert.equal(Number(await page.locator('#holeDn').inputValue()),hit2D.dn);
+  assert.equal(Number(await page.locator('#holeU').inputValue()),hit2D.u);
+  assert.equal(Number(await page.locator('#holeV').inputValue()),hit2D.v);
+  await page.screenshot({path:path.join(out,'bro-same-lr-2d-3d-selected.png'),fullPage:true});
   await page.screenshot({path:path.join(out,'synthetic-lr-dn-2d-3d.png'),fullPage:true});
   await page.locator('#explore2DToggle').click();
   // Distinguish actual cable route stage from hollow LR-only stage.
@@ -229,12 +260,25 @@ let liveBrowser=null;
   assert.match(await page.locator('#exploreSceneText').innerText(),/Der kräftige farbige Weg gehört|Linien zeigen schematische Kabelwege|KABEL, nicht LR/);
   await page.screenshot({path:path.join(out,'synthetic-dn-cable-stage.png'),fullPage:true});
   await page.locator('#questShaft').click();
+  // Comparison screenshots use the same untouched camera orbit and source.
+  // No mouse drag, orbit or reset is performed between these two shots.
+  await page.screenshot({path:path.join(out,'bro-fixed-camera-before.png'),fullPage:true});
   // Expert mode must keep DN editing accessible without editing imported PDF sources.
   await page.locator('#toggleExpert').click();
+  await page.screenshot({path:path.join(out,'bro-fixed-camera-after.png'),fullPage:true});
   assert.ok(!(await page.locator('body').evaluate(e=>e.classList.contains('explore-mode'))));
   assert.equal(await page.locator('#holeDn').getAttribute('step'),'1');
   assert.equal(await page.locator('#holeDn').getAttribute('min'),'30');
   assert.equal(await page.locator('#holeDn').getAttribute('max'),'160');
+  // KAB-0886/M05 + KAB-0888/M05: a reversible local view/material control.
+  const beforeMaterial=await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
+  await page.locator('#opacity').evaluate(el=>{el.value='65';el.dispatchEvent(new Event('change',{bubbles:true}));});
+  const afterMaterial=await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')));
+  assert.equal(afterMaterial.opacity,65,'Expert material opacity must be editable');
+  assert.deepEqual(afterMaterial.walls,beforeMaterial.walls,'Opacity cannot shift synthetic bore geometry');
+  await page.locator('#undo').evaluate(el=>el.click());
+  assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1')))).opacity,
+   beforeMaterial.opacity,'Material change must be reversible');
   await page.screenshot({path:path.join(out,'synthetic-dn-profi-editor.png'),fullPage:true});
   await page.locator('#toggleExpert').click();
   await page.evaluate(raw=>localStorage.setItem('eugi.schachtwand.3d.v1',raw),originalRaw);
