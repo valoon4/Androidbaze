@@ -109,13 +109,16 @@ let liveBrowser=null;
   await page.locator('#qualityBackToShaft').click();
   assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
   await page.locator('#toggleExpert').click(); // Back to read-only Basic.
-  // Reproduce user report: both panes collapsed and PDF view on top.
+  // Reproduce real user path: open the PDF while its control is visible,
+  // then collapse both sidebars. Clicking hidden/out-of-viewport PDF buttons
+  // would not represent an actual end-user interaction.
+  await page.locator('#pdfOpen').click();
   await page.locator('#sidebarToggleLeft').evaluate(el=>el.click());
   await page.locator('#sidebarToggleRight').evaluate(el=>el.click());
   assert.ok(await page.locator('body').evaluate(el=>
    el.classList.contains('sidebar-left-collapsed')&&
    el.classList.contains('sidebar-right-collapsed')));
-  await page.locator('#pdfOpen').click();
+  assert.equal(await page.locator('#pdfVisualPanel').evaluate(el=>el.hidden),false);
   await page.locator('#enableEditing').click();
   assert.equal(await page.locator('#pdfVisualPanel').evaluate(el=>el.hidden),true);
   const editState=await page.evaluate(()=>({
