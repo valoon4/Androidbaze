@@ -1,0 +1,57 @@
+name: AniFocus v0.0 Windows EXE
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PC/AniFocus/**'
+      - '.github/workflows/anifocus-exe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: anifocus-v0.0-release
+  cancel-in-progress: false
+
+jobs:
+  windows-portable:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: PC/AniFocus
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntax check
+        run: python -m py_compile core.py app.py
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Install PyInstaller
+        run: python -m pip install pyinstaller==6.16.0
+      - name: Build single-file Windows EXE
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --name AniFocus app.py
+      - name: Upload Windows build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AniFocus-v0.0-Windows
+          path: PC/AniFocus/dist/AniFocus.exe
+          if-no-files-found: error
+      - name: Publish prerelease EXE
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="anifocus-v0.0"
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" --title "AniFocus v0.0 – Windows" \
+              --notes "Cozy Pomodoro für Master, Research und Exploring. Portable EXE ohne tägliche Aufgabenpflege." \
+              --prerelease
+          fi
+          gh release upload "$TAG" "dist/AniFocus.exe" --repo "$GITHUB_REPOSITORY" --clobber
