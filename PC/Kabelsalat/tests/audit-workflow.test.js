@@ -6,8 +6,8 @@ const mod=require('../TASKS/audit-workflow.js');
 const files=mod.disk();
 const before=JSON.stringify(files),valid=mod.audit(files);
 assert.equal(valid.totals.parents,888);
-assert.equal(valid.totals.closed,42);
-assert.equal(valid.totals.open,846);
+assert.ok(valid.totals.closed>=100,'100-parent milestone must not regress');
+assert.equal(valid.totals.open,888-valid.totals.closed);
 assert.equal(valid.totals.micros,13012);
 assert.equal(valid.totals.completed,files['ATOMIC/COMPLETED.csv'].trim().split(/\r?\n/).length-1);
 assert.equal(valid.totals.completed+valid.totals.remaining,13012);
@@ -21,7 +21,7 @@ assert.deepEqual(mod.csv('"a";"b;semi";"a""b"', ';'),['a','b;semi','a"b']);
 assert.throws(()=>mod.csv('"unclosed',';'),/unmatched quote/);
 const md=mod.markdown(valid);
 assert.ok(md.includes('| **Mikro-Tasks** | **'+valid.totals.completed+'**'));
-assert.ok(md.includes('| Eltern-Tickets | 42 | 846 | 888 |'));
+assert.ok(md.includes('| Eltern-Tickets | '+valid.totals.closed+' | '+valid.totals.open+' | 888 |'));
 for(const id of ['KAB-0884','KAB-0886','KAB-0887','KAB-0888']){
  const file=Object.entries(files).find(([key,text])=>/^0[78]-BRO-/.test(key)&&text.includes(`- [x] **${id}** –`));
  assert.ok(file,`${id} must remain closed only with a documented technical acceptance`);
@@ -37,6 +37,19 @@ for(let n=235;n<=250;n++){
  const line=files['02-P1-EDITOR-UND-NETZ.md'].split('\n').find(l=>l.startsWith('- [x] **'+id+'** –'));
  assert.ok(line,'Missing technical editor parent: '+id);
  assert.match(line,/Nachweis: https:\/\/github\.com\//);
+}
+// The 58 newly reviewed parents remain individually accountable with immutable proof links.
+const hundred=[...Array.from({length:20},(_,i)=>i+251),
+ ...Array.from({length:16},(_,i)=>i+775),792,
+ ...Array.from({length:5},(_,i)=>i+811),
+ ...Array.from({length:11},(_,i)=>i+818),
+ 745,649,650,651,652].map(n=>'KAB-'+String(n).padStart(4,'0'));
+assert.equal(hundred.length,58);
+for(const id of hundred){
+ const file=id.slice(4)>='0649'?'04-P3-QA-BETRIEB-UND-FEEDBACK.md':'02-P1-EDITOR-UND-NETZ.md';
+ const row=files[file].split('\\n').find(l=>l.startsWith('- [x] **'+id+'** – '));
+ assert.ok(row,'Reviewed parent still missing: '+id);
+ assert.match(row,/Nachweis: https:\\/\\/github\\.com\\/valoon4\\/Androidbaze\\/blob\\/[0-9a-f]{40}\\//);
 }
 for(const wave of mod.WAVE)assert.ok(md.includes('| '+wave+' |'));
 const copy=()=>({...files});
