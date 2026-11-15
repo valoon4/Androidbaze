@@ -259,24 +259,24 @@
 
 **Quelle:** E12, B03, A04. **Definition of Done:** Bestehende JSON-Daten roundtrip-fähig und destruktive Schritte sicher rücknehmbar.
 
-- [ ] **KAB-0415** – Projektformat-Version und Migrationspfad dokumentieren
+- [x] **KAB-0415** – Projektformat-Version und Migrationspfad dokumentieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
 - [ ] **KAB-0416** – Altes Projekt-v1-Format ohne Datenverlust importieren
 - [ ] **KAB-0417** – Altes Projekt-v3-Format ohne Datenverlust importieren
 - [ ] **KAB-0418** – Altes Projekt-v4-Format ohne Datenverlust importieren
-- [ ] **KAB-0419** – Aktuelles Projekt-v5-Format bytewertgleich roundtrip-testen
-- [ ] **KAB-0420** – Mehrschacht-Netzdaten zusammen mit lokalen Snapshots speichern
-- [ ] **KAB-0421** – Stabile Rohr-IDs nach Import erhalten
-- [ ] **KAB-0422** – Stabile Kabel-IDs nach Import erhalten
+- [x] **KAB-0419** – Aktuelles Projekt-v5-Format bytewertgleich roundtrip-testen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0420** – Mehrschacht-Netzdaten zusammen mit lokalen Snapshots speichern · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0421** – Stabile Rohr-IDs nach Import erhalten · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0422** – Stabile Kabel-IDs nach Import erhalten · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
 - [ ] **KAB-0423** – Wand-ID-Kollisionen beim Import erkennen
 - [ ] **KAB-0424** – Kabel-ID-Kollisionen beim Import erkennen
-- [ ] **KAB-0425** – Undo für Rohrhinzufügen implementieren
-- [ ] **KAB-0426** – Undo für Kabel-Wegpunktverschiebung implementieren
-- [ ] **KAB-0427** – Undo für Plattenänderung implementieren
-- [ ] **KAB-0428** – Redo nach Undo ohne geänderten Modellinhalt prüfen
-- [ ] **KAB-0429** – History bei einer neuen Änderung nach Undo verzweigen lassen
+- [x] **KAB-0425** – Undo für Rohrhinzufügen implementieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0426** – Undo für Kabel-Wegpunktverschiebung implementieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0427** – Undo für Plattenänderung implementieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0428** – Redo nach Undo ohne geänderten Modellinhalt prüfen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0429** – History bei einer neuen Änderung nach Undo verzweigen lassen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
 - [ ] **KAB-0430** – Autosave bei Speicherfehler sichtbar melden
 - [ ] **KAB-0431** – Projekt vor riskanter Migration automatisch als JSON sicherbar machen
-- [ ] **KAB-0432** – Zwei benannte Varianten geometrisch und semantisch diffen
+- [x] **KAB-0432** – Zwei benannte Varianten geometrisch und semantisch diffen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
 
 
 ## Netz-Wegfinder: technischer Großsprint 14.11.2026
