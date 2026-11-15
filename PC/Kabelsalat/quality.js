@@ -170,7 +170,12 @@ function numericChanges(before,after,limit=45){
 function normalizeAudit(events){
  return (Array.isArray(events)?events:[]).slice(-500).filter(x=>x&&typeof x==='object')
  .map(x=>({at:saneText(x.at,45),shaftId:saneText(x.shaftId,100),
- action:saneText(x.action,120),description:saneText(x.description,300)}));
+ action:saneText(x.action,120),description:saneText(x.description,300),
+ ...(x.origin?{origin:x.origin==='import'?'import':'manual'}:{}),
+ ...(Array.isArray(x.numeric)?{numeric:x.numeric.slice(0,45).filter(c=>c&&
+  typeof c.old==='number'&&typeof c.new==='number'&&Number.isFinite(c.old)&&
+  Number.isFinite(c.new)).map(c=>({field:saneText(c.field,140),old:c.old,new:c.new}))}:{})
+ }));
 }
 
 /* Provenance ledger: source links are evidence CANDIDATES unless explicitly reviewed.
