@@ -1143,6 +1143,8 @@ function drawNetwork(){
   }
   ctx.setLineDash([]);
  }
+ const labelPositions=new Map(networkModel.placeLabels(net.shafts.map(s=>({
+  id:s.id,name:s.name,...point(s)})),w,h).map(x=>[x.id,x]));
  for(const s of net.shafts){
   const p=point(s),chosen=s.id===project.activeShaftId,
    traced=route?.steps.some(t=>t.shaftId===s.id);
@@ -1152,7 +1154,7 @@ function drawNetwork(){
   ctx.textAlign='center';ctx.font='bold 12px Segoe UI,Arial';ctx.fillStyle='#ffffff';
   ctx.fillText(s.id.slice(0,6),p.x,p.y+4);
   ctx.font='bold 12px Segoe UI,Arial';ctx.fillStyle='#244452';
-  ctx.fillText(s.name.slice(0,22),p.x,p.y-32);
+  const label=labelPositions.get(s.id);if(label)ctx.fillText(label.label,label.x,label.y);
   ctx.font='10px Segoe UI,Arial';ctx.fillStyle='#7a919d';
   ctx.fillText(s.x+' / '+s.z+' mm',p.x,p.y+38);
  }
