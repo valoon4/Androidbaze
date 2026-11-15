@@ -34,9 +34,10 @@ assert.ok(handler.includes('cell.textContent=value'));
 assert.ok(!handler.includes('innerHTML'));
 // Contradictory labels must show a warning and never be applied silently.
 ui.planDimensionText.value='SW1_T1_LR01 DN 30\\nSW1_T1_LR01 DN 160';
-vm.runInNewContext(handler,context,{timeout:2000});
+const secondContext={...context,planCandidates:[]};
+vm.runInNewContext(handler,secondContext,{timeout:2000});
 assert.equal(ui.planDimensionCandidateRows.children.length,2);
-assert.ok(context.planCandidates.every(candidate=>candidate.conflict));
+assert.ok(secondContext.planCandidates.every(candidate=>candidate.conflict));
 assert.equal(ui.planDimensionCandidateRows.children[0].children[3].textContent,'Konflikt');
 assert.ok(app.includes('if(c.conflict&&!confirm('),
  'Conflicting DN candidate requires a separate affirmative manual choice');
