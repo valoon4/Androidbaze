@@ -436,6 +436,14 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <div class="row" style="margin-top:9px"><button id="netAddLink" class="btn soft full">＋ Verbindung</button>
 <button id="netDeleteLink" class="btn danger">Entfernen</button></div>
 <label class="field">Vorhandene Verbindungen<select id="netLinkSelect" class="selector"></select></label>
+<div class="row" role="group" aria-label="Netzverbindung mit Prüfstatus">
+<label class="field">Physischer Nachweis<select id="netLinkStatus" class="selector">
+<option value="unverified">Nicht geprüft</option>
+<option value="needs-evidence">Beleg erforderlich</option>
+</select></label>
+<button id="netUpdateLinkStatus" class="btn soft tiny" type="button">Status speichern</button>
+</div>
+<div class="small">Shift+Ziehen auf einer Netzkarte verschiebt einen Schacht nur in X/Z; die Innengeometrie bleibt unverändert.</div>
 <hr>
 <div class="row spread"><h3 style="margin:0">Netzdaten</h3><button id="netExportCSV" class="btn tiny">↓ CSV</button></div>
 <div class="row" style="margin-top:9px"><button id="netImportPositions" class="btn soft full">Koordinaten-CSV prüfen</button>
