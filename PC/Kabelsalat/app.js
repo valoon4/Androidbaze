@@ -147,10 +147,12 @@ function validProject(o){
  mappingStatus:cleanReferenceText(c.mappingStatus,200),
  sourceKind:cleanReferenceText(c.sourceKind,80),
  drawingDiameterOnly:c.drawingDiameterOnly===true,
- technicalCategory:cleanReferenceText(c.technicalCategory,80)||'Nicht klassifiziert',
- typeId:cableTypes.some(t=>t.id===c.typeId)?c.typeId:'',
- reviewStatus:['Entwurf','Zur Prüfung','Geprüft'].includes(c.reviewStatus)?c.reviewStatus:'Entwurf',
- sourceCopyOf:cleanReferenceText(c.sourceCopyOf,120),
+ ...(typeof c.technicalCategory==='string'?{
+  technicalCategory:cleanReferenceText(c.technicalCategory,80)||'Nicht klassifiziert'}:{}),
+ ...(typeof c.typeId==='string'?{typeId:cableTypes.some(t=>t.id===c.typeId)?c.typeId:''}:{}),
+ ...(typeof c.reviewStatus==='string'?{
+  reviewStatus:['Entwurf','Zur Prüfung','Geprüft'].includes(c.reviewStatus)?c.reviewStatus:'Entwurf'}:{}),
+ ...(typeof c.sourceCopyOf==='string'?{sourceCopyOf:cleanReferenceText(c.sourceCopyOf,120)}:{}),
  ...(['A','B'].reduce((obj,key)=>{
   const pending=c['unresolved'+key];
   if(pending&&typeof pending.wall==='string'&&typeof pending.hole==='string')
@@ -162,7 +164,7 @@ function validProject(o){
  const enclosures=components.normalizeEnclosures(o.enclosures,dims);
  const supports=components.normalizeSupports(o.supports,dims);
  const variants=components.normalizeVariants(o.variants);
- const result={version:5,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,cableTypes,
+ const result={version:5,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,...(Array.isArray(o.cableTypes)?{cableTypes}:{}),
  opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
  showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
  enclosures,supports,variants,sourceInfo:normalizeSourceInfo(o.sourceInfo)};
