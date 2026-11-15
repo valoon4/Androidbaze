@@ -132,7 +132,7 @@ let liveBrowser=null;
   const oldName=await page.locator('#projectName').inputValue();
   assert.ok(oldName);
   await page.locator('#projectName').fill('Kabelsalat Test Editor');
-  await page.locator('#projectName').dispatchEvent('change');
+  await page.locator('#projectName').press('Tab'); // native blur triggers one change; no duplicate synthetic change
   assert.equal(await page.locator('#viewInfo').textContent(),
    'Kabelsalat Test Editor','Editor must apply real form changes to project');
   await page.locator('#undo').click();
