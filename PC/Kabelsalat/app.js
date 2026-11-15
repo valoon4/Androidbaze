@@ -2362,17 +2362,61 @@ $('applyPhotoDimension').addEventListener('click',()=>{
  change(()=>{h.dimensionSpec=next;},'Unbestätigten Fotomaßkandidaten übernommen');
 });
 
+$('pipeSort').addEventListener('change',renderUI);
+$('pipeList').addEventListener('click',e=>{const item=e.target.closest('[data-pipe-wall]');if(!item)return;
+ wallId=item.dataset.pipeWall;holeId=item.dataset.pipeId;renderAll();});
 $('cableList').addEventListener('click',e=>{const card=e.target.closest('[data-cable]');if(card){cableId=card.dataset.cable;renderAll();}});
 $('cableFilters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(b){filter=b.dataset.filter;renderUI();}});
-$('addCable').addEventListener('click',()=>change(()=>{const n=project.cables.length+1,id=uid('c');
- project.cables.push({id,name:'Kabel '+n,color:COLORS[(n-1)%COLORS.length],group:'Weitere',diameter:12,route:[],a:null,b:null});
- cableId=id;filter='all';}));
-$('deleteCable').addEventListener('click',()=>{if(!cable())return;change(()=>{project.cables=project.cables.filter(c=>c.id!==cableId);cableId=project.cables[0]?.id||null;});});
-$('swapCable').addEventListener('click',()=>{const c=cable();if(c)change(()=>{const t=c.a;c.a=c.b;c.b=t;});});
-$('cableName').addEventListener('change',()=>{const c=cable();if(c)change(()=>c.name=$('cableName').value.trim().slice(0,80)||'Kabel');});
+$('addCable').addEventListener('click',()=>change(()=>{
+ cableId=cableEditorOps.createCable(project,'Kabel '+(project.cables.length+1));filter='all';
+},'Neues Kabel erstellt'));
+$('copyCable').addEventListener('click',()=>{if(!cable())return;
+ change(()=>{cableId=cableEditorOps.duplicateCable(project,cableId);filter='all';},'Kabel mit Quelle als ungeprüfte Kopie dupliziert');
+});
+$('deleteCable').addEventListener('click',()=>{if(!cable())return;
+ try{
+  const plan=cableEditorOps.planCableDeletion(project,cableId);
+  const impact=plan.affectedRoutes.map(r=>r.name+' ['+r.id+']').join(', ');
+  if(!confirm('Kabel '+cable().name+' ('+cableId+') wirklich löschen?'+
+   (impact?'\\nBetroffene Netzrouten: '+impact+'\\nDie Route bleibt gespeichert, ihr Segment wird als fehlend gemeldet.':'')))return;
+  change(()=>{cableEditorOps.applyCableDeletion(project,plan,true);
+   cableId=project.cables[0]?.id||null;},'Kabel nach Netzroutenwarnung entfernt');
+ }catch(err){alert(err.message);}
+});
+$('swapCable').addEventListener('click',()=>{const c=cable();if(!c)return;
+ if(!confirm('Anschlüsse A und B bei '+c.name+' tauschen? Bestehende Quelle und Kabelführung müssen danach geprüft werden.'))return;
+ change(()=>cableEditorOps.swapEndpoints(project,c.id),'Kabelanschlüsse A/B getauscht; Prüfung offen');
+});
+$('cableName').addEventListener('change',()=>{const c=cable();if(!c)return;
+ const name=$('cableName').value.trim();
+ if(!name){alert('Bitte Kabelbezeichnung angeben.');renderUI();return;}
+ change(()=>cableEditorOps.updateCable(project,c.id,{name}),'Kabel umbenannt');
+});
 $('cableColor').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.color=$('cableColor').value;});});
-$('cableGroup').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.group=$('cableGroup').value;});});
-$('cableDiameter').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.diameter=clamp(Number($('cableDiameter').value)||12,2,80);});});
+$('cableGroup').addEventListener('change',()=>{const c=cable();if(c)
+ change(()=>cableEditorOps.updateCable(project,c.id,{group:$('cableGroup').value}),'Kabelgruppe geändert');});
+$('cableDiameter').addEventListener('change',()=>{const c=cable();if(!c)return;
+ const diameter=Number($('cableDiameter').value);
+ if(!$('cableDiameter').value.trim()||!Number.isFinite(diameter)||diameter<2||diameter>80){
+  alert('Kabel-Ø muss zwischen 2 und 80 mm liegen.');renderUI();return;
+ }
+ change(()=>cableEditorOps.updateCable(project,c.id,{diameter}),'Kabelaußendurchmesser geändert');
+});
+$('cableCategory').addEventListener('change',()=>{const c=cable();if(c)change(()=>
+ cableEditorOps.updateCable(project,c.id,{technicalCategory:$('cableCategory').value}),'Technische Kabelkategorie geändert');});
+$('cableType').addEventListener('change',()=>{const c=cable();if(c)change(()=>
+ cableEditorOps.updateCable(project,c.id,{typeId:$('cableType').value}),'Kabeltyp zugeordnet');});
+$('addCableType').addEventListener('click',()=>{
+ const name=$('newCableType').value.trim(),diameter=Number($('newCableTypeDiameter').value);
+ if(!name||!$('newCableTypeDiameter').value.trim()||!Number.isFinite(diameter)||diameter<2||diameter>80){
+  alert('Für den Typ einen Namen und einen Ø von 2–80 mm eintragen.');return;
+ }
+ const c=cable();if(!c)return;
+ change(()=>{const typeId=cableEditorOps.addType(project,
+  {name,diameter,category:$('cableCategory').value});
+  cableEditorOps.updateCable(project,c.id,{typeId});},'Kabeltyp im Projektkatalog ergänzt');
+ $('newCableType').value='';$('newCableTypeDiameter').value='';
+});
 $('addWaypoint').addEventListener('click',()=>{const c=cable();if(!c)return;
  const a=endpoint(c.a),b=endpoint(c.b),sz=sizes();if(!a||!b){alert('Bitte zuerst die Anschlüsse A und B auswählen.');return;}
  const vec=a.clone().lerp(b,.5);vec.y=clamp(vec.y+(.15),.05,sz.h-.05);
@@ -2459,7 +2503,12 @@ for(const k of ['ola','ms']){const key=k.toUpperCase();
 for(const [el,key,min,max] of [['wallThickness','thickness',40,500],['wallDn','dn',30,160]])
  $(el).addEventListener('change',()=>change(()=>{wall()[key]=clamp(Number($(el).value)||wall()[key],min,max);}));
 
-for(const [field,key] of [['cableA','a'],['cableB','b']])$(field).addEventListener('change',()=>{const c=cable();if(c)change(()=>{c[key]=parseEndpoint($(field).value);});});
+for(const [field,key] of [['cableA','a'],['cableB','b']])$(field).addEventListener('change',()=>{const c=cable();if(!c)return;
+ const ref=parseEndpoint($(field).value);
+ try{cableEditorOps.validateEndpoint(project,ref);
+  change(()=>cableEditorOps.setEndpoint(project,c.id,key,ref),'Kabelanschluss '+key.toUpperCase()+' bearbeitet');
+ }catch(err){alert(err.message);renderUI();}
+});
 $('projectName').addEventListener('change',()=>change(()=>project.name=$('projectName').value.trim().slice(0,80)||'Neues Projekt'));
 for(const [el,key,min,max] of [['width','w',600,12000],['depth','d',600,12000],['height','h',600,8000]])
  $(el).addEventListener('change',()=>{const x=clamp(Number($(el).value)||project.dims[key],min,max);change(()=>{project.dims[key]=x;});});
