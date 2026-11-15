@@ -48,6 +48,15 @@ ops.updateCable(p,newId,{name:'Kabel C',group:'OLA',diameter:25.5,technicalCateg
 assert.equal(p.cables.at(-1).technicalCategory,'Faseroptisch');
 assert.equal(p.cables.at(-1).group,'OLA');
 assert.equal(p.cables.at(-1).diameter,25.5);
+// Editing any approved metadata invalidates its prior review; no-op is not a change.
+p.cables.at(-1).reviewStatus='Freigegeben';
+ops.updateCable(p,newId,{name:'Kabel C'});
+assert.equal(p.cables.at(-1).reviewStatus,'Freigegeben','No-op must preserve review');
+ops.updateCable(p,newId,{technicalCategory:'Energie'});
+assert.equal(p.cables.at(-1).reviewStatus,'Zur Prüfung','Material edit must invalidate approval');
+p.cables.at(-1).reviewStatus='Freigegeben';
+assert.throws(()=>ops.updateCable(p,newId,{diameter:-1}),/2 und 80/);
+assert.equal(p.cables.at(-1).reviewStatus,'Freigegeben','Rejected edit must not invalidate approval');
 assert.throws(()=>ops.setEndpoint(p,newId,'a',{wall:'SW9',hole:'LR1'}),/nicht gefunden/);
 assert.throws(()=>ops.setEndpoint(p,newId,'a',{wall:'SW1',hole:'unknown'}),/nicht gefunden/);
 ops.setEndpoint(p,newId,'a',{wall:'SW1',hole:'LR1'});
