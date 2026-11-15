@@ -79,6 +79,22 @@ assert.ok(app.includes('spacingAdjust.plan(project,wallId')&&app.includes('spaci
 assert.ok(app.includes('resetSpacingPreview();')&&app.includes("change(()=>spacingAdjust.apply(project,pending)"));
 assert.ok(app.includes("ctx.setLineDash([5,4])"));
 assert.ok(require('../package.json').build.files.includes('spacing-adjust.js'));
+// KAB-0051/52/53: independent second wall, different DN and boundary inputs.
+const otherPair=project();
+otherPair.walls[1].holes.push({id:'OTHER-DN160',u:.205,v:.6,dn:160});
+const otherBefore=JSON.stringify(otherPair),otherCable=JSON.stringify(otherPair.cables);
+const otherProposal=spacing.plan(otherPair,'SW2',{gapMm:20,edgeMm:35});
+assert.ok(otherProposal.moved>0,'SW2 collision with DN75/DN160 must be moved');
+assert.ok(otherProposal.after.minGapMm>=19.9&&otherProposal.after.minEdgeMm>=34.9);
+assert.equal(JSON.stringify(otherPair),otherBefore,'Different wall preview remains read-only');
+spacing.apply(otherPair,otherProposal);
+assert.equal(JSON.stringify(otherPair.cables),otherCable);
+assert.equal(JSON.stringify(otherPair.walls[0]),JSON.stringify(project().walls[0]));
+const zeroBoundary=project();
+zeroBoundary.walls[0].holes=[{id:'EDGE-VALID',u:.5,v:.5,dn:30}];
+const edgeProposal=spacing.plan(zeroBoundary,'SW1',{gapMm:0,edgeMm:0});
+assert.equal(edgeProposal.moved,0);
+assert.equal(spacing.apply(zeroBoundary,edgeProposal),0);
 // KAB-0051/52: stale cable edits, corrupt plan coordinates and partial
 // changes must never move even the first pipe. Keep all IDs byte-identical.
 const changedCable=project(),cablePreview=spacing.plan(changedCable,'SW1',cfg);
