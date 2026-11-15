@@ -821,14 +821,14 @@ function renderAll(){
 function pick(event,targets=hitObjects){const rect=$('scene').getBoundingClientRect();
  pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
  raycaster.setFromCamera(pointer,activeCamera);return raycaster.intersectObjects(targets,false)[0]||null;}
-function wallCoords(wid,p){
+function wallCoords(wid,p,clamped=true){
  const s=sizes();
  const u=pdfView()?pdfGeometry.inverse(wid,[p.x,p.y,p.z],s):
   (wid==='SW2'||wid==='SW4')?p.x/s.w+.5:p.z/s.d+.5;
- return {u:clamp(u,0,1),v:clamp(p.y/s.h,0,1)};
+ return {u:clamped?clamp(u,0,1):u,v:clamped?clamp(p.y/s.h,0,1):p.y/s.h};
 }
 function newOpening(wid,point){
- const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point);
+ const w=project.walls.find(x=>x.id===wid),coords=wallCoords(wid,point,false);
  if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
  const dn=clamp(Number($('draftNewDn').value)||w.dn,30,160);
  const status=holeEditorOps.candidate(project,wid,{
@@ -1447,8 +1447,27 @@ canvas.addEventListener('pointermove',e=>{
  if(grab?.type==='orbit'){azimuth-=(e.clientX-grab.x)*.006;elevation=clamp(elevation+(e.clientY-grab.y)*.005,-.08,1.45);grab.x=e.clientX;grab.y=e.clientY;view();return;}
  if(grab?.type==='move'){const w=project.walls.find(x=>x.id===grab.wall),h=w?.holes.find(x=>x.id===grab.hole);
  pick(e,[]);const p=new THREE.Vector3();const hit=raycaster.ray.intersectPlane(grab.plane,p);
- if(h&&hit){if(!grab.changed){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;grab.changed=true;}
- Object.assign(h,wallCoords(w.id,p));rebuild();}return;}
+ if(h&&hit){
+  if(project.sourceInfo){
+   $('holeEditStatus').textContent='Importreferenz geschützt: 3D-Drag deaktiviert. Position numerisch mit Bestätigung bearbeiten.';
+   return;
+  }
+  const coords=wallCoords(w.id,p,false);
+  const check=holeEditorOps.candidate(project,w.id,{
+   xMm:Math.round(coords.u*wallSpanMm(w.id)),yMm:Math.round(coords.v*project.dims.h),
+   dn:h.dn,openingMm:h.dimensionSpec?.openingMm},h.id);
+  if(!check.ok||check.warnings.length){
+   $('holeEditStatus').textContent='3D-Verschieben blockiert: '+[...check.errors,...check.warnings].join('; ');
+   return;
+  }
+  if(!grab.changed){
+   undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();
+   redo.length=0;grab.changed=true;
+  }
+  h.u=check.u;h.v=check.v;
+  resetGroupPreview();
+  rebuild();
+ }return;}
  if(grab?.type==='waypoint'){
  const c=project.cables.find(x=>x.id===grab.id);if(!c||!c.route[grab.index])return;
  pick(e,[]);
