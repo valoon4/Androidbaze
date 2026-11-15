@@ -36,3 +36,13 @@ Bro: „ja bruder sieht schon besser aus aber diese lr die da drin sind wieso si
 **Abnahmefrage für Bro (Issue [#72](https://github.com/valoon4/Androidbaze/issues/72)):** Sind die vermeintlich langen „LR“ in der **Basic-Schachtansicht** jetzt korrekt verschwunden, sobald lange **Kabelwege** in die separate Kabelansicht verschoben werden? Oder meinst du echte Rohrlängen **innerhalb der Betonwand**? Letztere sind ohne Originalmaße weiterhin nicht verändert.
 
 **Noch offen:** Fachliche/visuelle Freigabe von Bro, Hersteller-/Originalmaße und exakte PDF-Binärmaß-Erkennung. Der Nachweis einer realen CI-Browserausführung zählt erst bei einem erfolgreichen Workflow.
+
+## Chromium-Sichtnachweise · 15.11.2026
+
+**KAB-0885 / KAB-0886 / KAB-0888:** [Erfolgreicher vollständiger Chromium-3D-Lauf](https://github.com/valoon4/Androidbaze/actions/runs/43708404172) mit [15,8-MB-Screenshot-Artefakt](https://github.com/valoon4/Androidbaze/actions/runs/43708404172/artifacts/14159621745) (Commit `b6dec368ab5f32721d374f814d348724307b494f`). Bildbelege enthalten:
+- `bro-lr-only-shaft-step.png` – Beton-/LR-Basic-Schacht ohne lange Kabelpfade.
+- `bro-cable-routes-separate-step.png` – separate, klar bezeichnete Kabelansicht.
+- `synthetic-lr-dn30-50-110-160.png`, `synthetic-lr-dn-2d-3d.png`, `synthetic-dn-profi-editor.png` – fiktive, unvermessene DN-Gegenprobe in 3D, 2D und Profi-Editor.
+- `synthetic-photo-candidates-undo.png` – Fotokandidaten mit reversibler Kalibrierung; `all-four-pdf-walls.png` – 91 unveränderte PDF-Referenzöffnungen.
+
+**KAB-0886/M15 und KAB-0888/M15:** Tests/Screenshots am Parent verlinkt. Die Software wurde im Browser geprüft und die Originalquelle nach der Demo wiederhergestellt. **Bro-Sichtfreigabe und reale Rohrmaße fehlen weiterhin;** kein Anspruch auf fertige Fachprüfung.
