@@ -954,19 +954,43 @@ function renderQualityUI(){
   '<div class="quality-hit '+issue.severity+'" data-quality="'+i+'"><b>'+
   esc(issue.code)+'</b> · '+esc(issue.detail)+'</div>').join('')||
   '<div class="small">Keine Hinweise im aktuellen, eingeschränkten Prüfumfang – keine Fachfreigabe.</div>';
- const options='<option value="shaft">Schacht · '+esc(project.activeShaftId)+'</option>'+
- project.cables.map(c=>'<option value="cable:'+esc(c.id)+'">Kabel · '+esc(c.name)+'</option>').join('');
- $('reviewTarget').innerHTML=options;
- if(!['shaft',...project.cables.map(c=>'cable:'+c.id)].includes(reviewKey))reviewKey='shaft';
+ const reviewOptions=[{value:'shaft',label:'Schacht · '+project.activeShaftId},
+  ...project.walls.map(w=>({value:'wall:'+w.id,label:'Wand · '+w.id})),
+  ...(hole()?[{value:'hole:'+holeId,label:'Wandöffnung · '+holeId}]:[]),
+  ...(cable()?[{value:'cable:'+cableId,label:'Kabel · '+cable().name}]:[]),
+  ...(plate()?[{value:'panel:'+plate().id,label:'Platte · '+plate().id}]:[]),
+  ...(supportId&&project.supports.some(x=>x.id===supportId)?
+   [{value:'support:'+supportId,label:'Auflager · '+supportId}]:[])];
+ $('reviewTarget').innerHTML=reviewOptions.map(v=>
+  '<option value="'+esc(v.value)+'">'+esc(v.label)+'</option>').join('');
+ if(!reviewOptions.some(o=>o.value===reviewKey))reviewKey='shaft';
  $('reviewTarget').value=reviewKey;
- const entityType=reviewKey==='shaft'?'shaft':'cable',
- entityId=entityType==='shaft'?project.activeShaftId:reviewKey.slice(6);
+ const cut=reviewKey.indexOf(':'),entityType=cut<0?'shaft':reviewKey.slice(0,cut),
+  entityId=cut<0?project.activeShaftId:reviewKey.slice(cut+1);
  const entry=(net.reviews||[]).find(x=>x.shaftId===project.activeShaftId&&
   x.entityType===entityType&&x.entityId===entityId);
  $('reviewStatus').value=entry?.status||'Entwurf';
  $('reviewSource').value=entry?.source||'';
  $('reviewBy').value=entry?.checkedBy||'';
  $('reviewNote').value=entry?.note||'';
+ $('reviewRequireComment').checked=net.reviewSettings?.requireComment===true;
+ const existingFilter=$('reviewFilterShaft').value;
+ $('reviewFilterShaft').innerHTML='<option value="">Alle Schächte</option>'+
+  net.shafts.map(sh=>'<option value="'+esc(sh.id)+'">'+esc(sh.id+' · '+sh.name)+'</option>').join('');
+ if(net.shafts.some(sh=>sh.id===existingFilter))$('reviewFilterShaft').value=existingFilter;
+ const history=qualityModel.reviewHistoryFilter(net.reviewHistory,
+  {shaftId:$('reviewFilterShaft').value,from:$('reviewDateFrom').value,
+   to:$('reviewDateTo').value});
+ $('reviewHistoryList').innerHTML=history.slice(-30).reverse().map(h=>
+  '<div>'+esc(h.at+' · '+h.shaftId+' / '+h.entityType+' / '+h.entityId+
+  ' · '+h.previous+' → '+h.current+' · '+(h.checkedBy||'ohne Prüfer')+
+  (h.origin==='import'?' (Import)':''))+'</div>').join('')||
+  '<div>Keine Reviewänderungen in diesem Datumsbereich.</div>';
+ const questions=qualityModel.openReviewQuestions(net);
+ $('reviewQuestions').textContent=questions.length?
+  questions.length+' offene Prüfpunkte · '+questions.slice(0,8)
+   .map(x=>x.shaftId+' / '+x.entityType+' / '+x.entityId+' · '+x.reason).join(' | '):
+  'Keine manuell offenen Reviewpunkte erfasst (keine Fachfreigabe).';
  $('auditLast').textContent=net.audit?.length?
   'Letzter protokollierter Vorgang: '+net.audit[net.audit.length-1].action+' ('+
   net.audit[net.audit.length-1].at+')':
