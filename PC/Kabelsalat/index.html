@@ -276,6 +276,8 @@ body.app-ready:not(.startup-failed) #startupRecovery{display:none!important}
 /* PDF V2 visual comparison: independent of WebGL and the editable project. */
 #pdfOpen{position:absolute;z-index:12;right:16px;bottom:18px;border:2px solid #27786d;
  background:#f8fffded;color:#18584b;font-weight:800;box-shadow:0 4px 15px #143d4537}
+/* Keep the PDF shortcut over the 3D half, never over editable 2D controls. */
+body:not(.presentation-focus) #viewport.with-2d #pdfOpen{right:calc(40% + 18px);top:130px;bottom:auto}
 body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 #oldProjectNotice[hidden],#pdfVisualPanel[hidden]{display:none!important}
 #oldProjectNotice{position:absolute;z-index:13;left:36px;bottom:20px;max-width:440px;
