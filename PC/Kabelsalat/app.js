@@ -174,6 +174,7 @@ function validProject(o){
  result.network.quality=qualityModel.normalizeSettings(o.network?.quality);
  result.network.reviews=qualityModel.normalizeReviews(o.network?.reviews,result.network.shafts);
  result.network.audit=qualityModel.normalizeAudit(o.network?.audit);
+ if(o.network?.sources)result.network.sources=qualityModel.normalizeSources(o.network.sources);
  result.activeShaftId=result.network.shafts.some(x=>x.id===o.activeShaftId)?
  o.activeShaftId:result.network.shafts[0].id;
  return result;
@@ -889,6 +890,20 @@ function newOpening(wid,point){
 let lastQualityResult=null;
 function renderQualityUI(){
  const net=project.network,cfg=net.quality||qualityModel.normalizeSettings();
+ const coverage=qualityModel.sourceCoverage(net),registry=coverage.registry;
+ const currentDoc=$('sourceDocumentRef').value;
+ $('sourceDocumentRef').innerHTML='<option value="">– Quelle auswählen –</option>'+
+  registry.documents.map(d=>'<option value="'+esc(d.id)+'">'+esc(d.id+' · '+d.title+' · '+d.version)+'</option>').join('');
+ if(registry.documents.some(d=>d.id===currentDoc))$('sourceDocumentRef').value=currentDoc;
+ $('sourceRegistryList').innerHTML=
+  '<b>'+registry.documents.length+' Quellen · '+registry.entries.length+
+  ' Objektbelege · '+coverage.conflictsOpen+' offene Widersprüche</b>'+
+  (coverage.lost.length?'<div class="quality-hit error">⚠ '+coverage.lost.length+
+   ' verlorene Objektverweise, Quelle erneut prüfen</div>':'')+
+  registry.entries.slice(-12).reverse().map(e=>
+   '<div>'+esc(e.shaftId+' / '+e.entity+' / '+e.objectId+' / '+e.field+
+    ' → '+e.ref.documentId+(e.ref.page?' S. '+e.ref.page:'')+
+    ' · '+(e.ref.verified?'Aufmaß mit Review':'ungeprüfter Beleg'))+'</div>').join('');
  for(const [id,key] of [['minPipeGap','minPipeGapMm'],['minEdgeGap','minEdgeMm'],['minBend','minBendRadiusMm']]){
   $(id).value=cfg[key]===null?'':cfg[key];
  }
@@ -1752,6 +1767,41 @@ $('qualityList').addEventListener('click',e=>{
  }
 });
 $('reviewTarget').addEventListener('change',()=>{reviewKey=$('reviewTarget').value;renderQualityUI();});
+$('sourceAddDocument').addEventListener('click',()=>{
+ try{
+  const data={id:$('sourceDocId').value,title:$('sourceDocTitle').value,
+   version:$('sourceDocVersion').value,kind:$('sourceDocKind').value,
+   capturedAt:new Date().toISOString()};
+  // Preflight: reject duplicate IDs and empty versions before checkpoint.
+  qualityModel.addSourceDocument(project.network.sources,data);
+  change(()=>{project.network.sources=qualityModel.addSourceDocument(
+   project.network.sources,data);},'Quelle mit eigener ID und Version aufgenommen');
+  $('sourceDocumentRef').value=data.id;
+  $('sourceRegistryStatus').textContent='Quellbeleg aufgenommen; noch keine Maßfreigabe.';
+ }catch(e){$('sourceRegistryStatus').textContent='Nicht gespeichert: '+e.message;}
+});
+$('sourceAttachObject').addEventListener('click',()=>{
+ try{
+  const entity=$('sourceTarget').value,doc=$('sourceDocumentRef').value;
+  const isCable=['cable','end-a','end-b'].includes(entity),
+   objectId=isCable?cableId:entity==='hole'?holeId:
+    entity==='wall'?wallId:project.activeShaftId;
+  if(!objectId)throw Error('Zuerst ein passendes Rohr, Kabel oder eine Wand auswählen');
+  if(isCable&&!project.cables.some(c=>c.id===objectId))throw Error('Kabel fehlt');
+  if(entity==='hole'&&!hole())throw Error('Öffnung fehlt');
+  const pageText=$('sourcePage').value,page=pageText&&/^\\d+$/.test(pageText)?Number(pageText):null;
+  if(pageText&&(!page||page>100000))throw Error('Ungültige Seitenzahl');
+  const record={shaftId:project.activeShaftId,entity,objectId,
+   field:$('sourceField').value,
+   ref:{documentId:doc,page,region:$('sourceRegion').value,
+    evidence:$('sourceEvidence').value,basis:$('sourceBasis').value,
+    capturedAt:new Date().toISOString(),verified:false}};
+  qualityModel.attachSource(project.network.sources,record);
+  change(()=>{project.network.sources=qualityModel.attachSource(
+   project.network.sources,record);},'Objekt mit Planbeleg verknüpft (unbestätigt)');
+  $('sourceRegistryStatus').textContent='Objektverweis gespeichert; keine Vermessungsfreigabe.';
+ }catch(e){$('sourceRegistryStatus').textContent='Nicht gespeichert: '+e.message;}
+});
 $('saveReview').addEventListener('click',()=>{
  const entityType=reviewKey==='shaft'?'shaft':'cable',entityId=entityType==='shaft'?
  project.activeShaftId:reviewKey.slice(6);
