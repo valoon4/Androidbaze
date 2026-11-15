@@ -1,6 +1,14 @@
 # Kabelsalat – Schacht- und Kabeleditor
 
-**Status: Demo-Beta v2.0.11-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+**Status: Demo-Beta v2.0.14-beta.1 – Konzept teilweise erfüllt, nicht fachlich abgenommen** (Umbenennung des bisherigen Schachtwand Planer 3D). Eigenständig als **Offline-Browseranwendung** und als **portable Windows-EXE** nutzbar. Verwendet ein und dasselbe Daten- und Darstellungsmodell.
+
+## v2.0.14-beta.1 · Bros Plananalyse für bis zu 500 Schächte (15.11.2026)
+
+**NEU in der Haupt-App, direkt unter „Bros 400-Schacht-Liste“:** Plandateien im Browser lokal als Text-Kandidaten auswerten. Eine importierte Schachtliste (`schacht_id;schachtname`) ist Voraussetzung; bis zu zwölf PDF-/TXT-/CSV-/MD-Dateien à 8 MB oder eingefügter Plantext. Erkannt werden nur **explizit ausgeschriebene Kabel-Schacht-Folgen**, z. B. `Kabel K01: S001 > S002 > S003`, nicht schematische Linien oder zufällige ID-Nähe. Die PDF-Funktion unterstützt nur einfache **digital erzeugte PDFs mit auslesbarer Textebene und unterstützten Flate-Textströmen**. Bildscans benötigen externe OCR; komplizierte Schriften, Filter, Fonts und Layouts werden nicht als sicher gelesen ausgegeben.
+
+**Prüfablauf:** Fundstelle mit PDF-Seite/Zeile oder Textzeile, Kabel-ID und bekannten Schacht-IDs anzeigen → Kandidaten per Checkbox einzeln wählen → Konflikte derselben Kabel-ID ausdrücklich abweisen → als `KANDIDAT` in die vorhandene 400-Schacht-Liste übernehmen → dort drei CSV-Übergaben erzeugen. Alternativrouten werden **niemals selbständig zusammengehängt**. Nicht bekannte Schacht-IDs, unklare Reihenfolge oder nicht lesbare Seiten werden als Prüffälle angezeigt und können als CSV exportiert werden. Physische Kabelkontinuität, Rohrmaße und Ausführung bleiben ungeprüft; kein externes KI-Modell wird aufgerufen. PDF-, Schacht- und Projektdaten bleiben lokal und unverändert, bis der Nutzer eine CSV-Übernahme auslöst.
+
+**Tests:** `tests/plan-route-import.test.js` prüft synthetische PDF-Texte, komprimierte PDF-Streams, 400-Schacht-Abgleich, Quellen, Konflikte, unbekannte IDs, Excel-Formelschutz sowie die App-Integration. **Die tatsächlichen Unterlagen von Bro liegen weiterhin nicht vor**; realer Plan-/Sichttest bleibt offen. Die abgesicherten Original-Pitches werden nicht umgebaut.
 
 ## 2.0.11-beta.1 · 4 Pitch-Wandvergleiche (KAB-0203–0206) · 15.11.2026
 
