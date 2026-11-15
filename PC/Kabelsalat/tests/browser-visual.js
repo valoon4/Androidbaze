@@ -247,7 +247,8 @@ let liveBrowser=null;
    return {clientX:rect.left+p.x,clientY:rect.top+p.y,dn:h.dn,
     u:Math.round(h.u*span),v:Math.round(h.v*model.dims.h),id:h.id};
   });
-  await page.mouse.click(hit2D.clientX,hit2D.clientY);
+  await page.locator('#draft2d').dispatchEvent('pointerdown',{
+   clientX:hit2D.clientX,clientY:hit2D.clientY,button:0,pointerId:42,bubbles:true});
   assert.equal(Number(await page.locator('#holeDn').inputValue()),hit2D.dn);
   assert.equal(Number(await page.locator('#holeU').inputValue()),hit2D.u);
   assert.equal(Number(await page.locator('#holeV').inputValue()),hit2D.v);
