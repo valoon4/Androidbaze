@@ -58,29 +58,56 @@ function normalizeAudit(events){
  .map(x=>({at:saneText(x.at,45),shaftId:saneText(x.shaftId,100),
  action:saneText(x.action,120),description:saneText(x.description,300)}));
 }
-function searchNetwork(net,query,limit=120){
- const q=String(query||'').toLocaleLowerCase('de-DE').trim();
- if(!q)return [];
- const items=[];
- const match=(...args)=>args.some(x=>String(x??'').toLocaleLowerCase('de-DE').includes(q));
+function searchNetwork(net,query,limit=120,filters={}){
+ const fold=v=>String(v??'').normalize('NFKD').toLocaleLowerCase('de-DE')
+  .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+ const q=fold(query);
+ const group=['OLA','MS','Weitere'].includes(filters.group)?filters.group:null;
+ const unresolved=filters.unresolved===true;
+ const review=typeof filters.review==='string'?filters.review.trim():'';
+ const version=fold(filters.sourceVersion);
+ const filtered=!!(group||unresolved||review||version);
+ if(!q&&!filtered)return [];
+ const cap=Math.max(1,Math.min(500,Math.floor(Number(limit)||120)));
+ const items=[],match=(...args)=>!q||args.some(x=>fold(x).includes(q));
+ const reviewStatus=(shaftId,id)=>net.reviews?.find(r=>
+  r.shaftId===shaftId&&r.entityType==='cable'&&r.entityId===id)?.status||'Entwurf';
  for(const shaft of net.shafts||[]){
-  if(match(shaft.id,shaft.name,shaft.x,shaft.z))
-   items.push({kind:'shaft',shaftId:shaft.id,label:shaft.id+' · '+shaft.name});
-  for(const c of shaft.snapshot.cables||[]){
-   if(match(c.id,c.name,c.group))
-    items.push({kind:'cable',shaftId:shaft.id,cableId:c.id,
-     label:shaft.id+' · '+c.name+' ['+c.id+']'});
-  }
-  for(const w of shaft.snapshot.walls||[]){
-   for(const h of w.holes||[]){
-    if(match(h.id,w.id+'/'+h.id))
-     items.push({kind:'hole',shaftId:shaft.id,wallId:w.id,holeId:h.id,
-      label:shaft.id+' · '+w.id+' · '+h.id});
+  if(items.length>=cap)break;
+  const src=shaft.snapshot?.sourceInfo,
+   sourceText=[src?.sourceVersion,src?.sourceFile,src?.sourceDate,src?.documentDate,
+    src?.documentVersion].join(' ');
+  if(version&&!fold(sourceText).includes(version))continue;
+  if(!group&&!unresolved&&!review){
+   if(match(shaft.id,shaft.name,shaft.x,shaft.z))
+    items.push({kind:'shaft',shaftId:shaft.id,label:shaft.id+' · '+shaft.name});
+   for(const w of shaft.snapshot?.walls||[]){
+    if(match(w.id,shaft.id+'/'+w.id,w.name))
+     items.push({kind:'wall',shaftId:shaft.id,wallId:w.id,
+      label:shaft.id+' · '+w.id+' · '+(w.name||'Schachtwand')});
+    for(const h of w.holes||[]){
+     if(match(h.id,w.id+'/'+h.id,h.sourceAddress,h.trasse,h.sourceCategory))
+      items.push({kind:'hole',shaftId:shaft.id,wallId:w.id,holeId:h.id,
+       label:shaft.id+' · '+w.id+' · '+h.id});
+     if(items.length>=cap)break;
+    }
+    if(items.length>=cap)break;
    }
   }
-  if(items.length>=limit)break;
+  for(const c of shaft.snapshot?.cables||[]){
+   if(items.length>=cap)break;
+   if(group&&c.group!==group)continue;
+   if(unresolved&&!!c.a&&!!c.b)continue;
+   const status=reviewStatus(shaft.id,c.id);
+   if(review&&status!==review)continue;
+   if(match(c.id,c.name,c.group,c.technicalCategory,c.source,c.reviewStatus))
+    items.push({kind:'cable',shaftId:shaft.id,cableId:c.id,group:c.group,
+     unresolved:!c.a||!c.b,reviewStatus:status,
+     label:shaft.id+' · '+c.name+' ['+c.id+'] · '+status+
+      ((!c.a||!c.b)?' · offenes Ende':'')});
+  }
  }
- return items.slice(0,limit);
+ return items.slice(0,cap);
 }
 function mmPosition(p,r){
  if(!r||typeof r.wall!=='string'||typeof r.hole!=='string')return null;
