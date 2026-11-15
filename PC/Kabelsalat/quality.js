@@ -70,8 +70,9 @@ function searchNetwork(net,query,limit=120,filters={}){
  if(!q&&!filtered)return [];
  const cap=Math.max(1,Math.min(500,Math.floor(Number(limit)||120)));
  const items=[],match=(...args)=>!q||args.some(x=>fold(x).includes(q));
- const reviewStatus=(shaftId,id)=>net.reviews?.find(r=>
-  r.shaftId===shaftId&&r.entityType==='cable'&&r.entityId===id)?.status||'Entwurf';
+ const reviewStatus=(shaftId,cable)=>net.reviews?.find(r=>
+  r.shaftId===shaftId&&r.entityType==='cable'&&r.entityId===cable.id)?.status||
+  (STATES.includes(cable.reviewStatus)?cable.reviewStatus:'Entwurf');
  for(const shaft of net.shafts||[]){
   if(items.length>=cap)break;
   const src=shaft.snapshot?.sourceInfo,
@@ -98,7 +99,7 @@ function searchNetwork(net,query,limit=120,filters={}){
    if(items.length>=cap)break;
    if(group&&c.group!==group)continue;
    if(unresolved&&!!c.a&&!!c.b)continue;
-   const status=reviewStatus(shaft.id,c.id);
+   const status=reviewStatus(shaft.id,c);
    if(review&&status!==review)continue;
    if(match(c.id,c.name,c.group,c.technicalCategory,c.source,c.reviewStatus))
     items.push({kind:'cable',shaftId:shaft.id,cableId:c.id,group:c.group,
