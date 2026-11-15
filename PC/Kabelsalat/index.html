@@ -656,7 +656,11 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <section id="draft2d" aria-label="2D-Wandzeichnung"><div class="draft-head"><strong>2D-Wandeditor · mm</strong>
 <select id="draftWallSelect" class="selector" aria-label="2D-Wand auswählen"><option value="SW1">SW1</option><option value="SW2">SW2</option><option value="SW3">SW3</option><option value="SW4">SW4</option></select></div>
 <div class="small">Leerrohre anklicken, verschieben und maßgenau bearbeiten. Die 3D-Ansicht aktualisiert sich gleichzeitig.</div>
-<div class="draft-canvas-wrap"><canvas id="draftCanvas" aria-label="2D-Schachtwand"></canvas></div>
+<div class="row" role="group" aria-label="2D Navigation und Auswahl">
+ <button id="draftResetView" type="button" class="btn soft tiny">⌖ Ansicht zurücksetzen</button>
+ <span id="draftViewHint" class="small" role="status">Mausrad: Zoom · Alt+Ziehen: Pan · Shift+Ziehen: Mehrfachauswahl</span>
+</div>
+<div class="draft-canvas-wrap"><canvas id="draftCanvas" tabindex="0" aria-label="2D-Schachtwand: Mausrad zoomt, Alt-Taste verschiebt, Umschalt-Taste wählt mehrere Leerrohre aus"></canvas></div>
 <div id="draftCoords" class="draft-metrics">Wähle ein Leerrohr.</div>
 <div class="row"><button id="draftCopy" class="btn soft full">＋ Rohr kopieren</button><button id="draftAdd" class="btn full">＋ Rohr platzieren</button></div>
 <div class="row"><label class="field">Fangraster (mm)<select id="draftSnapStep"><option value="1">Aus · 1 mm</option><option value="10">10 mm</option><option value="25">25 mm</option><option value="50">50 mm</option></select></label>
