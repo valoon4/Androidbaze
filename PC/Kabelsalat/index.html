@@ -395,6 +395,17 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <label class="field">Mindestabstand Rohr–Rohr (mm)<input id="minPipeGap" type="number" min="0" step="1" placeholder="nicht festgelegt"></label>
 <label class="field">Mindestabstand Rohr–Wandrand (mm)<input id="minEdgeGap" type="number" min="0" step="1" placeholder="nicht festgelegt"></label>
 <label class="field">Bogenradius-Kontrollpunkt-Näherung (mm)<input id="minBend" type="number" min="0" step="1" placeholder="nicht festgelegt"></label>
+<div class="row">
+<label class="field">Wand-Sonderwert<select id="qualityRuleWall" class="selector">
+<option>SW1</option><option>SW2</option><option>SW3</option><option>SW4</option>
+</select></label>
+<label class="field">Wand-Rohrabstand (mm)<input id="qualityWallGap" type="number" min="0" max="100000" step="1" placeholder="Projektwert"></label>
+</div>
+<div class="row">
+<label class="field">DN-Sonderwert (30–160)<input id="qualityRuleDn" type="number" min="30" max="160" step="1" value="50"></label>
+<label class="field">DN-Rohrabstand (mm)<input id="qualityDnGap" type="number" min="0" max="100000" step="1" placeholder="Projektwert"></label>
+</div>
+<p class="small">Wand- und DN-Sonderwerte überlagern den Projektwert jeweils mit dem strengeren Abstand. Alle Angaben sind Modellwerte, keine Normfreigabe.</p>
 <button id="applyQuality" class="btn soft full" style="margin-top:10px">Projektwerte übernehmen</button>
 <div class="small" style="margin-top:8px">Der geschätzte Bogenradius ersetzt keine Prüfung der tatsächlichen Leitungskrümmung.</div>
 </section>
