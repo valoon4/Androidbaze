@@ -139,7 +139,7 @@
   for(const issue of warnings)if(issue.includes('Lücke')||issue.includes('Verlauf ungeklärt'))
    open.push({schacht_id:'',schachtname:'',frage:issue,quelle:'',status:'offen'});
   const term=key(filter);const filtered=term?handover.filter(r=>
-   [r.kabel_id,r.kabelname,r.schacht_id,r.schachtname,r.schachtfolge]
+   [r.kabel_id,r.kabelname,r.schacht_id,r.schachtname]
     .some(x=>key(x).includes(term))):handover;
   const shaftMatches=term?shafts.filter(s=>
    [s.id,s.name,...s.cables.map(c=>c.id)].some(x=>key(x).includes(term))):shafts;
