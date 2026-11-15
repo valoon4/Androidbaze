@@ -1,6 +1,6 @@
 {
   "name": "kabelsalat",
-  "version": "2.0.12-beta.1",
+  "version": "2.0.13-beta.1",
   "description": "Kabelsalat v2.0 Beta – geradlinige/gebogene Kabelwege und getrennte AVL0116-Konstruktionsvarianten mit offenen Prüfhinweisen",
   "main": "main.js",
   "author": "Kabelsalat",
