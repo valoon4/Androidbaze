@@ -21,7 +21,7 @@ function build(){
   found++;
   return '<script>'+js+'</script>';
  });
- if(found!==24)throw Error('24 lokale Script-Abhängigkeiten erwartet, gefunden: '+found);
+ if(found!==25)throw Error('25 lokale Script-Abhängigkeiten erwartet, gefunden: '+found);
  if(!html.includes("script-src 'self'"))throw Error('CSP im Editor nicht gefunden');
  html=html.replace("script-src 'self'","script-src "+hashes.join(' '));
  html=html.replace('</head>',`<!-- Eigenständige Offline-Datei; keine externe Script-Quelle.
