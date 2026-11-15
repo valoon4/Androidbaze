@@ -1789,7 +1789,7 @@ $('sourceAttachObject').addEventListener('click',()=>{
   if(!objectId)throw Error('Zuerst ein passendes Rohr, Kabel oder eine Wand auswählen');
   if(isCable&&!project.cables.some(c=>c.id===objectId))throw Error('Kabel fehlt');
   if(entity==='hole'&&!hole())throw Error('Öffnung fehlt');
-  const pageText=$('sourcePage').value,page=pageText&&/^\\d+$/.test(pageText)?Number(pageText):null;
+  const pageText=$('sourcePage').value,page=pageText&&/^\d+$/.test(pageText)?Number(pageText):null;
   if(pageText&&(!page||page>100000))throw Error('Ungültige Seitenzahl');
   const record={shaftId:project.activeShaftId,entity,objectId,
    field:$('sourceField').value,
