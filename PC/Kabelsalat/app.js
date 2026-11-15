@@ -2120,7 +2120,7 @@ $('photoDimensionFile').addEventListener('change',async()=>{
   const ctx=canvas.getContext('2d',{willReadFrequently:true});
   ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
   const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
-  photoAnalysis=photoCandidates.detect(pixels.data,canvas.width,canvas.height);
+  photoAnalysis=photoCandidates.detect(pixels.data,canvas.width,canvas.height,{source:file.name.slice(0,200)});
   photoAnalysis.filename=file.name.slice(0,200);
   ctx.strokeStyle='#ecba43';ctx.lineWidth=2;ctx.font='bold 14px sans-serif';
   for(const c of photoAnalysis.candidates){
