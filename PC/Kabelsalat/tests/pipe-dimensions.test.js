@@ -37,10 +37,13 @@ const planPages=[
  {pageNumber:5,rotation:0,text:'SW1/T1/LR05 DN 160\\nSW3_T2_LR01 Ø 75'},
  {pageNumber:6,text:'SW4/T2/LR01 DN 50\\nSW4/T2/LR02 DN 50'}
 ];
-const pagesBefore=JSON.stringify(planPages),multiple=pipe.parsePlanPages(planPages,{source:'fixture-plan.pdf'});
+const pagesBefore=JSON.stringify(planPages),multiple=pipe.parsePlanPages(planPages,{source:'fixture-plan.pdf',documentVersion:'v2'});
 assert.deepEqual(multiple.map(x=>x.page),[3,3,5,5,6,6]);
 assert.equal(multiple[0].rotation,90);
 assert.equal(multiple[0].provenance.source,'fixture-plan.pdf');
+assert.equal(multiple[0].provenance.documentVersion,'v2');
+assert.equal(multiple[0].scaleStatus,'not-provided');
+assert.equal(multiple[0].measurementBasis,'drawing-label');
 assert.equal(multiple[0].provenance.line,1);
 assert.equal(multiple[0].candidateMm,30);
 assert.equal(multiple[2].candidateMm,160);
@@ -57,8 +60,12 @@ assert.deepEqual(pipe.parsePlanPages([{text:'No recognized label'}]),[]);
 assert.throws(()=>pipe.parsePlanPages([{text:'DN 30'},{text:'DN 50'}],{maxPages:1}),/Seitenlimit/);
 assert.throws(()=>pipe.parsePlanPages([{text:'DN 30'}],{maxChars:2}),/Textbudget/);
 assert.throws(()=>pipe.parsePlanPages([{text:'DN 30',rotation:45}]),/Rotation/);
+assert.throws(()=>pipe.parsePlanPages([{text:'DN 30'}],{documentVersion:42}),/Dokumentversion/);
 assert.throws(()=>pipe.parsePlanPages([{text:null}]),/Textlayer/);
 assert.throws(()=>pipe.parsePlanPages({text:'DN 50'}),/Liste/);
+const invalidBefore=JSON.stringify(planPages);
+assert.throws(()=>pipe.parsePlanPages([...planPages,{text:'DN 30',rotation:11}]),/Rotation/);
+assert.equal(JSON.stringify(planPages),invalidBefore,'Failed page batch leaves input untouched');
 const standalone=JSON.parse(JSON.stringify(multiple));
 assert.deepEqual(standalone,multiple,'Page source metadata survives JSON export/import');
 console.log('OK: independent DN/inner/outer/bore/candidate dimensions and sourced PDF-label proposals');
