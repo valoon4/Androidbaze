@@ -78,6 +78,28 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   await page.locator('#pdfGoShaft').click();
   assert.equal(await page.locator('#pdfVisualPanel').evaluate(el=>el.hidden),true);
   await page.locator('#toggleExpert').click();
+  // KAB-0882/M33/M43: synthetic local PNG test; never treats pixels as real mm.
+  const beforePhoto=await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1'));
+  const fakePng=Buffer.from(await page.evaluate(()=>{
+   const c=document.createElement('canvas');c.width=128;c.height=128;
+   const ctx=c.getContext('2d');ctx.fillStyle='#dedede';ctx.fillRect(0,0,128,128);
+   ctx.fillStyle='#161616';ctx.beginPath();ctx.arc(38,44,17,0,2*Math.PI);ctx.fill();
+   ctx.beginPath();ctx.arc(93,89,13,0,2*Math.PI);ctx.fill();
+   return c.toDataURL('image/png').split(',')[1];
+  }),'base64');
+  const photoInput=page.locator('#photoDimensionFile');
+  await photoInput.setInputFiles({name:'older-synthetic.png',mimeType:'image/png',buffer:fakePng});
+  await photoInput.setInputFiles({name:'newer-synthetic.png',mimeType:'image/png',buffer:fakePng});
+  await page.waitForFunction(()=>document.querySelector('#photoAnalysisStatus').textContent.includes('newer-synthetic.png'));
+  assert.equal(await page.locator('#photoCandidates option').count(),2);
+  await page.locator('#photoReferenceMm').fill('110');
+  await page.locator('#photoCalibrate').evaluate(el=>el.click());
+  assert.match(await page.locator('#photoCandidates').innerText(),/ca\. 110 mm/);
+  await page.locator('#photoResetCalibration').evaluate(el=>el.click());
+  assert.doesNotMatch(await page.locator('#photoCandidates').innerText(),/ca\. 110 mm/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),beforePhoto,
+   'Two image uploads and photo calibration undo must never mutate the shaft project');
+  await page.screenshot({path:path.join(out,'synthetic-photo-candidates-undo.png'),fullPage:true});
   await page.locator('#runQuality').click();
   await page.locator('#qualityBackToShaft').click();
   assert.ok(await page.locator('#viewTabs [data-view="3D"]').evaluate(el=>el.classList.contains('active')));
