@@ -6,8 +6,8 @@ const mod=require('../TASKS/audit-workflow.js');
 const files=mod.disk();
 const before=JSON.stringify(files),valid=mod.audit(files);
 assert.equal(valid.totals.parents,888);
-assert.equal(valid.totals.closed,42);
-assert.equal(valid.totals.open,846);
+assert.equal(valid.totals.closed,62);
+assert.equal(valid.totals.open,826);
 assert.equal(valid.totals.micros,13012);
 assert.equal(valid.totals.completed,files['ATOMIC/COMPLETED.csv'].trim().split(/\r?\n/).length-1);
 assert.equal(valid.totals.completed+valid.totals.remaining,13012);
@@ -21,7 +21,7 @@ assert.deepEqual(mod.csv('"a";"b;semi";"a""b"', ';'),['a','b;semi','a"b']);
 assert.throws(()=>mod.csv('"unclosed',';'),/unmatched quote/);
 const md=mod.markdown(valid);
 assert.ok(md.includes('| **Mikro-Tasks** | **'+valid.totals.completed+'**'));
-assert.ok(md.includes('| Eltern-Tickets | 42 | 846 | 888 |'));
+assert.ok(md.includes('| Eltern-Tickets | 62 | 826 | 888 |'));
 for(const id of ['KAB-0884','KAB-0886','KAB-0887','KAB-0888']){
  const file=Object.entries(files).find(([key,text])=>/^0[78]-BRO-/.test(key)&&text.includes(`- [x] **${id}** –`));
  assert.ok(file,`${id} must remain closed only with a documented technical acceptance`);
@@ -37,6 +37,12 @@ for(let n=235;n<=250;n++){
  const line=files['02-P1-EDITOR-UND-NETZ.md'].split('\n').find(l=>l.startsWith('- [x] **'+id+'** –'));
  assert.ok(line,'Missing technical editor parent: '+id);
  assert.match(line,/Nachweis: https:\/\/github\.com\//);
+}
+for(let n=251;n<=270;n++){
+ const id='KAB-'+String(n).padStart(4,'0');
+ const line=files['02-P1-EDITOR-UND-NETZ.md'].split(String.fromCharCode(10)).find(l=>l.startsWith('- [x] **'+id+'** –'));
+ assert.ok(line,'Missing verified cable-editor parent: '+id);
+ assert.ok(line.includes('Nachweis: https://github.com/'),'Missing evidence URL: '+id);
 }
 for(const wave of mod.WAVE)assert.ok(md.includes('| '+wave+' |'));
 const copy=()=>({...files});
