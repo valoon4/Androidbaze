@@ -2024,6 +2024,16 @@ $('spacingPreview').addEventListener('click',()=>{
   draw2D(); // dashed before/after ghost overlay; original 3D data unchanged
  }catch(e){$('spacingCompare').textContent='Keine Änderung: '+e.message;}
 });
+// Changing a requested spacing target invalidates the previous preview.
+// The "Apply" button must never execute a plan for a value no longer shown.
+for(const id of ['spacingGap','spacingEdge']){
+ $(id).addEventListener('input',()=>{
+  if(!spacingPlan)return;
+  resetSpacingPreview();
+  $('spacingCompare').textContent='Zielwert geändert: Vorschau erneut berechnen.';
+  draw2D();
+ });
+}
 $('spacingApply').addEventListener('click',()=>{
  const pending=spacingPlan;
  if(!pending||exploreMode||wallId!==pending.wallId)return;
