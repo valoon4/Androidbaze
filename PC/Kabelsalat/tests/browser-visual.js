@@ -2,6 +2,7 @@
 /* Optional real Chromium screenshot smoke. Uses playwright-core supplied by CI,
    no browser deps in production or in the browser-only GitHub Pages build. */
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+let liveBrowser=null;
 (async()=>{
  const playwright=require(process.env.PLAYWRIGHT_CORE||'playwright-core');
  const executablePath=process.env.CHROME_BIN||'/usr/bin/google-chrome';
@@ -12,7 +13,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   args:['--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader',
    '--use-gl=angle','--use-angle=swiftshader']
  });
+ liveBrowser=browser;
  const page=await browser.newPage({viewport:{width:1500,height:930},deviceScaleFactor:1});
+ page.setDefaultTimeout(12000);
  const errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  const sample3D=()=>page.evaluate(()=>{
@@ -238,7 +241,11 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
   console.log('KAB-0888 BROWSER: synthetic DN 30/50/110/160 3D, 2D, cable-stage, expert edit and PDF source restoration verified.');
   console.log('KAB-0884 VISUAL: synthetic 60/110/116 mm bore screenshot captured; original source project restored.');
  }
- await browser.close();
+ await browser.close();liveBrowser=null;
  if(ready)assert.deepEqual(errors,[],'Browser runtime must not throw errors');
  console.log('VISUAL QA: 91 displayed PDF pipes, 4 walls and SW1 detail; WebGL initialized='+ready);
-})().catch(e=>{console.error(e);process.exitCode=1;});
+})().catch(async e=>{
+ console.error(e);
+ if(liveBrowser){try{await liveBrowser.close()}catch(closeErr){console.error('Browser cleanup:',closeErr.message)}}
+ process.exitCode=1;
+});
