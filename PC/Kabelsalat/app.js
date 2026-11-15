@@ -882,6 +882,9 @@ function renderQualityUI(){
  for(const [id,key] of [['minPipeGap','minPipeGapMm'],['minEdgeGap','minEdgeMm'],['minBend','minBendRadiusMm']]){
   $(id).value=cfg[key]===null?'':cfg[key];
  }
+ const selectedWall=$('qualityRuleWall').value,selectedDn=$('qualityRuleDn').value;
+ $('qualityWallGap').value=cfg.wallGapMm?.[selectedWall]??'';
+ $('qualityDnGap').value=cfg.dnGapMm?.[String(selectedDn)]??'';
  const query=$('globalSearch').value.trim();
  const hits=qualityModel.searchNetwork(net,query,90);
  $('globalResults').innerHTML=query?
@@ -892,7 +895,10 @@ function renderQualityUI(){
  lastQualityResult=qualityModel.evaluate(net,cfg);
  const counts=lastQualityResult.counts;
  $('qualitySummary').textContent=counts.error+' geometrische/Datenfehler · '+counts.warning+
- ' Warnungen · '+counts.info+' Hinweise.\nKeine fachliche DIN/VDE- oder Brandschutzfreigabe.';
+ ' Warnungen · '+counts.info+' Hinweise.\nSchachtmaße: '+
+ lastQualityResult.dataStatus.confirmed+' bestätigt · '+
+ lastQualityResult.dataStatus.schematic+' schematisch · '+
+ lastQualityResult.dataStatus.unconfirmed+' ungeprüft.\nKeine fachliche DIN/VDE- oder Brandschutzfreigabe.';
  $('qualitySummary').style.background=counts.error||counts.warning?'#fff1e7':'#edf8f1';
  $('qualityList').innerHTML=lastQualityResult.issues.slice(0,28).map((issue,i)=>
   '<div class="quality-hit '+issue.severity+'" data-quality="'+i+'"><b>'+
@@ -1648,12 +1654,24 @@ $('globalResults').addEventListener('click',e=>{
  const hits=JSON.parse($('globalResults').dataset.results||'[]');
  showGlobalResult(hits[Number(el.dataset.result)]);
 });
+for(const id of ['qualityRuleWall','qualityRuleDn'])
+ $(id).addEventListener('change',renderQualityUI);
 $('applyQuality').addEventListener('click',()=>{
  const raw={minPipeGapMm:$('minPipeGap').value,minEdgeMm:$('minEdgeGap').value,
  minBendRadiusMm:$('minBend').value};
- const invalid=Object.values(raw).some(v=>v!==''&&(!Number.isFinite(Number(v))||Number(v)<0||Number(v)>100000));
- if(invalid){alert('Prüfparameter: gültige Werte zwischen 0 und 100.000 mm eingeben oder Feld leer lassen.');return;}
- change(()=>{project.network.quality=qualityModel.normalizeSettings(raw);},'Projekt-Prüfwerte geändert');
+ const fields=[...Object.values(raw),$('qualityWallGap').value,$('qualityDnGap').value];
+ const dnText=$('qualityRuleDn').value,dn=Number(dnText);
+ const invalid=fields.some(v=>v!==''&&(!Number.isFinite(Number(v))||Number(v)<0||Number(v)>100000))||
+  !/^\\d+$/.test(dnText)||!Number.isInteger(dn)||dn<30||dn>160;
+ if(invalid){alert('Prüfparameter: Wandwerte 0–100.000 mm und DN 30–160 eingeben.');return;}
+ const old=project.network.quality||{};
+ const wallGapMm={...old.wallGapMm},dnGapMm={...old.dnGapMm};
+ const wall=$('qualityRuleWall').value,wallValue=$('qualityWallGap').value,
+  dnValue=$('qualityDnGap').value;
+ if(wallValue==='')delete wallGapMm[wall];else wallGapMm[wall]=Number(wallValue);
+ if(dnValue==='')delete dnGapMm[dnText];else dnGapMm[dnText]=Number(dnValue);
+ change(()=>{project.network.quality=qualityModel.normalizeSettings({...raw,wallGapMm,dnGapMm});},
+  'Projekt-/Wand-/DN-Prüfwerte geändert');
 });
 $('runQuality').addEventListener('click',renderQualityUI);
 $('qualityList').addEventListener('click',e=>{
