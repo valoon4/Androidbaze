@@ -72,4 +72,34 @@ assert.throws(()=>pipe.parsePlanPages([...planPages,{text:'DN 30',rotation:11}])
 assert.equal(JSON.stringify(planPages),invalidBefore,'Failed page batch leaves input untouched');
 const standalone=JSON.parse(JSON.stringify(multiple));
 assert.deepEqual(standalone,multiple,'Page source metadata survives JSON export/import');
+// KAB-0881/M30/M37/M38/M39/M43: independent parse transaction and
+// explicit recoverable error reports for scanned or malformed PDF pages.
+const reportPages=[{pageNumber:21,rotation:180,text:'SW1_T1_LR01 DN 50'}];
+const reportSnapshot=JSON.stringify(reportPages);
+const report=pipe.inspectPlanPages(reportPages,{source:'fixture-a.pdf',documentVersion:'r3'});
+assert.equal(report.status,'candidates');
+assert.equal(report.candidates[0].provenance.documentVersion,'r3');
+assert.equal(report.candidates[0].provenance.page,21);
+assert.equal(JSON.parse(JSON.stringify(report)).candidates[0].provenance.source,'fixture-a.pdf');
+assert.equal(JSON.stringify(reportPages),reportSnapshot);
+const scan=pipe.inspectPlanPages([{pageNumber:9,text:null}],{source:'scan.pdf'});
+assert.equal(scan.status,'manual-review');
+assert.deepEqual(scan.candidates,[]);
+assert.equal(scan.errors[0].code,'missing-text-layer');
+assert.match(scan.errors[0].message,/OCR/);
+const corrupt=pipe.inspectPlanPages([{pageNumber:17,rotation:17,text:'DN 60'}]);
+assert.equal(corrupt.status,'invalid-source');
+assert.equal(corrupt.candidates.length,0);
+assert.equal(corrupt.errors[0].code,'invalid-pdf-text');
+assert.match(corrupt.errors[0].message,/rotation/i);
+const invalidList=pipe.inspectPlanPages({text:'DN 50'});
+assert.equal(invalidList.status,'invalid-source');
+assert.equal(invalidList.errors[0].code,'invalid-pages');
+const overPages=pipe.inspectPlanPages([{text:'DN 30'},{text:'DN 160'}],{maxPages:1});
+assert.equal(overPages.status,'invalid-source');
+assert.match(overPages.errors[0].message,/Seitenlimit/);
+const overText=pipe.inspectPlanPages([{text:'SW1_T1_LR02 DN 110'}],{maxChars:4});
+assert.equal(overText.status,'invalid-source');
+assert.match(overText.errors[0].message,/Textbudget/);
+assert.equal(JSON.stringify(reportPages),reportSnapshot,'No partial source change on error');
 console.log('OK: independent DN/inner/outer/bore/candidate dimensions and sourced PDF-label proposals');
