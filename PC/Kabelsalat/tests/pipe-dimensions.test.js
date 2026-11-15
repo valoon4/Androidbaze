@@ -8,7 +8,7 @@ const manual={...legacy,dimensionSpec:{nominalMm:110,innerMm:90,outerMm:116,
  openingMm:118,source:'Referenzmessung R03',method:'manual',status:'reviewed',
  reviewer:'Test-Fachpruefer'}};
 assert.deepEqual(pipe.forHole(manual),{
- nominalMm:110,innerMm:90,outerMm:116,openingMm:118,candidateMm:null,
+ nominalMm:110,innerMm:90,outerMm:116,wallThicknessMm:null,openingMm:118,candidateMm:null,
  unit:'mm',method:'manual',source:'Referenzmessung R03',status:'reviewed',
  reviewer:'Test-Fachpruefer',reviewedAt:'',confidence:null,note:''});
 assert.equal(pipe.apertureMm(manual),118,'Opening bore must not be DN or outer diameter');
