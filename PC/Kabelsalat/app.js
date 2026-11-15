@@ -1307,9 +1307,20 @@ draft.addEventListener('pointerdown',e=>{
  }
  if(exploreMode||mode!=='add')return;
  const w=wall();if(w.holes.length>=600){alert('Maximal 600 Leerrohre je Wand.');return;}
- const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y);
- const newHole={id:uid(w.id+'-2d'),row:0,col:0,u:mm.x/wallSpanMm(w.id),v:mm.y/project.dims.h,dn:w.dn};
- change(()=>{w.holes.push(newHole);holeId=newHole.id;});e.preventDefault();
+ const step=Number($('draftSnapStep').value)||1;
+ const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y,step);
+ const dnText=$('draftNewDn').value,dn=Number(dnText);
+ if(!/^\d+$/.test(dnText)||!Number.isSafeInteger(dn)||dn<30||dn>160){
+  alert('DN muss eine ganze Zahl zwischen 30 und 160 sein.');return;
+ }
+ const check=holeEditorOps.candidate(project,w.id,{xMm:mm.x,yMm:mm.y,dn});
+ if(!check.ok){alert('Rohr außerhalb der Wand: '+check.errors.join('; '));return;}
+ if(project.sourceInfo&&!confirm('Importierten Originalschacht manuell ändern?'))return;
+ if(check.warnings.length&&!confirm('Rohrkollision: '+check.warnings.join('; ')+'\nTrotzdem platzieren?'))return;
+ const newHole={id:holeEditorOps.uniqueId(project,w.id),row:0,col:0,
+  u:check.u,v:check.v,dn};
+ change(()=>{w.holes.push(newHole);holeId=newHole.id;},'Leerrohr im 2D-Editor platziert');
+ e.preventDefault();
 });
 draft.addEventListener('pointermove',e=>{
  if(exploreMode||!draftDrag||!draftMetrics)return;
@@ -1318,8 +1329,15 @@ draft.addEventListener('pointermove',e=>{
  const w=project.walls.find(x=>x.id===draftDrag.wallId),h=w?.holes.find(x=>x.id===draftDrag.holeId);
  if(!h)return;
  if(!draftDrag.changed){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;draftDrag.changed=true;}
- const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y,1);
- h.u=mm.x/wallSpanMm(w.id);h.v=mm.y/project.dims.h;
+ const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y,Number($('draftSnapStep').value)||1);
+ const check=holeEditorOps.candidate(project,w.id,{xMm:mm.x,yMm:mm.y,dn:h.dn,
+  openingMm:h.dimensionSpec?.openingMm},h.id);
+ if(!check.ok||check.warnings.length){
+  $('draftCoords').textContent='⚠ '+[...check.errors,...check.warnings].join('; ');
+  e.preventDefault();return;
+ }
+ h.u=check.u;h.v=check.v;
+ resetGroupPreview();
  rebuild();e.preventDefault();
 });
 function finishDraftDrag(){if(draftDrag?.changed){renderAll();persist();}draftDrag=null;}
