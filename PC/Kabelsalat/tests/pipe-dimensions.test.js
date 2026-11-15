@@ -30,4 +30,35 @@ assert.deepEqual(pipe.parsePlanText('60 110 116 ganz ohne DN oder Ø'),[],
  'Bare digits must never be inventively classified as nominal pipe dimensions');
 const serialized=JSON.parse(JSON.stringify(manual));
 assert.deepEqual(serialized,manual,'Dimension model survives JSON serialization');
+// KAB-0881: extracted page text is untrusted, bounded, versioned by page and
+// never silently merged into the source project.
+const planPages=[
+ {pageNumber:3,rotation:90,text:'SW1/T1/LR05 DN 30\\nSW2_T2_LR07 DN 110'},
+ {pageNumber:5,rotation:0,text:'SW1/T1/LR05 DN 160\\nSW3_T2_LR01 Ø 75'},
+ {pageNumber:6,text:'SW4/T2/LR01 DN 50\\nSW4/T2/LR02 DN 50'}
+];
+const pagesBefore=JSON.stringify(planPages),multiple=pipe.parsePlanPages(planPages,{source:'fixture-plan.pdf'});
+assert.deepEqual(multiple.map(x=>x.page),[3,3,5,5,6,6]);
+assert.equal(multiple[0].rotation,90);
+assert.equal(multiple[0].provenance.source,'fixture-plan.pdf');
+assert.equal(multiple[0].provenance.line,1);
+assert.equal(multiple[0].candidateMm,30);
+assert.equal(multiple[2].candidateMm,160);
+assert.ok(multiple[0].conflict&&multiple[2].conflict);
+assert.ok(!multiple[1].conflict);
+assert.equal(multiple[4].pipeId,'SW4_T2_LR01');
+assert.equal(multiple[5].pipeId,'SW4_T2_LR02');
+assert.equal(multiple[0].status,'candidate');
+assert.equal(multiple[0].reviewed,false);
+assert.equal(JSON.stringify(planPages),pagesBefore,'PDF text parsing must be read-only');
+const sorted=pipe.planCandidateTable(planPages,{source:'fixture-plan.pdf'});
+assert.deepEqual(sorted.map(x=>x.pipeId),[...sorted.map(x=>x.pipeId)].sort());
+assert.deepEqual(pipe.parsePlanPages([{text:'No recognized label'}]),[]);
+assert.throws(()=>pipe.parsePlanPages([{text:'DN 30'},{text:'DN 50'}],{maxPages:1}),/Seitenlimit/);
+assert.throws(()=>pipe.parsePlanPages([{text:'DN 30'}],{maxChars:2}),/Textbudget/);
+assert.throws(()=>pipe.parsePlanPages([{text:'DN 30',rotation:45}]),/Rotation/);
+assert.throws(()=>pipe.parsePlanPages([{text:null}]),/Textlayer/);
+assert.throws(()=>pipe.parsePlanPages({text:'DN 50'}),/Liste/);
+const standalone=JSON.parse(JSON.stringify(multiple));
+assert.deepEqual(standalone,multiple,'Page source metadata survives JSON export/import');
 console.log('OK: independent DN/inner/outer/bore/candidate dimensions and sourced PDF-label proposals');
