@@ -6,24 +6,24 @@
 
 **Quelle:** E04, D07, quality.js. **Definition of Done:** Schwellen sind projektbezogen, Warnungen lokalisiert, nie ohne Beleg normativ.
 
-- [ ] **KAB-0433** – Minimale lichte Rohr-Rohr-Distanz für jede Wand berechnen
-- [ ] **KAB-0434** – Minimale Rohr-Wandrand-Distanz für jede Wand berechnen
-- [ ] **KAB-0435** – Rohrüberdeckung mit unterschiedlichen Durchmessern erkennen
-- [ ] **KAB-0436** – Rohr außerhalb der Wandgrenzen als Fehler melden
-- [ ] **KAB-0437** – Fehlende Wanddicke als Datenlücke statt Nullwert melden
-- [ ] **KAB-0438** – Schachtmaße als bestätigt oder Platzhalter klassifizieren
-- [ ] **KAB-0439** – Projektweiten Mindestabstand ohne Normbehauptung konfigurieren
-- [ ] **KAB-0440** – Wandbezogenen Mindestabstand separat konfigurieren
-- [ ] **KAB-0441** – Rohrtypbezogenen Mindestabstand getrennt konfigurieren
-- [ ] **KAB-0442** – Warnung mit betroffener Objekt-ID ausgeben
-- [ ] **KAB-0443** – Warnung mit Millimeter-Istwert und Projekt-Sollwert ausgeben
-- [ ] **KAB-0444** – Geometriewarnungen nach Schwere sortieren
-- [ ] **KAB-0445** – Gleiche Warnung nach mehrfacher Berechnung deduplizieren
-- [ ] **KAB-0446** – Warnung nach Reparatur automatisch entfernen
-- [ ] **KAB-0447** – Quality-Check ohne WebGL lauffähig machen
-- [ ] **KAB-0448** – Grenzwertgleichheit ohne Off-by-one-Fehler testen
-- [ ] **KAB-0449** – Sehr große Wand- und Rohranzahl ohne Endlosschleife prüfen
-- [ ] **KAB-0450** – Qualitätsbericht mit offenen und bestätigten Daten getrennt ausgeben
+- [x] **KAB-0433** – Minimale lichte Rohr-Rohr-Distanz für jede Wand berechnen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0434** – Minimale Rohr-Wandrand-Distanz für jede Wand berechnen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0435** – Rohrüberdeckung mit unterschiedlichen Durchmessern erkennen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0436** – Rohr außerhalb der Wandgrenzen als Fehler melden · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0437** – Fehlende Wanddicke als Datenlücke statt Nullwert melden · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0438** – Schachtmaße als bestätigt oder Platzhalter klassifizieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0439** – Projektweiten Mindestabstand ohne Normbehauptung konfigurieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0440** – Wandbezogenen Mindestabstand separat konfigurieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0441** – Rohrtypbezogenen Mindestabstand getrennt konfigurieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0442** – Warnung mit betroffener Objekt-ID ausgeben · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0443** – Warnung mit Millimeter-Istwert und Projekt-Sollwert ausgeben · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0444** – Geometriewarnungen nach Schwere sortieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0445** – Gleiche Warnung nach mehrfacher Berechnung deduplizieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0446** – Warnung nach Reparatur automatisch entfernen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0447** – Quality-Check ohne WebGL lauffähig machen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0448** – Grenzwertgleichheit ohne Off-by-one-Fehler testen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0449** – Sehr große Wand- und Rohranzahl ohne Endlosschleife prüfen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0450** – Qualitätsbericht mit offenen und bestätigten Daten getrennt ausgeben · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
 
 ## P2-02 · 3D-Kollision, Kabelabstand und Füllung (KAB-0451–KAB-0468)
 
