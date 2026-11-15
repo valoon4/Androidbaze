@@ -129,6 +129,7 @@
   const hole=source.holes.find(h=>h.id===id);
   if(!hole)throw Error('Rohr-ID nicht gefunden');
   if(dest.holes.length>=600)throw Error('Zielwand hat 600 Leerrohre');
+  if(dest.holes.some(h=>h.id===id))throw Error('Rohr-ID existiert bereits auf Zielwand');
   // Preserve physical distance along wall where possible; never clamp into a wall.
   const x=hole.u*span(project,from),y=hole.v*project.dims.h;
   const check=candidate(project,to,{xMm:x,yMm:y,dn:hole.dn,
