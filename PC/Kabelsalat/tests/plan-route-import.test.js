@@ -89,7 +89,8 @@ async function main(){
  assert.ok(app.includes('planRouteModel.extract('));
  assert.ok(app.includes('planRouteModel.compile('));
  assert.ok(app.includes('planRouteSelected'));
- assert.ok(app.includes('textContent=')&&!app.includes('planRouteResults').endsWith('never'));
+ assert.ok(app.includes('description.textContent=')&&app.includes("review.replaceChildren()"),
+  'Candidate and issue text must be rendered without untrusted HTML');
  assert.ok(pkg.scripts.test.includes('tests/plan-route-import.test.js'));
  assert.ok(pkg.build.files.includes('plan-route-import.js'));
  console.log('OK: 400-shaft text+digital PDF candidate extraction, review gates, conflicts, source provenance and safe CSV');
