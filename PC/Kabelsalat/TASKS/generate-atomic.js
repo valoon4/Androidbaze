@@ -1,6 +1,7 @@
 'use strict';
 /*
- * Kabelsalat atomic planner. Covers EVERY currently unchecked parent task.
+ * Kabelsalat atomic planner. Archives all 869 parents open on 13.11.2026;
+ * later parent closures must not delete their existing microtask IDs.
  * Generates actionable ~3–10-minute checks with individually verifiable
  * outcomes, preserving the 42 original detailed microtasks verbatim.
  * No execution, completion, engineering approval or elapsed time is implied.
@@ -20,6 +21,14 @@ const SOURCE=[
  '07-BRO-BETON-ROHR-DM.md',
  '08-BRO-KURZE-LR-DN30-160.md'
 ];
+// Frozen 19 parent IDs closed BEFORE atomization on 13.11.2026. Parent tasks
+// completed later must stay in the micro archive so 13,012 IDs remain stable.
+const BASELINE_DONE=new Set([
+ 'KAB-0019','KAB-0020','KAB-0021','KAB-0022','KAB-0023',
+ 'KAB-0037','KAB-0038','KAB-0039','KAB-0044','KAB-0045',
+ 'KAB-0046','KAB-0047','KAB-0049','KAB-0050','KAB-0832',
+ 'KAB-0833','KAB-0834','KAB-0880','KAB-0883'
+]);
 function parseCSV(data,delim=','){
  return data.trimEnd().split(/\r?\n/).map(line=>{
   let rows=[],field='',quoted=false;
@@ -590,7 +599,7 @@ function generate(read){
   assert.ok(t,'Parent fehlt: '+id);
   assert.equal(t.title,title,'Beschreibung nicht synchron: '+id);
   assert.equal(t.file,file,'Backlog-Datei nicht synchron: '+id);
-  if(t.done)continue;
+  if(BASELINE_DONE.has(id))continue;
   const st=stage[wave];
   const micro=[...(pilot.get(id)||[])];
   if(id!=='KAB-0885'){
@@ -626,10 +635,12 @@ function generate(read){
   st.md.push('');
  }
  assert.equal(seenParents.size,tasks.size,'Keine Parent-ID darf fehlen');
- const open=[...tasks.values()].filter(t=>!t.done);
- assert.equal(open.length,869,'Erwartet: 869 offene kanonische Parents');
+ const atomized=[...tasks.values()].filter(t=>!BASELINE_DONE.has(t.id));
+ for(const id of BASELINE_DONE)assert.ok(tasks.get(id)?.done,
+  'Historischer Vorababschluss wurde wieder geöffnet: '+id);
+ assert.equal(atomized.length,869,'Historische 869-Parent-Atomisierung muss unverändert bleiben');
  assert.equal(allIds.size,Object.values(stage).reduce((n,s)=>n+s.count,0));
- assert.equal(Object.values(stage).reduce((n,s)=>n+s.parents.length,0),open.length);
+ assert.equal(Object.values(stage).reduce((n,s)=>n+s.parents.length,0),atomized.length);
  const output={};
  const head=['Rang','Parent-ID','Mikro-ID','Welle','Epic','Handlung','Fertig-wenn','Ziel-Min.','Status','Quellenabhängigkeit','Parent-Datei'].map(quote).join(';');
  const summary=[];
@@ -652,9 +663,11 @@ function generate(read){
  const index=[
   '# Kabelsalat · alle offenen Tasks atomar zerlegt',
   '',
-  '**Vollständig:** '+parentTotal+' von '+parentTotal+' offenen Parent-Tickets auf '+microTotal+
+  '**Vollständig:** '+parentTotal+' von '+parentTotal+' am 13.11.2026 offenen Parent-Tickets auf '+microTotal+
    ' einzeln abhackbarer Mikroschritte (2–10 Minuten Zielaufwand) verteilt. **'+completedCurrent+' abgeschlossen**, nur mit Nachweis.',
-  '**Kanonischer Gesamtstand:** 888 Parent-Tickets, 19 erledigt, 869 offen. Hier sind **keine abgeschlossenen Eltern-Tickets** nochmals aufgeführt.',
+  '**Atomisierungsbasis:** 888 Parent-Tickets; am 13.11.2026 waren 19 erledigt und 869 offen. **Aktuell:** '+
+    [...tasks.values()].filter(t=>t.done).length+' erledigt, '+[...tasks.values()].filter(t=>!t.done).length+
+    ' offen. Auch inzwischen abgeschlossene Parent-Tickets bleiben mit ihren Mikro-IDs hier archiviert.',
   '',
   '| Priorität | Offene Parents | Mikro-Tasks | Nachschlagen | CSV |',
   '|---|---:|---:|---|---|',
@@ -674,7 +687,7 @@ function generate(read){
   '## Aktualisieren / Prüfen',
   '',
   'Aus PC/Kabelsalat: node TASKS/generate-atomic.js --write (regenerieren); '+
-  'node TASKS/generate-atomic.js --check (Vollständigkeit, Einzigartigkeit, keine erledigten Parent-IDs, Maximaldauer und Git-Abgleich).',
+  'node TASKS/generate-atomic.js --check (Vollständigkeit, Einzigartigkeit, stabile historische Atomisierung, Maximaldauer und Git-Abgleich).',
   '',
   'Vorheriger 42-Schritte-Pilot unverändert archiviert: [Originalpilot](./ATOMIC/PILOT_ORIGINAL.md). '+
   'Seine IDs sind in S0 enthalten; KAB-0881 und KAB-0882 wurden um die vollständigen PDF-/Foto-Teilpfade ergänzt.',
