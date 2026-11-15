@@ -16,7 +16,7 @@ assert.deepEqual(img,input,'Image processing must never change original input pi
 const sourced=photo.detect(img,w,h,{source:'synthetic-bro-fixture.png'});
 assert.ok(sourced.candidates.every(c=>c.imageSource==='synthetic-bro-fixture.png'&&c.diameterUnit==='px'));
 assert.deepEqual(photo.detect(img,w,h).candidates.map(c=>c.imageSource),[null,null]);
-assert.throws(()=>photo.detect(img,w,h,{source:'bad\\nsource'}),/Bildquelle/);
+assert.throws(()=>photo.detect(img,w,h,{source:'bad\nsource'}),/Bildquelle/);
 const calibrated=photo.calibrate(result.candidates,0,110);
 assert.equal(calibrated[0].candidateMm,110);
 assert.ok(calibrated[1].candidateMm<110);
