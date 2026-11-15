@@ -70,7 +70,7 @@ assert.equal(registry.entries[2].ref.page,7);
 assert.throws(()=>quality.attachSource(registry,{...cableRef,ref:{
  ...cableRef.ref,documentId:'MISSING'}}),/nicht im Register/);
 assert.throws(()=>quality.sourceEntry({...cableRef,entity:'evil'}),/ungültig/);
-assert.throws(()=>quality.sourceRef({documentId:'X',page:12}).verified,true);
+assert.equal(quality.sourceRef({documentId:'X',page:12}).verified,false);
 const trackedNet={...p.network,sources:registry};
 const coverage=quality.sourceCoverage(trackedNet);
 assert.equal(coverage.lost.length,0);
