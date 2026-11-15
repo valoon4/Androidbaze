@@ -12,7 +12,9 @@
   if(!pixels||!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||
     width<8||height<8||width*height>4000000||pixels.length<width*height*4)
    throw Error('Ungültiges Bild: maximal 4 Megapixel Analysefläche');
-  if(source!==null&&(typeof source!=='string'||source.length>256||/[\r\n\0]/.test(source)))\n   throw Error('Bildquelle muss eine kurze, einzeilige Kennung sein');\n  const n=width*height,bright=new Uint8Array(n);let mean=0;
+  if(source!==null&&(typeof source!=='string'||source.length>256||/[\r\n\0]/.test(source)))
+   throw Error('Bildquelle muss eine kurze, einzeilige Kennung sein');
+  const n=width*height,bright=new Uint8Array(n);let mean=0;
   for(let i=0;i<n;i++){
    const k=i*4,alpha=pixels[k+3]/255;
    const l=Math.round((pixels[k]*.2126+pixels[k+1]*.7152+pixels[k+2]*.0722)*alpha+255*(1-alpha));
