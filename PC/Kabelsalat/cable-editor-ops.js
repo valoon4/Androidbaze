@@ -113,7 +113,12 @@
    if(id&&!project.cableTypes?.some(type=>type.id===id))throw Error('Kabeltyp nicht im Katalog');
    next.typeId=id;
   }
-  Object.assign(c,next);return c;
+  // A previously reviewed cable must never stay approved after a material edit.
+  if(Object.keys(next).some(key=>c[key]!==next[key])){
+   Object.assign(c,next);
+   c.reviewStatus='Zur Prüfung';
+  }
+  return c;
  }
  function addType(project,{name,category,diameter}){
   const title=text(name,80),group=text(category,80)||'Nicht klassifiziert',d=Number(diameter);
