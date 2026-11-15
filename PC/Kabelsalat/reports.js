@@ -77,9 +77,15 @@ function reportHTML(project,result){
  '<h2>Manuelle Prüfvermerke</h2>'+
  table(['Schacht','Objekt','Status','Quelle','Person','Zeitpunkt','Notiz'],
  (net.reviews||[]).map(x=>[x.shaftId,x.entityId,x.status,x.source,x.checkedBy,x.checkedAt,x.note]))+
+ '<h2>Manuelle Reviewhistorie (lokal, unsigniert)</h2>'+
+ table(['Zeit','Schacht','Objekt','Status vorher','Status danach','Prüfperson','Quelle'],
+ (net.reviewHistory||[]).slice(-80).reverse().map(x=>[
+ x.at,x.shaftId,x.entityType+' / '+x.entityId,x.previous,x.current,x.checkedBy,x.source]))+
  '<h2>Lokale Änderungshistorie (letzte 50)</h2>'+
- table(['Zeitpunkt','Schacht','Vorgang','Details'],
- (net.audit||[]).slice(-50).reverse().map(x=>[x.at,x.shaftId,x.action,x.description]))+
+ table(['Zeitpunkt','Schacht','Vorgang','Herkunft','Numerische Änderung'],
+ (net.audit||[]).slice(-50).reverse().map(x=>[
+ x.at,x.shaftId,x.action,x.origin||'lokal',
+ (x.numeric||[]).map(c=>c.field+': '+c.old+' → '+c.new).join('; ')||x.description]))+
  '<p><small>Kabelsalat ist kein zugelassenes Ingenieur- oder Abnahmesystem. Reale Begehungs- und Normnachweise sind separat erforderlich.</small></p></body></html>';
  return h;
 }
