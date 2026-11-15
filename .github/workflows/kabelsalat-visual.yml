@@ -40,6 +40,10 @@ jobs:
         working-directory: PC/Kabelsalat
         shell: bash
         run: node tests/browser-visual.js
+      - name: Bro-Picking in echtem 3D-Chromium testen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-bro-picking.js
       - name: Rohrabstand-Vorschau mit echtem Chromium testen
         working-directory: PC/Kabelsalat
         shell: bash
