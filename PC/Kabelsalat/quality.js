@@ -59,8 +59,9 @@ function normalizeAudit(events){
  action:saneText(x.action,120),description:saneText(x.description,300)}));
 }
 function searchNetwork(net,query,limit=120,filters={}){
- const fold=v=>String(v??'').normalize('NFKD').toLocaleLowerCase('de-DE')
-  .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+ const fold=v=>String(v??'').toLocaleLowerCase('de-DE')
+  .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+  .normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
  const q=fold(query);
  const group=['OLA','MS','Weitere'].includes(filters.group)?filters.group:null;
  const unresolved=filters.unresolved===true;
