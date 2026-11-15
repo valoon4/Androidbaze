@@ -10,20 +10,20 @@
 - [x] **KAB-0650** – Test für SW1-Rohrzahl 29 festschreiben · Nachweis: https://github.com/valoon4/Androidbaze/blob/7cb081bf6ad6df4f85160f2c79fb3dd04275457c/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_PARENT_100_REVIEW.md
 - [x] **KAB-0651** – Test für SW2-Rohrzahl 13 festschreiben · Nachweis: https://github.com/valoon4/Androidbaze/blob/7cb081bf6ad6df4f85160f2c79fb3dd04275457c/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_PARENT_100_REVIEW.md
 - [x] **KAB-0652** – Test für SW3-Rohrzahl 26 festschreiben · Nachweis: https://github.com/valoon4/Androidbaze/blob/7cb081bf6ad6df4f85160f2c79fb3dd04275457c/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_PARENT_100_REVIEW.md
-- [ ] **KAB-0653** – Test für SW4-Rohrzahl 23 festschreiben
-- [ ] **KAB-0654** – Test für unveränderte Quellbelegung nach Demo-Verdichtung ergänzen
-- [ ] **KAB-0655** – Test für originalen sourceU/sourceV-Wert nach JSON-Roundtrip ergänzen
-- [ ] **KAB-0656** – Test für geraden Kabelweg zweier gegenüberliegender Rohre ergänzen
-- [ ] **KAB-0657** – Test für schrägen knickfreien Kabelweg ergänzen
-- [ ] **KAB-0658** – Test für seitlichen Bezier-Wandwechsel ergänzen
-- [ ] **KAB-0659** – Test für nicht belegten Kabelendpunkt ergänzen
-- [ ] **KAB-0660** – Test für Wandnormale und inverse Transformation ergänzen
-- [ ] **KAB-0661** – Test für Rohr-Kollision nach Abstandsverdichtung ergänzen
-- [ ] **KAB-0662** – Test für OLA-Stapelauflager Anzahl und Lage ergänzen
-- [ ] **KAB-0663** – Test für MS-Stützen Anzahl und Lage ergänzen
-- [ ] **KAB-0664** – Test für Kabeldurchführungen in Stirnplatten ergänzen
-- [ ] **KAB-0665** – Test für Fremdleerrohr als Kanalblocker ergänzen
-- [ ] **KAB-0666** – Test für reproduzierbare Projektmigration alter Versionen ergänzen
+- [x] **KAB-0653** – Test für SW4-Rohrzahl 23 festschreiben · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0654** – Test für unveränderte Quellbelegung nach Demo-Verdichtung ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0655** – Test für originalen sourceU/sourceV-Wert nach JSON-Roundtrip ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0656** – Test für geraden Kabelweg zweier gegenüberliegender Rohre ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0657** – Test für schrägen knickfreien Kabelweg ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0658** – Test für seitlichen Bezier-Wandwechsel ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0659** – Test für nicht belegten Kabelendpunkt ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0660** – Test für Wandnormale und inverse Transformation ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0661** – Test für Rohr-Kollision nach Abstandsverdichtung ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0662** – Test für OLA-Stapelauflager Anzahl und Lage ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0663** – Test für MS-Stützen Anzahl und Lage ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0664** – Test für Kabeldurchführungen in Stirnplatten ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0665** – Test für Fremdleerrohr als Kanalblocker ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
+- [x] **KAB-0666** – Test für reproduzierbare Projektmigration alter Versionen ergänzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/982f6d6a89fb0747d1580e45549d5d34ccfd229e/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE3.md
 
 ## P3-02 · Echte Browser- und visuelle Qualitätssicherung (KAB-0667–KAB-0684)
 
