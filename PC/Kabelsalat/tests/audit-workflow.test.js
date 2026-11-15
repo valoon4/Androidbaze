@@ -6,8 +6,8 @@ const mod=require('../TASKS/audit-workflow.js');
 const files=mod.disk();
 const before=JSON.stringify(files),valid=mod.audit(files);
 assert.equal(valid.totals.parents,888);
-assert.equal(valid.totals.closed,19);
-assert.equal(valid.totals.open,869);
+assert.equal(valid.totals.closed,23);
+assert.equal(valid.totals.open,865);
 assert.equal(valid.totals.micros,13012);
 assert.equal(valid.totals.completed,files['ATOMIC/COMPLETED.csv'].trim().split(/\r?\n/).length-1);
 assert.equal(valid.totals.completed+valid.totals.remaining,13012);
@@ -21,7 +21,12 @@ assert.deepEqual(mod.csv('"a";"b;semi";"a""b"', ';'),['a','b;semi','a"b']);
 assert.throws(()=>mod.csv('"unclosed',';'),/unmatched quote/);
 const md=mod.markdown(valid);
 assert.ok(md.includes('| **Mikro-Tasks** | **'+valid.totals.completed+'**'));
-assert.ok(md.includes('| Eltern-Tickets | 19 | 869 | 888 |'));
+assert.ok(md.includes('| Eltern-Tickets | 23 | 865 | 888 |'));
+for(const id of ['KAB-0884','KAB-0886','KAB-0887','KAB-0888']){
+ const file=Object.entries(files).find(([key,text])=>/^0[78]-BRO-/.test(key)&&text.includes(`- [x] **${id}** –`));
+ assert.ok(file,`${id} must remain closed only with a documented technical acceptance`);
+ assert.match(file[1],new RegExp('\\*\\*'+id+'\\*\\*.*Nachweis: https://github\\.com/'));
+}
 for(const wave of mod.WAVE)assert.ok(md.includes('| '+wave+' |'));
 const copy=()=>({...files});
 function mutate(key,fn,pattern){
