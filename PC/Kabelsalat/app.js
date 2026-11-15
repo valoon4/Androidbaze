@@ -1018,6 +1018,8 @@ function renderNetworkUI(){
  '<option value="'+esc(l.id)+'">'+esc(l.from)+' ↔ '+esc(l.to)+'</option>').join('');
  if(!net.links.some(l=>l.id===netLinkId))netLinkId=null;
  $('netLinkSelect').value=netLinkId||'';$('netDeleteLink').disabled=!netLinkId;
+ $('netLinkStatus').value=net.links.find(l=>l.id===netLinkId)?.physicalStatus||'unverified';
+ $('netUpdateLinkStatus').disabled=!netLinkId;
  $('netAddLink').disabled=net.shafts.length<2||netLinkFromId===netLinkToId;
  $('netRouteSelect').innerHTML='<option value="">– Kabelweg auswählen –</option>'+net.routes.map(r=>
  '<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>').join('');
@@ -2183,13 +2185,30 @@ $('netAddLink').addEventListener('click',()=>{
  if(project.network.links.some(l=>(l.from===a&&l.to===b)||(l.from===b&&l.to===a))){
   alert('Diese Verbindung existiert bereits.');return;
  }
- change(()=>{const id=uid('L');project.network.links.push({id,from:a,to:b,note:'Schematische Verbindung'});
+ change(()=>{const id=uid('L');project.network.links.push({id,from:a,to:b,note:'Schematische Verbindung',physicalStatus:'unverified'});
  netLinkId=id;});
+});
+$('netUpdateLinkStatus').addEventListener('click',()=>{
+ const id=netLinkId,status=$('netLinkStatus').value;
+ if(!id||!['unverified','needs-evidence'].includes(status))return;
+ change(()=>{const link=project.network.links.find(l=>l.id===id);
+  if(link)link.physicalStatus=status;},'Netzlink-Prüfstatus (unbestätigt) geändert');
 });
 $('netDeleteLink').addEventListener('click',()=>{
  if(!netLinkId)return;
- if(!confirm('Netzverbindung löschen? Kabelwege können dadurch unvollständig werden.'))return;
- change(()=>{project.network.links=project.network.links.filter(l=>l.id!==netLinkId);netLinkId=null;});
+ const link=project.network.links.find(l=>l.id===netLinkId);if(!link)return;
+ const affected=project.network.routes.filter(r=>(r.steps||[]).some((step,i)=>{
+  if(!i)return false;
+  const prev=r.steps[i-1];
+  return prev.shaftId===link.from&&step.shaftId===link.to||
+   prev.shaftId===link.to&&step.shaftId===link.from;
+ }));
+ const impacted=affected.length?'Betroffene Kabelwege: '+affected.map(r=>r.name+' ['+r.id+']').join(', '):
+  'Keine unmittelbar referenzierenden Kabelwege.';
+ if(!confirm('Netzverbindung löschen? '+impacted+
+  '\nRoutensegmente bleiben erhalten, der Übergang wird danach als fehlend gemeldet.'))return;
+ change(()=>{project.network.links=project.network.links.filter(l=>l.id!==netLinkId);netLinkId=null;},
+  'Netzlink nach Routenwarnung entfernt');
 });
 $('netRouteSelect').addEventListener('change',()=>{clearWorldRoute();netRouteId=$('netRouteSelect').value||null;renderAll();});
 $('netNewRoute').addEventListener('click',()=>{
