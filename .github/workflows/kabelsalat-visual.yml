@@ -44,6 +44,10 @@ jobs:
         working-directory: PC/Kabelsalat
         shell: bash
         run: node tests/browser-visual.js
+      - name: Leerrohr-Editor mit echtem Chromium testen
+        working-directory: PC/Kabelsalat
+        shell: bash
+        run: node tests/browser-hole-editor.js
       - name: Rohrabstand-Vorschau mit echtem Chromium testen
         working-directory: PC/Kabelsalat
         shell: bash
