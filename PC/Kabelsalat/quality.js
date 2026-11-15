@@ -38,21 +38,135 @@ function dimensionStatus(p){
  if(p?.dims?.confirmed===true||p?.dims?.status==='confirmed')return 'confirmed';
  return 'unconfirmed';
 }
+const REVIEW_TYPES=['shaft','wall','hole','cable','panel','support'];
+function reviewObject(shaft,type,id){
+ if(!shaft||!REVIEW_TYPES.includes(type))return null;
+ if(type==='shaft')return id===shaft.id?shaft.snapshot:null;
+ if(type==='wall')return shaft.snapshot?.walls?.find(x=>x.id===id)||null;
+ if(type==='hole')return shaft.snapshot?.walls?.flatMap(w=>w.holes||[])
+  .find(x=>x.id===id)||null;
+ if(type==='cable')return shaft.snapshot?.cables?.find(x=>x.id===id)||null;
+ if(type==='panel')return ['OLA','MS'].flatMap(g=>
+  shaft.snapshot?.enclosures?.[g]?.panels||[]).find(x=>x.id===id)||null;
+ if(type==='support')return shaft.snapshot?.supports?.find(x=>x.id===id)||null;
+ return null;
+}
+function reviewGeometry(object,type){
+ if(!object)return null;
+ const pick=(p,keys)=>keys.map(k=>p?.[k]??null);
+ if(type==='shaft')return JSON.stringify([object.dims,object.walls,
+  object.cables,object.enclosures,object.supports]);
+ if(type==='wall')return JSON.stringify(pick(object,
+  ['id','thickness','holes']));
+ if(type==='hole')return JSON.stringify(pick(object,
+  ['id','u','v','dn','dimensionSpec','openingType']));
+ if(type==='cable')return JSON.stringify(pick(object,
+  ['id','diameter','group','technicalCategory','a','b','route']));
+ if(type==='panel')return JSON.stringify(pick(object,
+  ['id','thickness','width','height','offset','material','visible']));
+ return JSON.stringify(pick(object,['id','x','y','z','w','h','d','wall','type']));
+}
 function normalizeReviews(items,shafts){
- const ids=new Set(shafts.map(x=>x.id)),keys=new Set();
+ const ids=new Map(shafts.map(x=>[x.id,x])),keys=new Set();
  if(!Array.isArray(items))return [];
  return items.slice(0,1500).filter(x=>x&&ids.has(x.shaftId)).map(x=>{
-  const shaft=shafts.find(s=>s.id===x.shaftId),entityType=x.entityType==='cable'?'cable':'shaft';
-  const entityId=entityType==='shaft'?x.shaftId:String(x.entityId||'').slice(0,120);
-  if(entityType==='cable'&&!shaft.snapshot.cables.some(c=>c.id===entityId))return null;
+  const shaft=ids.get(x.shaftId),
+   entityType=REVIEW_TYPES.includes(x.entityType)?x.entityType:'shaft',
+   entityId=entityType==='shaft'?x.shaftId:saneText(x.entityId,120);
+  if(!reviewObject(shaft,entityType,entityId))return null;
   const key=x.shaftId+'|'+entityType+'|'+entityId;
   if(keys.has(key))return null;keys.add(key);
+  const source=saneText(x.source,250),status=STATES.includes(x.status)?x.status:'Entwurf';
   return {shaftId:x.shaftId,entityType,entityId,
-   status:STATES.includes(x.status)?x.status:'Entwurf',
-   source:saneText(x.source,250),note:saneText(x.note,500),
+   status:status==='Vor Ort abgeglichen'&&!source?'Zur Prüfung':status,
+   source,note:saneText(x.note,500),
    checkedBy:saneText(x.checkedBy,80),checkedAt:saneText(x.checkedAt,45)};
  }).filter(Boolean);
 }
+function normalizeReviewHistory(items){
+ return (Array.isArray(items)?items:[]).slice(-800).filter(x=>x&&
+  REVIEW_TYPES.includes(x.entityType)).map(x=>({
+  at:sourceDate(x.at),shaftId:saneText(x.shaftId,100),
+  entityType:x.entityType,entityId:saneText(x.entityId,120),
+  previous:STATES.includes(x.previous)?x.previous:'Entwurf',
+  current:STATES.includes(x.current)?x.current:'Entwurf',
+  checkedBy:saneText(x.checkedBy,80),source:saneText(x.source,250),
+  note:saneText(x.note,500),origin:x.origin==='import'?'import':'manual'
+ }));
+}
+function reviewTransitions(previous,next,at){
+ const old=new Map((previous||[]).map(x=>[
+  x.shaftId+'|'+x.entityType+'|'+x.entityId,x]));
+ return (next||[]).filter(x=>{
+  const prior=old.get(x.shaftId+'|'+x.entityType+'|'+x.entityId);
+  return !prior||JSON.stringify(prior)!==JSON.stringify(x);
+ }).map(x=>({
+  at,shaftId:x.shaftId,entityType:x.entityType,entityId:x.entityId,
+  previous:old.get(x.shaftId+'|'+x.entityType+'|'+x.entityId)?.status||'Entwurf',
+  current:x.status,checkedBy:x.checkedBy||'',source:x.source||'',note:x.note||'',
+  origin:'manual'}));
+}
+function invalidateReviews(before,after,entries){
+ const previous=new Map((before?.network?.shafts||[]).map(s=>[s.id,s]));
+ const current=new Map((after?.network?.shafts||[]).map(s=>[s.id,s]));
+ return (entries||[]).map(r=>{
+  if(r.status!=='Vor Ort abgeglichen')return r;
+  const oldObject=reviewObject(previous.get(r.shaftId),r.entityType,r.entityId);
+  const newObject=reviewObject(current.get(r.shaftId),r.entityType,r.entityId);
+  if(reviewGeometry(oldObject,r.entityType)===reviewGeometry(newObject,r.entityType))
+   return r;
+  return {...r,status:'Zur Prüfung',checkedAt:'',
+   note:(r.note?String(r.note).slice(0,410)+' · ':'')+
+    'Geometrie geändert – erneute Prüfung erforderlich'};
+ });
+}
+function reviewHistoryFilter(items,{shaftId='',from='',to=''}={}){
+ return normalizeReviewHistory(items).filter(x=>
+  (!shaftId||x.shaftId===shaftId)&&
+  (!from||x.at.slice(0,10)>=from)&&(!to||x.at.slice(0,10)<=to));
+}
+function openReviewQuestions(net){
+ const questions=[];
+ for(const r of net?.reviews||[])if(r.status!=='Vor Ort abgeglichen')
+  questions.push({shaftId:r.shaftId,entityType:r.entityType,entityId:r.entityId,
+   reason:r.status});
+ for(const c of net?.sources?.conflicts||[])if(c.status!=='resolved')
+  questions.push({shaftId:'',entityType:'source',entityId:c.id,
+   reason:'Quellwiderspruch offen'});
+ return questions.slice(0,1000);
+}
+function numericChanges(before,after,limit=45){
+ const out=[],old=new Map((before?.network?.shafts||[]).map(s=>[s.id,s]));
+ const fields=(path,a,b)=>{
+  if(out.length>=limit)return;
+  if(typeof a==='number'&&typeof b==='number'&&Number.isFinite(a)&&
+   Number.isFinite(b)&&a!==b)
+   out.push({field:path,old:a,new:b});
+ };
+ for(const shaft of after?.network?.shafts||[]){
+  const other=old.get(shaft.id);if(!other)continue;
+  for(const key of ['x','y','z'])fields(shaft.id+'.'+key,other[key],shaft[key]);
+  const a=other.snapshot,b=shaft.snapshot;
+  for(const key of ['w','d','h'])fields(shaft.id+'.dims.'+key,a.dims?.[key],b.dims?.[key]);
+  for(const w of b.walls||[]){
+   const prev=a.walls?.find(x=>x.id===w.id);if(!prev)continue;
+   fields(shaft.id+'/'+w.id+'.thickness',prev.thickness,w.thickness);
+   for(const h of w.holes||[]){
+    const earlier=prev.holes?.find(x=>x.id===h.id);if(!earlier)continue;
+    for(const key of ['u','v','dn'])
+     fields(shaft.id+'/'+w.id+'/'+h.id+'.'+key,earlier[key],h[key]);
+    fields(shaft.id+'/'+w.id+'/'+h.id+'.openingMm',
+     earlier.dimensionSpec?.openingMm,h.dimensionSpec?.openingMm);
+   }
+  }
+  for(const c of b.cables||[]){
+   const prev=a.cables?.find(x=>x.id===c.id);if(prev)
+    fields(shaft.id+'/'+c.id+'.diameter',prev.diameter,c.diameter);
+  }
+ }
+ return out;
+}
+
 function normalizeAudit(events){
  return (Array.isArray(events)?events:[]).slice(-500).filter(x=>x&&typeof x==='object')
  .map(x=>({at:saneText(x.at,45),shaftId:saneText(x.shaftId,100),
@@ -474,5 +588,7 @@ function evaluate(net,settings){
 return {STATES,normalizeSettings,normalizeReviews,normalizeAudit,searchNetwork,mmPosition,
 circumradius,evaluate,auditWallOpenings,dimensionStatus,normalizedRules,
  normalizeSources,documentEntry,sourceRef,sourceEntry,addSourceDocument,attachSource,
- sourceSearch,sourceConflict,decideSourceConflict,sourceCoverage};
+ sourceSearch,sourceConflict,decideSourceConflict,sourceCoverage,
+ REVIEW_TYPES,reviewObject,reviewGeometry,normalizeReviewHistory,reviewTransitions,
+ invalidateReviews,reviewHistoryFilter,openReviewQuestions,numericChanges};
 });
