@@ -67,6 +67,17 @@ const assert=require('node:assert/strict'),path=require('node:path');
     picked.uMm===c.uMm&&picked.vMm===c.vMm){chosen=c;break;}
   }
   assert.ok(chosen,'3D raycast pointer must pick a synthetic nominal LR: '+JSON.stringify(details));
+  // A separate cable remains selectable after the synthetic LR rendering,
+  // without changing the pipe geometry or the project source.
+  const cableChoice=await page.evaluate(()=>{
+   const model=JSON.parse(localStorage.getItem('eugi.schachtwand.3d.v1'));
+   const cable=model.cables[model.cables.length-1];
+   return {id:cable.id,name:cable.name};
+  });
+  await page.locator('#cableList [data-cable="'+cableChoice.id+'"]').evaluate(el=>el.click());
+  assert.equal(await page.locator('#cableName').inputValue(),cableChoice.name,
+   'Cable selection must still work after 3D pipe presentation changes');
+  assert.ok(await page.locator('#cableList [data-cable="'+cableChoice.id+'"]').evaluate(el=>el.classList.contains('active')));
   assert.equal(await page.evaluate(()=>localStorage.getItem('eugi.schachtwand.3d.v1')),before,
    'Pure 3D selection must not change source data');
   console.log('BRO 3D PICK PASS:',chosen.wall,chosen.id,'DN',chosen.dn,'pixel clearance',chosen.nearest.toFixed(1));
