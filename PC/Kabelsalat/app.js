@@ -1848,7 +1848,7 @@ function renderHandover(){
  const data=handoverResult;if(!data?.ok)return;
  const term=$('handoverFilter').value.trim().toLocaleUpperCase('de-DE');
  const rows=term?data.handover.filter(h=>
-  [h.kabel_id,h.kabelname,h.schacht_id,h.schachtname,h.schachtfolge].some(v=>
+  [h.kabel_id,h.kabelname,h.schacht_id,h.schachtname].some(v=>
    String(v).toLocaleUpperCase('de-DE').includes(term))):data.handover;
  const shaftHits=term?data.shafts.filter(h=>
   [h.id,h.name,...h.cables.map(x=>x.id)].some(v=>
