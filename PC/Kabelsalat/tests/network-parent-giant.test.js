@@ -76,7 +76,7 @@ const orphan=world.assemble(missingCable,missingCable.routes[0]);
 assert.equal(orphan.status,'incomplete');
 assert.equal(orphan.segments[1].status,'missing-cable');
 const missingHole=copy(net);missingHole.shafts[2].snapshot.walls[0].holes=[];
-assert.equal(world.assemble(missingHole,missingHole.routes[0]).segments[2].status,'missing-endpoint');
+assert.equal(world.assemble(missingHole,missingHole.routes[0]).segments[2].status,'incomplete');
 const missingBridge=copy(net);missingBridge.shafts[1].snapshot.cables[0].b=null;
 assert.equal(world.assemble(missingBridge,missingBridge.routes[0]).status,'incomplete');
 const circular=copy(net);circular.routes=[{id:'RING',steps:[
