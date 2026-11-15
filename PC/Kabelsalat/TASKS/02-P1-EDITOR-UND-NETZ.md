@@ -75,23 +75,23 @@
 
 **Quelle:** A01, B01, E05. **Definition of Done:** Reale Maus- und Tastaturaktionen in 2D erhalten Modellkonsistenz.
 
-- [ ] **KAB-0271** – 2D-Wandplan auf beliebiges Fensterformat passend skalieren
-- [ ] **KAB-0272** – 2D-Wandpan ohne versetzte Mauskoordinaten implementieren
-- [ ] **KAB-0273** – 2D-Zoom um aktuellen Mauspunkt implementieren
+- [x] **KAB-0271** – 2D-Wandplan auf beliebiges Fensterformat passend skalieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0272** – 2D-Wandpan ohne versetzte Mauskoordinaten implementieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0273** – 2D-Zoom um aktuellen Mauspunkt implementieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
 - [ ] **KAB-0274** – 2D-Beschriftung bei starker Verkleinerung kollisionsarm anzeigen
-- [ ] **KAB-0275** – 2D-Maßkette zwischen zwei Rohrmittelpunkten zeichnen
-- [ ] **KAB-0276** – 2D-Lichtmaß zwischen Rohrmantelflächen zeichnen
-- [ ] **KAB-0277** – 2D-Randabstand auf allen vier Seiten anzeigen
-- [ ] **KAB-0278** – 2D-Mehrfachauswahl durch Rechteckselektion ermöglichen
-- [ ] **KAB-0279** – 2D-Mehrfachauswahl per Umschalttaste erweitern
-- [ ] **KAB-0280** – 2D-Rohrgruppe gemeinsam verschieben
-- [ ] **KAB-0281** – 2D-Auswahl eines Kabelsegments statt nur eines Rohres ermöglichen
+- [x] **KAB-0275** – 2D-Maßkette zwischen zwei Rohrmittelpunkten zeichnen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0276** – 2D-Lichtmaß zwischen Rohrmantelflächen zeichnen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0277** – 2D-Randabstand auf allen vier Seiten anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0278** – 2D-Mehrfachauswahl durch Rechteckselektion ermöglichen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0279** – 2D-Mehrfachauswahl per Umschalttaste erweitern · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0280** – 2D-Rohrgruppe gemeinsam verschieben · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0281** – 2D-Auswahl eines Kabelsegments statt nur eines Rohres ermöglichen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
 - [ ] **KAB-0282** – 2D-Kabelwegpunkt per Drag verschieben
 - [ ] **KAB-0283** – 2D-Stützpunkt per Tastatur präzise verschieben
 - [ ] **KAB-0284** – 2D-Seitenplatte mit Auswahlgriff sichtbar machen
 - [ ] **KAB-0285** – 2D-Plattenkontur bei Selektion hervorheben
 - [ ] **KAB-0286** – 2D-Belegungslegende bei identischen Farben differenzieren
-- [ ] **KAB-0287** – 2D-Rückgängig nach Drag-Operation auf einen Schritt reduzieren
+- [x] **KAB-0287** – 2D-Rückgängig nach Drag-Operation auf einen Schritt reduzieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
 - [ ] **KAB-0288** – 2D-Druckansicht mit Maßstab und Blattformat ergänzen
 
 ## P1-05 · 3D-Kamera, Auswahl und Manipulation (KAB-0289–KAB-0306)
@@ -236,24 +236,24 @@
 
 **Quelle:** N02, D05. **Definition of Done:** Trefferlisten finden richtige IDs und zeigen keine fremden oder ausgedachten Objekte.
 
-- [ ] **KAB-0397** – Schächte per exakter ID suchen
-- [ ] **KAB-0398** – Schächte per Teilnamen suchen
-- [ ] **KAB-0399** – Wände per Schacht- und Wand-ID suchen
-- [ ] **KAB-0400** – Leerrohre per Trassen-/LR-ID suchen
-- [ ] **KAB-0401** – Kabel per exakter Kabelkennung suchen
-- [ ] **KAB-0402** – Kabel per normalisierter Schreibweise suchen
-- [ ] **KAB-0403** – Kabel nach OLA-System filtern
-- [ ] **KAB-0404** – Kabel nach MS-System filtern
-- [ ] **KAB-0405** – Kabel nach anderen technischen Gruppen filtern
-- [ ] **KAB-0406** – Kabel nach ungeklärtem Endpunkt filtern
-- [ ] **KAB-0407** – Objekte nach Prüfstatus filtern
-- [ ] **KAB-0408** – Objekte nach Quellversionsdatum filtern
-- [ ] **KAB-0409** – Suchtreffer mit Schachtkontext und Typ anzeigen
-- [ ] **KAB-0410** – Mehrdeutige Treffer ohne willkürliche Erstauswahl auflisten
-- [ ] **KAB-0411** – Suchanfrage bei Schachtwechsel erhalten
-- [ ] **KAB-0412** – Leere Trefferliste mit korrektem Hinweis anzeigen
-- [ ] **KAB-0413** – Suche mit mehr als 5000 Kabeln performancetesten
-- [ ] **KAB-0414** – Globale Suchauswahl synchron in 2D und 3D anzeigen
+- [x] **KAB-0397** – Schächte per exakter ID suchen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0398** – Schächte per Teilnamen suchen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0399** – Wände per Schacht- und Wand-ID suchen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0400** – Leerrohre per Trassen-/LR-ID suchen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0401** – Kabel per exakter Kabelkennung suchen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0402** – Kabel per normalisierter Schreibweise suchen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0403** – Kabel nach OLA-System filtern · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0404** – Kabel nach MS-System filtern · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0405** – Kabel nach anderen technischen Gruppen filtern · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0406** – Kabel nach ungeklärtem Endpunkt filtern · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0407** – Objekte nach Prüfstatus filtern · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0408** – Objekte nach Quellversionsdatum filtern · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0409** – Suchtreffer mit Schachtkontext und Typ anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0410** – Mehrdeutige Treffer ohne willkürliche Erstauswahl auflisten · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0411** – Suchanfrage bei Schachtwechsel erhalten · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0412** – Leere Trefferliste mit korrektem Hinweis anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0413** – Suche mit mehr als 5000 Kabeln performancetesten · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
+- [x] **KAB-0414** – Globale Suchauswahl synchron in 2D und 3D anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/7e63d5adb1d59e4c0fa4b602e4ede99efc1550ae/PC/Kabelsalat/TASKS/EVIDENCE_2026-11-15_NEXT_100_WAVE1.md
 
 ## P1-12 · Projektdateien, Migration und Undo (KAB-0415–KAB-0432)
 
