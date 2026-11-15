@@ -765,6 +765,47 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <label class="field">Notiz<textarea id="reviewNote" rows="3" maxlength="500" class="txt" style="height:auto;padding:8px"></textarea></label>
 <button id="saveReview" class="btn soft full" style="margin-top:10px">Vermerk speichern</button>
 <div class="small" style="margin-top:9px">Manuell eingetragene Statuswerte gelten nicht automatisch als geprüfte Freigabe.</div>
+<h3 style="margin-top:16px">Quellenregister & Maßbelege</h3>
+<p class="small">PDF, Foto, Zeichnung oder Aufmaß. Quellangabe ist kein automatischer Vermessungsnachweis.</p>
+<div class="row">
+<label class="field">Quell-ID<input id="sourceDocId" maxlength="100" placeholder="PLAN-R3"></label>
+<label class="field">Version<input id="sourceDocVersion" maxlength="100" placeholder="R3"></label>
+</div>
+<label class="field">Dokumenttitel<input id="sourceDocTitle" maxlength="180" placeholder="Plan / Vermessungsprotokoll"></label>
+<div class="row">
+<label class="field">Art<select id="sourceDocKind" class="selector">
+<option value="pdf">PDF</option><option value="drawing">Zeichnung</option>
+<option value="photo">Foto</option><option value="survey">Aufmaß</option><option value="text">Text</option>
+<option value="manual">Manuell</option></select></label>
+<button id="sourceAddDocument" class="btn soft tiny" type="button">Quelle aufnehmen</button>
+</div>
+<label class="field">Quelle für Objekt<select id="sourceDocumentRef" class="selector"></select></label>
+<div class="row">
+<label class="field">Objekt<select id="sourceTarget" class="selector">
+<option value="hole">Aktuelle Öffnung</option><option value="cable">Aktuelles Kabel</option>
+<option value="wall">Aktuelle Wand</option><option value="shaft">Aktueller Schacht</option>
+<option value="end-a">Kabelende A</option><option value="end-b">Kabelende B</option>
+</select></label>
+<label class="field">Feld<select id="sourceField" class="selector">
+<option value="openingMm">Loch-Ø</option><option value="nominalMm">DN</option>
+<option value="innerMm">Rohr-Innen-Ø</option><option value="outerMm">Rohr-Außen-Ø</option>
+<option value="x">X</option><option value="y">Y</option><option value="z">Z</option>
+<option value="connection">Anschluss</option><option value="material">Material</option>
+</select></label>
+</div>
+<div class="row">
+<label class="field">Seite<input id="sourcePage" type="number" min="1" max="100000" step="1" placeholder="optional"></label>
+<label class="field">Planbereich<input id="sourceRegion" maxlength="120" placeholder="z. B. SW1"></label>
+</div>
+<label class="field">Grundlage<select id="sourceBasis" class="selector">
+<option value="graphic">Grafik ohne Maßstab</option><option value="label">Beschriftung</option>
+<option value="derived">Abgeleitet</option><option value="survey">Vermessung (prüfen)</option>
+<option value="manual">Manuelle Angabe</option>
+</select></label>
+<label class="field">Belegtext<input id="sourceEvidence" maxlength="360" placeholder="Messwert / Dokumentstelle"></label>
+<button id="sourceAttachObject" class="btn soft full" type="button">Beleg am Objekt hinterlegen</button>
+<div id="sourceRegistryList" class="small" style="margin-top:8px;max-height:130px;overflow:auto">Keine Quellen erfasst.</div>
+<div id="sourceRegistryStatus" class="small" role="status" aria-live="polite"></div>
 <h3 style="margin-top:15px">Projektausgabe</h3>
 <div class="row" style="flex-wrap:wrap">
 <button id="exportPdf" class="btn primary">↓ PDF-Bericht</button>
