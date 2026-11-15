@@ -25,6 +25,8 @@ const concreteWall=globalThis.KabelsalatConcreteWall;
 if(!concreteWall)throw Error('Kabelsalat-Betonwandmodul fehlt');
 const spacingAdjust=globalThis.KabelsalatSpacingAdjust;
 if(!spacingAdjust)throw Error('Kabelsalat-Abstandsmodul fehlt');
+const holeEditorOps=globalThis.KabelsalatHoleEditorOps;
+if(!holeEditorOps)throw Error('Kabelsalat-Leerrohr-Editormodul fehlt');
 const constructionV2=globalThis.KabelsalatConstructionV2;
 if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
 const avlReference=()=>['13_T_021','13_U_028'].includes(project?.sourceInfo?.shaft);
@@ -250,8 +252,9 @@ function renderNetworkPath(){
   '<b>'+ (i===0?'1 · Kürzester Vorschlag':(i+1)+' · Alternative')+'</b> · '+esc(formatNetworkLength(v.distanceMm))+
   '<div class="small">'+v.shaftIds.map(esc).join(' → ')+'</div></button>').join('');
 }
-let spacingPlan=null;
+let spacingPlan=null,groupPlan=null;
 function resetSpacingPreview(){spacingPlan=null;$('spacingApply').disabled=true;}
+function resetGroupPreview(){groupPlan=null;$('groupApply').disabled=true;}
 function compareSpacing(plan){
  const fmt=v=>v===null?'–':v.toFixed(1)+' mm';
  $('spacingCompare').textContent=plan?
@@ -276,7 +279,7 @@ function persist(){
  catch(_){$('saveStatus').textContent='⚠ Speichern fehlgeschlagen';}
 }
 function change(fn,label='Planung geändert'){
- clearWorldRoute();clearNetworkPath();resetSpacingPreview();
+ clearWorldRoute();clearNetworkPath();resetSpacingPreview();resetGroupPreview();
  undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;
  fn();syncActiveShaft();
  if(project.network){
@@ -286,7 +289,7 @@ function change(fn,label='Planung geändert'){
  }
  renderAll();persist();
 }
-function undoRedo(back){clearWorldRoute();clearNetworkPath();resetSpacingPreview();const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
+function undoRedo(back){clearWorldRoute();clearNetworkPath();resetSpacingPreview();resetGroupPreview();const from=back?undo:redo,to=back?redo:undo;if(!from.length)return;to.push(JSON.stringify(project));project=validProject(JSON.parse(from.pop()));fixSelection();syncActiveShaft();renderAll();persist();}
 function fixSelection(){if(!project.walls.some(w=>w.id===wallId))wallId='SW1';if(!wall()?.holes.some(h=>h.id===holeId))holeId=null;if(!project.cables.some(c=>c.id===cableId))cableId=project.cables[0]?.id||null;
  if(!plate())panelKey='OLA-floor';
  if(!project.supports.some(s=>s.id===supportId))supportId=project.supports[0]?.id||null;
@@ -350,10 +353,11 @@ function renderUI(){
  $('holeU').value=Math.round(h.u*wallSpanMm(wallId));
  $('holeV').value=Math.round(h.v*project.dims.h);
  $('holeDn').value=h.dn;
+ $('holeEditStatus').textContent='Position, DN und Öffnung sind schematische Modellwerte.';
  const dims=pipeDimensions.forHole(h);
  $('holeDimensionSummary').textContent=pipeDimensions.describe(h);
  for(const [id,val] of [['holeInnerMm',dims.innerMm],['holeOuterMm',dims.outerMm],
-  ['holeOpeningMm',dims.openingMm]])$(id).value=val??'';
+  ['holeOpeningMm',dims.openingMm],['holeWallMm',dims.wallThicknessMm]])$(id).value=val??'';
  $('holeDimensionSource').value=dims.source;
  $('holeDimensionReviewer').value=dims.reviewer;
  $('holeDimensionStatus').value=dims.status;
@@ -2051,10 +2055,25 @@ $('deleteHole').addEventListener('click',()=>{const w=wall(),h=hole();if(!h)retu
  if(n&&!confirm(n+' Kabel haben diesen Anschluss. Das Leerrohr wirklich entfernen?'))return;
  change(()=>{w.holes=w.holes.filter(x=>x.id!==h.id);project.cables.forEach(c=>{if(c.a?.hole===h.id)c.a=null;if(c.b?.hole===h.id)c.b=null;});holeId=null;});
 });
-$('applyHole').addEventListener('click',()=>{const h=hole();if(!h)return;const span=wallSpanMm(wallId);
- change(()=>{h.u=clamp((Number($('holeU').value)||0)/span,0,1);h.v=clamp((Number($('holeV').value)||0)/project.dims.h,0,1);
- h.dn=clamp(Number($('holeDn').value)||h.dn,30,160);
- if(h.dimensionSpec)h.dimensionSpec.nominalMm=h.dn;},'Rohrposition / Nenn-DN geändert');});
+$('applyHole').addEventListener('click',()=>{
+ const h=hole();if(!h)return;
+ try{
+  const xText=$('holeU').value,yText=$('holeV').value,dnText=$('holeDn').value;
+  if(!/^\\d+$/.test(xText)||!/^\\d+$/.test(yText)||!/^\\d+$/.test(dnText))
+   throw Error('Position und DN bitte als ganze Millimeter eingeben');
+  const xMm=Number(xText),yMm=Number(yText),dn=Number(dnText);
+  if(!Number.isSafeInteger(dn)||dn<30||dn>160)
+   throw Error('DN muss zwischen 30 und 160 liegen');
+  const physical=h.dimensionSpec?.openingMm;
+  const result=holeEditorOps.candidate(project,wallId,{xMm,yMm,dn,
+   openingMm:Number.isFinite(physical)?physical:null},h.id);
+  if(!result.ok)throw Error(result.errors.join('; '));
+  if(project.sourceInfo&&!confirm('Importierter Originalschacht: diese Rohrposition wirklich manuell ändern? Die ursprüngliche Referenz gilt dadurch nicht als geprüft.'))return;
+  if(result.warnings.length&&!confirm('Achtung: '+result.warnings.join('; ')+'\\nTrotz Überschneidung übernehmen?'))return;
+  change(()=>{h.u=result.u;h.v=result.v;h.dn=dn;
+   if(h.dimensionSpec)h.dimensionSpec.nominalMm=dn;},'Rohrposition / Nenn-DN geändert');
+ }catch(err){$('holeEditStatus').textContent='Nicht übernommen: '+err.message;}
+});
 // Separate physical pipe dimensions from legacy schematic DN (KAB-0880/0883).
 $('saveHoleDimensions').addEventListener('click',()=>{
  const h=hole();if(!h)return;
@@ -2062,7 +2081,7 @@ $('saveHoleDimensions').addEventListener('click',()=>{
  const source=$('holeDimensionSource').value.trim().slice(0,240);
  const raw={...prev,nominalMm:h.dn,
   innerMm:$('holeInnerMm').value,outerMm:$('holeOuterMm').value,
-  openingMm:$('holeOpeningMm').value,source,
+  openingMm:$('holeOpeningMm').value,wallThicknessMm:$('holeWallMm').value,source,
   reviewer:$('holeDimensionReviewer').value.trim().slice(0,240),
   method:'manual',status:$('holeDimensionStatus').value,
   note:'Nutzerangabe: noch nicht automatisch vermessen'};
