@@ -34,8 +34,18 @@
   if(diameter.status==='candidate'&&!diameter.source)diameter.status='unverified';
   return diameter;
  }
+ function openingType(h){
+  // Legacy source plans show an opening but do not prove that a conduit exists.
+  return h?.openingType==='bare-hole'?'bare-hole':
+   h?.openingType==='conduit'?'conduit':'unknown';
+ }
  function forHole(h){
-  return normalize(h?.dimensionSpec,h?.dn);
+  const kind=openingType(h),value=normalize(h?.dimensionSpec,kind==='bare-hole'?null:h?.dn);
+  if(kind==='bare-hole'){
+   // A bare concrete hole has no pipe nominal/inner/outer diameter.
+   value.nominalMm=null;value.innerMm=null;value.outerMm=null;value.wallThicknessMm=null;
+  }
+  return value;
  }
  function apertureMm(h){
   const entry=forHole(h);
@@ -43,15 +53,17 @@
   return entry.openingMm??entry.nominalMm??70;
  }
  function describe(h){
-  const d=forHole(h),qualified=d.status==='reviewed'?'fachlich dokumentiert':
+  const d=forHole(h),kind=openingType(h),qualified=d.status==='reviewed'?'fachlich dokumentiert':
    d.status==='candidate'?'Kandidat, nicht bestätigt':'schematisch / unbestätigt';
-  const parts=[];
+  const parts=[kind==='bare-hole'?'Nur Wandloch, kein Leerrohr':
+   kind==='conduit'?'Leerrohr vorhanden':'Bauart der Öffnung unbekannt'];
   if(d.nominalMm!==null)parts.push('DN '+d.nominalMm+' (Nennangabe)');
   if(d.innerMm!==null)parts.push('Innen-Ø '+d.innerMm+' mm');
   if(d.outerMm!==null)parts.push('Außen-Ø '+d.outerMm+' mm');
   if(d.wallThicknessMm!==null)parts.push('Rohrwand '+d.wallThicknessMm+' mm');
   if(d.openingMm!==null)parts.push('Öffnung-Ø '+d.openingMm+' mm');
   if(d.candidateMm!==null)parts.push('Erkannt: Ø '+d.candidateMm+' mm');
+  if(kind==='bare-hole'&&d.openingMm===null)parts.push('Loch-Ø unbekannt (Anzeige nur schematisch)');
   return (parts.join(' · ')||'Durchmesser unbekannt')+' · '+qualified+
    (d.source?' · Quelle: '+d.source:'');
  }
@@ -143,5 +155,5 @@
   return parsePlanPages(pages,options).sort((a,b)=>
    (a.pipeId||'~').localeCompare(b.pipeId||'~')||a.page-b.page||a.line-b.line);
  }
- return {RANGE,normalize,forHole,apertureMm,describe,parsePlanText,parsePlanPages,planCandidateTable,inspectPlanPages};
+ return {RANGE,normalize,openingType,forHole,apertureMm,describe,parsePlanText,parsePlanPages,planCandidateTable,inspectPlanPages};
 });
