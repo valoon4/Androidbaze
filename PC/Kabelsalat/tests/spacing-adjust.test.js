@@ -79,4 +79,34 @@ assert.ok(app.includes('spacingAdjust.plan(project,wallId')&&app.includes('spaci
 assert.ok(app.includes('resetSpacingPreview();')&&app.includes("change(()=>spacingAdjust.apply(project,pending)"));
 assert.ok(app.includes("ctx.setLineDash([5,4])"));
 assert.ok(require('../package.json').build.files.includes('spacing-adjust.js'));
+// KAB-0051/52: stale cable edits, corrupt plan coordinates and partial
+// changes must never move even the first pipe. Keep all IDs byte-identical.
+const changedCable=project(),cablePreview=spacing.plan(changedCable,'SW1',cfg);
+const unchangedHoles=JSON.stringify(changedCable.walls[0].holes);
+changedCable.cables[0].b.hole='LR-3';
+assert.throws(()=>spacing.apply(changedCable,cablePreview),/veraltet/);
+assert.equal(JSON.stringify(changedCable.walls[0].holes),unchangedHoles);
+const forgedCases=[
+ plan=>{plan.changes[0].to.u=Infinity;},
+ plan=>{plan.changes[0].to.v=-.1;},
+ plan=>{plan.changes[0].id='UNKNOWN';},
+ plan=>{plan.changes[0].from.u=.01;},
+ plan=>{plan.moved++;},
+ plan=>{plan.changes[0].to.u=.99;plan.changes[0].to.v=.99;},
+ plan=>{plan.changes=[plan.changes[0],plan.changes[0]];plan.moved=2;}
+];
+for(const corrupt of forgedCases){
+ const current=project(),before=JSON.stringify(current),candidate=spacing.plan(current,'SW1',cfg);
+ corrupt(candidate);
+ assert.throws(()=>spacing.apply(current,candidate),/ungültig|Zielabstände/);
+ assert.equal(JSON.stringify(current),before,'Invalid preview must have zero partial mutations');
+}
+// A real valid plan remains usable despite the new integrity checks.
+const validAgain=project(),approved=spacing.plan(validAgain,'SW1',cfg);
+const intactCable=JSON.stringify(validAgain.cables);
+assert.equal(spacing.apply(validAgain,approved),approved.moved);
+assert.equal(JSON.stringify(validAgain.cables),intactCable);
+assert.ok(app.includes("$(id).addEventListener('input'"),
+ 'Changing either target spacing field invalidates stale preview');
+assert.ok(app.includes('Zielwert geändert: Vorschau erneut berechnen.'));
 console.log('OK: KAB-0051/52/53 deterministic spacing, secure source guard, immutable preview, reversible and stable cable-ID-preserving apply');
