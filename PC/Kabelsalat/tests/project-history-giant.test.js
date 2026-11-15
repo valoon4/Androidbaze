@@ -81,10 +81,11 @@ const canonical=raw=>{const p=validProject(JSON.parse(raw));
 };
 assert.equal(canonical(JSON.stringify(h.project)),canonical(afterHole),
  'Redo must restore exactly the same canonical engineering model');
+const previousWaypoints=JSON.parse(JSON.stringify(h.project.cables[0].route));
 h.change(()=>{h.project.cables[0].route=[[100,200,300]];},'Kabel-Wegpunkt gesetzt');
 assert.deepEqual(h.project.cables[0].route,[[100,200,300]]);
 const afterWaypoint=JSON.stringify(h.project);
-h.undoRedo(true);assert.deepEqual(h.project.cables[0].route,[]);
+h.undoRedo(true);assert.deepEqual(h.project.cables[0].route,previousWaypoints);
 h.undoRedo(false);assert.equal(canonical(JSON.stringify(h.project)),canonical(afterWaypoint));
 const oldThickness=h.project.enclosures.OLA.panels[0].thickness;
 h.change(()=>h.project.enclosures.OLA.panels[0].thickness=oldThickness+4,'Plattendicke geändert');
