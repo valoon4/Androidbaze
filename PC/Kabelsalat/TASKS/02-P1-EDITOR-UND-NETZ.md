@@ -45,31 +45,31 @@
 - [x] **KAB-0248** – Rohr über Wandgrenze nicht unbemerkt platzieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
 - [x] **KAB-0249** – Rohr über Nachbarrohr nicht unbemerkt platzieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
 - [x] **KAB-0250** – Rohr durch Tastatureingabe auf exakten Millimeter setzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
-- [ ] **KAB-0251** – Leerrohrlöschung mit zugeordneten Kabeln vorab bestätigen
-- [ ] **KAB-0252** – Rohrliste nach Wand, Trasse und DN sortierbar machen
+- [x] **KAB-0251** – Leerrohrlöschung mit zugeordneten Kabeln vorab bestätigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0252** – Rohrliste nach Wand, Trasse und DN sortierbar machen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
 
 ## P1-03 · Kabeleditor: Objekt und Anschluss (KAB-0253–KAB-0270)
 
 **Quelle:** E05, P0-04. **Definition of Done:** Jedes Kabel ist über ID eindeutig selektierbar, in beiden Ansichten konsistent und roundtrip-fähig.
 
-- [ ] **KAB-0253** – Neues Kabel mit ID und Anzeigename erstellen
-- [ ] **KAB-0254** – Kabelaußendurchmesser pro Kabel numerisch bearbeiten
-- [ ] **KAB-0255** – Kabeltyp als katalogisierbaren Stammdatensatz hinterlegen
-- [ ] **KAB-0256** – Kabelgruppe von technischer Kategorie getrennt speichern
-- [ ] **KAB-0257** – Startrohr aus verfügbarer Rohrliste auswählen
-- [ ] **KAB-0258** – Zielrohr aus verfügbarer Rohrliste auswählen
-- [ ] **KAB-0259** – Einseitigen Kabelanschluss ohne künstliches Ziel zulassen
-- [ ] **KAB-0260** – Start- und Zielanschluss mit Vorwarnung tauschen
-- [ ] **KAB-0261** – Kabel in bestehendem Rohr gezielt umhängen
-- [ ] **KAB-0262** – Kabel bei Entfernen des Startrohrs als ungeklärt behalten
-- [ ] **KAB-0263** – Kabel bei Entfernen des Zielrohrs als ungeklärt behalten
-- [ ] **KAB-0264** – Kabel mit zwei Seiten desselben Schachts verbinden
-- [ ] **KAB-0265** – Kabel über einen Schachtübergang in Segmenten modellieren
-- [ ] **KAB-0266** – Kabelname ändern ohne Referenzen auf Kabel-ID zu brechen
-- [ ] **KAB-0267** – Kabel mit gleicher Bezeichnung aber anderem Verlauf getrennt führen
-- [ ] **KAB-0268** – Kabelstatus Bearbeitung vor technischer Freigabe anzeigen
-- [ ] **KAB-0269** – Einzelnes Kabel inklusive Quelle sicher duplizieren
-- [ ] **KAB-0270** – Kabelentfernung mit Anzeige aller betroffenen Routen bestätigen
+- [x] **KAB-0253** – Neues Kabel mit ID und Anzeigename erstellen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0254** – Kabelaußendurchmesser pro Kabel numerisch bearbeiten · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0255** – Kabeltyp als katalogisierbaren Stammdatensatz hinterlegen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0256** – Kabelgruppe von technischer Kategorie getrennt speichern · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0257** – Startrohr aus verfügbarer Rohrliste auswählen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0258** – Zielrohr aus verfügbarer Rohrliste auswählen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0259** – Einseitigen Kabelanschluss ohne künstliches Ziel zulassen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0260** – Start- und Zielanschluss mit Vorwarnung tauschen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0261** – Kabel in bestehendem Rohr gezielt umhängen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0262** – Kabel bei Entfernen des Startrohrs als ungeklärt behalten · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0263** – Kabel bei Entfernen des Zielrohrs als ungeklärt behalten · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0264** – Kabel mit zwei Seiten desselben Schachts verbinden · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0265** – Kabel über einen Schachtübergang in Segmenten modellieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0266** – Kabelname ändern ohne Referenzen auf Kabel-ID zu brechen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0267** – Kabel mit gleicher Bezeichnung aber anderem Verlauf getrennt führen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0268** – Kabelstatus Bearbeitung vor technischer Freigabe anzeigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0269** – Einzelnes Kabel inklusive Quelle sicher duplizieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
+- [x] **KAB-0270** – Kabelentfernung mit Anzeige aller betroffenen Routen bestätigen · Nachweis: https://github.com/valoon4/Androidbaze/blob/main/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_CABLE_EDITOR_GIANT_20.md
 
 ## P1-04 · 2D-Zeichenfläche und Werkzeuge (KAB-0271–KAB-0288)
 
