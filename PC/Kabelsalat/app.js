@@ -1332,13 +1332,16 @@ draft.addEventListener('pointermove',e=>{
  if(!draftDrag.changed&&Math.hypot(p.x-draftDrag.x,p.y-draftDrag.y)<1)return;
  const w=project.walls.find(x=>x.id===draftDrag.wallId),h=w?.holes.find(x=>x.id===draftDrag.holeId);
  if(!h)return;
- if(!draftDrag.changed){undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();redo.length=0;draftDrag.changed=true;}
  const mm=geom2d.toMillimetres(draftMetrics,p.x,p.y,Number($('draftSnapStep').value)||1);
  const check=holeEditorOps.candidate(project,w.id,{xMm:mm.x,yMm:mm.y,dn:h.dn,
   openingMm:h.dimensionSpec?.openingMm},h.id);
  if(!check.ok||check.warnings.length){
   $('draftCoords').textContent='⚠ '+[...check.errors,...check.warnings].join('; ');
   e.preventDefault();return;
+ }
+ if(!draftDrag.changed){
+  undo.push(JSON.stringify(project));if(undo.length>80)undo.shift();
+  redo.length=0;draftDrag.changed=true;
  }
  h.u=check.u;h.v=check.v;
  resetGroupPreview();
