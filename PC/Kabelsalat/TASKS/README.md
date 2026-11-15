@@ -25,6 +25,8 @@
 
 **100er-Parent-Meilenstein:** 58 zusätzliche technische/QA-/Handbuch-Abnahmen · [58 Einzelnachweise](./EVIDENCE_2026-11-15_PARENT_100_REVIEW.md). Für die 13.012 Mikro-Tasks zählen weiterhin nur Einzelbelege; aktueller CI-Status nicht unabhängig bestätigt.
 
+**Bro-Feedback 15.11 · 400 Schächte / Kabel-Übergabelisten:** [Eingabeformate, KI-Auswerteauftrag und drei CSV-Exporte](./BRO_400_SCHACHT_KABEL_LISTE_2026-11-15.md) · [89 gezielte Regressionen](../tests/shaft-handover.test.js). Große Übergabeauswertung getrennt vom 30-Schacht-3D-Netz; wirkliche 400 Bestands-IDs und Kabelpläne müssen noch angeliefert werden. Dieses neue Feedback ist **keine automatisch abgenommene historische Parent-ID**.
+
 **200er-Parent-Meilenstein:** +100 weitere technisch geprüfte Parent-Tickets · [47 × 2D/Suche/Qualität](./EVIDENCE_2026-11-15_NEXT_100_WAVE1.md) · [28 × Netz/Kabelkontinuität](./EVIDENCE_2026-11-15_NEXT_100_WAVE2.md) · [25 × Projekt-/PDF-Regression](./EVIDENCE_2026-11-15_NEXT_100_WAVE3.md). Volle aktuelle Browser-/Windows-CI bleibt gesondert zu prüfen; der Mikro-Ledger ist unverändert. 
 
 **Technisch abgeschlossene Bro-Parents:** KAB-0884, 0886, 0887, 0888 · [Nachweise](./BRO_PARENT_TECH_ABNAHME_2026-11-15.md) · [erfolgreiche Chromium-Vollprüfung](https://github.com/valoon4/Androidbaze/actions/runs/43709846491).
