@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="kabelsalat-version" content="2.0.11-beta.1">
+<meta name="kabelsalat-version" content="2.0.12-beta.1">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'">
 <title>Kabelsalat · Schacht- und Kabeleditor</title>
@@ -326,7 +326,7 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <body>
 <div id="app">
 <header>
-<div class="mark">◉</div><div><div class="brand">Kabelsalat <span id="visibleAppVersion" style="color:#87a99b">v2.0.11-beta.1 · Schacht- und LR-Demo</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
+<div class="mark">◉</div><div><div class="brand">Kabelsalat <span id="visibleAppVersion" style="color:#87a99b">v2.0.12-beta.1 · Schacht- und LR-Demo</span></div><div class="subtitle">Schachtwände · Leerrohre · Kabel · offline</div></div>
 <div class="header-actions">
 <a class="btn" href="./pitch.html" target="_blank" rel="noopener" title="Unabhängige geprüfte Original-3D-Ansichten für 13_T_021 und 13_U_028" style="display:inline-flex;align-items:center;text-decoration:none;font-weight:850;background:#d9f6e2;border:2px solid #25a574;color:#125940;white-space:nowrap">★ PITCH-SICHER ↗</a>
 <a class="btn" href="./pitch/13_T_021_KONSTRUKTION.html" target="_blank" rel="noopener" title="Konstruktionsvariante A+B – OLA auf Stapelplatten, MS auf Stützelementen" style="display:inline-flex;align-items:center;text-decoration:none;font-weight:800;background:#e2f0fc;border:1px solid #2878b8;color:#10476a;white-space:nowrap">◈ KONSTRUKTION A+B ↗</a>
@@ -459,7 +459,15 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <button class="chip active" data-mode="orbit">↻ Drehen</button><button class="chip" data-mode="add">＋ Leerrohr</button><button class="chip" data-mode="move">↔ Versetzen</button>
 </div>
 <div class="hint" id="modeHint">Modell mit der Maus drehen, mit dem Mausrad zoomen. Öffnungen oder Kabel anklicken, um sie zu bearbeiten.</div>
-<div id="holeEditor" style="display:none">
+<div class="dim-editor" role="group" aria-label="Sortierte Leerrohrübersicht">
+ <strong>Rohrliste · Quelle / Trasse / DN</strong>
+ <label class="field">Sortieren nach<select id="pipeSort" class="selector">
+  <option value="wall">Wand</option><option value="trasse">Trasse / Quellenangabe</option>
+  <option value="dn">DN aufsteigend</option></select></label>
+ <div id="pipeList" style="max-height:170px;overflow:auto;margin-top:8px"></div>
+ <p class="small">Quelle und Trasse nur, wenn sie dokumentiert sind. DN ist keine bestätigte Lochgröße.</p>
+ </div>
+ <div id="holeEditor" style="display:none">
 <hr><h3 id="holeTitle">Ausgewähltes Leerrohr</h3>
 <div class="row"><label class="field">Position (mm)<input type="number" id="holeU" min="0" max="12000" step="1"></label>
 <label class="field">Höhe (mm)<input type="number" id="holeV" min="0" max="8000" step="1"></label></div>
@@ -835,18 +843,24 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 <section class="section" id="cableEditor"><div class="eyebrow">Ausgewähltes Kabel</div>
 <div id="empty-cable">Wähle ein Kabel aus oder lege ein neues an.</div>
 <div id="cableForm" hidden>
-<label class="field">Bezeichnung<input id="cableName" maxlength="80"></label>
+ <p id="cableMeta" class="small" role="status">ID · Entwurf</p>
+ <label class="field">Bezeichnung<input id="cableName" maxlength="80"></label>
 <div class="row"><label class="field" style="flex:1">Farbe</label><input id="cableColor" type="color"></div>
 <div class="row"><label class="field">Einhausung<select id="cableGroup"><option value="OLA">OLA</option><option value="MS">MS</option><option value="Weitere">Weitere</option></select></label>
 <label class="field">Kabel-Ø (mm)<input id="cableDiameter" type="number" min="2" max="80" step="1"></label></div>
-<label class="field">A · Anschluss<select id="cableA" class="selector"></select></label>
+<label class="field">Technische Kategorie (separat von OLA/MS)<input id="cableCategory" maxlength="80" placeholder="Nicht klassifiziert"></label>
+ <label class="field">Kabeltyp aus Projektkatalog<select id="cableType" class="selector"></select></label>
+ <div class="row"><label class="field">Neuer Typ<input id="newCableType" maxlength="80" placeholder="z. B. kundenspezifischer Typ"></label>
+ <label class="field">Typ-Ø mm<input id="newCableTypeDiameter" type="number" min="2" max="80" step="0.1"></label></div>
+ <button id="addCableType" type="button" class="btn soft full">Typ im Projektkatalog speichern</button>
+ <label class="field">A · Anschluss<select id="cableA" class="selector"></select></label>
 <label class="field">B · Anschluss<select id="cableB" class="selector"></select></label>
 <h3 style="margin-top:18px">Kabelführung / Bogenpunkte</h3>
 <div class="row"><button id="addWaypoint" class="btn soft full">＋ Bogenpunkt hinzufügen</button>
 <button id="clearWaypoints" class="btn danger tiny">Reset</button></div>
 <div id="waypointList" class="small" style="margin-top:9px"></div>
 <p class="small">Bogenpunkte im 3D-Modell ziehen oder Koordinaten in Millimetern bearbeiten. Seitliche Bögen verlaufen weich, die Hersteller-Mindestbiegeradien sind bis zur technischen Prüfung offen.</p>
-<div class="row" style="margin-top:15px"><button id="swapCable" class="btn soft full">⇄ A / B tauschen</button><button id="deleteCable" class="btn danger">Löschen</button></div>
+<div class="row" style="margin-top:15px"><button id="swapCable" class="btn soft full">⇄ A / B tauschen</button><button id="copyCable" class="btn soft">Kopie</button><button id="deleteCable" class="btn danger">Löschen</button></div>
 </div>
 </section>
 <section class="section"><div class="eyebrow">Projektdateien</div><h3>Offline & lokal</h3>
@@ -854,6 +868,6 @@ body.presentation-focus #pdfOpen{right:20px;top:58px;bottom:auto}
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.11-beta.1"></script><script src="vendor/three.min.js?v=2.0.11-beta.1"></script><script src="editor2d.js?v=2.0.11-beta.1"></script><script src="components.js?v=2.0.11-beta.1"></script><script src="network.js?v=2.0.11-beta.1"></script><script src="network-route-planner.js?v=2.0.11-beta.1"></script><script src="network-world-route.js?v=2.0.11-beta.1"></script><script src="quality.js?v=2.0.11-beta.1"></script><script src="reports.js?v=2.0.11-beta.1"></script><script src="reference-data.js?v=2.0.11-beta.1"></script><script src="examples.js?v=2.0.11-beta.1"></script><script src="pdf-geometry.js?v=2.0.11-beta.1"></script><script src="schematic-positions.js?v=2.0.11-beta.1"></script><script src="spacing-adjust.js?v=2.0.11-beta.1"></script><script src="hole-editor-ops.js?v=2.0.11-beta.1"></script><script src="pipe-dimensions.js?v=2.0.11-beta.1"></script><script src="photo-candidates.js?v=2.0.11-beta.1"></script><script src="concrete-wall.js?v=2.0.11-beta.1"></script><script src="construction-v2.js?v=2.0.11-beta.1"></script><script src="pdf-visual.js?v=2.0.11-beta.1"></script><script src="app.js?v=2.0.11-beta.1"></script>
+<script src="recovery.js?v=2.0.12-beta.1"></script><script src="vendor/three.min.js?v=2.0.12-beta.1"></script><script src="editor2d.js?v=2.0.12-beta.1"></script><script src="components.js?v=2.0.12-beta.1"></script><script src="network.js?v=2.0.12-beta.1"></script><script src="network-route-planner.js?v=2.0.12-beta.1"></script><script src="network-world-route.js?v=2.0.12-beta.1"></script><script src="quality.js?v=2.0.12-beta.1"></script><script src="reports.js?v=2.0.12-beta.1"></script><script src="reference-data.js?v=2.0.12-beta.1"></script><script src="examples.js?v=2.0.12-beta.1"></script><script src="pdf-geometry.js?v=2.0.12-beta.1"></script><script src="schematic-positions.js?v=2.0.12-beta.1"></script><script src="spacing-adjust.js?v=2.0.12-beta.1"></script><script src="hole-editor-ops.js?v=2.0.12-beta.1"></script><script src="cable-editor-ops.js?v=2.0.12-beta.1"></script><script src="pipe-dimensions.js?v=2.0.12-beta.1"></script><script src="photo-candidates.js?v=2.0.12-beta.1"></script><script src="concrete-wall.js?v=2.0.12-beta.1"></script><script src="construction-v2.js?v=2.0.12-beta.1"></script><script src="pdf-visual.js?v=2.0.12-beta.1"></script><script src="app.js?v=2.0.12-beta.1"></script>
 </body>
 </html>

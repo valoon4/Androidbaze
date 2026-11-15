@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 globalThis.KabelsalatPdfGeometry=require('../pdf-geometry.js');
 const app=fs.readFileSync(path.resolve(__dirname,'../app.js'),'utf8');
-for(const file of ['schematic-positions.js','spacing-adjust.js','hole-editor-ops.js','pipe-dimensions.js','photo-candidates.js'])
+for(const file of ['schematic-positions.js','spacing-adjust.js','hole-editor-ops.js','cable-editor-ops.js','pipe-dimensions.js','photo-candidates.js'])
  assert.ok(fs.existsSync(path.resolve(__dirname,'..',file)),'Missing offline recognition/geometry asset '+file);
 const html=fs.readFileSync(path.resolve(__dirname,'../index.html'),'utf8');
 const version=require('../package.json').version;
@@ -37,7 +37,7 @@ assert.ok(app.includes('function returnToShaft()')&&
  'Home action must close the overlay and display 3D without altering engineering project data');
 assert.ok(app.includes('pdfView()?pdfGeometry.span(id,project.dims)'),
  'PDF 2D wall span must follow the same orientation as 3D world coordinates');
-for(const asset of ['recovery.js','app.js','vendor/three.min.js'])
+for(const asset of ['recovery.js','app.js','cable-editor-ops.js','vendor/three.min.js'])
  assert.ok(html.includes('src="'+asset+'?v='+version+'"'),'Cache-busted script missing: '+asset);
 for(const id of ['startupRecovery','reloadFresh','resetDisplay','recoveryReason'])
  assert.ok(html.includes('id="'+id+'"'),'Recovery interface missing: '+id);
@@ -236,6 +236,7 @@ globalThis.KabelsalatPhotoCandidates=require('../photo-candidates.js');
 globalThis.KabelsalatSchematicPositions=require('../schematic-positions.js');
 globalThis.KabelsalatSpacingAdjust=require('../spacing-adjust.js');
 globalThis.KabelsalatHoleEditorOps=require('../hole-editor-ops.js');
+globalThis.KabelsalatCableEditorOps=require('../cable-editor-ops.js');
 globalThis.KabelsalatConstructionV2=require('../construction-v2.js');
 globalThis.KabelsalatNetwork=require('../network.js');
 globalThis.KabelsalatQuality=require('../quality.js');
@@ -261,6 +262,18 @@ assert.ok(app.includes("viewMode==='Bodenplatten'"), 'Require separate base view
 assert.ok(html.includes('data-view="SW4"'), 'Require fourth wall view');
 const roundtrip=validProject(JSON.parse(JSON.stringify(initial)));
 assert.equal(roundtrip.walls.length,4);
+const typed=JSON.parse(JSON.stringify(initial));
+typed.cableTypes=[{id:'type-1',name:'Test',category:'Datentechnik',diameter:18}];
+typed.cables[0].typeId='type-1';
+typed.cables[0].technicalCategory='Datentechnik';
+typed.cables[0].reviewStatus='Zur Prüfung';
+typed.cables[0].unresolvedB={wall:'SW4',hole:'Alte-ID',reason:'Leerrohr entfernt'};
+const afterType=validProject(typed);
+assert.equal(afterType.cableTypes[0].name,'Test');
+assert.equal(afterType.cables[0].typeId,'type-1');
+assert.equal(afterType.cables[0].unresolvedB.hole,'Alte-ID');
+assert.equal(afterType.network.shafts[0].snapshot.cableTypes[0].id,'type-1');
+
 assert.deepEqual(roundtrip.network.quality,{minPipeGapMm:null,minEdgeMm:null,minBendRadiusMm:null});
 assert.ok(Array.isArray(roundtrip.network.reviews));
 assert.ok(Array.isArray(roundtrip.network.audit));

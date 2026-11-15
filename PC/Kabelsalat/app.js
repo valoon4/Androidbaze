@@ -27,6 +27,8 @@ const spacingAdjust=globalThis.KabelsalatSpacingAdjust;
 if(!spacingAdjust)throw Error('Kabelsalat-Abstandsmodul fehlt');
 const holeEditorOps=globalThis.KabelsalatHoleEditorOps;
 if(!holeEditorOps)throw Error('Kabelsalat-Leerrohr-Editormodul fehlt');
+const cableEditorOps=globalThis.KabelsalatCableEditorOps;
+if(!cableEditorOps)throw Error('Kabelsalat-Kabel-Editormodul fehlt');
 const constructionV2=globalThis.KabelsalatConstructionV2;
 if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
 const avlReference=()=>['13_T_021','13_U_028'].includes(project?.sourceInfo?.shaft);
@@ -120,6 +122,11 @@ function validProject(o){
  return {id,name:id,visible:w.visible!==false,rows:clamp(Number(w.rows)||5,1,20),
  cols:clamp(Number(w.cols)||5,1,20),thickness,dn,holes};
  });
+ const cableTypes=(Array.isArray(o.cableTypes)?o.cableTypes:[]).slice(0,100)
+  .filter(t=>t&&typeof t.id==='string'&&typeof t.name==='string'&&
+   Number.isFinite(t.diameter)&&t.diameter>=2&&t.diameter<=80)
+  .map(t=>({id:cleanReferenceText(t.id,100),name:cleanReferenceText(t.name,80),
+   category:cleanReferenceText(t.category,80)||'Nicht klassifiziert',diameter:t.diameter}));
  const find=r=>r&&walls.some(w=>w.id===r.wall&&w.holes.some(h=>h.id===r.hole));
  const cables=o.cables.slice(0,400).filter(c=>c&&typeof c==='object').map((c,i)=>({
  id:String(c.id||uid('c')).slice(0,120),name:String(c.name||'Kabel '+(i+1)).slice(0,80),
@@ -139,12 +146,25 @@ function validProject(o){
  sourcePages:(Array.isArray(c.sourcePages)?c.sourcePages:[]).slice(0,20).filter(Number.isFinite),
  mappingStatus:cleanReferenceText(c.mappingStatus,200),
  sourceKind:cleanReferenceText(c.sourceKind,80),
- drawingDiameterOnly:c.drawingDiameterOnly===true
+ drawingDiameterOnly:c.drawingDiameterOnly===true,
+ ...(typeof c.technicalCategory==='string'?{
+  technicalCategory:cleanReferenceText(c.technicalCategory,80)||'Nicht klassifiziert'}:{}),
+ ...(typeof c.typeId==='string'?{typeId:cableTypes.some(t=>t.id===c.typeId)?c.typeId:''}:{}),
+ ...(typeof c.reviewStatus==='string'?{
+  reviewStatus:['Entwurf','Zur Prüfung','Geprüft'].includes(c.reviewStatus)?c.reviewStatus:'Entwurf'}:{}),
+ ...(typeof c.sourceCopyOf==='string'?{sourceCopyOf:cleanReferenceText(c.sourceCopyOf,120)}:{}),
+ ...(['A','B'].reduce((obj,key)=>{
+  const pending=c['unresolved'+key];
+  if(pending&&typeof pending.wall==='string'&&typeof pending.hole==='string')
+   obj['unresolved'+key]={wall:cleanReferenceText(pending.wall,20),
+    hole:cleanReferenceText(pending.hole,120),reason:cleanReferenceText(pending.reason,120)};
+  return obj;
+ },{}))
  }));
  const enclosures=components.normalizeEnclosures(o.enclosures,dims);
  const supports=components.normalizeSupports(o.supports,dims);
  const variants=components.normalizeVariants(o.variants);
- const result={version:5,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,
+ const result={version:5,name:String(o.name||'Neues Projekt').slice(0,80),dims,walls,cables,...(Array.isArray(o.cableTypes)?{cableTypes}:{}),
  opacity:clamp(Number(o.opacity)||55,10,100),showBox:o.showBox!==false,
  showLabels:o.showLabels!==false,splitEnabled:o.splitEnabled!==false,
  enclosures,supports,variants,sourceInfo:normalizeSourceInfo(o.sourceInfo)};
@@ -341,6 +361,11 @@ function renderUI(){
  $('copyHole').disabled=!hole();$('draftCopy').disabled=!hole();
  $('toggleWall').textContent=wall().visible?'Sichtbar':'Ausgeblendet';
  $('wallList').innerHTML=project.walls.map(w=>'<div class="wall-card '+(w.id===wallId?'active':'')+'" data-wall="'+w.id+'"><div class="row spread"><b><span class="dot" style="background:'+(w.visible?'#68a989':'#c9d2d7')+'"></span>'+w.id+'</b><span class="badge">'+w.holes.length+' Öffnungen</span></div><div class="small">'+(pdfView()?esc(PDF_WALLS[w.id]):WALL_NAMES[w.id]+' · '+w.rows+' × '+w.cols)+'</div></div>').join('');
+ const pipeRows=cableEditorOps.pipeRows(project,$('pipeSort').value);
+ $('pipeList').innerHTML=pipeRows.slice(0,150).map(p=>
+  '<button type="button" class="btn soft tiny" data-pipe-wall="'+esc(p.wall)+'" data-pipe-id="'+esc(p.hole)+'" style="margin:2px">'+
+  esc(p.wall)+' · '+esc(p.label)+' · DN'+p.dn+(p.trasse?' · '+esc(p.trasse):'')+'</button>').join('')+
+  (pipeRows.length>150?'<div class="small">Erste 150 von '+pipeRows.length+' Öffnungen</div>':'');
  $('viewport').classList.toggle('with-2d',project.splitEnabled!==false);$('splitEnabled').checked=project.splitEnabled!==false;
  $('opacity').value=project.opacity;$('opacityText').textContent=project.opacity+' %';$('showBox').checked=project.showBox;$('showLabels').checked=project.showLabels;
  $('modeButtons').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('scene').classList.toggle('placing',mode==='add');
@@ -386,6 +411,13 @@ function renderUI(){
  if(c){
  $('cableName').value=c.name;$('cableColor').value=c.color;$('cableGroup').value=c.group;
  $('cableDiameter').value=c.diameter;$('cableA').innerHTML=optionsHTML(c.a);$('cableB').innerHTML=optionsHTML(c.b);
+ $('cableMeta').textContent='ID '+c.id+' · '+(c.reviewStatus||'Entwurf')+
+  (c.unresolvedA?' · A offen: '+c.unresolvedA.wall+'/'+c.unresolvedA.hole:'')+
+  (c.unresolvedB?' · B offen: '+c.unresolvedB.wall+'/'+c.unresolvedB.hole:'');
+ $('cableCategory').value=c.technicalCategory||'Nicht klassifiziert';
+ $('cableType').innerHTML='<option value="">– Ohne Typ –</option>'+
+  (project.cableTypes||[]).map(t=>'<option value="'+esc(t.id)+'">'+esc(t.name)+' · '+t.diameter+' mm</option>').join('');
+ $('cableType').value=c.typeId||'';
  $('waypointList').innerHTML=c.route.map((p,i)=>'<div class="point-row" data-index="'+i+'"><b>'+String(i+1)+'</b>'+
  ['X','Y','Z'].map((axis,k)=>'<input type="number" data-axis="'+k+'" value="'+Math.round(p[k])+'" title="'+axis+' (mm)" step="10">').join('')+
  '<button data-remove="'+i+'" title="Bogenpunkt entfernen">×</button></div>').join('')||
@@ -2170,10 +2202,14 @@ $('spacingApply').addEventListener('click',()=>{
  }catch(e){resetSpacingPreview();$('spacingCompare').textContent='Nicht übernommen: '+e.message;}
 });
 $('modeButtons').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b){mode=b.dataset.mode;renderUI();}});
-$('deleteHole').addEventListener('click',()=>{const w=wall(),h=hole();if(!h)return;
- const n=project.cables.filter(c=>c.a?.hole===h.id||c.b?.hole===h.id).length;
- if(n&&!confirm(n+' Kabel haben diesen Anschluss. Das Leerrohr wirklich entfernen?'))return;
- change(()=>{w.holes=w.holes.filter(x=>x.id!==h.id);project.cables.forEach(c=>{if(c.a?.hole===h.id)c.a=null;if(c.b?.hole===h.id)c.b=null;});holeId=null;});
+$('deleteHole').addEventListener('click',()=>{const h=hole();if(!h)return;
+ try{
+  const plan=cableEditorOps.planHoleDeletion(project,wallId,h.id);
+  const names=plan.affected.map(x=>x.name+' (Ende '+x.end+')').join(', ');
+  if(!confirm('Leerrohr '+wallId+'/'+h.id+' wirklich entfernen?'+
+   (names?'\\nBetroffene Anschlüsse: '+names+'\\nDiese bleiben im Kabel als ungeklärt dokumentiert.':'')))return;
+  change(()=>{cableEditorOps.applyHoleDeletion(project,plan,true);holeId=null;},'Leerrohr entfernt; Kabelanschlüsse zur Prüfung markiert');
+ }catch(err){alert(err.message);}
 });
 $('applyHole').addEventListener('click',()=>{
  const h=hole();if(!h)return;
@@ -2328,17 +2364,61 @@ $('applyPhotoDimension').addEventListener('click',()=>{
  change(()=>{h.dimensionSpec=next;},'Unbestätigten Fotomaßkandidaten übernommen');
 });
 
+$('pipeSort').addEventListener('change',renderUI);
+$('pipeList').addEventListener('click',e=>{const item=e.target.closest('[data-pipe-wall]');if(!item)return;
+ wallId=item.dataset.pipeWall;holeId=item.dataset.pipeId;renderAll();});
 $('cableList').addEventListener('click',e=>{const card=e.target.closest('[data-cable]');if(card){cableId=card.dataset.cable;renderAll();}});
 $('cableFilters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(b){filter=b.dataset.filter;renderUI();}});
-$('addCable').addEventListener('click',()=>change(()=>{const n=project.cables.length+1,id=uid('c');
- project.cables.push({id,name:'Kabel '+n,color:COLORS[(n-1)%COLORS.length],group:'Weitere',diameter:12,route:[],a:null,b:null});
- cableId=id;filter='all';}));
-$('deleteCable').addEventListener('click',()=>{if(!cable())return;change(()=>{project.cables=project.cables.filter(c=>c.id!==cableId);cableId=project.cables[0]?.id||null;});});
-$('swapCable').addEventListener('click',()=>{const c=cable();if(c)change(()=>{const t=c.a;c.a=c.b;c.b=t;});});
-$('cableName').addEventListener('change',()=>{const c=cable();if(c)change(()=>c.name=$('cableName').value.trim().slice(0,80)||'Kabel');});
+$('addCable').addEventListener('click',()=>change(()=>{
+ cableId=cableEditorOps.createCable(project,'Kabel '+(project.cables.length+1));filter='all';
+},'Neues Kabel erstellt'));
+$('copyCable').addEventListener('click',()=>{if(!cable())return;
+ change(()=>{cableId=cableEditorOps.duplicateCable(project,cableId);filter='all';},'Kabel mit Quelle als ungeprüfte Kopie dupliziert');
+});
+$('deleteCable').addEventListener('click',()=>{if(!cable())return;
+ try{
+  const plan=cableEditorOps.planCableDeletion(project,cableId);
+  const impact=plan.affectedRoutes.map(r=>r.name+' ['+r.id+']').join(', ');
+  if(!confirm('Kabel '+cable().name+' ('+cableId+') wirklich löschen?'+
+   (impact?'\\nBetroffene Netzrouten: '+impact+'\\nDie Route bleibt gespeichert, ihr Segment wird als fehlend gemeldet.':'')))return;
+  change(()=>{cableEditorOps.applyCableDeletion(project,plan,true);
+   cableId=project.cables[0]?.id||null;},'Kabel nach Netzroutenwarnung entfernt');
+ }catch(err){alert(err.message);}
+});
+$('swapCable').addEventListener('click',()=>{const c=cable();if(!c)return;
+ if(!confirm('Anschlüsse A und B bei '+c.name+' tauschen? Bestehende Quelle und Kabelführung müssen danach geprüft werden.'))return;
+ change(()=>cableEditorOps.swapEndpoints(project,c.id),'Kabelanschlüsse A/B getauscht; Prüfung offen');
+});
+$('cableName').addEventListener('change',()=>{const c=cable();if(!c)return;
+ const name=$('cableName').value.trim();
+ if(!name){alert('Bitte Kabelbezeichnung angeben.');renderUI();return;}
+ change(()=>cableEditorOps.updateCable(project,c.id,{name}),'Kabel umbenannt');
+});
 $('cableColor').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.color=$('cableColor').value;});});
-$('cableGroup').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.group=$('cableGroup').value;});});
-$('cableDiameter').addEventListener('change',()=>{const c=cable();if(c)change(()=>{c.diameter=clamp(Number($('cableDiameter').value)||12,2,80);});});
+$('cableGroup').addEventListener('change',()=>{const c=cable();if(c)
+ change(()=>cableEditorOps.updateCable(project,c.id,{group:$('cableGroup').value}),'Kabelgruppe geändert');});
+$('cableDiameter').addEventListener('change',()=>{const c=cable();if(!c)return;
+ const diameter=Number($('cableDiameter').value);
+ if(!$('cableDiameter').value.trim()||!Number.isFinite(diameter)||diameter<2||diameter>80){
+  alert('Kabel-Ø muss zwischen 2 und 80 mm liegen.');renderUI();return;
+ }
+ change(()=>cableEditorOps.updateCable(project,c.id,{diameter}),'Kabelaußendurchmesser geändert');
+});
+$('cableCategory').addEventListener('change',()=>{const c=cable();if(c)change(()=>
+ cableEditorOps.updateCable(project,c.id,{technicalCategory:$('cableCategory').value}),'Technische Kabelkategorie geändert');});
+$('cableType').addEventListener('change',()=>{const c=cable();if(c)change(()=>
+ cableEditorOps.updateCable(project,c.id,{typeId:$('cableType').value}),'Kabeltyp zugeordnet');});
+$('addCableType').addEventListener('click',()=>{
+ const name=$('newCableType').value.trim(),diameter=Number($('newCableTypeDiameter').value);
+ if(!name||!$('newCableTypeDiameter').value.trim()||!Number.isFinite(diameter)||diameter<2||diameter>80){
+  alert('Für den Typ einen Namen und einen Ø von 2–80 mm eintragen.');return;
+ }
+ const c=cable();if(!c)return;
+ change(()=>{const typeId=cableEditorOps.addType(project,
+  {name,diameter,category:$('cableCategory').value});
+  cableEditorOps.updateCable(project,c.id,{typeId});},'Kabeltyp im Projektkatalog ergänzt');
+ $('newCableType').value='';$('newCableTypeDiameter').value='';
+});
 $('addWaypoint').addEventListener('click',()=>{const c=cable();if(!c)return;
  const a=endpoint(c.a),b=endpoint(c.b),sz=sizes();if(!a||!b){alert('Bitte zuerst die Anschlüsse A und B auswählen.');return;}
  const vec=a.clone().lerp(b,.5);vec.y=clamp(vec.y+(.15),.05,sz.h-.05);
@@ -2425,7 +2505,12 @@ for(const k of ['ola','ms']){const key=k.toUpperCase();
 for(const [el,key,min,max] of [['wallThickness','thickness',40,500],['wallDn','dn',30,160]])
  $(el).addEventListener('change',()=>change(()=>{wall()[key]=clamp(Number($(el).value)||wall()[key],min,max);}));
 
-for(const [field,key] of [['cableA','a'],['cableB','b']])$(field).addEventListener('change',()=>{const c=cable();if(c)change(()=>{c[key]=parseEndpoint($(field).value);});});
+for(const [field,key] of [['cableA','a'],['cableB','b']])$(field).addEventListener('change',()=>{const c=cable();if(!c)return;
+ const ref=parseEndpoint($(field).value);
+ try{cableEditorOps.validateEndpoint(project,ref);
+  change(()=>cableEditorOps.setEndpoint(project,c.id,key,ref),'Kabelanschluss '+key.toUpperCase()+' bearbeitet');
+ }catch(err){alert(err.message);renderUI();}
+});
 $('projectName').addEventListener('change',()=>change(()=>project.name=$('projectName').value.trim().slice(0,80)||'Neues Projekt'));
 for(const [el,key,min,max] of [['width','w',600,12000],['depth','d',600,12000],['height','h',600,8000]])
  $(el).addEventListener('change',()=>{const x=clamp(Number($(el).value)||project.dims[key],min,max);change(()=>{project.dims[key]=x;});});
