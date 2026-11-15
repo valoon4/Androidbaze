@@ -9,7 +9,7 @@ const path=require('node:path'),fs=require('node:fs');
  const browser=await playwright.chromium.launch({
   executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',headless:true,
   args:['--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader',
-   '--use-gl=angle','--use-angle=swiftshift']
+   '--use-gl=angle','--use-angle=swiftshader']
  });
  try{
   const page=await browser.newPage({viewport:{width:1500,height:930},deviceScaleFactor:1});
