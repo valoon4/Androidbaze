@@ -29,22 +29,22 @@
 
 **Quelle:** E03, E04, P0-03. **Definition of Done:** Rohr-CRUD, IDs, DN, Randabstände und Rundlauf 2D/3D getestet.
 
-- [ ] **KAB-0235** – Neues Leerrohr auf beliebiger Wand mit freiem Mittelpunkt anlegen
-- [ ] **KAB-0236** – Leerrohr-ID bei Kopieren sicher neu generieren
-- [ ] **KAB-0237** – Leerrohr-DN aus validierbarer Vorschlagsliste auswählen
-- [ ] **KAB-0238** – Freien Rohr-Außendurchmesser separat vom Nenndurchmesser speichern
-- [ ] **KAB-0239** – Leerrohrwandstärke optional separat erfassen
-- [ ] **KAB-0240** – Leerrohr x-Mittelpunkt numerisch editieren
-- [ ] **KAB-0241** – Leerrohr y-Mittelpunkt numerisch editieren
-- [ ] **KAB-0242** – Leerrohr in 2D mit aktivem Fangraster verschieben
-- [ ] **KAB-0243** – Leerrohr in 2D ohne Fangraster verschieben
-- [ ] **KAB-0244** – Rohrgruppe rechteckig mit definiertem Mittelpunktabstand duplizieren
-- [ ] **KAB-0245** – Rohrgruppe mit unterschiedlichen DN duplizieren
-- [ ] **KAB-0246** – Rohrloch von einer Wand auf eine andere übertragen
-- [ ] **KAB-0247** – Rohrloch beim Wandwechsel mit Anschlusskonflikten warnen
-- [ ] **KAB-0248** – Rohr über Wandgrenze nicht unbemerkt platzieren
-- [ ] **KAB-0249** – Rohr über Nachbarrohr nicht unbemerkt platzieren
-- [ ] **KAB-0250** – Rohr durch Tastatureingabe auf exakten Millimeter setzen
+- [x] **KAB-0235** – Neues Leerrohr auf beliebiger Wand mit freiem Mittelpunkt anlegen · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0236** – Leerrohr-ID bei Kopieren sicher neu generieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0237** – Leerrohr-DN aus validierbarer Vorschlagsliste auswählen · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0238** – Freien Rohr-Außendurchmesser separat vom Nenndurchmesser speichern · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0239** – Leerrohrwandstärke optional separat erfassen · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0240** – Leerrohr x-Mittelpunkt numerisch editieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0241** – Leerrohr y-Mittelpunkt numerisch editieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0242** – Leerrohr in 2D mit aktivem Fangraster verschieben · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0243** – Leerrohr in 2D ohne Fangraster verschieben · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0244** – Rohrgruppe rechteckig mit definiertem Mittelpunktabstand duplizieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0245** – Rohrgruppe mit unterschiedlichen DN duplizieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0246** – Rohrloch von einer Wand auf eine andere übertragen · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0247** – Rohrloch beim Wandwechsel mit Anschlusskonflikten warnen · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0248** – Rohr über Wandgrenze nicht unbemerkt platzieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0249** – Rohr über Nachbarrohr nicht unbemerkt platzieren · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
+- [x] **KAB-0250** – Rohr durch Tastatureingabe auf exakten Millimeter setzen · Nachweis: https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md
 - [ ] **KAB-0251** – Leerrohrlöschung mit zugeordneten Kabeln vorab bestätigen
 - [ ] **KAB-0252** – Rohrliste nach Wand, Trasse und DN sortierbar machen
 

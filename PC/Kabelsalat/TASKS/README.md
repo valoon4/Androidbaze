@@ -18,14 +18,16 @@
 
 | Ebene | Erledigt | Offen | Gesamt |
 |---|---:|---:|---:|
-| **Alle Parent-Tickets** | **26** | **862** | **888** |
-| **Alle Mikro-Tasks** | **1.086** | **11.926** | **13.012** |
+| **Alle Parent-Tickets** | **42** | **846** | **888** |
+| **Alle Mikro-Tasks** | **1.331** | **11.681** | **13.012** |
 | **Bros jüngste 10 Parent-Tickets** | **4** | **6** | **10** |
 | **Bros 200 Mikro-Tasks** | **199** | **1** | **200** |
 
 **Technisch abgeschlossene Bro-Parents:** KAB-0884, 0886, 0887, 0888 · [Nachweise](./BRO_PARENT_TECH_ABNAHME_2026-11-15.md) · [erfolgreiche Chromium-Vollprüfung](https://github.com/valoon4/Androidbaze/actions/runs/43709846491).
 
 **Zusätzlich abgeschlossen:** KAB-0051–0053 · [schematische Rohrabstände mit Undo/Redo, geschützten Kabelverbindungen und Chromium-Vorher/Nachher](https://github.com/valoon4/Androidbaze/blob/b84213fb6c208e113bb28bcc26a5f60754ecb169/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_SPACING_GIANT_28.md).
+
+**Nächster Gigant abgeschlossen:** KAB-0235–0250 · [Leerrohr-Editor 2.1 (16 Parents / 245 Mikroschritte) mit Chromium- und Quellschutztests](https://github.com/valoon4/Androidbaze/blob/a0c8cd58d1686cdaca769f9735d7340dbccd7e19/PC/Kabelsalat/TASKS/ATOMIC/EVIDENCE_2026-11-15_HOLE_EDITOR_GIANT_245.md).
 
 **Letzte offene Bro-Mikro-ID:** KAB-0878/M09 · echte Antwort zur Betonoptik erfassen und zuordnen. Kein Ersatz durch erfundene Freigabe. Weitere offene Bro-Parents: 0877/0878/0879/0881/0882/0885 (visuelle Bro-Abnahme bzw. PDF-/Foto-/Typ-Erkennung). Die datierten älteren Sprintabschnitte weiter unten sind historische Zwischenstände.
 
