@@ -76,8 +76,10 @@
  }
  // KAB-0881: bounded interface for already-extracted PDF text-layer pages.
  // No binary PDF parsing, OCR or spatial attribution is claimed here.
- function parsePlanPages(pages,{source='PDF-Textlayer (ungeprüft)',maxPages=32,maxChars=100000}={}){
+ function parsePlanPages(pages,{source='PDF-Textlayer (ungeprüft)',documentVersion=null,maxPages=32,maxChars=100000}={}){
   if(!Array.isArray(pages))throw Error('PDF-Seiten müssen eine Liste sein');
+  if(documentVersion!==null&&(typeof documentVersion!=='string'||documentVersion.length>120))
+   throw Error('Ungültige PDF-Dokumentversion');
   if(!Number.isSafeInteger(maxPages)||maxPages<1||maxPages>100||
      !Number.isSafeInteger(maxChars)||maxChars<1||maxChars>1000000)
    throw Error('Ungültiges PDF-Verarbeitungsbudget');
@@ -94,7 +96,8 @@
    if(budget>maxChars)throw Error('PDF-Textbudget überschritten');
    const matches=parsePlanText(page.text,{source});
    results.push(...matches.map(m=>({...m,page:number,rotation,source,
-    provenance:{source,page:number,line:m.line,rotation},
+    provenance:{source,page:number,line:m.line,rotation,documentVersion},
+    scaleStatus:'not-provided',measurementBasis:'drawing-label',
     status:'candidate',reviewed:false})));
   });
   // Identical pipe IDs with conflicting labels across the supplied pages stay
