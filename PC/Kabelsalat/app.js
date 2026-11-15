@@ -29,6 +29,7 @@ const holeEditorOps=globalThis.KabelsalatHoleEditorOps;
 if(!holeEditorOps)throw Error('Kabelsalat-Leerrohr-Editormodul fehlt');
 const cableEditorOps=globalThis.KabelsalatCableEditorOps;
 if(!cableEditorOps)throw Error('Kabelsalat-Kabel-Editormodul fehlt');
+const csvModel=globalThis.KabelsalatCsv;
 const constructionV2=globalThis.KabelsalatConstructionV2;
 if(!constructionV2)throw Error('Kabelsalat-2.0-Geometriemodul fehlt');
 const avlReference=()=>['13_T_021','13_U_028'].includes(project?.sourceInfo?.shaft);
@@ -1767,6 +1768,62 @@ $('qualityList').addEventListener('click',e=>{
  }
 });
 $('reviewTarget').addEventListener('change',()=>{reviewKey=$('reviewTarget').value;renderQualityUI();});
+/* KAB-0505..0522: conservative, rollback-safe CSV import. */
+let csvPlan=null;
+function resetCsvPreview(){
+ csvPlan=null;$('csvApply').disabled=true;
+ $('csvStatus').textContent='CSV geändert – Vorschau erneut prüfen.';
+}
+for(const id of ['csvKind','csvUnit','csvPaste','csvSource'])
+ $(id).addEventListener(id==='csvPaste'||id==='csvSource'?'input':'change',resetCsvPreview);
+$('csvFile').addEventListener('change',async()=>{
+ resetCsvPreview();
+ const file=$('csvFile').files?.[0];if(!file)return;
+ if(file.size>3500000){$('csvStatus').textContent='Datei über 3,5 MB – Import abgelehnt.';return;}
+ try{$('csvPaste').value=await file.text();
+  $('csvSource').value=file.name.slice(0,240);
+  $('csvStatus').textContent='Datei gelesen – erst Vorschau prüfen.';}
+ catch(e){$('csvStatus').textContent='Datei konnte nicht gelesen werden: '+e.message;}
+});
+$('csvPreview').addEventListener('click',()=>{
+ csvPlan=null;$('csvApply').disabled=true;
+ try{
+  if(!csvModel)throw Error('CSV-Modul fehlt');
+  syncActiveShaft();
+  const candidate=csvModel.preview(project,$('csvKind').value,$('csvPaste').value,
+   {unit:$('csvUnit').value,source:$('csvSource').value});
+  if(!candidate.ok){
+   $('csvStatus').textContent=candidate.errors.length+' CSV-Fehler, keine Änderung:\n'+
+    candidate.errors.slice(0,6).map(e=>e.message).join('\n');
+   return;
+  }
+  csvPlan=candidate;$('csvApply').disabled=candidate.changes.length===0;
+  $('csvStatus').textContent=candidate.changes.length+' geprüfte Objekte – noch nicht übernommen.\n'+
+   candidate.changes.slice(0,8).map(c=>c.shaftId+' / '+c.id+' / '+c.field).join('\n');
+ }catch(e){$('csvStatus').textContent='Vorschau nicht möglich: '+e.message;}
+});
+$('csvApply').addEventListener('click',()=>{
+ if(!csvPlan?.ok)return;
+ try{
+  // Reject stale base state before creating the sole Undo checkpoint.
+  csvModel.apply(project,csvPlan);
+  const count=csvPlan.changes.length,kind=csvPlan.kind;
+  change(()=>{project=csvModel.apply(project,csvPlan);},
+   'CSV '+kind+': '+count+' Änderungen atomar importiert');
+  csvPlan=null;$('csvApply').disabled=true;
+  $('csvStatus').textContent=count+' Einträge übernommen – ein Undo-Schritt, Quellen weiterhin ungeprüft.';
+ }catch(e){csvPlan=null;$('csvApply').disabled=true;
+  $('csvStatus').textContent='CSV-Übernahme abgelehnt: '+e.message;}
+});
+$('csvExport').addEventListener('click',()=>{
+ try{
+  if(!csvModel)throw Error('CSV-Modul fehlt');
+  syncActiveShaft();
+  const kind=$('csvKind').value,content=csvModel.exportCsv(project,kind);
+  download(filename()+'-'+kind+'.csv',content,'text/csv;charset=utf-8');
+  $('csvStatus').textContent=kind+' als UTF-8 CSV mit BOM exportiert, keine Fachfreigabe.';
+ }catch(e){$('csvStatus').textContent='CSV-Export nicht möglich: '+e.message;}
+});
 $('sourceAddDocument').addEventListener('click',()=>{
  try{
   const data={id:$('sourceDocId').value,title:$('sourceDocTitle').value,
