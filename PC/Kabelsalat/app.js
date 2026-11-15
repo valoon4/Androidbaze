@@ -2059,7 +2059,7 @@ $('applyHole').addEventListener('click',()=>{
  const h=hole();if(!h)return;
  try{
   const xText=$('holeU').value,yText=$('holeV').value,dnText=$('holeDn').value;
-  if(!/^\\d+$/.test(xText)||!/^\\d+$/.test(yText)||!/^\\d+$/.test(dnText))
+  if(!/^\d+$/.test(xText)||!/^\d+$/.test(yText)||!/^\d+$/.test(dnText))
    throw Error('Position und DN bitte als ganze Millimeter eingeben');
   const xMm=Number(xText),yMm=Number(yText),dn=Number(dnText);
   if(!Number.isSafeInteger(dn)||dn<30||dn>160)
