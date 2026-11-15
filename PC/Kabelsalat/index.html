@@ -926,6 +926,25 @@ K01;Kabel 1;S003;3;Plan A S. 6;KANDIDAT</pre>
 </div>
 <p class="small">Übergabelisten sind CSV für Excel/andere Beteiligte. Nur Eingabebelege; keine automatische physische Durchgangsfreigabe. Importdaten bleiben bis zum Export nur in dieser Ansicht.</p>
 </section>
+<section class="section" id="planRouteWorkspace" aria-label="Plandateien und Kabelroute-Kandidaten">
+ <div class="eyebrow">NEU · Bros 400 Schächte · Plan-Erkennung</div>
+ <h2>Planunterlagen → Kabelroute-Kandidaten</h2>
+ <p class="small"><b>Offline und nur zur manuellen Prüfung.</b> Textbasierte PDF-, TXT-, CSV- und MD-Dateien einlesen, ausdrücklich notierte Schachtfolgen erkennen und mit der Schachtliste abgleichen. Keine OCR für Bild-/Scan-PDFs, keine externe KI, keine automatisch bestätigten Kabelwege.</p>
+ <label class="field">Plandateien (bis 12 Dateien à 8 MB)
+  <input id="planRouteFiles" type="file" multiple accept=".pdf,.txt,.csv,.md,application/pdf,text/plain,text/csv">
+ </label>
+ <label class="field">Optional: Text aus Plan/Excel einfügen
+  <textarea id="planRoutePaste" rows="4" maxlength="200000" placeholder="Kabel K01: S001 > S002 > S003&#10;Kabel K02: S002 > S004"></textarea>
+ </label>
+ <div class="row"><button type="button" class="btn primary tiny" id="planRouteAnalyze">Plandateien prüfen</button>
+  <button type="button" class="btn soft tiny" id="planRouteApply" disabled>Ausgewählte Kandidaten in Kabel-Liste übernehmen</button>
+ </div>
+ <div id="planRouteStatus" class="small" role="status" aria-live="polite">Zuerst Schachtliste oben laden, dann Plandateien auswählen.</div>
+ <div id="planRouteResults" class="small" style="max-height:260px;overflow:auto"></div>
+ <div id="planRouteIssues" class="small" style="max-height:155px;overflow:auto"></div>
+ <button type="button" class="btn soft tiny" id="planRouteExportIssues" disabled>↓ Prüffälle CSV</button>
+ <p class="small"><b>Freigabeprinzip:</b> Jeder Treffer ist zunächst KANDIDAT. Mehrere widersprüchliche Routen desselben Kabels werden nicht zusammengefügt. Auswahl ist ausdrücklich nötig. PDF-Seitenzahlen beziehen sich nur auf eindeutig lesbare PDF-Seitenobjekte; Grafik/Kreuzung ist kein Kabeldurchgang.</p>
+</section>
 <section class="section"><div class="eyebrow">Zwei getrennte Einhausungen</div>
 <div class="hint" style="margin-bottom:12px">OLA: Variante A mit gestapelten Platten; MS: Variante B mit Stützelementen. 3D-Konzept über die AVL0116-Schaltfläche aktivieren. Maße, Durchführungen und Brandschutzfreigabe bleiben offen.</div>
 <label><input type="checkbox" id="olaVisible" checked> OLA · Einhausung</label>
@@ -1013,6 +1032,6 @@ K01;Kabel 1;S003;3;Plan A S. 6;KANDIDAT</pre>
 </section>
 </aside>
 </div>
-<script src="recovery.js?v=2.0.13-beta.1"></script><script src="vendor/three.min.js?v=2.0.13-beta.1"></script><script src="editor2d.js?v=2.0.13-beta.1"></script><script src="components.js?v=2.0.13-beta.1"></script><script src="network.js?v=2.0.13-beta.1"></script><script src="network-route-planner.js?v=2.0.13-beta.1"></script><script src="network-world-route.js?v=2.0.13-beta.1"></script><script src="quality.js?v=2.0.13-beta.1"></script><script src="reports.js?v=2.0.13-beta.1"></script><script src="reference-data.js?v=2.0.13-beta.1"></script><script src="examples.js?v=2.0.13-beta.1"></script><script src="pdf-geometry.js?v=2.0.13-beta.1"></script><script src="schematic-positions.js?v=2.0.13-beta.1"></script><script src="spacing-adjust.js?v=2.0.13-beta.1"></script><script src="hole-editor-ops.js?v=2.0.13-beta.1"></script><script src="cable-editor-ops.js?v=2.0.13-beta.1"></script><script src="pipe-dimensions.js?v=2.0.13-beta.1"></script><script src="photo-candidates.js?v=2.0.13-beta.1"></script><script src="concrete-wall.js?v=2.0.13-beta.1"></script><script src="construction-v2.js?v=2.0.13-beta.1"></script><script src="pdf-visual.js?v=2.0.13-beta.1"></script><script src="csv-data.js?v=2.0.13-beta.1"></script><script src="shaft-handover.js?v=2.0.13-beta.1"></script><script src="app.js?v=2.0.13-beta.1"></script>
+<script src="recovery.js?v=2.0.13-beta.1"></script><script src="vendor/three.min.js?v=2.0.13-beta.1"></script><script src="editor2d.js?v=2.0.13-beta.1"></script><script src="components.js?v=2.0.13-beta.1"></script><script src="network.js?v=2.0.13-beta.1"></script><script src="network-route-planner.js?v=2.0.13-beta.1"></script><script src="network-world-route.js?v=2.0.13-beta.1"></script><script src="quality.js?v=2.0.13-beta.1"></script><script src="reports.js?v=2.0.13-beta.1"></script><script src="reference-data.js?v=2.0.13-beta.1"></script><script src="examples.js?v=2.0.13-beta.1"></script><script src="pdf-geometry.js?v=2.0.13-beta.1"></script><script src="schematic-positions.js?v=2.0.13-beta.1"></script><script src="spacing-adjust.js?v=2.0.13-beta.1"></script><script src="hole-editor-ops.js?v=2.0.13-beta.1"></script><script src="cable-editor-ops.js?v=2.0.13-beta.1"></script><script src="pipe-dimensions.js?v=2.0.13-beta.1"></script><script src="photo-candidates.js?v=2.0.13-beta.1"></script><script src="concrete-wall.js?v=2.0.13-beta.1"></script><script src="construction-v2.js?v=2.0.13-beta.1"></script><script src="pdf-visual.js?v=2.0.13-beta.1"></script><script src="csv-data.js?v=2.0.13-beta.1"></script><script src="shaft-handover.js?v=2.0.13-beta.1"></script><script src="plan-route-import.js?v=2.0.13-beta.1"></script><script src="app.js?v=2.0.13-beta.1"></script>
 </body>
 </html>
