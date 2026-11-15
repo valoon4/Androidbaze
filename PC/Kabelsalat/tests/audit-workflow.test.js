@@ -47,9 +47,11 @@ const hundred=[...Array.from({length:20},(_,i)=>i+251),
 assert.equal(hundred.length,58);
 for(const id of hundred){
  const file=id.slice(4)>='0649'?'04-P3-QA-BETRIEB-UND-FEEDBACK.md':'02-P1-EDITOR-UND-NETZ.md';
- const row=files[file].split('\\n').find(l=>l.startsWith('- [x] **'+id+'** – '));
+ const row=files[file].split(String.fromCharCode(10)).find(l=>l.startsWith('- [x] **'+id+'** – '));
  assert.ok(row,'Reviewed parent still missing: '+id);
- assert.match(row,/Nachweis: https:\\/\\/github\\.com\\/valoon4\\/Androidbaze\\/blob\\/[0-9a-f]{40}\\//);
+ assert.ok(row.includes('Nachweis: https://github.com/valoon4/Androidbaze/blob/'),
+  'Immutable evidence URL missing: '+id);
+ assert.match(row,new RegExp('blob/[0-9a-f]{40}/'),'Evidence must pin a commit: '+id);
 }
 for(const wave of mod.WAVE)assert.ok(md.includes('| '+wave+' |'));
 const copy=()=>({...files});
