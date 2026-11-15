@@ -31,7 +31,10 @@
   const w=p.walls?.find(x=>x.id===wallId);
   if(!w||!Array.isArray(w.holes))throw Error('Wanddaten fehlen');
   return JSON.stringify({dims:p.dims,wallId,
-   holes:w.holes.map(h=>({id:h.id,u:h.u,v:h.v,dn:h.dn,openingMm:h.dimensionSpec?.openingMm}))});
+   holes:w.holes.map(h=>({id:h.id,u:h.u,v:h.v,dn:h.dn,openingMm:h.dimensionSpec?.openingMm})),
+   // Cable topology is part of the preview baseline: never apply a layout
+   // after links have been edited in a separate panel or imported externally.
+   cables:(p.cables||[]).map(c=>({id:c.id,a:c.a,b:c.b}))});
  }
  function metrics(items,span,height){
   let minGap=null,minEdge=null,overlap=0,outer=0;
@@ -118,9 +121,43 @@
   if(!preview||!p||p.sourceInfo||snapshot(p,preview.wallId)!==preview.base)
    throw Error('Die Vorschau ist veraltet oder die Originalquelle geschützt: erneut berechnen');
   const wall=p.walls.find(w=>w.id===preview.wallId);
-  const updated=new Map(preview.changes.map(x=>[x.id,x.to]));
-  for(const h of wall.holes){const next=updated.get(h.id);if(next){h.u=next.u;h.v=next.v;}}
-  // Cable endpoints, pipe IDs, physical dimensions and source fields untouched.
+  const changes=preview.changes;
+  if(!Array.isArray(changes)||!Number.isInteger(preview.moved)||
+     preview.moved!==changes.length||!integer(preview.gapMm)||!integer(preview.edgeMm))
+   throw Error('Abstandsvorschau ungültig: erneut berechnen');
+  const original=new Map(wall.holes.map(h=>[h.id,h]));
+  const updates=new Map();
+  for(const entry of changes){
+   const h=original.get(entry?.id),next=entry?.to;
+   if(!h||updates.has(entry.id)||!next||
+      !Number.isFinite(next.u)||!Number.isFinite(next.v)||
+      next.u<0||next.u>1||next.v<0||next.v>1||
+      entry.from?.u!==h.u||entry.from?.v!==h.v)
+    throw Error('Abstandsvorschau ungültig: fehlende Rohr-ID oder Position');
+   updates.set(entry.id,next);
+  }
+  // Validate the ENTIRE proposed geometry before mutating a single hole;
+  // invalid/stale/forged previews must not partially move any coordinates.
+  const span=spanMm(p,preview.wallId),height=p.dims.h;
+  const proposed=wall.holes.map(h=>{
+   const pos=updates.get(h.id)||h;
+   return {x:pos.u*span,y:pos.v*height,r:getRadius(h)};
+  });
+  let minEdge=Infinity,minGap=Infinity;
+  for(let i=0;i<proposed.length;i++){
+   const a=proposed[i];
+   minEdge=Math.min(minEdge,a.x-a.r,span-a.x-a.r,a.y-a.r,height-a.y-a.r);
+   for(let j=0;j<i;j++){
+    const b=proposed[j];
+    minGap=Math.min(minGap,Math.hypot(a.x-b.x,a.y-b.y)-a.r-b.r);
+   }
+  }
+  if(minEdge<preview.edgeMm-.01||minGap<preview.gapMm-.01)
+   throw Error('Abstandsvorschau ungültig: Zielabstände nicht erfüllt');
+  for(const h of wall.holes){
+   const next=updates.get(h.id);if(next){h.u=next.u;h.v=next.v;}
+  }
+  // Only U/V move: cable endpoints, IDs, physical sizes and sources untouched.
   return preview.moved;
  }
  return {spanMm,metrics,plan,apply,snapshot};
