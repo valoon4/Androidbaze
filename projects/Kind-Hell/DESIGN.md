@@ -28,3 +28,15 @@ Der Nutzer wollte **vier tatsächlich unterschiedliche UI-Designs in einem Vergl
 - Konkrete Schriftart/Markenlogo, eigene optionale Originalillustration und Feinschliff auf realem Android-Gerät.
 - Accessibility, Kontrast, kleine Displays, Querformat und langfristiges Designsystem.
 - Einmal nach installierter v0.0.2-Demo prüfen, ob D genügend „Seele“ besitzt und wo mehr Originalität ohne UI-Überladung nötig ist.
+
+## Verbindliche App-Icon-Auswahl: Motiv 4 (17.11.2026)
+**Nutzerabsicht und Bestätigung:** Der Nutzer stellte ein eigenes **2×2-Bild mit vier runden App-Icon-Motiven** zur Verfügung und sagte: „Dein fav von 1 2 oder 4 wird app icon btw.“ Der Assistent wählte **Motiv 4** als Favorit, der Nutzer bestätigte mit **„Yo save it“**. Für Kind Hell ist damit **Bild/Variante 4 = unten rechts** als gewünschtes App-Icon **festgehalten**. Dies ist eine **andere Auswahl als die frühere Designrichtung D/Seele Mystic**: D ist das App-UI; 4 ist das konkrete Icon-Motiv.
+
+**Exakte visuelle Referenz:** Ein freundliches blondes, gekröntes Fantasy-Mädchen links und ein braunhaariger Junge mit blau-weißem Gewand rechts, beide strecken einladend eine Hand nach vorne; die beiden halten sich mittig an der Hand. Hellblaue Wolken, tiefblauer Sternenhimmel, **großer leuchtender goldener Kreis/Ring** um beide Figuren, Stern am oberen Kreisbogen. Das unterscheidet **4** klar von 1 (blauer Taghimmel), 2 (goldene Himmels-/Palasttreppe) und 3 (rosa Sonnenuntergang). Variante 4 ist **kein** austauschbares "mystisches Logo" – die beiden Figuren und der Ring sollen erhalten bleiben.
+
+**Quellenidentität:** Vom Nutzer im Chat hochgeladenes Original-Kontaktblatt `1000052077.png` (1536×1536 Pixel, in Wirklichkeit JPEG-kodiert), SHA-256 `2caf9c8ec4ef24728da65bc941be6088d6482e5b59a66022082bece1773f03f0`. Die Auswahl ist das **untere rechte Quadrant** im 2×2-Raster, exakt x=768..1536, y=768..1536. Aus dieser Originaldatei wurde im Chat ein unveränderter Quadrant und ein 512×512-PNG als getrennte Vorschau zugeschnitten. Name 512-PNG `Kind-Hell-Icon-D-4-512.png`, SHA-256 `2692fbc0fea5dab014822bcc119fb8f1f56b75dac8d74e69eaaeaeab64d4d941`. Die binären Bilddateien selbst sind **noch nicht ins GitHub-Repo eingespielt**; sie liegen als Chat-Artefakte vor und müssen vor dem finalen Android-Icon-Build dauerhaft als Ressource gesichert werden.
+
+**Entschieden vs. vorgeschlagen:** **App-Icon = 4 ist bestätigt.** Der Gedanke, Variante 2 eventuell als Splash-/Promo-Art zu verwenden, stammte **nur vom Assistenten** und ist **nicht** vom Nutzer beschlossen. Keine automatische Festlegung auf Splash 2!
+
+**Implementierungsstatus:** Noch **nicht** als Android Launcher-Icon in `android/app/src/main/res/mipmap-*` oder als Adaptive-Icon eingebunden. Die vorhandene v0.0.2-APK darf **nicht** als fertiges neues Icon beworben werden. Nächste Aktion: Original-Crop als Bildressource ins Projekt übernehmen, Android-Maskierung/Foreground-Safe-Zone und kleine Launcher-Größen prüfen, APK bauen, Icon auf Gerät testen; andere App-Funktionen und Wormblade unangetastet lassen.
+
