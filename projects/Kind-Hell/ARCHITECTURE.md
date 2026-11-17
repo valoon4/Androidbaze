@@ -36,6 +36,9 @@ projects/Kind-Hell/
 - Keine Bild-Uploads im Pilot; Moderation/Meldewege bleiben trotzdem notwendig.
 - Schutz persönlicher Daten, begrenzte Datenspeicherung, Export und Backups müssen vor einer öffentlichen Beta geplant und geprüft werden.
 
+## Späterer Datenschutz-Baustein: „Verbindungen“
+Eine mögliche spätere Erweiterung des **Kompasses** umfasst Aktivitäten, Mitgestaltung und optional verschiedene Beziehungsperspektiven. **Noch keine technische Implementierungsentscheidung.** Öffentliche Profildaten, private Kontaktwünsche und besonders sensible Beziehungsinformationen brauchen klar getrennte Daten- und Berechtigungskonzepte; keine pauschale Veröffentlichung oder sensible Suche im Pilot. Erwachsene Inhalte und Beziehungsoffenheit (z. B. ENM) erst nach separatem 18+-Gate, expliziten/widerrufbaren Freigaben, Schutz vor Outing und Moderationskonzept. Keine automatische Ableitung von Einwilligung aus einem Match. Siehe [CONNECTIONS.md](CONNECTIONS.md).
+
 ## Inkrementelle Meilensteine
 1. **0.0:** Native App-Grundstruktur + lokal navigierbare Screens.
 2. **0.1:** Öffentlicher Text-Marktplatz mit Post/Antwort und einfachem Profil; Pilot-Backend.
