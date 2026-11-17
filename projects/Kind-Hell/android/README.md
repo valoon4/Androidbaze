@@ -1,6 +1,12 @@
-# Kind Hell – native Android Demo v0.0.1
+# Kind Hell – native Android Demo v0.0.2 (Design D / Seele Mystic)
 
 Eigenständiges Android-/Kotlin-/Jetpack-Compose-Projekt. **Nicht** das Root-Projekt `:app` (Wormblade).
+
+## Gewählte visuelle Richtung
+- **D „Seele Mystic“** wurde vom Gründer aus vier unterschiedlichen Designvorschlägen gewählt (17.11.2026), siehe [DESIGN.md](../DESIGN.md).
+- Native Compose-Umsetzung: dunkelblauer Nachthimmel, lavendel-/cyanfarbenes Mondlicht, dezente von Compose gezeichnete Mond-/Sternenelemente, ruhige Karten und erneuerte Bereichstexte.
+- Es wurden **keine** generierten Anime-Figuren oder urheberrechtlich fremde Grafiken eingebaut. Keine neuen Online-Funktionen oder erfundenen Nutzer-Kontaktpräferenzen.
+- **Hinweis zu Debug-Signaturen:** GitHub-hosted Builds können bei jeder neuen CI-Ausführung einen anderen Android-Debug-Signaturschlüssel bekommen. Eine bestehende Debug-APK lässt sich dann möglicherweise nicht drüberinstallieren. Bei „App nicht installiert“ alte Test-App erst deinstallieren (dabei gehen lokal gespeicherte Beiträge/Alias/Vorstellung/Merkliste verloren) und neue APK frisch installieren. Langfristig einen konstanten, sicher verwahrten Signierschlüssel verwenden.
 
 ## Enthalten
 - **Marktplatz:** lokale Beispielbeiträge, neue Beiträge schreiben und beantworten.
