@@ -28,3 +28,9 @@ JDK 17, Android SDK 35 und Gradle 8.9 werden für den CI-Build bereitgestellt. D
 
 ## Grenzen vor einem öffentlichen Pilot
 Echte Mehrnutzerkommunikation, Authentifizierung, Moderation (Blockieren/Melden), Missbrauchsschutz, Export, Backup-/Restore-Konzept und Datenschutzprüfung fehlen noch. Dieser Build ist **nur ein lokaler UI- und Interaktionsprototyp**. Die Feature-Roadmap steht in `../MVP.md` und `../ARCHITECTURE.md`.
+
+## v0.0.2 CI-Nachweis
+- GitHub Actions: [#44187424714](https://github.com/valoon4/Androidbaze/actions/runs/44187424714) **erfolgreich** (Gradle/Kotlin, APK-Metadaten, Signatur).
+- Artefakt: `Kind-Hell-v0.0.2-debug`, Paket `com.valoon4.kindhell`, VersionCode 2, VersionName 0.0.2, minSdk 26, targetSdk 35.
+- APK SHA-256: `e8510f0655987aa55d4cf39bcbdae4e04524392da760302fa1dfc83d9ab85d5b`.
+- **Kein Gerätetest**, keine Serveranbindung. V0.0.2 ist nur die visuell erneuerte Offline-Demo.
