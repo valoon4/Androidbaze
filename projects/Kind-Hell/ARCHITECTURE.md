@@ -62,3 +62,9 @@ Eine mögliche spätere Erweiterung des **Kompasses** umfasst Aktivitäten, Mitg
 - Meilenstein **0.0 (UI)**: 3 Jetpack-Compose-Tabs, lokale Beiträge/Antworten, freiwillige lokale Vorstellung, Kompass-Filter/Merkliste, Alias-Dialog; Daten im Android-Sandboxbereich via SharedPreferences.
 - **Nicht erledigt:** 0.1 Backend, echte Accounts/Mehrnutzerbetrieb, 0.2 serverbasierte Ankunftsrunden, 0.3 serverbasierter Kompass, Blockieren/Melden, Datenschutz-/Sicherheitsreview, Backup/Export.
 - **Isolation:** Entwicklung auf `kind-hell/v0.0-native-guild` unter `projects/Kind-Hell/android/`; Root-`:app`/Wormblade bleibt im Vergleich unverändert. APK hat eigene Application-ID `com.valoon4.kindhell`.
+
+## v0.0.2 Design-Update (17.11.2026)
+- **Gründerwahl:** D „Seele Mystic“ (siehe [DESIGN.md](DESIGN.md)); A/B/C nicht gewählt.
+- Native Compose-UI entsprechend neu gestaltet, **drei Bereiche und lokale Funktionen weiter vorhanden**; keine Backend- oder intimen Profilfunktionen hinzugefügt.
+- GitHub Actions [Run 44187424714](https://github.com/valoon4/Androidbaze/actions/runs/44187424714) **erfolgreich**: VersionCode 2, VersionName 0.0.2, Paket `com.valoon4.kindhell`; APK signiert und verifiziert. Echter Android-Gerätetest steht noch aus.
+- Hinweis: Neues Debug-Build kann abweichend signiert sein, daher bei Installation über alte Demo Signaturkonflikt und nötige Neuinstallation (Datenverlust) möglich.
