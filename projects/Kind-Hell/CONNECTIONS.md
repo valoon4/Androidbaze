@@ -18,8 +18,23 @@ Das frühere private Konzept einer **„Mitstreiter“-Community** mit freiwilli
 | 🧭 Kompass | Freiwillige Entdeckung nach Kontaktwunsch, Interessen, Aktivitäten und Mitgestaltung; optionale, **separat geschützte** Beziehungsperspektiven erst später. | Gestufte Roadmap |
 | ❤️ Zugehörigkeit | Gemeinsam entstandene Beziehungen und Fürsorge prägen Zugehörigkeit; keine „Attraktivitäts-“ oder Sozialwert-Scores. | Vision, keine Reputation als Sicherheitsbeweis |
 
-## Denkbare, freiwillige Profilachsen
-Die folgenden Achsen sind **Featurekandidaten**, keine bereits beschlossene Datenerhebung und keine Liste verpflichtender Fragen:
+## Verbindliche Gründerentscheidung: zwei unabhängige Ja/Nein-Signale (17.11.2026)
+**Direkte Nutzerentscheidung:** Im **Kompass** müssen potenzielle Kontakte ausdrücklich und getrennt erkennen können, ob die andere Person aktuell **romantisch** und/oder **sexuell** für ein Kennenlernen offen ist. Das soll peinliches Abtasten, falsche Hoffnungen und vermeidbare Konflikte in Freundschaften reduzieren, z. B. wenn jemand erst nach längerer Freundschaft fragt „Hast du einen Freund?“ und erfährt, dass die andere Person romantisch gar nicht verfügbar ist.
+
+**Gewünschte klare Profilanzeige (keine Zusammenlegung in „Dating“):**
+- 💕 **Romantisch offen?** `Ja` / `Nein`
+- 🔥 **Sexuell offen?** `Ja` / `Nein`
+
+Die vier Kombinationen `Ja/Ja`, `Ja/Nein`, `Nein/Ja` und `Nein/Nein` sind **gleichberechtigt**. Ein romantisches `Ja` impliziert kein sexuelles `Ja`; ein sexuelles `Ja` impliziert keinen romantischen Kontaktwunsch. **„Nein“ ist ein klares Nein bezüglich dieser Art des Kennenlernens**. **„Ja“** bedeutet lediglich, dass eine **respektvolle Anfrage grundsätzlich willkommen sein könnte**, nicht dass die Person verfügbar, single, sexuell einverstanden oder an einer bestimmten anfragenden Person interessiert ist. Der Status ist ein aktueller Kontaktwunsch, **nicht** die sexuelle Orientierung, Identität oder ein dauerhaftes Label. Ein Beziehungsstatus („in Beziehung?“), ENM oder Polyamorie ist **getrennt und nicht daraus ableitbar**.
+
+**Produktanforderung für zukünftige 18+-Kompass-Entdeckung:** Wer in einer entsprechenden freiwillig aktivierten Erwachsenen-Kontaktsuche **sichtbar sein möchte**, wählt beide Ja/Nein-Werte bewusst aus und kann sie später ändern oder die Freigabe zurücknehmen. Die ausgewählten Werte sollen dann für die in dieser geschützten Suche berechtigten anderen Mitglieder **gut erkennbar** sein und als unabhängige Filter dienen; kein verstecktes Raten nötig. Wer diese Angaben **nicht** offenlegen möchte, kann weiterhin am allgemeinen Marktplatz, an Ankunft und an platonischer Kompass-Nutzung teilnehmen, ohne ein solches Profil für die Erwachsenen-Kontaktsuche veröffentlichen zu müssen. **„Nicht offengelegt“ darf nie als Ja oder Nein interpretiert werden.** Ob, wo und für wen diese Angaben darüber hinaus angezeigt werden, erfordert eine separate Sichtbarkeitsentscheidung. Kein Zwangs-Outing.
+
+**Ausdrückliche Sicherheitsgrenze:** Keine öffentliche 18+-Suche oder entsprechende personenbezogene Profilkennzeichnung vor geeigneter Altersprüfung, Einwilligung, Zugriffskontrolle, Widerruf, Blockieren/Melden und Missbrauchsprüfung. Die Werte sind keine sexuellen Einwilligungen. Der aktuelle Build v0.0.1 und der definierte v0.1-Pilot bleiben davon unberührt.
+
+**Status:** Diese **getrennten Ja/Nein-Kontaktwünsche** sind eine bestätigte **Produktanforderung des Gründers**. Die Datenschutz-/UI-Ausgestaltung bleibt zu klären; **nicht implementiert**, **keine Freigabe für Rollout**.
+
+## Weitere denkbare, freiwillige Profilachsen
+Die nachfolgenden zusätzlichen Achsen sind **Featurekandidaten**. Davon zu unterscheiden sind die oben ausdrücklich beschlossenen **zwei unabhängigen Ja/Nein-Kontaktwünsche**, die bei freiwilliger Teilnahme an der späteren geschützten Kontaktsuche eindeutig angegeben werden sollen:
 
 1. **Kontaktwunsch:** Freundschaft, Austausch, gemeinsame Unternehmungen, gemeinsames Gestalten; später optional Romantik oder andere einvernehmliche Verbindungen. Mehrfachauswahl bzw. „lieber offenlassen“ möglich.
 2. **Interessen und gemeinsame Aktivitäten:** Was entdeckt oder gestaltet man gern gemeinsam? Gemeinsame Welten statt rein oberflächlicher Auswahl.
@@ -46,7 +61,7 @@ Die folgenden Achsen sind **Featurekandidaten**, keine bereits beschlossene Date
 
 ## Offene Entscheidungen
 - Reicht der Kompass als Oberfläche oder braucht es später einen geschützten Unterbereich „Verbindungen“?
-- Welche Kontaktwünsche sind verständlich, ohne Freundschaft zu entwerten?
+- Wie gestalten wir die bereits beschlossenen getrennten romantischen/sexuellen Ja/Nein-Signale in einer verständlichen, geschützten 18+-Oberfläche, ohne Freundschaft zu entwerten?
 - Wie werden sensible Angaben, Freigaben und Rücknahmen benutzerfreundlich und sicher umgesetzt?
 - Welche Identitäts-, Alters-, Moderations- und Anti-Missbrauchsmaßnahmen sind nötig, bevor echte Beziehungssuche unterstützt wird?
 - Wie messen wir **gute Gespräche und langfristige Beziehungen** statt bloßer Matches und langer Nutzungszeit?
