@@ -11,6 +11,9 @@ Ein offener, textbasierter Treffpunkt mit persönlicher Begrüßung erleichtert 
 5. Blockieren, Melden, grundlegende Missbrauchsabwehr und einfache, überprüfbare Moderationsentscheidungen.
 6. Datenexport und verlässliche Backups als Infrastrukturziel.
 
+## Anschlusskonzept: Verbindungen jenseits von Dating
+Der Gründer möchte die frühere „Mitstreiter“-/ENM-Idee **in Kind Hell integrieren**. Für den Kompass sind zusätzliche **freiwillige, nicht-sensitive** Achsen (z. B. gemeinsame Aktivitäten, Mitgestaltung, Kontaktwünsche) als zukünftige Erweiterung vorgesehen. Beziehungsformen wie ENM/Polyamorie und intime Angaben sind **keine** MVP-Profileigenschaften und nicht standardmäßig öffentlich. Eine gesondert freigegebene Erwachsenenfunktion darf erst nach Alters-, Privacy-, Einwilligungs- und Moderationskonzept entstehen. Siehe [CONNECTIONS.md](CONNECTIONS.md); die bestehende v0.1-Pilotdefinition bleibt unverändert.
+
 ## Bewusst nicht in v0.1
 - Endlosscroll-Algorithmus, Gamification, aufwendiges KI-Matching
 - Bilder-Uploads, Audio, Videostreams
