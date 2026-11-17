@@ -1,7 +1,7 @@
 # Kind Hell
 **Arbeitsname:** Kind Hell  
 **Projekt:** EK 2.0 / Eugens Königreich  
-**Status:** v0.0.1 – native Android-Offline-Demo erfolgreich per GitHub Actions gebaut (Feature-Branch); kein Mehrnutzerbetrieb  
+**Status:** v0.0.2 – Design D „Seele Mystic“ als native Android-Offline-Demo erfolgreich per GitHub Actions gebaut (Feature-Branch); kein Mehrnutzerbetrieb  
 **Start der eigenständigen Projektablage:** 2026-11-17
 
 ## Vision
@@ -61,3 +61,10 @@ Siehe [MVP.md](MVP.md) für die erste testbare Version und [ARCHITECTURE.md](ARC
 - **Funktionsumfang:** Offline-Marktplatz mit Beiträgen/Antworten, Ankunft mit lokaler Vorstellung, Kompass mit Filtern/Merkliste; alle Beispielprofile klar als Demo markiert.
 - **Teststatus:** Build bestätigt, APK erzeugt; **noch kein Praxistest auf einem Android-Gerät** und keine Backend-Kommunikation.
 - [Android-Projekt, Build und Einschränkungen](android/README.md).
+
+## Zweiter nachgewiesener Build (17.11.2026)
+- **Version:** Kind Hell v0.0.2 – UI-Redesign auf Nutzerwahl **D „Seele Mystic“**.
+- **CI:** [GitHub Actions #44187424714](https://github.com/valoon4/Androidbaze/actions/runs/44187424714) erfolgreich inkl. Android-Kompilation, Paket- und APK-Signaturprüfung.
+- **APK-Artefakt:** `Kind-Hell-v0.0.2-debug`; Paket `com.valoon4.kindhell`, VersionCode 2, VersionName 0.0.2. SHA-256 `e8510f0655987aa55d4cf39bcbdae4e04524392da760302fa1dfc83d9ab85d5b`.
+- **Änderung:** Nachthimmel-Look mit Original-Compose-Mond, Lavendel, Eis-Cyan, klaren Panels; bestehende lokalen UI-Aktionen beibehalten, keine neuen Kontaktdaten.
+- **Nicht belegt:** Realer Gerätetest, Pixelgleichheit mit dem Konzeptboard oder funktionierende Mehrnutzerkommunikation. Android-Debug-Signaturen können je CI-Lauf wechseln; Test-App vor Neuinstallation ggf. deinstallieren (lokale Daten gehen verloren).
