@@ -1,7 +1,7 @@
 # Kind Hell
 **Arbeitsname:** Kind Hell  
 **Projekt:** EK 2.0 / Eugens Königreich  
-**Status:** Konzept, v0.0 – noch kein funktionierender EK-Prototyp nachgewiesen  
+**Status:** Konzept, v0.0 – native Android-App festgelegt; noch kein funktionsfähiger App-Build  
 **Start der eigenständigen Projektablage:** 2026-11-17
 
 ## Vision
@@ -31,4 +31,4 @@ Ein sozialer Treffpunkt, der Menschen dabei hilft, neue Bekanntschaften, Freunds
 - In `Androidbaze` liegt derzeit allgemeine Android-Prototyp-/Build-Infrastruktur; dieses Verzeichnis ist die separate Ablage für Kind Hell, nicht bereits eine fertige App.
 
 ## Nächster Schritt
-Siehe [MVP.md](MVP.md): kleinster testbarer sozialer Kreislauf. Produkt- und Technikentscheidungen werden erst nach Sichtung vorhandenen Codes und gezieltem Prototyping getroffen.
+Siehe [MVP.md](MVP.md) für die erste testbare Version und [ARCHITECTURE.md](ARCHITECTURE.md) für die festgelegte native Android-Struktur. Das bestehende Wormblade-Root-Buildtarget bleibt unangetastet.
