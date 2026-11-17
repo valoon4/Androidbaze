@@ -32,7 +32,15 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      # GitHub's preinstalled SDK already includes command-line tools.
+      # Avoid setup-android@v3, which still requests the removed 'tools' package.
+      - name: Locate installed Android SDK manager
+        run: |
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDK_TOOL="$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$SDK_TOOL"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$(dirname "$SDK_TOOL")" >> "$GITHUB_PATH"
       - name: Install Android SDK 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - name: Install isolated Gradle 8.9
