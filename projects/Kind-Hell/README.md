@@ -1,7 +1,7 @@
 # Kind Hell
 **Arbeitsname:** Kind Hell  
 **Projekt:** EK 2.0 / Eugens Königreich  
-**Status:** Konzept, v0.0 – native Android-App festgelegt; noch kein funktionsfähiger App-Build  
+**Status:** v0.0.2 – Design D „Seele Mystic“ als native Android-Offline-Demo erfolgreich per GitHub Actions gebaut (Feature-Branch); kein Mehrnutzerbetrieb  
 **Start der eigenständigen Projektablage:** 2026-11-17
 
 ## Vision
@@ -9,10 +9,34 @@ Ein sozialer Treffpunkt, der Menschen dabei hilft, neue Bekanntschaften, Freunds
 
 **Leitidee:** Menschen kommen wegen eines Interesses, bleiben wegen der Menschen.
 
+## Vertiefte Vision: Soziale Identität und Zugehörigkeit (Nutzerbestätigung 17.11.2026)
+Kind Hell soll **nicht nur neue Freundschaften vermitteln**, sondern Menschen ermöglichen, durch über Zeit entstandene Beziehungen und gemeinsame Geschichten **auch außerhalb der App als mehr als ein erster Eindruck wahrgenommen zu werden**.
+
+**Konkretes Gedankenexperiment des Gründers:** Ein fremder 50-jähriger Mann wird von anderen vielleicht zunächst skeptisch betrachtet. Wenn sichtbar würde, dass z. B. 50 Menschen aus seiner Kind-Hell-Gilde ihn kennen und wertschätzen bzw. freiwillig für ihn einstehen, bekäme die Person sozialen Kontext: Sie ist nicht bloß ein fremdes Gesicht, sondern Teil einer Gemeinschaft mit Beziehungen und Geschichte. **Die Zahl 50 ist ein hypothetisches Beispiel, keine Nutzerkennzahl oder Produktvorgabe.** Dies gilt altersunabhängig – Aussehen und erste Eindrücke sollen weniger darüber entscheiden, wem soziale Wärme und Zugehörigkeit zugetraut werden.
+
+**Kernprinzip:** Eine Gilde ist ein soziales Gedächtnis. Ihre Beziehungen sollen nicht nur auf dem Bildschirm existieren, sondern realen Menschen Würde, Sichtbarkeit, Kontinuität und Brücken ins Alltagsleben geben.
+
+**Denkbare spätere Umsetzung, ausdrücklich noch NICHT entschieden:** eine freiwillige, gegenseitig bestätigte Sichtbarkeit von Freundschaften, persönliche Wertschätzungen oder Fürsprache („digitales Gildenzeugnis“ als Arbeitsmetapher aus dem Gespräch). Keine Festlegung auf öffentliche Freundeslisten, Ranglisten, Likes, Reputationsscores oder eine konkrete Profilfunktion. Eine Verbindung oder Fürsprache darf nie als Nachweis von Ungefährlichkeit oder moralischer Vertrauenswürdigkeit gelten. Zustimmung aller Betroffenen, widerrufbare Sichtbarkeit, Manipulations- und Gruppendruckschutz wären vor Umsetzung zu klären.
+
+**Abgrenzung zu Plattformlogik:** Nicht „Wer ist am beliebtesten?“, sondern „Welche Menschen stehen freiwillig miteinander in Beziehung, und wie können sie einander in der echten Welt menschlicher begegnen?“
+
+## Gewählte Gestaltung: D „Seele Mystic“ (17.11.2026)
+Der Gründer wählte in einem **vierfachen Designvergleich ausdrücklich D**, nicht A/B/C. Design D bedeutet **Mitternachtsblau, Mondlicht-Lavendel, Eis-Cyan und ruhige mystische Atmosphäre**, mit klarer mobiler Bedienbarkeit statt KI-posterhafter Fantasy-Überladung. Diese Gestaltungsentscheidung gilt für die native Android-App. Die beschlossene Richtung, die bewusst verworfenen Alternativen und deren Urheberstatus sind in [DESIGN.md](DESIGN.md) festgehalten. Auf dem isolierten Entwicklungsbranch ist eine erste tatsächliche Compose-Umsetzung als **v0.0.2** angelegt; Build-/Geräteteststatus separat prüfen.
+
+## Gewähltes App-Icon: Motiv 4 (17.11.2026)
+Der Gründer bestätigte **Motiv 4 (unten rechts)** aus einem separaten viergeteilten Iconbild als offizielles Icon-Motiv: **zwei einladende, an den Händen verbundene Fantasyfiguren unter einem goldenen Sternenring**. Dies ist zusätzlich zur gewählten UI-Richtung D „Seele Mystic“. Das Icon-Bild selbst ist **noch nicht in die Android-APK eingebaut**; genaue Quelle, Ausschnitt und Prüfsumme siehe [DESIGN.md](DESIGN.md).
+
 ## Produktkern
 1. **Marktplatz:** Öffentlicher, themenoffener Austausch ohne Offtopic-Polizei. Spontane kurze Posts sind willkommen. Text-first.
 2. **Ankunft:** Willkommensrunden für neue Mitglieder, inspiriert von Sammelposts für etwa 20 Neuzugänge. Vorstellungen sind freiwillig; der soziale Einstieg soll aktiv erleichtert werden.
 3. **Kompass:** Freiwilliges Entdecken anderer Menschen anhand von Interessen, gewünschter Kontaktart und Kommunikationsstil. Sowohl Gemeinsamkeiten als auch unerwartete Begegnungen ermöglichen.
+
+## Verbindungen: „Mitstreiter“ / ENM-Idee integriert (17.11.2026)
+Die Gilde ist **nicht nur für Freundschaft und nicht nur für Dating** gedacht. Menschen können freiwillig nach Austausch, gemeinsamem Erleben und Mitgestaltung suchen; langfristig dürfen auch unterschiedliche einvernehmliche Beziehungsformen (einschließlich ENM und Polyamorie) **diskret, ohne Outing-Zwang** einen Platz haben. Das ist Teil der Kind-Hell-Vision, **keine neue Pflichtkategorie und kein bestehendes App-Feature**. Sensible Angaben gehören niemals automatisch ins öffentliche Profil; Erwachsenenfunktionen sind aus v0.0.1/v0.1 ausdrücklich ausgeklammert.
+
+**Konkretisierte Gründerentscheidungen (17.11.2026):** Im späteren Kompass sollen **drei unabhängige und klar als Ja/Nein erkennbare** Kontaktwünsche stehen: **„Neue Freundschaften gesucht?“**, **„Romantisch offen?“** und **„Sexuell offen?“**. Der Gründer ergänzte Freundschaft ausdrücklich, da jemand z. B. **nur Hookups oder nur einen Partner** suchen könnte, aber keine neuen Freundschaften. Damit können andere Menschen respektvoll erkennen, ob solche Annäherungen grundsätzlich erwünscht sind, ohne Freundschaften durch peinliche Verfügbarkeitsfragen zu gefährden. Alle acht Kombinationen sind gleichwertig. Das ist weder eine Aussage über Beziehungsstatus noch eine Einwilligung. Die Freigabe ist freiwillig; für die geschützte 18+-Kontaktsuche müssen alle drei Signale bewusst gesetzt werden, während die allgemeine Gildennutzung ohne diese Offenlegung möglich bleibt. Noch nicht in der APK umgesetzt.
+
+Das anonymisierte Integrationskonzept, freiwillige Kontakt-/Beziehungsachsen und Sicherheitsanforderungen stehen in **[CONNECTIONS.md](CONNECTIONS.md)**. Die private ursprüngliche Ideenskizze bleibt unveröffentlicht.
 
 ## Grundsätze
 - Community statt Content-Farm: Zugehörigkeit und hilfreiche Gespräche wichtiger als Verweildauer.
@@ -28,7 +52,22 @@ Ein sozialer Treffpunkt, der Menschen dabei hilft, neue Bekanntschaften, Freunds
 - Historische Inspiration: Anime Germany / Eugens Königreich, laut Gründer 2014 rund 10.000 Mitglieder.
 - Das frühere Konzept lebt als neue, eigenständige Produktidee weiter.
 - Die private Ideenskizze aus `Psychologicalz/ideen/mitstreiter-community-produktidee-2026-11-13.md` wurde **nicht verschoben oder veröffentlicht**. Diese Projektakte enthält nur eine datensparsame, produktbezogene Zusammenfassung.
-- In `Androidbaze` liegt derzeit allgemeine Android-Prototyp-/Build-Infrastruktur; dieses Verzeichnis ist die separate Ablage für Kind Hell, nicht bereits eine fertige App.
+- In `Androidbaze` liegt die eigenständige native Demo jetzt unter `projects/Kind-Hell/android/` auf Branch `kind-hell/v0.0-native-guild`. Wormblade im Rootprojekt blieb unverändert.
 
 ## Nächster Schritt
 Siehe [MVP.md](MVP.md) für die erste testbare Version und [ARCHITECTURE.md](ARCHITECTURE.md) für die festgelegte native Android-Struktur. Das bestehende Wormblade-Root-Buildtarget bleibt unangetastet.
+
+## Erster nachgewiesener Build (17.11.2026)
+- **Version:** Kind Hell v0.0.1, Kotlin/Jetpack Compose, APK-ID `com.valoon4.kindhell`.
+- **Branch:** `kind-hell/v0.0-native-guild`; Root-`:app` (Wormblade) nicht geändert.
+- **Build-Nachweis:** [GitHub Actions #44182891562](https://github.com/valoon4/Androidbaze/actions/runs/44182891562), erfolgreich inkl. Paket-/Signaturprüfung; APK-Artefakt `Kind-Hell-v0.0.1-debug`.
+- **Funktionsumfang:** Offline-Marktplatz mit Beiträgen/Antworten, Ankunft mit lokaler Vorstellung, Kompass mit Filtern/Merkliste; alle Beispielprofile klar als Demo markiert.
+- **Teststatus:** Build bestätigt, APK erzeugt; **noch kein Praxistest auf einem Android-Gerät** und keine Backend-Kommunikation.
+- [Android-Projekt, Build und Einschränkungen](android/README.md).
+
+## Zweiter nachgewiesener Build (17.11.2026)
+- **Version:** Kind Hell v0.0.2 – UI-Redesign auf Nutzerwahl **D „Seele Mystic“**.
+- **CI:** [GitHub Actions #44187424714](https://github.com/valoon4/Androidbaze/actions/runs/44187424714) erfolgreich inkl. Android-Kompilation, Paket- und APK-Signaturprüfung.
+- **APK-Artefakt:** `Kind-Hell-v0.0.2-debug`; Paket `com.valoon4.kindhell`, VersionCode 2, VersionName 0.0.2. SHA-256 `e8510f0655987aa55d4cf39bcbdae4e04524392da760302fa1dfc83d9ab85d5b`.
+- **Änderung:** Nachthimmel-Look mit Original-Compose-Mond, Lavendel, Eis-Cyan, klaren Panels; bestehende lokalen UI-Aktionen beibehalten, keine neuen Kontaktdaten.
+- **Nicht belegt:** Realer Gerätetest, Pixelgleichheit mit dem Konzeptboard oder funktionierende Mehrnutzerkommunikation. Android-Debug-Signaturen können je CI-Lauf wechseln; Test-App vor Neuinstallation ggf. deinstallieren (lokale Daten gehen verloren).

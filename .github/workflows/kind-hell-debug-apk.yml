@@ -1,0 +1,72 @@
+name: Kind Hell - Native Android Debug APK
+
+on:
+  push:
+    branches:
+      - 'kind-hell/**'
+    paths:
+      - 'projects/Kind-Hell/android/**'
+      - '.github/workflows/kind-hell-debug-apk.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'projects/Kind-Hell/android/**'
+      - '.github/workflows/kind-hell-debug-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-kind-hell:
+    name: Build isolated Kind Hell APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: projects/Kind-Hell/android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      # GitHub's preinstalled SDK already includes command-line tools.
+      # Avoid setup-android@v3, which still requests the removed 'tools' package.
+      - name: Locate installed Android SDK manager
+        run: |
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDK_TOOL="$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$SDK_TOOL"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$(dirname "$SDK_TOOL")" >> "$GITHUB_PATH"
+      - name: Install Android SDK 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install isolated Gradle 8.9
+        run: |
+          curl -fsSL --retry 3 https://services.gradle.org/distributions/gradle-8.9-bin.zip -o /tmp/gradle-kindhell.zip
+          unzip -q /tmp/gradle-kindhell.zip -d /tmp
+          echo /tmp/gradle-8.9/bin >> "$GITHUB_PATH"
+      - name: Compile only Kind Hell
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+      - name: Verify APK package and signature
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
+          grep -q "package: name='com.valoon4.kindhell'" apk-badging.txt
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
+          cp "$APK" Kind-Hell-v0.0.2-debug.apk
+          sha256sum Kind-Hell-v0.0.2-debug.apk > Kind-Hell-v0.0.2-debug.apk.sha256
+      - name: Upload installable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kind-Hell-v0.0.2-debug
+          path: |
+            projects/Kind-Hell/android/Kind-Hell-v0.0.2-debug.apk
+            projects/Kind-Hell/android/Kind-Hell-v0.0.2-debug.apk.sha256
+            projects/Kind-Hell/android/apk-badging.txt
+          if-no-files-found: error
+          retention-days: 30

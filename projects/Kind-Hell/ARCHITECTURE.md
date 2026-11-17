@@ -36,6 +36,15 @@ projects/Kind-Hell/
 - Keine Bild-Uploads im Pilot; Moderation/Meldewege bleiben trotzdem notwendig.
 - Schutz persönlicher Daten, begrenzte Datenspeicherung, Export und Backups müssen vor einer öffentlichen Beta geplant und geprüft werden.
 
+## Späterer Datenschutz-Baustein: „Verbindungen“
+Eine mögliche spätere Erweiterung des **Kompasses** umfasst Aktivitäten, Mitgestaltung und optional verschiedene Beziehungsperspektiven. **Noch keine technische Implementierungsentscheidung.** Öffentliche Profildaten, private Kontaktwünsche und besonders sensible Beziehungsinformationen brauchen klar getrennte Daten- und Berechtigungskonzepte; keine pauschale Veröffentlichung oder sensible Suche im Pilot. Erwachsene Inhalte und Beziehungsoffenheit (z. B. ENM) erst nach separatem 18+-Gate, expliziten/widerrufbaren Freigaben, Schutz vor Outing und Moderationskonzept. Keine automatische Ableitung von Einwilligung aus einem Match. Siehe [CONNECTIONS.md](CONNECTIONS.md).
+
+## Feststehende spätere Kontakt-Signale (Gründerentscheidung 17.11.2026)
+- **Drei getrennte** Boolesche Kontaktwünsche: `friendshipOpen` (**neue Freundschaften**), `romanticallyOpen` (romantisches Kennenlernen) und `sexuallyOpen` (sexuelle Kontakte). Der Freundschaftswunsch kann auch außerhalb der späteren 18+-Suche freiwillig angezeigt werden; die **gemeinsame dreiachsige Suchansicht mit sexueller Offenheit** gehört ausschließlich in ein ausdrücklich freigegebenes **18+-Entdeckungsprofil**. Für **nicht teilnehmende Personen** ist der jeweilige Zustand `unveröffentlicht` statt `false`; Speicherung und Sichtbarkeit dürfen nicht miteinander verwechselt werden.
+- In einer freigegebenen Erwachsenen-Kontaktsuche sind alle drei Werte bewusst zu setzen (Ja/Nein), anzuzeigen und jeweils separat filterbar; alle acht Kombinationen. `true` bedeutet **grundsätzliche Offenheit für Anfragen der jeweiligen Art**, niemals Einwilligung oder zwingende Partnerlosigkeit.
+- Technischer Entwurf, noch **nicht beschlossen**: separates gesichertes Profil/ACL mit Opt-in, Altersberechtigung, Freigabestatus, Widerruf und Änderungsdatum; das öffentliche Profil darf diese Daten nicht unautorisiert über APIs/Cache/Suche ausgeben. Tests zu Rücknahme und Blockierungen vor Freigabe.
+- Geschützte Implementierung **nicht** in v0.0.1 oder v0.1; Priorität des normalen Gilden-MVPs bleibt erhalten. Siehe [CONNECTIONS.md](CONNECTIONS.md).
+
 ## Inkrementelle Meilensteine
 1. **0.0:** Native App-Grundstruktur + lokal navigierbare Screens.
 2. **0.1:** Öffentlicher Text-Marktplatz mit Post/Antwort und einfachem Profil; Pilot-Backend.
@@ -46,5 +55,16 @@ projects/Kind-Hell/
 ## Build-Isolation
 - Kind Hell nutzt ein **eigenes** Gradle-Projekt in `projects/Kind-Hell/android`.
 - Root-`app` sowie Root-CI bleiben zunächst unverändert.
-- Vor APK-Auslieferung eigene Build-/CI-Konfiguration für Kind Hell ergänzen.
-- Kein Test-Build oder APK wurde durch dieses Dokument erstellt.
+- Eigenständiger Workflow `.github/workflows/kind-hell-debug-apk.yml` für Build und APK-Artefakt auf dem Feature-Branch eingerichtet.
+- **Buildnachweis:** [GitHub Actions #44182891562](https://github.com/valoon4/Androidbaze/actions/runs/44182891562) erfolgreich, Paket `com.valoon4.kindhell`, Debug-APK mit Signatur verifiziert. Noch kein physischer Gerätetest.
+
+## Implementierungsstand v0.0.1 (17.11.2026)
+- Meilenstein **0.0 (UI)**: 3 Jetpack-Compose-Tabs, lokale Beiträge/Antworten, freiwillige lokale Vorstellung, Kompass-Filter/Merkliste, Alias-Dialog; Daten im Android-Sandboxbereich via SharedPreferences.
+- **Nicht erledigt:** 0.1 Backend, echte Accounts/Mehrnutzerbetrieb, 0.2 serverbasierte Ankunftsrunden, 0.3 serverbasierter Kompass, Blockieren/Melden, Datenschutz-/Sicherheitsreview, Backup/Export.
+- **Isolation:** Entwicklung auf `kind-hell/v0.0-native-guild` unter `projects/Kind-Hell/android/`; Root-`:app`/Wormblade bleibt im Vergleich unverändert. APK hat eigene Application-ID `com.valoon4.kindhell`.
+
+## v0.0.2 Design-Update (17.11.2026)
+- **Gründerwahl:** D „Seele Mystic“ (siehe [DESIGN.md](DESIGN.md)); A/B/C nicht gewählt.
+- Native Compose-UI entsprechend neu gestaltet, **drei Bereiche und lokale Funktionen weiter vorhanden**; keine Backend- oder intimen Profilfunktionen hinzugefügt.
+- GitHub Actions [Run 44187424714](https://github.com/valoon4/Androidbaze/actions/runs/44187424714) **erfolgreich**: VersionCode 2, VersionName 0.0.2, Paket `com.valoon4.kindhell`; APK signiert und verifiziert. Echter Android-Gerätetest steht noch aus.
+- Hinweis: Neues Debug-Build kann abweichend signiert sein, daher bei Installation über alte Demo Signaturkonflikt und nötige Neuinstallation (Datenverlust) möglich.
