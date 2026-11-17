@@ -58,15 +58,15 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
           grep -q "package: name='com.valoon4.kindhell'" apk-badging.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
-          cp "$APK" Kind-Hell-v0.0.1-debug.apk
-          sha256sum Kind-Hell-v0.0.1-debug.apk > Kind-Hell-v0.0.1-debug.apk.sha256
+          cp "$APK" Kind-Hell-v0.0.2-debug.apk
+          sha256sum Kind-Hell-v0.0.2-debug.apk > Kind-Hell-v0.0.2-debug.apk.sha256
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: Kind-Hell-v0.0.1-debug
+          name: Kind-Hell-v0.0.2-debug
           path: |
-            projects/Kind-Hell/android/Kind-Hell-v0.0.1-debug.apk
-            projects/Kind-Hell/android/Kind-Hell-v0.0.1-debug.apk.sha256
+            projects/Kind-Hell/android/Kind-Hell-v0.0.2-debug.apk
+            projects/Kind-Hell/android/Kind-Hell-v0.0.2-debug.apk.sha256
             projects/Kind-Hell/android/apk-badging.txt
           if-no-files-found: error
           retention-days: 30
