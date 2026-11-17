@@ -9,6 +9,17 @@ Ein sozialer Treffpunkt, der Menschen dabei hilft, neue Bekanntschaften, Freunds
 
 **Leitidee:** Menschen kommen wegen eines Interesses, bleiben wegen der Menschen.
 
+## Vertiefte Vision: Soziale Identität und Zugehörigkeit (Nutzerbestätigung 17.11.2026)
+Kind Hell soll **nicht nur neue Freundschaften vermitteln**, sondern Menschen ermöglichen, durch über Zeit entstandene Beziehungen und gemeinsame Geschichten **auch außerhalb der App als mehr als ein erster Eindruck wahrgenommen zu werden**.
+
+**Konkretes Gedankenexperiment des Gründers:** Ein fremder 50-jähriger Mann wird von anderen vielleicht zunächst skeptisch betrachtet. Wenn sichtbar würde, dass z. B. 50 Menschen aus seiner Kind-Hell-Gilde ihn kennen und wertschätzen bzw. freiwillig für ihn einstehen, bekäme die Person sozialen Kontext: Sie ist nicht bloß ein fremdes Gesicht, sondern Teil einer Gemeinschaft mit Beziehungen und Geschichte. **Die Zahl 50 ist ein hypothetisches Beispiel, keine Nutzerkennzahl oder Produktvorgabe.** Dies gilt altersunabhängig – Aussehen und erste Eindrücke sollen weniger darüber entscheiden, wem soziale Wärme und Zugehörigkeit zugetraut werden.
+
+**Kernprinzip:** Eine Gilde ist ein soziales Gedächtnis. Ihre Beziehungen sollen nicht nur auf dem Bildschirm existieren, sondern realen Menschen Würde, Sichtbarkeit, Kontinuität und Brücken ins Alltagsleben geben.
+
+**Denkbare spätere Umsetzung, ausdrücklich noch NICHT entschieden:** eine freiwillige, gegenseitig bestätigte Sichtbarkeit von Freundschaften, persönliche Wertschätzungen oder Fürsprache („digitales Gildenzeugnis“ als Arbeitsmetapher aus dem Gespräch). Keine Festlegung auf öffentliche Freundeslisten, Ranglisten, Likes, Reputationsscores oder eine konkrete Profilfunktion. Eine Verbindung oder Fürsprache darf nie als Nachweis von Ungefährlichkeit oder moralischer Vertrauenswürdigkeit gelten. Zustimmung aller Betroffenen, widerrufbare Sichtbarkeit, Manipulations- und Gruppendruckschutz wären vor Umsetzung zu klären.
+
+**Abgrenzung zu Plattformlogik:** Nicht „Wer ist am beliebtesten?“, sondern „Welche Menschen stehen freiwillig miteinander in Beziehung, und wie können sie einander in der echten Welt menschlicher begegnen?“
+
 ## Produktkern
 1. **Marktplatz:** Öffentlicher, themenoffener Austausch ohne Offtopic-Polizei. Spontane kurze Posts sind willkommen. Text-first.
 2. **Ankunft:** Willkommensrunden für neue Mitglieder, inspiriert von Sammelposts für etwa 20 Neuzugänge. Vorstellungen sind freiwillig; der soziale Einstieg soll aktiv erleichtert werden.
