@@ -1,0 +1,50 @@
+# Kind Hell – Android-Implementierungsstruktur
+
+## Festlegung (17.11.2026)
+**Native Android-App**, kein WebView und keine mobile Website als Hauptprodukt. Android-first; Backend separat, damit echte Mehrnutzerkommunikation möglich ist.
+
+## Vorhandene Infrastruktur
+Das Repository `Androidbaze` hat Gradle/Android-Tooling, ein Bootstrap-Buildscript und GitHub Actions für den Root-Build. **Achtung:** Das Root-Projekt `:app` baut aktuell Wormblade (`com.valoon4.wormblade`). Es darf **nicht** durch Kind Hell ersetzt werden.
+
+## Zielstruktur
+```text
+projects/Kind-Hell/
+├── README.md
+├── MVP.md
+├── ARCHITECTURE.md
+├── android/                     # eigenständiges natives Gradle-Projekt
+│   ├── settings.gradle.kts
+│   ├── build.gradle.kts
+│   └── app/
+│       ├── build.gradle.kts
+│       └── src/main/
+│           ├── AndroidManifest.xml
+│           └── java/.../
+│               ├── MainActivity.kt
+│               ├── ui/          # Marktplatz, Ankunft, Kompass
+│               ├── domain/      # Modelle und Use Cases
+│               └── data/        # API, Repositories, lokale Speicherung
+└── backend/                     # später eigenes Service-/API-Projekt
+```
+
+## Technischer Vorschlag für v0.1
+- Kotlin, native Android-Benutzeroberfläche (Jetpack Compose geplant).
+- Ein Hauptbildschirm mit Navigation für **Marktplatz**, **Ankunft**, **Kompass**.
+- Zuerst lokale Demo-Daten und Klickwege; anschließend echte Nutzerkonten und Serverdaten.
+- Backend mit authentifizierten APIs für Profile, Beiträge, Antworten, Begrüßungsrunden, Blockierungen und Meldungen; genaue Stackwahl offen.
+- Kein globaler Zwangsalgorithmus. Filter und Sichtbarkeit bleiben unter Nutzerkontrolle.
+- Keine Bild-Uploads im Pilot; Moderation/Meldewege bleiben trotzdem notwendig.
+- Schutz persönlicher Daten, begrenzte Datenspeicherung, Export und Backups müssen vor einer öffentlichen Beta geplant und geprüft werden.
+
+## Inkrementelle Meilensteine
+1. **0.0:** Native App-Grundstruktur + lokal navigierbare Screens.
+2. **0.1:** Öffentlicher Text-Marktplatz mit Post/Antwort und einfachem Profil; Pilot-Backend.
+3. **0.2:** Opt-in-Ankunftsrunden.
+4. **0.3:** Kompass light mit freiwilligen Filtern.
+5. **Beta:** Mehrnutzer-Test, Blockieren/Melden, Backup/Restore, Datenschutz- und Sicherheitsreview.
+
+## Build-Isolation
+- Kind Hell nutzt ein **eigenes** Gradle-Projekt in `projects/Kind-Hell/android`.
+- Root-`app` sowie Root-CI bleiben zunächst unverändert.
+- Vor APK-Auslieferung eigene Build-/CI-Konfiguration für Kind Hell ergänzen.
+- Kein Test-Build oder APK wurde durch dieses Dokument erstellt.
