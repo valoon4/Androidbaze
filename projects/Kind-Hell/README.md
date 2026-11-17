@@ -23,6 +23,9 @@ Kind Hell soll **nicht nur neue Freundschaften vermitteln**, sondern Menschen er
 ## Gewählte Gestaltung: D „Seele Mystic“ (17.11.2026)
 Der Gründer wählte in einem **vierfachen Designvergleich ausdrücklich D**, nicht A/B/C. Design D bedeutet **Mitternachtsblau, Mondlicht-Lavendel, Eis-Cyan und ruhige mystische Atmosphäre**, mit klarer mobiler Bedienbarkeit statt KI-posterhafter Fantasy-Überladung. Diese Gestaltungsentscheidung gilt für die native Android-App. Die beschlossene Richtung, die bewusst verworfenen Alternativen und deren Urheberstatus sind in [DESIGN.md](DESIGN.md) festgehalten. Auf dem isolierten Entwicklungsbranch ist eine erste tatsächliche Compose-Umsetzung als **v0.0.2** angelegt; Build-/Geräteteststatus separat prüfen.
 
+## Gewähltes App-Icon: Motiv 4 (17.11.2026)
+Der Gründer bestätigte **Motiv 4 (unten rechts)** aus einem separaten viergeteilten Iconbild als offizielles Icon-Motiv: **zwei einladende, an den Händen verbundene Fantasyfiguren unter einem goldenen Sternenring**. Dies ist zusätzlich zur gewählten UI-Richtung D „Seele Mystic“. Das Icon-Bild selbst ist **noch nicht in die Android-APK eingebaut**; genaue Quelle, Ausschnitt und Prüfsumme siehe [DESIGN.md](DESIGN.md).
+
 ## Produktkern
 1. **Marktplatz:** Öffentlicher, themenoffener Austausch ohne Offtopic-Polizei. Spontane kurze Posts sind willkommen. Text-first.
 2. **Ankunft:** Willkommensrunden für neue Mitglieder, inspiriert von Sammelposts für etwa 20 Neuzugänge. Vorstellungen sind freiwillig; der soziale Einstieg soll aktiv erleichtert werden.
