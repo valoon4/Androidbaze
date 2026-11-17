@@ -28,4 +28,4 @@ Weder ein Match noch lange Bildschirmzeit wird als garantierter Glücksgewinn au
 - Authentifizierung, Datenhaltung, Hosting, Backup/Restore und Moderation minimal, aber belastbar konzipieren.
 - Datenschutz und ggf. Altersgrenzen vor öffentlichem Launch überprüfen.
 
-**Status:** Planung; Implementierungsstruktur dokumentiert, noch kein App-Build.
+**Status (17.11.2026):** v0.0.1 Offline-Demo auf isoliertem Feature-Branch erstellt; GitHub Actions #44182891562 hat eine signierte Debug-APK erfolgreich gebaut und geprüft. Die v0.1-Mehrnutzer-MVP-Anforderungen (Accounts, Server, echte Posts, Moderation) bleiben offen. Kein Android-Gerätetest belegt.

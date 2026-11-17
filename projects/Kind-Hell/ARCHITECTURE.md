@@ -46,5 +46,10 @@ projects/Kind-Hell/
 ## Build-Isolation
 - Kind Hell nutzt ein **eigenes** Gradle-Projekt in `projects/Kind-Hell/android`.
 - Root-`app` sowie Root-CI bleiben zunächst unverändert.
-- Vor APK-Auslieferung eigene Build-/CI-Konfiguration für Kind Hell ergänzen.
-- Kein Test-Build oder APK wurde durch dieses Dokument erstellt.
+- Eigenständiger Workflow `.github/workflows/kind-hell-debug-apk.yml` für Build und APK-Artefakt auf dem Feature-Branch eingerichtet.
+- **Buildnachweis:** [GitHub Actions #44182891562](https://github.com/valoon4/Androidbaze/actions/runs/44182891562) erfolgreich, Paket `com.valoon4.kindhell`, Debug-APK mit Signatur verifiziert. Noch kein physischer Gerätetest.
+
+## Implementierungsstand v0.0.1 (17.11.2026)
+- Meilenstein **0.0 (UI)**: 3 Jetpack-Compose-Tabs, lokale Beiträge/Antworten, freiwillige lokale Vorstellung, Kompass-Filter/Merkliste, Alias-Dialog; Daten im Android-Sandboxbereich via SharedPreferences.
+- **Nicht erledigt:** 0.1 Backend, echte Accounts/Mehrnutzerbetrieb, 0.2 serverbasierte Ankunftsrunden, 0.3 serverbasierter Kompass, Blockieren/Melden, Datenschutz-/Sicherheitsreview, Backup/Export.
+- **Isolation:** Entwicklung auf `kind-hell/v0.0-native-guild` unter `projects/Kind-Hell/android/`; Root-`:app`/Wormblade bleibt im Vergleich unverändert. APK hat eigene Application-ID `com.valoon4.kindhell`.
