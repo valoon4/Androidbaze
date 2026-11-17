@@ -25,6 +25,11 @@ Kind Hell soll **nicht nur neue Freundschaften vermitteln**, sondern Menschen er
 2. **Ankunft:** Willkommensrunden für neue Mitglieder, inspiriert von Sammelposts für etwa 20 Neuzugänge. Vorstellungen sind freiwillig; der soziale Einstieg soll aktiv erleichtert werden.
 3. **Kompass:** Freiwilliges Entdecken anderer Menschen anhand von Interessen, gewünschter Kontaktart und Kommunikationsstil. Sowohl Gemeinsamkeiten als auch unerwartete Begegnungen ermöglichen.
 
+## Verbindungen: „Mitstreiter“ / ENM-Idee integriert (17.11.2026)
+Die Gilde ist **nicht nur für Freundschaft und nicht nur für Dating** gedacht. Menschen können freiwillig nach Austausch, gemeinsamem Erleben und Mitgestaltung suchen; langfristig dürfen auch unterschiedliche einvernehmliche Beziehungsformen (einschließlich ENM und Polyamorie) **diskret, ohne Outing-Zwang** einen Platz haben. Das ist Teil der Kind-Hell-Vision, **keine neue Pflichtkategorie und kein bestehendes App-Feature**. Sensible Angaben gehören niemals automatisch ins öffentliche Profil; Erwachsenenfunktionen sind aus v0.0.1/v0.1 ausdrücklich ausgeklammert.
+
+Das anonymisierte Integrationskonzept, freiwillige Kontakt-/Beziehungsachsen und Sicherheitsanforderungen stehen in **[CONNECTIONS.md](CONNECTIONS.md)**. Die private ursprüngliche Ideenskizze bleibt unveröffentlicht.
+
 ## Grundsätze
 - Community statt Content-Farm: Zugehörigkeit und hilfreiche Gespräche wichtiger als Verweildauer.
 - Möglichst wenige soziale Vorschriften; keine willkürliche Themenpolizei oder „Low Effort“-Strafen.
