@@ -24,8 +24,8 @@ Weder ein Match noch lange Bildschirmzeit wird als garantierter Glücksgewinn au
 
 ## Offene technische Entscheidungen
 - Bestehenden Code in GitHub genauer prüfen; kein fertiger EK-Prototyp bestätigt.
-- Mobile-first Web-App vs. native Android-App entscheiden.
+- **Entschieden:** native Android-App (Kotlin); separate Buildstruktur unter `projects/Kind-Hell/android/` aufbauen.
 - Authentifizierung, Datenhaltung, Hosting, Backup/Restore und Moderation minimal, aber belastbar konzipieren.
 - Datenschutz und ggf. Altersgrenzen vor öffentlichem Launch überprüfen.
 
-**Status:** Planung, noch kein Implementierungsnachweis.
+**Status:** Planung; Implementierungsstruktur dokumentiert, noch kein App-Build.
