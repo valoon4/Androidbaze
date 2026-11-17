@@ -28,6 +28,8 @@ Kind Hell soll **nicht nur neue Freundschaften vermitteln**, sondern Menschen er
 ## Verbindungen: „Mitstreiter“ / ENM-Idee integriert (17.11.2026)
 Die Gilde ist **nicht nur für Freundschaft und nicht nur für Dating** gedacht. Menschen können freiwillig nach Austausch, gemeinsamem Erleben und Mitgestaltung suchen; langfristig dürfen auch unterschiedliche einvernehmliche Beziehungsformen (einschließlich ENM und Polyamorie) **diskret, ohne Outing-Zwang** einen Platz haben. Das ist Teil der Kind-Hell-Vision, **keine neue Pflichtkategorie und kein bestehendes App-Feature**. Sensible Angaben gehören niemals automatisch ins öffentliche Profil; Erwachsenenfunktionen sind aus v0.0.1/v0.1 ausdrücklich ausgeklammert.
 
+**Konkretisierte Gründerentscheidung (17.11.2026):** Im späteren Kompass sollen zwei **unabhängige und klar als Ja/Nein erkennbare** Kontaktwünsche stehen: **„Romantisch offen?“** und **„Sexuell offen?“**. Damit können andere Menschen respektvoll erkennen, ob solche Annäherungen grundsätzlich erwünscht sind, ohne Freundschaften durch peinliche Verfügbarkeitsfragen zu gefährden. Alle vier Kombinationen sind gleichwertig. Das ist weder eine Aussage über Beziehungsstatus noch eine Einwilligung. Die Freigabe ist freiwillig; für die geschützte 18+-Kontaktsuche müssen beide Signale bewusst gesetzt werden, während die allgemeine Gildennutzung ohne diese Offenlegung möglich bleibt. Noch nicht in der APK umgesetzt.
+
 Das anonymisierte Integrationskonzept, freiwillige Kontakt-/Beziehungsachsen und Sicherheitsanforderungen stehen in **[CONNECTIONS.md](CONNECTIONS.md)**. Die private ursprüngliche Ideenskizze bleibt unveröffentlicht.
 
 ## Grundsätze
