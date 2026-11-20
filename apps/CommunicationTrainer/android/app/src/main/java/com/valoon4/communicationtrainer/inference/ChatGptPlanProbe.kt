@@ -42,6 +42,7 @@ object ChatGptPlanProbe {
     @Volatile private var session: EphemeralSession? = null
     private val inFlight = AtomicBoolean(false)
     private val oneShotConsumed = AtomicBoolean(false)
+    private val sessionCounter = java.util.concurrent.atomic.AtomicLong(0L)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     val models = MutableStateFlow<List<PlanModel>>(emptyList())
@@ -71,6 +72,8 @@ object ChatGptPlanProbe {
     }
 
     fun clearSession() {
+        sessionCounter.incrementAndGet()
+        D05TrainingSession.onAccountChanged()
         session = null
         models.value = emptyList()
         response.value = null
@@ -89,6 +92,12 @@ object ChatGptPlanProbe {
         }
         return current.accessToken
     }
+
+    /** Read-only, scoped access for the separate D05 opt-in training engine. */
+    internal fun verifiedBearerForExplicitUse(): String? = activeToken()
+
+    /** In-flight D05 results from an older OAuth identity must be discarded. */
+    internal fun sessionVersion(): Long = sessionCounter.get()
 
     fun loadAvailableModels() {
         val token = activeToken()
