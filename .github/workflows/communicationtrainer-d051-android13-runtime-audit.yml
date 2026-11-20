@@ -1,0 +1,90 @@
+name: CommunicationTrainer D05.1 isolated Android 13 runtime audit
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/communicationtrainer-d051-android13-runtime-audit.yml"
+      - "apps/CommunicationTrainer/security/runtime_android13_audit.py"
+      - "apps/CommunicationTrainer/security/summarize_emulator_pcap.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: communicationtrainer-d051-runtime-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  emulator:
+    name: Original Play-Protect-blocked APK, offline-account-free behavior in Android 13 emulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable KVM for Android emulator
+        run: |
+          set -euo pipefail
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Obtain exact historical APK, check SHA256 and never resign
+        uses: actions/download-artifact@v4
+        with:
+          name: CommunicationTrainer-D051-Lernhilfe-debug-apk
+          run-id: 42588608816
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: runtime-private
+      - name: Verify original artifact and create private capture directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p runtime-reports runtime-private
+          echo "9013a6115104cedb92ed51fa09a61ce075d363c7eb7a017a5a1101aa0d2efba7  runtime-private/CommunicationTrainer-D051-Lernhilfe-debug.apk" | sha256sum -c -
+          printf '%s\n' "9013a6115104cedb92ed51fa09a61ce075d363c7eb7a017a5a1101aa0d2efba7" > runtime-reports/original-apk-sha256.txt
+      - name: Boot Android 13 google_apis emulator and inspect original APK
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          profile: pixel_4a
+          cores: 2
+          ram-size: 2048M
+          heap-size: 256M
+          disable-animations: true
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -tcpdump ${{ github.workspace }}/runtime-private/android13-traffic.pcap
+          script: python3 apps/CommunicationTrainer/security/runtime_android13_audit.py
+      - name: Summarize packet capture without uploading payloads
+        if: always()
+        run: |
+          set -euo pipefail
+          if test -s runtime-private/android13-traffic.pcap && test -s runtime-reports/emulator-observations.json; then
+            python3 apps/CommunicationTrainer/security/summarize_emulator_pcap.py
+          else
+            echo '{"status":"incomplete","reason":"emulator_or_capture_unavailable"}' > runtime-reports/network-summary.json
+            exit 1
+          fi
+      - name: Make sure no personal traces or executable APK get published
+        if: always()
+        run: |
+          set -euo pipefail
+          test ! -e runtime-reports/android13-traffic.pcap
+          test ! -e runtime-reports/CommunicationTrainer-D051-Lernhilfe-debug.apk
+          find runtime-reports -maxdepth 1 -type f -print
+      - name: Publish JSON conclusions only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: communicationtrainer-d051-android13-runtime-audit
+          path: |
+            runtime-reports/emulator-observations.json
+            runtime-reports/network-summary.json
+            runtime-reports/original-apk-sha256.txt
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Delete raw traffic and APK from runner workspace
+        if: always()
+        run: rm -rf runtime-private
