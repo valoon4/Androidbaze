@@ -111,6 +111,13 @@ def run():
         if report["app_launch"]["unexpected_oauth_service_after_launch"]:
             raise RuntimeError("OAuth foreground service started before user action")
 
+        # The Google APIs image can lack a configured browser or show a first-run
+        # browser screen. Capture those facts instead of treating a timeout as malware.
+        available_packages = adb("shell", "pm", "list", "packages", check=False)
+        report["browser_environment"] = {
+            "chrome_installed": "com.android.chrome" in available_packages,
+            "android_browser_installed": "com.android.browser" in available_packages,
+        }
         report["ui_navigation"] = {"practice_tab_found": press_text("Üben")}
         if report["ui_navigation"]["practice_tab_found"]:
             time.sleep(1)
@@ -132,7 +139,30 @@ def run():
                     "success_text_seen": "Browser-Rückleitung erfolgreich" in visible_text,
                     "failure_text_seen": "Rückleitung" in visible_text and "fehlgeschlagen" in visible_text,
                     "service_still_running_after_test": collect_service_running(),
+                    "browser_first_run_hint": any(token in visible_text for token in
+                        ("Welcome to Chrome", "Willkommen bei Chrome", "Chrome einrichten",
+                         "Accept & continue", "Akzeptieren und fortfahren")),
                 }
+                # The local test uses a 90-second socket accept deadline. A service
+                # observed at 14 seconds is not a leak: wait until well past the
+                # deadline, then check whether it terminates.
+                wait_started = time.time()
+                stopped = not collect_service_running()
+                for _ in range(9):
+                    if stopped:
+                        break
+                    time.sleep(12)
+                    stopped = not collect_service_running()
+                report["local_browser_callback"]["service_stopped_by_timeout"] = stopped
+                report["local_browser_callback"]["waited_for_cleanup_seconds"] = round(time.time() - wait_started)
+                root = view_xml()
+                text_after = " ".join((x.attrib.get("text", "") for x in root.iter("node"))) if root is not None else ""
+                report["local_browser_callback"]["success_after_wait"] = "Browser-Rückleitung erfolgreich" in text_after
+                report["local_browser_callback"]["timeout_message_seen"] = (
+                    "Zeitüberschreitung" in text_after or "Rückleitung nicht erreichbar" in text_after
+                )
+                if not stopped:
+                    report["limitations"].append("Foreground service still running beyond the 90s callback timeout")
         report["phases_unix"]["end"] = time.time()
         report["app_process_survived"] = active_process()
         # No raw logcat; only a filtered crash indicator.
@@ -142,7 +172,7 @@ def run():
             raise RuntimeError("App-related FATAL EXCEPTION in AndroidRuntime")
         if not report["ui_navigation"].get("practice_tab_found"):
             report["limitations"].append("Practice UI not accessible using accessibility tree; browser-only check incomplete")
-        if not report.get("local_browser_callback", {}).get("success_text_seen"):
+        if not (report.get("local_browser_callback", {}).get("success_text_seen") or report.get("local_browser_callback", {}).get("success_after_wait")):
             report["limitations"].append("Local browser callback success not confirmed; OAuth lifecycle only partially tested")
         report["status"] = "completed_with_limitations"
     except Exception as exc:
