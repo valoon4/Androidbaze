@@ -1,0 +1,160 @@
+name: CommunicationTrainer D05.1 offline APK + OSV audit
+
+on:
+  push:
+    branches:
+      - audit/communicationtrainer-d051-playprotect
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: communicationtrainer-security-audit
+  cancel-in-progress: true
+
+jobs:
+  dependency-osv:
+    name: Resolve all runtime modules and check OSV database
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: apps/CommunicationTrainer/android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.13"
+      - name: Verify Android SDK (no app execution)
+        run: |
+          set -euo pipefail
+          ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          SDKMGR="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
+          test -n "$SDKMGR"
+          yes | "$SDKMGR" --licenses >/dev/null || true
+          "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
+      - name: Resolve transitive debug runtime dependencies (actual selected versions)
+        run: |
+          set -euo pipefail
+          mkdir -p security/results
+          gradle -I security/resolved-runtime.init.gradle :app:dumpSecurityRuntimeModules \
+            --no-daemon --console=plain > security/results/resolved-gradle.log
+          grep '^SECURITY_DEP ' security/results/resolved-gradle.log > security/results/resolved-runtime.txt
+          test "$(wc -l < security/results/resolved-runtime.txt)" -gt 10
+          tail -4 security/results/resolved-gradle.log
+      - name: Query OSV (only dependency coordinates; no APK upload)
+        id: osv
+        run: |
+          python3 security/audit_runtime_osv.py \
+            security/results/resolved-runtime.txt \
+            security/results/osv-runtime.json
+      - name: Upload dependency audit reports even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: communicationtrainer-d051-osv-runtime-audit
+          path: |
+            apps/CommunicationTrainer/android/security/results/resolved-runtime.txt
+            apps/CommunicationTrainer/android/security/results/osv-runtime.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  mobsf-static:
+    name: MobSF static scan of exact Play Protect blocked APK (container-local)
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain exact original CI APK without rebuilding/resigning
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p security-mobsf/original security-mobsf/results
+          gh run download 42588608816 --repo valoon4/Androidbaze \
+            --name CommunicationTrainer-D051-Lernhilfe-debug-apk \
+            --dir security-mobsf/original
+          sha256sum -c security-mobsf/original/CommunicationTrainer-D051-Lernhilfe-debug.apk.sha256 \
+            --ignore-missing 2>/dev/null || true
+          echo "9013a6115104cedb92ed51fa09a61ce075d363c7eb7a017a5a1101aa0d2efba7  security-mobsf/original/CommunicationTrainer-D051-Lernhilfe-debug.apk" | sha256sum -c -
+          cp security-mobsf/original/CommunicationTrainer-D051-Lernhilfe-debug.apk.sha256 \
+            security-mobsf/results/ci-apk.sha256
+      - name: Start isolated MobSF static analysis container (no VT uploads)
+        run: |
+          set -euo pipefail
+          KEY="$(openssl rand -hex 32)"
+          echo "::add-mask::$KEY"
+          echo "MOBSF_API_KEY=$KEY" >> "$GITHUB_ENV"
+          docker pull opensecurity/mobile-security-framework-mobsf:latest
+          docker run -d --rm --name communicationtrainer-d051-mobsf \
+            -p 127.0.0.1:8000:8000 \
+            -e MOBSF_API_KEY="$KEY" \
+            -e MOBSF_API_ONLY=1 \
+            -e MOBSF_DOMAIN_MALWARE_SCAN=0 \
+            -e MOBSF_VT_ENABLED=0 \
+            -e MOBSF_VT_UPLOAD=0 \
+            opensecurity/mobile-security-framework-mobsf:latest
+          READY=0
+          for i in $(seq 1 100); do
+            if curl -fsS --max-time 5 -H "Authorization: $KEY" \
+              "http://127.0.0.1:8000/api/v1/scans" > /dev/null; then
+              READY=1
+              break
+            fi
+            sleep 5
+          done
+          test "$READY" -eq 1
+      - name: Analyze exact original APK through local MobSF API
+        run: |
+          set -euo pipefail
+          API=http://127.0.0.1:8000/api/v1
+          APK=security-mobsf/original/CommunicationTrainer-D051-Lernhilfe-debug.apk
+          REPORT=security-mobsf/results
+          curl --fail-with-body -sS --max-time 90 -X POST \
+            -H "Authorization: $MOBSF_API_KEY" \
+            -F "file=@$APK" "$API/upload" > "$REPORT/mobsf-upload.json"
+          jq -e '.hash and .scan_type and .file_name' "$REPORT/mobsf-upload.json"
+          HASH="$(jq -r '.hash' "$REPORT/mobsf-upload.json")"
+          SCAN_TYPE="$(jq -r '.scan_type' "$REPORT/mobsf-upload.json")"
+          FILE_NAME="$(jq -r '.file_name' "$REPORT/mobsf-upload.json")"
+          curl --fail-with-body -sS --max-time 1900 -X POST \
+            -H "Authorization: $MOBSF_API_KEY" \
+            --data-urlencode "hash=$HASH" \
+            --data-urlencode "scan_type=$SCAN_TYPE" \
+            --data-urlencode "file_name=$FILE_NAME" \
+            "$API/scan" > "$REPORT/mobsf-scan.json"
+          jq -e 'type=="object" and (.error==null)' "$REPORT/mobsf-scan.json"
+          curl --fail-with-body -sS --max-time 130 -X POST \
+            -H "Authorization: $MOBSF_API_KEY" \
+            --data-urlencode "hash=$HASH" \
+            "$API/report_json" > "$REPORT/mobsf-report.json"
+          jq -e 'type=="object" and (.error==null) and
+            (.manifest_analysis!=null or .code_analysis!=null or .security_score!=null)' \
+            "$REPORT/mobsf-report.json"
+          jq '{
+            package_name, app_name, app_type, app_version, min_sdk, target_sdk,
+            average_cvss, security_score, permissions,
+            code_analysis, manifest_analysis, malware_permissions,
+            binary_analysis, certificate_analysis, domains
+          }' "$REPORT/mobsf-report.json" > "$REPORT/mobsf-review.json"
+          echo "MobSF static report available; findings require human triage."
+      - name: Stop MobSF
+        if: always()
+        run: |
+          docker stop communicationtrainer-d051-mobsf || true
+      - name: Preserve scan reports on success or failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: communicationtrainer-d051-mobsf-static-report
+          path: |
+            security-mobsf/results/*
+          if-no-files-found: warn
+          retention-days: 30
