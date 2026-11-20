@@ -1,0 +1,95 @@
+name: CommunicationTrainer D05 Security Audit
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/communicationtrainer-security-audit.yml"
+      - "apps/CommunicationTrainer/security/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  scan:
+    name: Source SAST + original APK decompile + Maven OSV dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact security-review branch
+        uses: actions/checkout@v4
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Gradle 8.13
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.13"
+      - name: Download original Play-Protect-blocked APK from prior successful GitHub build
+        uses: actions/download-artifact@v4
+        with:
+          name: CommunicationTrainer-D051-Lernhilfe-debug-apk
+          run-id: 42588608816
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: security-input
+      - name: Verify original binary identity before analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p security-output
+          echo "9013a6115104cedb92ed51fa09a61ce075d363c7eb7a017a5a1101aa0d2efba7  security-input/CommunicationTrainer-D051-Lernhilfe-debug.apk" | sha256sum --check
+          unzip -t security-input/CommunicationTrainer-D051-Lernhilfe-debug.apk | tail -n 2
+          sha256sum security-input/CommunicationTrainer-D051-Lernhilfe-debug.apk > security-output/original-apk.sha256
+      - name: Install local source security scanner
+        run: |
+          python -m pip install --disable-pip-version-check "mobsfscan==1.2.0"
+          mobsfscan --version > security-output/mobsfscan-version.txt
+      - name: Run mobsfscan on Android source and manifest (never upload APK)
+        shell: bash
+        run: |
+          set +e
+          mobsfscan apps/CommunicationTrainer/android/app/src/main --type android --json --no-fail -o security-output/mobsfscan.json
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ] || [ ! -s security-output/mobsfscan.json ]; then
+            echo "mobsfscan did not produce a report" >&2
+            exit 1
+          fi
+      - name: Download JADX decompiler and decompile ORIGINAL blocked APK locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 -o /tmp/jadx.zip https://github.com/skylot/jadx/releases/download/v1.5.6/jadx-1.5.6.zip
+          mkdir -p /tmp/jadx
+          unzip -q /tmp/jadx.zip -d /tmp/jadx
+          /tmp/jadx/bin/jadx --version | tee security-output/jadx-version.txt
+          # Decompiled Java is kept on the runner only; do not upload sensitive decompiled code.
+          /tmp/jadx/bin/jadx --no-res --threads-count 2 -d /tmp/d05-jadx security-input/CommunicationTrainer-D051-Lernhilfe-debug.apk > security-output/jadx-log.txt 2>&1 || true
+          find /tmp/d05-jadx/sources -type f -name '*.java' | wc -l | tee security-output/jadx-source-file-count.txt
+          test "$(cat security-output/jadx-source-file-count.txt)" -gt 100
+          grep -E '(ERROR|WARN)' security-output/jadx-log.txt | tail -n 40 > security-output/jadx-warnings.txt || true
+      - name: Resolve actual runtime and test classpaths with Gradle
+        shell: bash
+        working-directory: apps/CommunicationTrainer/android
+        run: |
+          set -euo pipefail
+          gradle :app:dependencies --configuration debugRuntimeClasspath --no-daemon --console=plain > ../../../security-output/debugRuntimeClasspath.txt
+          gradle :app:dependencies --configuration debugUnitTestRuntimeClasspath --no-daemon --console=plain > ../../../security-output/debugUnitTestRuntimeClasspath.txt
+      - name: OSV vulnerability database check (only Maven coordinates, not APK)
+        run: python apps/CommunicationTrainer/security/osv_gradle_audit.py
+      - name: Upload reports only, NEVER original APK or decompiled sources
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: communicationtrainer-d051-security-report
+          path: |
+            security-output/*.json
+            security-output/*.txt
+          if-no-files-found: warn
+          retention-days: 30
