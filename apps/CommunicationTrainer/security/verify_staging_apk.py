@@ -49,6 +49,40 @@ def main(apk: Path):
         if "android:allowBackup" in line and not re.search(r"0x0(?:\s|$)", line):
             raise RuntimeError("Android backup unexpectedly enabled")
 
+    # The Android default for allowBackup is true; absence is NOT a pass.
+    for required_false in ("android:allowBackup", "android:usesCleartextTraffic"):
+        matches = [line for line in attrs if required_false in line]
+        if len(matches) != 1 or not re.search(r"0x0(?:\\s|$)", matches[0]):
+            raise RuntimeError(f"Required manifest flag {required_false}=false missing or enabled")
+
+    # Inspect compiled export surface rather than assuming release dependencies
+    # are always safe. The only permitted exported receiver is protected by DUMP.
+    for i, line in enumerate(lines):
+        found = re.search(r"^(\\s*)E: (activity|service|provider|receiver)(?:\\s|$)", line)
+        if not found:
+            continue
+        depth = len(found.group(1))
+        component_attrs = []
+        for sub in lines[i + 1:]:
+            subdepth = len(sub) - len(sub.lstrip())
+            if subdepth <= depth:
+                break
+            if subdepth == depth + 2 and "A:" in sub:
+                component_attrs.append(sub)
+        name_field = next((v for v in component_attrs if "android:name" in v), "")
+        name_match = re.search(r'android:name[^=]*="([^"]+)"', name_field)
+        name = name_match.group(1) if name_match else "UNKNOWN"
+        exported = next((v for v in component_attrs if "android:exported" in v), "")
+        if "0xffffffff" in exported:
+            allowed = (
+                name == "com.valoon4.communicationtrainer.MainActivity" or
+                (name == "androidx.profileinstaller.ProfileInstallReceiver" and
+                 any('android:permission' in v and '"android.permission.DUMP"' in v
+                     for v in component_attrs))
+            )
+            if not allowed:
+                raise RuntimeError(f"Unexpected exported component: {name}")
+
     if "androidx.compose.ui.tooling.PreviewActivity" in xmltree:
         raise RuntimeError("Exported Compose PreviewActivity embedded in staging")
     if 'android:debuggable' not in " ".join(attrs):
