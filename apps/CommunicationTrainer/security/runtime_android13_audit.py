@@ -40,7 +40,7 @@ def find_node(text):
         label = node.attrib.get("text", "") + " " + node.attrib.get("content-desc", "")
         if text in label:
             bounds = node.attrib.get("bounds", "")
-            match = re.fullmatch(r"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]", bounds)
+            match = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", bounds)
             if match:
                 x0, y0, x1, y1 = map(int, match.groups())
                 return (x0+x1)//2, (y0+y1)//2
@@ -63,7 +63,7 @@ def active_process():
 
 def safe_component_summary():
     package_dump = adb("shell", "dumpsys", "package", PACKAGE, timeout=30, check=False)
-    perms = sorted(set(re.findall(r"android\\.permission\\.[A-Z_]+", package_dump)))
+    perms = sorted(set(re.findall(r"android\.permission\.[A-Z_]+", package_dump)))
     return {
         "package_present": PACKAGE in adb("shell", "pm", "list", "packages", "-3"),
         "requested_android_permissions_in_dumpsys": perms,
