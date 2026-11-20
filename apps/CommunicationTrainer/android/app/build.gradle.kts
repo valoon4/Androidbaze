@@ -13,19 +13,33 @@ android {
         applicationId = "com.valoon4.communicationtrainer"
         minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "0.5.1-d05-opening"
+        versionCode = 9
+        versionName = "0.5.3-d051-guided"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        // D04 is separately installable beside D03 because the CI debug certificate
-        // is ephemeral. Release identity stays unchanged.
+        // Previous D05.1 diagnostic APK: retain separately for development only.
+        // This is debuggable and MUST NOT be distributed as a security-reviewed APK.
         getByName("debug") {
-            applicationIdSuffix = ".d05openingpreview"
+            applicationIdSuffix = ".d051guidedpreview"
             versionNameSuffix = "-preview"
         }
-        release { isMinifyEnabled = false }
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+        // Non-debuggable, non-production app identity. Inherits release dependencies,
+        // NOT debugImplementation(ui-tooling), and never falls back to a debug signer.
+        // Deliberately unsigned at Gradle level: a separate, secret-backed, manually
+        // approved CI job performs stable-keystore signing after security checks.
+        create("staging") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".d051staging"
+            versionNameSuffix = "-staging"
+            isDebuggable = false
+            signingConfig = null
+            matchingFallbacks += listOf("release")
+        }
     }
 
     compileOptions {
@@ -65,4 +79,9 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
+    // The JVM test graph (Robolectric) previously resolved versions with
+    // known advisories. These direct test-only pins override transitive ones.
+    // They are NOT bundled in the Android debug/release application runtime.
+    testImplementation(libs.guava.test)
+    testImplementation(libs.bcprov.test)
 }
