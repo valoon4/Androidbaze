@@ -1,0 +1,167 @@
+name: CommunicationTrainer Hardened Staging
+
+on:
+  pull_request:
+    paths:
+      - "apps/CommunicationTrainer/android/**"
+      - "apps/CommunicationTrainer/security/verify_staging_apk.py"
+      - "apps/CommunicationTrainer/security/sign_staging.sh"
+      - ".github/workflows/communicationtrainer-staging.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/CommunicationTrainer/android/**"
+      - "apps/CommunicationTrainer/security/verify_staging_apk.py"
+      - "apps/CommunicationTrainer/security/sign_staging.sh"
+      - ".github/workflows/communicationtrainer-staging.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: communicationtrainer-staging-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  staging-safety:
+    name: Compile, test and verify unsigned hardened staging APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: apps/CommunicationTrainer/android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.13"
+      - name: Prepare Android Build Tools 36 and API 36
+        run: |
+          set -euo pipefail
+          ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          SDKMGR="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
+          test -n "$SDKMGR"
+          yes | "$SDKMGR" --licenses >/dev/null || true
+          "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
+      - name: Run staging Robolectric tests, compile original app code
+        run: |
+          set -euo pipefail
+          gradle :app:testStagingUnitTest :app:assembleStaging --no-daemon --stacktrace
+          SCHEMA="$(find app/schemas -type f -name '1.json' -print -quit)"
+          test -s "$SCHEMA"
+          git diff --exit-code -- "$SCHEMA"
+      - name: Inspect the exact compiled staging APK, not just the Gradle config
+        run: |
+          set -euo pipefail
+          mkdir -p staging-audit
+          APK="$(find app/build/outputs/apk/staging -maxdepth 1 -type f -name 'app-staging*.apk' -print -quit)"
+          test -s "$APK"
+          python3 ../security/verify_staging_apk.py "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" > staging-audit/apk-badging.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump xmltree "$APK" AndroidManifest.xml > staging-audit/apk-manifest-tree.txt
+          # The PR check is deliberately UNSIGNED. Do not publish it as installable.
+          if "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify "$APK" >/dev/null 2>&1; then
+            echo "Unexpected signer: staging PR APK must remain unsigned" >&2
+            exit 1
+          fi
+          sha256sum "$APK" > staging-audit/unsigned-apk.sha256
+      - name: Smoke-test signing mechanics with a DISPOSABLE, never-distributed CI certificate
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          trap 'rm -rf "$TMP"' EXIT
+          APK="$(find app/build/outputs/apk/staging -maxdepth 1 -type f -name 'app-staging*.apk' -print -quit)"
+          keytool -genkeypair -noprompt -keyalg RSA -keysize 3072 -validity 1 \
+            -storetype PKCS12 -alias ci-smoke -dname "CN=DISPOSABLE CI Staging Smoke" \
+            -keystore "$TMP/smoke.jks" -storepass "ci-only-temporary-password" \
+            -keypass "ci-only-temporary-password"
+          CERT="$(keytool -list -v -keystore "$TMP/smoke.jks" -alias ci-smoke \
+            -storepass "ci-only-temporary-password" | \
+            awk '/SHA256:/ {gsub(":","",$2); print tolower($2); exit}')"
+          test "${#CERT}" -eq 64
+          CT_STAGING_KEYSTORE_B64="$(base64 -w0 "$TMP/smoke.jks")" \
+          CT_STAGING_STORE_PASSWORD="ci-only-temporary-password" \
+          CT_STAGING_KEY_PASSWORD="ci-only-temporary-password" \
+          CT_STAGING_KEY_ALIAS="ci-smoke" \
+          CT_STAGING_SIGNER_SHA256="$CERT" \
+            bash ../security/sign_staging.sh "$APK" "$TMP/ci-signed.apk"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify "$TMP/ci-signed.apk"
+          echo "Signing mechanism passed using a disposable key. This APK is NEVER uploaded."
+      - name: Upload audit metadata only – no unsigned or disposable-key APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: communicationtrainer-staging-build-audit
+          path: apps/CommunicationTrainer/android/staging-audit/*.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+  # This job cannot run on a pull_request. A protected GitHub environment and
+  # persistent signing secrets must be provisioned before it can issue an APK.
+  # No fallback to an ephemeral debug certificate is allowed here.
+  signed-staging:
+    name: Authorized stable-key staging signing (internal emulator analysis ONLY)
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: staging-safety
+    environment: communicationtrainer-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/CommunicationTrainer/android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.13"
+      - name: Prepare Android SDK
+        run: |
+          set -euo pipefail
+          ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          SDKMGR="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager -print -quit)"
+          test -n "$SDKMGR"
+          yes | "$SDKMGR" --licenses >/dev/null || true
+          "$SDKMGR" "platforms;android-36" "build-tools;36.0.0"
+      - name: Build and verify unsigned staging prior to signing
+        run: |
+          set -euo pipefail
+          gradle :app:assembleStaging --no-daemon --stacktrace
+          APK="$(find app/build/outputs/apk/staging -maxdepth 1 -type f -name 'app-staging*.apk' -print -quit)"
+          test -s "$APK"
+          python3 ../security/verify_staging_apk.py "$APK"
+      - name: Sign with persistent key ONLY after protected environment approval
+        env:
+          CT_STAGING_KEYSTORE_B64: ${{ secrets.CT_STAGING_KEYSTORE_B64 }}
+          CT_STAGING_STORE_PASSWORD: ${{ secrets.CT_STAGING_STORE_PASSWORD }}
+          CT_STAGING_KEY_PASSWORD: ${{ secrets.CT_STAGING_KEY_PASSWORD }}
+          CT_STAGING_KEY_ALIAS: ${{ vars.CT_STAGING_KEY_ALIAS }}
+          CT_STAGING_SIGNER_SHA256: ${{ vars.CT_STAGING_SIGNER_SHA256 }}
+        run: |
+          set -euo pipefail
+          APK="$(find app/build/outputs/apk/staging -maxdepth 1 -type f -name 'app-staging*.apk' -print -quit)"
+          mkdir -p staging-signed
+          bash ../security/sign_staging.sh "$APK" \
+            staging-signed/CommunicationTrainer-D051-Staging-signed.apk > staging-signed/signing-status.txt
+          sha256sum staging-signed/CommunicationTrainer-D051-Staging-signed.apk \
+            > staging-signed/CommunicationTrainer-D051-Staging-signed.apk.sha256
+      - name: Publish signed APK for isolated internal emulator testing only
+        uses: actions/upload-artifact@v4
+        with:
+          name: CommunicationTrainer-D051-Staging-internal-signed-apk
+          path: |
+            apps/CommunicationTrainer/android/staging-signed/CommunicationTrainer-D051-Staging-signed.apk
+            apps/CommunicationTrainer/android/staging-signed/CommunicationTrainer-D051-Staging-signed.apk.sha256
+            apps/CommunicationTrainer/android/staging-signed/signing-status.txt
+          if-no-files-found: error
+          retention-days: 14

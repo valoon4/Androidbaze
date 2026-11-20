@@ -19,13 +19,27 @@ android {
     }
 
     buildTypes {
-        // D04 is separately installable beside D03 because the CI debug certificate
-        // is ephemeral. Release identity stays unchanged.
+        // Previous D05.1 diagnostic APK: retain separately for development only.
+        // This is debuggable and MUST NOT be distributed as a security-reviewed APK.
         getByName("debug") {
             applicationIdSuffix = ".d051guidedpreview"
             versionNameSuffix = "-preview"
         }
-        release { isMinifyEnabled = false }
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+        // Non-debuggable, non-production app identity. Inherits release dependencies,
+        // NOT debugImplementation(ui-tooling), and never falls back to a debug signer.
+        // Deliberately unsigned at Gradle level: a separate, secret-backed, manually
+        // approved CI job performs stable-keystore signing after security checks.
+        create("staging") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".d051staging"
+            versionNameSuffix = "-staging"
+            isDebuggable = false
+            signingConfig = null
+            matchingFallbacks += listOf("release")
+        }
     }
 
     compileOptions {
