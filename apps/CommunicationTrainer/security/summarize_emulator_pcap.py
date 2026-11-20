@@ -20,10 +20,10 @@ def pcap_frames(path):
             raise RuntimeError("PCAP header missing")
         magic = raw[:4]
         endian, divisor = {
-            b"\\xd4\\xc3\\xb2\\xa1": ("<", 1_000_000),
-            b"\\xa1\\xb2\\xc3\\xd4": (">", 1_000_000),
-            b"\\x4d\\x3c\\xb2\\xa1": ("<", 1_000_000_000),
-            b"\\xa1\\xb2\\x3c\\x4d": (">", 1_000_000_000),
+            b"\xd4\xc3\xb2\xa1": ("<", 1_000_000),
+            b"\xa1\xb2\xc3\xd4": (">", 1_000_000),
+            b"\x4d\x3c\xb2\xa1": ("<", 1_000_000_000),
+            b"\xa1\xb2\x3c\x4d": (">", 1_000_000_000),
         }.get(magic, (None, None))
         if endian is None:
             raise RuntimeError("Unsupported capture format; do not report clean")
