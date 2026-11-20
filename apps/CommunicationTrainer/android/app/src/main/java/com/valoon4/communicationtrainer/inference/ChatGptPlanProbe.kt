@@ -90,6 +90,12 @@ object ChatGptPlanProbe {
         return current.accessToken
     }
 
+    /**
+     * Accessible only to the isolated D05 controller; never expose the token
+     * to UI, storage, logs or third-party intents.
+     */
+    internal fun ephemeralAccessToken(): String? = activeToken()
+
     fun loadAvailableModels() {
         val token = activeToken()
         if (token == null) {
