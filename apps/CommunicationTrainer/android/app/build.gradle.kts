@@ -65,4 +65,9 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
+    // The JVM test graph (Robolectric) previously resolved versions with
+    // known advisories. These direct test-only pins override transitive ones.
+    // They are NOT bundled in the Android debug/release application runtime.
+    testImplementation(libs.guava.test)
+    testImplementation(libs.bcprov.test)
 }
