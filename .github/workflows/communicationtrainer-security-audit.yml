@@ -4,6 +4,8 @@ on:
     paths:
       - ".github/workflows/communicationtrainer-security-audit.yml"
       - "apps/CommunicationTrainer/security/**"
+      - "apps/CommunicationTrainer/android/gradle/libs.versions.toml"
+      - "apps/CommunicationTrainer/android/app/build.gradle.kts"
   workflow_dispatch:
 
 permissions:
@@ -81,8 +83,40 @@ jobs:
           set -euo pipefail
           gradle :app:dependencies --configuration debugRuntimeClasspath --no-daemon --console=plain > ../../../security-output/debugRuntimeClasspath.txt
           gradle :app:dependencies --configuration debugUnitTestRuntimeClasspath --no-daemon --console=plain > ../../../security-output/debugUnitTestRuntimeClasspath.txt
+      - name: Verify patched versions are selected only for JVM tests
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          test = Path("security-output/debugUnitTestRuntimeClasspath.txt").read_text()
+          runtime = Path("security-output/debugRuntimeClasspath.txt").read_text()
+          for package, patched in [
+              ("com.google.guava:guava", "33.8.0-jre"),
+              ("org.bouncycastle:bcprov-jdk18on", "1.85"),
+          ]:
+              assert f"{package}:{patched}" in test, (
+                  f"Expected {package}:{patched} on test classpath"
+              )
+              assert package + ":" not in runtime, (
+                  f"Test-only library {package} unexpectedly present in APK classpath"
+              )
+              print(f"PASS {package}:{patched} is JVM-test-only")
+          PY
       - name: OSV vulnerability database check (only Maven coordinates, not APK)
         run: python apps/CommunicationTrainer/security/osv_gradle_audit.py
+      - name: Fail on known vulnerabilities in resolved test or app runtime classpaths
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path("security-output/osv-results.json").read_text())
+          assert result.get("status") == "complete", "OSV scan incomplete"
+          for scope, details in result["scopes"].items():
+              print(scope, "checked:", details["checked"], "findings:", len(details["findings"]))
+              assert details["checked"] > 0, f"No Maven dependencies found for {scope}"
+              assert not details["findings"], f"Known advisories remain for {scope}: {details['findings']}"
+          PY
       - name: Upload reports only, NEVER original APK or decompiled sources
         if: always()
         uses: actions/upload-artifact@v4
