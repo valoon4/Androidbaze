@@ -43,26 +43,26 @@ jobs:
       - name: Resolve transitive debug runtime dependencies (actual selected versions)
         run: |
           set -euo pipefail
-          mkdir -p security/results
-          gradle -I security/resolved-runtime.init.gradle :app:dumpSecurityRuntimeModules \
-            --no-daemon --console=plain > security/results/resolved-gradle.log
-          grep '^SECURITY_DEP ' security/results/resolved-gradle.log > security/results/resolved-runtime.txt
-          test "$(wc -l < security/results/resolved-runtime.txt)" -gt 10
-          tail -4 security/results/resolved-gradle.log
+          mkdir -p ../security/results
+          gradle -I ../security/resolved-runtime.init.gradle :app:dumpSecurityRuntimeModules \
+            --no-daemon --console=plain > ../security/results/resolved-gradle.log
+          grep '^SECURITY_DEP ' ../security/results/resolved-gradle.log > ../security/results/resolved-runtime.txt
+          test "$(wc -l < ../security/results/resolved-runtime.txt)" -gt 10
+          tail -4 ../security/results/resolved-gradle.log
       - name: Query OSV (only dependency coordinates; no APK upload)
         id: osv
         run: |
-          python3 security/audit_runtime_osv.py \
-            security/results/resolved-runtime.txt \
-            security/results/osv-runtime.json
+          python3 ../security/audit_runtime_osv.py \
+            ../security/results/resolved-runtime.txt \
+            ../security/results/osv-runtime.json
       - name: Upload dependency audit reports even on failure
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: communicationtrainer-d051-osv-runtime-audit
           path: |
-            apps/CommunicationTrainer/android/security/results/resolved-runtime.txt
-            apps/CommunicationTrainer/android/security/results/osv-runtime.json
+            apps/CommunicationTrainer/security/results/resolved-runtime.txt
+            apps/CommunicationTrainer/security/results/osv-runtime.json
           if-no-files-found: warn
           retention-days: 30
 
